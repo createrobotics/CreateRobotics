@@ -1,0 +1,15 @@
+{
+  "item.robotics.tin_ingot": "Tin ingot",
+  "item.robotics.tin_nugget": "Tin nugget",
+  "item.robotics.raw_tin": "Raw tin",
+  "item.robotics.bronze_ingot": "Bronze ingot",
+  "item.robotics.bronze_nugget": "Bronze nugget",
+
+  "block.robotics.smasher_block": "Smasher",
+  "block.robotics.tin_ore": "Tin ore",
+  "block.robotics.tin_block": "Tin block",
+  "block.robotics.bronze_block": "Bronze block",
+  "block.robotics.deepslate_tin_ore": "Deepslate tin ore",
+
+  "itemGroup.roboticstab": "Create Robotics"
+}
