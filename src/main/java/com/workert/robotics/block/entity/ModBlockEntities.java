@@ -18,7 +18,7 @@ public class ModBlockEntities {
                     BlockEntityType.Builder.of(SmasherBlockEntity::new,
                             ModBlocks.SMASHER_BLOCK.get()).build(null));
 
-    public static void register(IEventBus eventBus){
+    public static void register(IEventBus eventBus) {
         BLOCK_ENTITIES.register(eventBus);
     }
 }
