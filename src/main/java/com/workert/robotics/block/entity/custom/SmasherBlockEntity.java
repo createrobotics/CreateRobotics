@@ -2,6 +2,7 @@ package com.workert.robotics.block.entity.custom;
 
 
 import com.workert.robotics.block.entity.ModBlockEntities;
+import com.workert.robotics.item.ModItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -29,10 +30,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
+import java.util.Random;
 
 public class SmasherBlockEntity extends BlockEntity implements MenuProvider {
 
-    private final ItemStackHandler itemHandler = new ItemStackHandler(2){
+    private final ItemStackHandler itemHandler = new ItemStackHandler(3){
         @Override
         protected void onContentsChanged(int slot) {
             setChanged();
@@ -96,5 +98,30 @@ public class SmasherBlockEntity extends BlockEntity implements MenuProvider {
         }
 
         Containers.dropContents(this.level, this.worldPosition, inventory);
+    }
+
+    public static void tick(Level pLevel, BlockPos pPos, BlockState pState, SmasherBlockEntity pBlockEntity) {
+        if(hasRecipe(pBlockEntity) && hasNotReachedStackLimit(pBlockEntity)) {
+            craftItem(pBlockEntity);
+        }
+    }
+
+    private static void craftItem(SmasherBlockEntity entity) {
+        entity.itemHandler.extractItem(0, 1, false);
+        entity.itemHandler.extractItem(1, 1, false);
+
+        entity.itemHandler.setStackInSlot(2, new ItemStack(ModItems.BRONZE_INGOT.get(),
+                entity.itemHandler.getStackInSlot(2).getCount() + 1));
+    }
+
+    private static boolean hasRecipe(SmasherBlockEntity entity) {
+        boolean hasItemInItemSlot =  entity.itemHandler.getStackInSlot(0).getItem() == ModItems.TIN_NUGGET.get();
+        boolean hasItemInFuelSlot = entity.itemHandler.getStackInSlot(1).getItem() == ModItems.TIN_INGOT.get();
+
+        return hasItemInItemSlot && hasItemInFuelSlot;
+    }
+
+    private static boolean hasNotReachedStackLimit(SmasherBlockEntity entity) {
+        return entity.itemHandler.getStackInSlot(2).getCount() < entity.itemHandler.getStackInSlot(3).getMaxStackSize();
     }
 }
