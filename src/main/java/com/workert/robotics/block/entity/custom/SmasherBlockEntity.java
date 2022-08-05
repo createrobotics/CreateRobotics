@@ -122,6 +122,6 @@ public class SmasherBlockEntity extends BlockEntity implements MenuProvider {
     }
 
     private static boolean hasNotReachedStackLimit(SmasherBlockEntity entity) {
-        return entity.itemHandler.getStackInSlot(2).getCount() < entity.itemHandler.getStackInSlot(3).getMaxStackSize();
+        return entity.itemHandler.getStackInSlot(2).getCount() < entity.itemHandler.getStackInSlot(2).getMaxStackSize();
     }
 }
