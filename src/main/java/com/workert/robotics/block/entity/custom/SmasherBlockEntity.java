@@ -1,6 +1,5 @@
 package com.workert.robotics.block.entity.custom;
 
-
 import com.workert.robotics.block.entity.ModBlockEntities;
 import com.workert.robotics.item.ModItems;
 import net.minecraft.core.BlockPos;
@@ -25,7 +24,6 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,94 +32,95 @@ import java.util.Random;
 
 public class SmasherBlockEntity extends BlockEntity implements MenuProvider {
 
-    private final ItemStackHandler itemHandler = new ItemStackHandler(3){
-        @Override
-        protected void onContentsChanged(int slot) {
-            setChanged();
-        }
-    };
+	private final ItemStackHandler itemHandler = new ItemStackHandler(3) {
+		@Override
+		protected void onContentsChanged(int slot) {
+			setChanged();
+		}
+	};
 
-    private LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.empty();
+	private LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.empty();
 
-    public SmasherBlockEntity( BlockPos pWorldPosition, BlockState pBlockState) {
-        super(ModBlockEntities.SMASHER_BLOCK_ENTITY.get(), pWorldPosition, pBlockState);
-    }
+	public SmasherBlockEntity(BlockPos pWorldPosition, BlockState pBlockState) {
+		super(ModBlockEntities.SMASHER_BLOCK_ENTITY.get(), pWorldPosition, pBlockState);
+	}
 
-    @Override
-    public Component getDisplayName() {
-        return new TextComponent("Smasher");
-    }
+	@Override
+	public Component getDisplayName() {
+		return new TextComponent("Smasher");
+	}
 
-    @Nullable
-    @Override
-    public AbstractContainerMenu createMenu(int pContainerId, Inventory pInventory, Player pPlayer) {
-        return null;
-    }
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @javax.annotation.Nullable Direction side) {
-        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return lazyItemHandler.cast();
-        }
+	@Nullable
+	@Override
+	public AbstractContainerMenu createMenu(int pContainerId, Inventory pInventory, Player pPlayer) {
+		return null;
+	}
 
-        return super.getCapability(cap, side);
-    }
+	@Nonnull
+	@Override
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @javax.annotation.Nullable Direction side) {
+		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+			return lazyItemHandler.cast();
+		}
 
-    @Override
-    public void onLoad() {
-        super.onLoad();
-        lazyItemHandler = LazyOptional.of(() -> itemHandler);
-    }
+		return super.getCapability(cap, side);
+	}
 
-    @Override
-    public void invalidateCaps()  {
-        super.invalidateCaps();
-        lazyItemHandler.invalidate();
-    }
+	@Override
+	public void onLoad() {
+		super.onLoad();
+		lazyItemHandler = LazyOptional.of(() -> itemHandler);
+	}
 
-    @Override
-    protected void saveAdditional(@NotNull CompoundTag tag) {
-        tag.put("inventory", itemHandler.serializeNBT());
-        super.saveAdditional(tag);
-    }
+	@Override
+	public void invalidateCaps() {
+		super.invalidateCaps();
+		lazyItemHandler.invalidate();
+	}
 
-    @Override
-    public void load(CompoundTag nbt) {
-        super.load(nbt);
-        itemHandler.deserializeNBT(nbt.getCompound("inventory"));
-    }
+	@Override
+	protected void saveAdditional(@NotNull CompoundTag tag) {
+		tag.put("inventory", itemHandler.serializeNBT());
+		super.saveAdditional(tag);
+	}
 
-    public void drops() {
-        SimpleContainer inventory = new SimpleContainer(itemHandler.getSlots());
-        for (int i = 0; i < itemHandler.getSlots(); i++) {
-            inventory.setItem(i, itemHandler.getStackInSlot(i));
-        }
+	@Override
+	public void load(CompoundTag nbt) {
+		super.load(nbt);
+		itemHandler.deserializeNBT(nbt.getCompound("inventory"));
+	}
 
-        Containers.dropContents(this.level, this.worldPosition, inventory);
-    }
+	public void drops() {
+		SimpleContainer inventory = new SimpleContainer(itemHandler.getSlots());
+		for (int i = 0; i < itemHandler.getSlots(); i++) {
+			inventory.setItem(i, itemHandler.getStackInSlot(i));
+		}
 
-    public static void tick(Level pLevel, BlockPos pPos, BlockState pState, SmasherBlockEntity pBlockEntity) {
-        if(hasRecipe(pBlockEntity) && hasNotReachedStackLimit(pBlockEntity)) {
-            craftItem(pBlockEntity);
-        }
-    }
+		Containers.dropContents(this.level, this.worldPosition, inventory);
+	}
 
-    private static void craftItem(SmasherBlockEntity entity) {
-        entity.itemHandler.extractItem(0, 1, false);
-        entity.itemHandler.extractItem(1, 1, false);
+	public static void tick(Level pLevel, BlockPos pPos, BlockState pState, SmasherBlockEntity pBlockEntity) {
+		if (hasRecipe(pBlockEntity) && hasNotReachedStackLimit(pBlockEntity)) {
+			craftItem(pBlockEntity);
+		}
+	}
 
-        entity.itemHandler.setStackInSlot(2, new ItemStack(ModItems.BRONZE_INGOT.get(),
-                entity.itemHandler.getStackInSlot(2).getCount() + 1));
-    }
+	private static void craftItem(SmasherBlockEntity entity) {
+		entity.itemHandler.extractItem(0, 1, false);
+		entity.itemHandler.extractItem(1, 1, false);
 
-    private static boolean hasRecipe(SmasherBlockEntity entity) {
-        boolean hasItemInItemSlot =  entity.itemHandler.getStackInSlot(0).getItem() == ModItems.TIN_NUGGET.get();
-        boolean hasItemInFuelSlot = entity.itemHandler.getStackInSlot(1).getItem() == ModItems.TIN_INGOT.get();
+		entity.itemHandler.setStackInSlot(2,
+				new ItemStack(ModItems.BRONZE_INGOT.get(), entity.itemHandler.getStackInSlot(2).getCount() + 1));
+	}
 
-        return hasItemInItemSlot && hasItemInFuelSlot;
-    }
+	private static boolean hasRecipe(SmasherBlockEntity entity) {
+		boolean hasItemInItemSlot = entity.itemHandler.getStackInSlot(0).getItem() == ModItems.TIN_NUGGET.get();
+		boolean hasItemInFuelSlot = entity.itemHandler.getStackInSlot(1).getItem() == ModItems.TIN_INGOT.get();
 
-    private static boolean hasNotReachedStackLimit(SmasherBlockEntity entity) {
-        return entity.itemHandler.getStackInSlot(2).getCount() < entity.itemHandler.getStackInSlot(2).getMaxStackSize();
-    }
+		return hasItemInItemSlot && hasItemInFuelSlot;
+	}
+
+	private static boolean hasNotReachedStackLimit(SmasherBlockEntity entity) {
+		return entity.itemHandler.getStackInSlot(2).getCount() < entity.itemHandler.getStackInSlot(2).getMaxStackSize();
+	}
 }
