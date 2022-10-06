@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import com.mojang.logging.LogUtils;
 import com.workert.robotics.block.ModBlocks;
 import com.workert.robotics.block.entity.ModBlockEntities;
+import com.workert.robotics.entities.ModEntities;
 import com.workert.robotics.item.ModItems;
 
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
@@ -19,17 +20,19 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 public class Robotics {
 
 	public static final String MOD_ID = "robotics";
-	private static final Logger LOGGER = LogUtils.getLogger();
+	public static final Logger LOGGER = LogUtils.getLogger();
+
+	final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
 	public Robotics() {
-		IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
+		this.modEventBus.addListener(this::clientSetup);
 
-		ModBlocks.register(eventBus);
-		ModItems.register(eventBus);
+		this.modEventBus.addListener(ModEntities::addEntityAttributes);
 
-		ModBlockEntities.register(eventBus);
-
-		eventBus.addListener(this::clientSetup);
+		ModBlocks.register(this.modEventBus);
+		ModItems.register(this.modEventBus);
+		ModBlockEntities.register(this.modEventBus);
+		ModEntities.EntityTypes.register(this.modEventBus);
 
 		MinecraftForge.EVENT_BUS.register(this);
 
@@ -37,5 +40,7 @@ public class Robotics {
 
 	private void clientSetup(final FMLClientSetupEvent event) {
 		ItemBlockRenderTypes.setRenderLayer(ModBlocks.SMASHER_BLOCK.get(), RenderType.translucent());
+		ItemBlockRenderTypes.setRenderLayer(ModBlocks.DRONE_ASSEMBLER.get(), RenderType.translucent());
 	}
+
 }

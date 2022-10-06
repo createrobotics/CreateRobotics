@@ -3,6 +3,7 @@ package com.workert.robotics.block;
 import java.util.function.Supplier;
 
 import com.workert.robotics.Robotics;
+import com.workert.robotics.block.custom.DroneAssembler;
 import com.workert.robotics.block.custom.SmasherBlock;
 import com.workert.robotics.item.ModCreativeModeTab;
 import com.workert.robotics.item.ModItems;
@@ -14,6 +15,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.OreBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.material.Material;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
@@ -42,6 +44,9 @@ public class ModBlocks {
 	public static final RegistryObject<Block> SMASHER_BLOCK = registerBlock("smasher_block",
 			() -> new SmasherBlock(BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.METAL).strength(9f)
 					.requiresCorrectToolForDrops()));
+
+	public static final RegistryObject<Block> DRONE_ASSEMBLER = registerBlock("drone_assembler",
+			() -> new DroneAssembler(Properties.of(Material.METAL).sound(SoundType.METAL)));
 
 	private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block) {
 		RegistryObject<T> toReturn = BLOCKS.register(name, block);
