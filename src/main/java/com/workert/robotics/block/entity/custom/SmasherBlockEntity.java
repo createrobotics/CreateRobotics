@@ -3,6 +3,7 @@ package com.workert.robotics.block.entity.custom;
 
 import com.workert.robotics.block.entity.ModBlockEntities;
 import com.workert.robotics.item.ModItems;
+import com.workert.robotics.screen.SmasherBlockMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -55,7 +56,7 @@ public class SmasherBlockEntity extends BlockEntity implements MenuProvider {
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int pContainerId, Inventory pInventory, Player pPlayer) {
-        return null;
+        return new SmasherBlockMenu(pContainerId, pInventory, this);
     }
     @Nonnull
     @Override

@@ -1,5 +1,8 @@
 package com.workert.robotics;
 
+import com.workert.robotics.screen.ModMenuTypes;
+import com.workert.robotics.screen.SmasherBlockScreen;
+import net.minecraft.client.gui.screens.MenuScreens;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -33,6 +36,7 @@ public class Robotics {
 		ModItems.register(this.modEventBus);
 		ModBlockEntities.register(this.modEventBus);
 		ModEntities.EntityTypes.register(this.modEventBus);
+		ModMenuTypes.register(this.modEventBus);
 
 		MinecraftForge.EVENT_BUS.register(this);
 
@@ -41,6 +45,7 @@ public class Robotics {
 	private void clientSetup(final FMLClientSetupEvent event) {
 		ItemBlockRenderTypes.setRenderLayer(ModBlocks.SMASHER_BLOCK.get(), RenderType.translucent());
 		ItemBlockRenderTypes.setRenderLayer(ModBlocks.DRONE_ASSEMBLER.get(), RenderType.translucent());
+		MenuScreens.register(ModMenuTypes.SMASHER_BLOCK_MENU.get(), SmasherBlockScreen::new);
 	}
 
 }
