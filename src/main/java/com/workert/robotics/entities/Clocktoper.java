@@ -60,6 +60,7 @@ public class Clocktoper extends PathfinderMob implements FlyingAnimal, OwnableEn
 	public UUID getOwnerUUID() {
 		return this.level.players().get(0).getUUID();
 		// TODO make real owner selector
+		// TODO Test
 	}
 
 	@Override
