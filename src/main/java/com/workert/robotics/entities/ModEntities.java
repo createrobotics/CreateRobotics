@@ -22,11 +22,11 @@ public class ModEntities {
 			() -> EntityType.Builder.<DroneContraptionEntity>of(DroneContraptionEntity::new, MobCategory.MISC)
 					.build(new ResourceLocation(Robotics.MOD_ID, "drone").toString()));
 
-	public static final RegistryObject<EntityType<Clocktoper>> CLOCKTOPER = EntityTypes.register("clocktoper",
-			() -> EntityType.Builder.<Clocktoper>of(Clocktoper::new, MobCategory.MISC)
-					.build(new ResourceLocation(Robotics.MOD_ID, "clocktoper").toString()));
+	public static final RegistryObject<EntityType<Clockcopter>> CLOCKCOPTER = EntityTypes.register("clockcopter",
+			() -> EntityType.Builder.<Clockcopter>of(Clockcopter::new, MobCategory.MISC).sized(0.8f, 0.8f)
+					.build(new ResourceLocation(Robotics.MOD_ID, "clockcopter").toString()));
 
 	public static void addEntityAttributes(EntityAttributeCreationEvent event) {
-		event.put(ModEntities.CLOCKTOPER.get(), Clocktoper.createAttributes());
+		event.put(ModEntities.CLOCKCOPTER.get(), Clockcopter.createAttributes());
 	}
 }

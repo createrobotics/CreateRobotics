@@ -22,9 +22,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 
-public class Clocktoper extends PathfinderMob implements FlyingAnimal, OwnableEntity {
+public class Clockcopter extends PathfinderMob implements FlyingAnimal, OwnableEntity {
 
-	public Clocktoper(EntityType<? extends PathfinderMob> entity, Level world) {
+	public Clockcopter(EntityType<? extends PathfinderMob> entity, Level world) {
 		super(entity, world);
 		this.moveControl = new FlyingMoveControl(this, 10, false);
 	}
@@ -43,8 +43,8 @@ public class Clocktoper extends PathfinderMob implements FlyingAnimal, OwnableEn
 	protected void registerGoals() {
 		this.goalSelector.addGoal(0, new FloatGoal(this));
 		this.goalSelector.addGoal(1, new RobotMineOreGoal(this, Blocks.COBBLESTONE, 0.9, 12, 4));
-		this.goalSelector.addGoal(1, new RobotFollowPlayerOwnerGoal(this, 1.2, 5, 5));
-		this.goalSelector.addGoal(2, new LookAtPlayerGoal(this, Player.class, 8.0F));
+		this.goalSelector.addGoal(2, new RobotFollowPlayerOwnerGoal(this, 1.2, 5, 5));
+		this.goalSelector.addGoal(3, new LookAtPlayerGoal(this, Player.class, 8.0F));
 	}
 
 	@Override
@@ -60,7 +60,6 @@ public class Clocktoper extends PathfinderMob implements FlyingAnimal, OwnableEn
 	public UUID getOwnerUUID() {
 		return this.level.players().get(0).getUUID();
 		// TODO make real owner selector
-		// TODO Test
 	}
 
 	@Override
