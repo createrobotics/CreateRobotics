@@ -1,14 +1,10 @@
 package com.workert.robotics.entities;
 
-import java.util.UUID;
-
 import com.workert.robotics.entities.goals.RobotFollowPlayerOwnerGoal;
 import com.workert.robotics.entities.goals.RobotMineOreGoal;
 
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -22,7 +18,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 
-public class Clockcopter extends PathfinderMob implements FlyingAnimal, OwnableEntity {
+public class Clockcopter extends AbstractRobotEntity implements FlyingAnimal {
 
 	public Clockcopter(EntityType<? extends PathfinderMob> entity, Level world) {
 		super(entity, world);
@@ -54,17 +50,6 @@ public class Clockcopter extends PathfinderMob implements FlyingAnimal, OwnableE
 		flyingpathnavigation.setCanFloat(true);
 		flyingpathnavigation.setCanPassDoors(false);
 		return flyingpathnavigation;
-	}
-
-	@Override
-	public UUID getOwnerUUID() {
-		return this.level.players().get(0).getUUID();
-		// TODO make real owner selector
-	}
-
-	@Override
-	public Entity getOwner() {
-		return this.level.getPlayerByUUID(this.getOwnerUUID());
 	}
 
 }
