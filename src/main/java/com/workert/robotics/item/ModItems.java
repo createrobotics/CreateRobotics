@@ -3,6 +3,7 @@ package com.workert.robotics.item;
 import java.util.Optional;
 
 import com.workert.robotics.Robotics;
+import com.workert.robotics.entities.ModEntities;
 
 import net.minecraft.world.item.Item;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -19,6 +20,10 @@ public class ModItems {
 
 	public static final RegistryObject<Item> BRONZE_INGOT = registerItem("bronze_ingot", Optional.empty());
 	public static final RegistryObject<Item> BRONZE_NUGGET = registerItem("bronze_nugget", Optional.empty());
+
+	public static final RegistryObject<Item> CLOCKCOPTER = ITEMS.register("clockcopter",
+			() -> new BaseRobotItem(new Item.Properties().tab(ModCreativeModeTab.ROBOTICS_TAB),
+					ModEntities.CLOCKCOPTER.get()));
 
 	public static void register(IEventBus eventBus) {
 		ITEMS.register(eventBus);

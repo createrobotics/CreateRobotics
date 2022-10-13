@@ -1,8 +1,5 @@
 package com.workert.robotics;
 
-import com.workert.robotics.screen.ModMenuTypes;
-import com.workert.robotics.screen.SmasherBlockScreen;
-import net.minecraft.client.gui.screens.MenuScreens;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -10,7 +7,10 @@ import com.workert.robotics.block.ModBlocks;
 import com.workert.robotics.block.entity.ModBlockEntities;
 import com.workert.robotics.entities.ModEntities;
 import com.workert.robotics.item.ModItems;
+import com.workert.robotics.screen.ModMenuTypes;
+import com.workert.robotics.screen.SmasherBlockScreen;
 
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraftforge.common.MinecraftForge;
@@ -33,9 +33,9 @@ public class Robotics {
 		this.modEventBus.addListener(ModEntities::addEntityAttributes);
 
 		ModBlocks.register(this.modEventBus);
+		ModEntities.EntityTypes.register(this.modEventBus); // Needs to register before ModItems because some items depend on the Registry Objects in ModEntities
 		ModItems.register(this.modEventBus);
 		ModBlockEntities.register(this.modEventBus);
-		ModEntities.EntityTypes.register(this.modEventBus);
 		ModMenuTypes.register(this.modEventBus);
 
 		MinecraftForge.EVENT_BUS.register(this);
