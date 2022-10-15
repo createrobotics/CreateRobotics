@@ -6,6 +6,7 @@ import com.workert.robotics.Robotics;
 import com.workert.robotics.entities.ModEntities;
 
 import net.minecraft.world.item.Item;
+import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -22,8 +23,8 @@ public class ModItems {
 	public static final RegistryObject<Item> BRONZE_NUGGET = registerItem("bronze_nugget", Optional.empty());
 
 	public static final RegistryObject<Item> CLOCKCOPTER = ITEMS.register("clockcopter",
-			() -> new BaseRobotItem(new Item.Properties().tab(ModCreativeModeTab.ROBOTICS_TAB),
-					ModEntities.CLOCKCOPTER.get()));
+			() -> new ForgeSpawnEggItem(() -> ModEntities.CLOCKCOPTER.get(), 0xb0b0b0, 0xb3793b,
+					new Item.Properties().tab(ModCreativeModeTab.ROBOTICS_TAB)));
 
 	public static void register(IEventBus eventBus) {
 		ITEMS.register(eventBus);

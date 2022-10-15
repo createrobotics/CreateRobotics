@@ -1,7 +1,7 @@
 package com.workert.robotics.entities;
 
 import com.workert.robotics.entities.goals.RobotFollowPlayerOwnerGoal;
-import com.workert.robotics.entities.goals.RobotMineOreGoal;
+import com.workert.robotics.entities.goals.MineBlockAndDropGoal;
 
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
@@ -38,7 +38,7 @@ public class Clockcopter extends AbstractRobotEntity implements FlyingAnimal {
 	@Override
 	protected void registerGoals() {
 		this.goalSelector.addGoal(0, new FloatGoal(this));
-		this.goalSelector.addGoal(1, new RobotMineOreGoal(this, Blocks.COBBLESTONE, 0.9, 12, 4));
+		this.goalSelector.addGoal(1, new MineBlockAndDropGoal(this, Blocks.COBBLESTONE, 0.9, 12, 4));
 		this.goalSelector.addGoal(2, new RobotFollowPlayerOwnerGoal(this, 1.2, 5, 5));
 		this.goalSelector.addGoal(3, new LookAtPlayerGoal(this, Player.class, 8.0F));
 	}
