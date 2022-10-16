@@ -6,5 +6,5 @@
 </h1>
 
 <p>Create Robotics is a mod about Robots and Robotics Automation in Minecraft using the Create mod.</p>
-<p>The robots have many uses, some to help you at specific tasks, some to automate your factory and some to fight your enemies.</p>
+<p>Robots have many uses, some help you at specific tasks, some automate your factory and some fight your enemies.</p>
 <p>Create Robotics has also a system planned for you to build and code your own robots.</p>
