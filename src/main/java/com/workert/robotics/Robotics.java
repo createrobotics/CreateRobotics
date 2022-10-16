@@ -1,5 +1,6 @@
 package com.workert.robotics;
 
+import com.workert.robotics.recipe.ModRecipes;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -37,6 +38,7 @@ public class Robotics {
 		ModItems.register(this.modEventBus);
 		ModBlockEntities.register(this.modEventBus);
 		ModMenuTypes.register(this.modEventBus);
+		ModRecipes.register(this.modEventBus);
 
 		MinecraftForge.EVENT_BUS.register(this);
 
