@@ -2,8 +2,8 @@ package com.workert.robotics.client;
 
 import com.simibubi.create.content.contraptions.components.structureMovement.render.ContraptionEntityRenderer;
 import com.workert.robotics.Robotics;
-import com.workert.robotics.client.model.ClocktoperModel;
-import com.workert.robotics.client.renderers.ClocktoperRenderer;
+import com.workert.robotics.client.model.ClockcopterModel;
+import com.workert.robotics.client.renderers.ClockcopterRenderer;
 import com.workert.robotics.entities.DroneContraptionEntity;
 import com.workert.robotics.entities.ModEntities;
 
@@ -19,12 +19,12 @@ public class ClientHandler {
 	@SubscribeEvent
 	public static void registerEntityRenders(EntityRenderersEvent.RegisterRenderers event) {
 		event.registerEntityRenderer(ModEntities.DRONE.get(), ContraptionEntityRenderer<DroneContraptionEntity>::new);
-		event.registerEntityRenderer(ModEntities.CLOCKTOPER.get(), ClocktoperRenderer::new);
+		event.registerEntityRenderer(ModEntities.CLOCKCOPTER.get(), ClockcopterRenderer::new);
 	}
 
 	@SubscribeEvent
 	public static void registerLayerDefinition(EntityRenderersEvent.RegisterLayerDefinitions event) {
-		event.registerLayerDefinition(ClocktoperModel.LAYER_LOCATION, ClocktoperModel::createBodyLayer);
+		event.registerLayerDefinition(ClockcopterModel.LAYER_LOCATION, ClockcopterModel::createBodyLayer);
 	}
 
 }
