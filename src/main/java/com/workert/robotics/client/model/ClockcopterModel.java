@@ -247,6 +247,7 @@ public class ClockcopterModel<T extends Clockcopter> extends EntityModel<T> {
 		this.gear0.xRot += this.gearTurnSpeed;
 		this.gear1.xRot -= this.gearTurnSpeed;
 		this.propeller.yRot += this.propellerTurnSpeed;
+
 	}
 
 	@Override

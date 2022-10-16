@@ -1,34 +1,35 @@
 package com.workert.robotics.entities.goals;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Random;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.SectionPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.MoveToBlockGoal;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraft.world.level.chunk.ChunkStatus;
+import net.minecraft.world.level.block.Blocks;
 
 public class MineBlockAndDropGoal extends MoveToBlockGoal {
 
-	private Block blockToRemove;
+	private List<Block> blocksToRemove;
+
 	private PathfinderMob mob;
 	private int ticksSinceReachedGoal;
+	private List<BlockPos> posBlackList = new ArrayList<BlockPos>();
 
-	public MineBlockAndDropGoal(PathfinderMob pMob, Block blockToRemove, double pSpeedModifier, int pSearchRange,
+	public MineBlockAndDropGoal(PathfinderMob pMob, List<Block> blocksToRemove, double pSpeedModifier, int pSearchRange,
 			int pVerticalSearchRange) {
 		super(pMob, pSpeedModifier, pSearchRange, pVerticalSearchRange);
-		this.blockToRemove = blockToRemove;
+		this.blocksToRemove = blocksToRemove;
 		this.mob = pMob;
 		this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.JUMP, Goal.Flag.LOOK));
 	}
@@ -39,17 +40,34 @@ public class MineBlockAndDropGoal extends MoveToBlockGoal {
 		this.ticksSinceReachedGoal = 0;
 	}
 
+	@Override
+	public double acceptedDistance() {
+		return 1.4;
+	}
+
 	// Tick method copied from RemoveBlockGoal and edited for block drop
 	@Override
 	public void tick() {
 		super.tick();
 		Level level = this.mob.level;
-		BlockPos mineBlockPos = this.mob.blockPosition();
-		BlockPos targetPos = this.getPosWithBlock(mineBlockPos, level);
 		Random random = this.mob.getRandom();
-		if (targetPos != null && this.mob.distanceToSqr(targetPos.getX(), targetPos.getY(), targetPos.getZ()) < 3) {
 
-			this.mob.getLookControl().setLookAt(targetPos.getX(), targetPos.getY(), targetPos.getZ());
+		System.out.println(this.blockPos.closerToCenterThan(this.mob.position(), this.acceptedDistance()));
+
+		if (this.blockPos != null && this.blockPos.closerToCenterThan(this.mob.position(), this.acceptedDistance())) {
+
+			this.mob.getLookControl().setLookAt(this.blockPos.getX(), this.blockPos.getY(), this.blockPos.getZ());
+			if (!level.isClientSide && this.ticksSinceReachedGoal % 2 == 0) {
+				for (int i = 0; i < 20; ++i) {
+					double d3 = random.nextGaussian() * 0.02D;
+					double d1 = random.nextGaussian() * 0.02D;
+					double d2 = random.nextGaussian() * 0.02D;
+					((ServerLevel) level).sendParticles(
+							new BlockParticleOption(ParticleTypes.BLOCK, level.getBlockState(this.blockPos)),
+							this.blockPos.getX() + 0.5D, this.blockPos.getY() + 0.5D, this.blockPos.getZ() + 0.5D, 1,
+							d3, d1, d2, (double) 0.15F);
+				}
+			}
 
 			if (this.ticksSinceReachedGoal > 60) {
 				level.destroyBlock(this.blockPos, true);
@@ -58,41 +76,34 @@ public class MineBlockAndDropGoal extends MoveToBlockGoal {
 						double d3 = random.nextGaussian() * 0.02D;
 						double d1 = random.nextGaussian() * 0.02D;
 						double d2 = random.nextGaussian() * 0.02D;
-						((ServerLevel) level).sendParticles(ParticleTypes.POOF, targetPos.getX() + 0.5D,
-								(double) targetPos.getY(), targetPos.getZ() + 0.5D, 1, d3, d1, d2, (double) 0.15F);
+						((ServerLevel) level).sendParticles(ParticleTypes.POOF, this.blockPos.getX() + 0.5D,
+								(double) this.blockPos.getY(), this.blockPos.getZ() + 0.5D, 1, d3, d1, d2,
+								(double) 0.15F);
 					}
 				}
 			}
 			++this.ticksSinceReachedGoal;
 		}
-	}
 
-	@Nullable
-	private BlockPos getPosWithBlock(BlockPos pPos, BlockGetter pLevel) {
-		if (pLevel.getBlockState(pPos).is(this.blockToRemove)) {
-			return pPos;
-		} else {
-			BlockPos[] ablockpos = new BlockPos[] { pPos.below(), pPos.west(), pPos.east(), pPos.north(), pPos.south(),
-					pPos.below().below() };
-
-			for (BlockPos blockpos : ablockpos) {
-				if (pLevel.getBlockState(blockpos).is(this.blockToRemove)) {
-					return blockpos;
-				}
-			}
-
-			return null;
-		}
+		if (this.mob.getNavigation().isDone()
+				&& !this.blockPos.closerToCenterThan(this.mob.position(), this.acceptedDistance()))
+			this.posBlackList.add(this.blockPos);
 	}
 
 	@Override
 	protected boolean isValidTarget(LevelReader pLevel, BlockPos pPos) {
-		ChunkAccess chunkaccess = pLevel.getChunk(SectionPos.blockToSectionCoord(pPos.getX()),
-				SectionPos.blockToSectionCoord(pPos.getZ()), ChunkStatus.FULL, false);
-		if (chunkaccess == null) {
+		if (pLevel == null || this.blocksToRemove == null || this.posBlackList.contains(pPos)) {
 			return false;
 		} else {
-			return chunkaccess.getBlockState(pPos).is(this.blockToRemove);
+			if (this.blocksToRemove.contains(pLevel.getBlockState(pPos).getBlock())) {
+				for (Direction direction : Direction.values()) {
+					if (pLevel.getBlockState(pPos.relative(direction)).getBlock() == Blocks.AIR) {
+						System.out.println(pPos.relative(direction));
+						return true;
+					}
+				}
+			}
+			return false;
 		}
 	}
 
