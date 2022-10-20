@@ -1,0 +1,11 @@
+{
+  "type": "robotics:smashing",
+  "ingredients": [
+    {
+      "item": "robotics:tin_ingot"
+    }
+  ],
+  "output": {
+    "item": "robotics:clockcopter"
+  }
+}

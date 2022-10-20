@@ -25,6 +25,12 @@ public class SmasherBlockScreen extends AbstractContainerScreen<SmasherBlockMenu
         int y = (height - imageHeight) / 2;
 
         this.blit(pPoseStack, x, y, 0, 0, imageWidth, imageHeight);
+
+        if(menu.isCrafting()){
+            blit(pPoseStack, x + 103, y + 41, 176, 0, 8, menu.getScaledProgress());
+            // la x es de donde comienza la flecha, y de donde comienza la flecha desde su altura o barra de progreso, el otro numero es la y de lo que
+            //quiero dibujar y el otro numero es el ancho de lo que dibujare y el otro es la altura que se dibujara progresivamente :)
+        }
     }
 
     @Override

@@ -6,10 +6,7 @@ import com.workert.robotics.screen.slot.ModResultSlot;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -22,14 +19,17 @@ public class SmasherBlockMenu extends AbstractContainerMenu {
     private final SmasherBlockEntity blockEntity;
     private final Level level;
 
+    private final ContainerData data;
+
     public SmasherBlockMenu(int pContainerId, Inventory inv, FriendlyByteBuf extraData) {
-        this(pContainerId, inv, inv.player.level.getBlockEntity(extraData.readBlockPos()));
+        this(pContainerId, inv, inv.player.level.getBlockEntity(extraData.readBlockPos()), new SimpleContainerData(2 ));
     }
-    public SmasherBlockMenu(int pContainerId, Inventory inv, BlockEntity entity) {
+    public SmasherBlockMenu(int pContainerId, Inventory inv, BlockEntity entity, ContainerData data) {
         super(ModMenuTypes.SMASHER_BLOCK_MENU.get(), pContainerId);
         checkContainerSize(inv, 3);
         blockEntity = ((SmasherBlockEntity) entity);
         this.level = inv.player.level;
+        this.data = data;
 
 
     addPlayerInventory(inv);
@@ -40,7 +40,21 @@ public class SmasherBlockMenu extends AbstractContainerMenu {
         this.addSlot(new SlotItemHandler(handler, 1, 55, 52));
         this.addSlot(new ModResultSlot(handler, 2, 110, 30));
     });
+        addDataSlots(data);
 }
+
+    public boolean isCrafting() {
+        return data.get(0) > 0;
+    }
+
+    public int getScaledProgress() {
+        int progress = this.data.get(0);
+        int maxProgress = this.data.get(1);  // Max Progress
+        int progressArrowSize = 26; // This is the height in pixels of your arrow
+
+        return maxProgress != 0 && progress != 0 ? progress * progressArrowSize / maxProgress : 0;
+    }
+
 
 
     // CREDIT GOES TO: diesieben07 | https://github.com/diesieben07/SevenCommons
