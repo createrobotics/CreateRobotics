@@ -21,7 +21,7 @@ public class ClockcopterModel<T extends Clockcopter> extends EntityModel<T> {
 			new ResourceLocation(Robotics.MOD_ID, "clockcopter"), "clockcopter");
 
 	private final float gearTurnSpeed = 0.3f;
-	private final float propellerTurnSpeed = 0.2f;
+	private final float propellerTurnSpeed = 0.3f;
 
 	private final ModelPart body;
 	private final ModelPart gear0;
