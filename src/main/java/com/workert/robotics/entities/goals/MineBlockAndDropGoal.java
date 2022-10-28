@@ -42,7 +42,7 @@ public class MineBlockAndDropGoal extends MoveToBlockGoal {
 
 	@Override
 	public double acceptedDistance() {
-		return 1.4;
+		return 1.6;
 	}
 
 	// Tick method copied from RemoveBlockGoal and edited for block drop
@@ -52,11 +52,14 @@ public class MineBlockAndDropGoal extends MoveToBlockGoal {
 		Level level = this.mob.level;
 		Random random = this.mob.getRandom();
 
-		System.out.println(this.blockPos.closerToCenterThan(this.mob.position(), this.acceptedDistance()));
+		if (this.blockPos != null && this.isValidTarget(level, this.blockPos)
+				&& this.blockPos.closerToCenterThan(this.mob.position(), this.acceptedDistance())) {
 
-		if (this.blockPos != null && this.blockPos.closerToCenterThan(this.mob.position(), this.acceptedDistance())) {
+			this.mob.getLookControl().setLookAt(this.blockPos.getX() + 0.5, this.blockPos.getY() + 0.5,
+					this.blockPos.getZ() + 0.5);
 
-			this.mob.getLookControl().setLookAt(this.blockPos.getX(), this.blockPos.getY(), this.blockPos.getZ());
+			this.mob.getNavigation().stop();
+
 			if (!level.isClientSide && this.ticksSinceReachedGoal % 2 == 0) {
 				for (int i = 0; i < 20; ++i) {
 					double d3 = random.nextGaussian() * 0.02D;
@@ -69,38 +72,30 @@ public class MineBlockAndDropGoal extends MoveToBlockGoal {
 				}
 			}
 
-			if (this.ticksSinceReachedGoal > 60) {
+			if (this.ticksSinceReachedGoal > 60 && !level.isClientSide) {
 				level.destroyBlock(this.blockPos, true);
-				if (!level.isClientSide) {
-					for (int i = 0; i < 20; ++i) {
-						double d3 = random.nextGaussian() * 0.02D;
-						double d1 = random.nextGaussian() * 0.02D;
-						double d2 = random.nextGaussian() * 0.02D;
-						((ServerLevel) level).sendParticles(ParticleTypes.POOF, this.blockPos.getX() + 0.5D,
-								(double) this.blockPos.getY(), this.blockPos.getZ() + 0.5D, 1, d3, d1, d2,
-								(double) 0.15F);
-					}
-				}
+				//level.getBlockState(blockPos).getDrops(new LootContext.Builder((ServerLevel) level).withOptionalParameter(LootContextParams.ORIGIN, pValue));
+				if (this.findNearestBlock())
+					this.start();
 			}
 			++this.ticksSinceReachedGoal;
 		}
 
-		if (this.mob.getNavigation().isDone()
-				&& !this.blockPos.closerToCenterThan(this.mob.position(), this.acceptedDistance()))
+		if (this.blockPos != null && this.mob.getNavigation().isDone()
+				&& !this.blockPos.closerToCenterThan(this.mob.position(), this.acceptedDistance())
+				&& this.isValidTarget(level, this.blockPos))
 			this.posBlackList.add(this.blockPos);
 	}
 
 	@Override
 	protected boolean isValidTarget(LevelReader pLevel, BlockPos pPos) {
-		if (pLevel == null || this.blocksToRemove == null || this.posBlackList.contains(pPos)) {
+		if (pLevel == null || pPos == null || this.blocksToRemove == null || this.posBlackList.contains(pPos)) {
 			return false;
 		} else {
 			if (this.blocksToRemove.contains(pLevel.getBlockState(pPos).getBlock())) {
 				for (Direction direction : Direction.values()) {
-					if (pLevel.getBlockState(pPos.relative(direction)).getBlock() == Blocks.AIR) {
-						System.out.println(pPos.relative(direction));
+					if (pLevel.getBlockState(pPos.relative(direction)).getBlock() == Blocks.AIR)
 						return true;
-					}
 				}
 			}
 			return false;

@@ -246,8 +246,8 @@ public class ClockcopterModel<T extends Clockcopter> extends EntityModel<T> {
 			float headPitch) {
 		this.gear0.xRot += this.gearTurnSpeed;
 		this.gear1.xRot -= this.gearTurnSpeed;
-		this.propeller.yRot += this.propellerTurnSpeed;
-
+		if (((Clockcopter) entity).getEntityData().get(Clockcopter.IS_FLYING))
+			this.propeller.yRot += this.propellerTurnSpeed;
 	}
 
 	@Override
