@@ -1,7 +1,7 @@
 package com.workert.robotics.lists;
 
 import com.workert.robotics.Robotics;
-import com.workert.robotics.recipe.SmasherBlockRecipe;
+import com.workert.robotics.recipes.SmasherBlockRecipe;
 
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraftforge.eventbus.api.IEventBus;

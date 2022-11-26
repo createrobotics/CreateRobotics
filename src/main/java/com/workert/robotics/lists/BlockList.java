@@ -3,8 +3,8 @@ package com.workert.robotics.lists;
 import java.util.function.Supplier;
 
 import com.workert.robotics.Robotics;
-import com.workert.robotics.block.custom.DroneAssembler;
-import com.workert.robotics.block.custom.SmasherBlock;
+import com.workert.robotics.blocks.DroneAssembler;
+import com.workert.robotics.blocks.SmasherBlock;
 
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;

@@ -1,11 +1,11 @@
-package com.workert.robotics.block.entity.custom;
+package com.workert.robotics.blockentities;
 
 import com.simibubi.create.AllSoundEvents;
 import com.simibubi.create.content.contraptions.components.structureMovement.AssemblyException;
-import com.workert.robotics.block.custom.DroneAssembler;
-import com.workert.robotics.block.entity.ModBlockEntities;
+import com.workert.robotics.blocks.DroneAssembler;
 import com.workert.robotics.contraptions.DroneContraption;
 import com.workert.robotics.entities.DroneContraptionEntity;
+import com.workert.robotics.lists.BlockEntityList;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -15,7 +15,7 @@ import net.minecraft.world.level.block.state.BlockState;
 public class DroneAssemblerBlockEntity extends BlockEntity {
 
 	public DroneAssemblerBlockEntity(BlockPos pWorldPosition, BlockState pBlockState) {
-		super(ModBlockEntities.DRONE_ASSEMBLER_BLOCK_ENTITY.get(), pWorldPosition, pBlockState);
+		super(BlockEntityList.DRONE_ASSEMBLER_BLOCK_ENTITY.get(), pWorldPosition, pBlockState);
 	}
 
 	public void tryAssemble() {

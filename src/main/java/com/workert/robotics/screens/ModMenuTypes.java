@@ -1,4 +1,4 @@
-package com.workert.robotics.screen;
+package com.workert.robotics.screens;
 
 import com.workert.robotics.Robotics;
 import net.minecraft.world.inventory.AbstractContainerMenu;

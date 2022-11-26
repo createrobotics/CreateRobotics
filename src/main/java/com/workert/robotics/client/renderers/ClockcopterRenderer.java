@@ -1,7 +1,7 @@
 package com.workert.robotics.client.renderers;
 
 import com.workert.robotics.Robotics;
-import com.workert.robotics.client.model.ClockcopterModel;
+import com.workert.robotics.client.models.ClockcopterModel;
 import com.workert.robotics.entities.Clockcopter;
 
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;

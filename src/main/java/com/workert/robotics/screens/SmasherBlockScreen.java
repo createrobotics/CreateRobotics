@@ -1,4 +1,4 @@
-package com.workert.robotics.screen;
+package com.workert.robotics.screens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;

@@ -10,7 +10,7 @@ import com.simibubi.create.content.contraptions.components.structureMovement.Con
 import com.simibubi.create.content.contraptions.components.structureMovement.NonStationaryLighter;
 import com.simibubi.create.content.contraptions.components.structureMovement.render.ContraptionLighter;
 import com.simibubi.create.foundation.utility.UniqueLinkedList;
-import com.workert.robotics.block.custom.DroneAssembler;
+import com.workert.robotics.blocks.DroneAssembler;
 import com.workert.robotics.lists.EntityList;
 
 import net.minecraft.core.BlockPos;

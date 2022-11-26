@@ -1,18 +1,22 @@
-package com.workert.robotics.screen;
+package com.workert.robotics.screens;
 
-import com.workert.robotics.block.entity.custom.SmasherBlockEntity;
+import com.workert.robotics.blockentities.SmasherBlockEntity;
 import com.workert.robotics.lists.BlockList;
-import com.workert.robotics.screen.slot.ModResultSlot;
+import com.workert.robotics.screens.slots.ModResultSlot;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.*;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.SimpleContainerData;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
-import org.jetbrains.annotations.Nullable;
 
 public class SmasherBlockMenu extends AbstractContainerMenu {
 
@@ -28,23 +32,23 @@ public class SmasherBlockMenu extends AbstractContainerMenu {
 	public SmasherBlockMenu(int pContainerId, Inventory inv, BlockEntity entity, ContainerData data) {
 		super(ModMenuTypes.SMASHER_BLOCK_MENU.get(), pContainerId);
 		checkContainerSize(inv, 3);
-		blockEntity = ((SmasherBlockEntity) entity);
+		this.blockEntity = ((SmasherBlockEntity) entity);
 		this.level = inv.player.level;
 		this.data = data;
 
-		addPlayerInventory(inv);
-		addPlayerHotbar(inv);
+		this.addPlayerInventory(inv);
+		this.addPlayerHotbar(inv);
 
 		this.blockEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(handler -> {
 			this.addSlot(new SlotItemHandler(handler, 0, 55, 16));
 			this.addSlot(new SlotItemHandler(handler, 1, 55, 52));
 			this.addSlot(new ModResultSlot(handler, 2, 110, 30));
 		});
-		addDataSlots(data);
+		this.addDataSlots(data);
 	}
 
 	public boolean isCrafting() {
-		return data.get(0) > 0;
+		return this.data.get(0) > 0;
 	}
 
 	public int getScaledProgress() {
@@ -75,7 +79,7 @@ public class SmasherBlockMenu extends AbstractContainerMenu {
 
 	@Override
 	public ItemStack quickMoveStack(Player playerIn, int index) {
-		Slot sourceSlot = slots.get(index);
+		Slot sourceSlot = this.slots.get(index);
 		if (sourceSlot == null || !sourceSlot.hasItem())
 			return ItemStack.EMPTY; //EMPTY_ITEM
 		ItemStack sourceStack = sourceSlot.getItem();
@@ -84,14 +88,14 @@ public class SmasherBlockMenu extends AbstractContainerMenu {
 		// Check if the slot clicked is one of the vanilla container slots
 		if (index < VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT) {
 			// This is a vanilla container slot so merge the stack into the tile inventory
-			if (!moveItemStackTo(sourceStack, TE_INVENTORY_FIRST_SLOT_INDEX,
+			if (!this.moveItemStackTo(sourceStack, TE_INVENTORY_FIRST_SLOT_INDEX,
 					TE_INVENTORY_FIRST_SLOT_INDEX + TE_INVENTORY_SLOT_COUNT, false)) {
 				return ItemStack.EMPTY; // EMPTY_ITEM
 			}
 		} else if (index < TE_INVENTORY_FIRST_SLOT_INDEX + TE_INVENTORY_SLOT_COUNT) {
 			// This is a TE slot so merge the stack into the players inventory
-			if (!moveItemStackTo(sourceStack, VANILLA_FIRST_SLOT_INDEX, VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT,
-					false)) {
+			if (!this.moveItemStackTo(sourceStack, VANILLA_FIRST_SLOT_INDEX,
+					VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT, false)) {
 				return ItemStack.EMPTY;
 			}
 		} else {
@@ -110,7 +114,7 @@ public class SmasherBlockMenu extends AbstractContainerMenu {
 
 	@Override
 	public boolean stillValid(Player pPlayer) {
-		return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), pPlayer,
+		return stillValid(ContainerLevelAccess.create(this.level, this.blockEntity.getBlockPos()), pPlayer,
 				BlockList.SMASHER_BLOCK.get());
 	}
 

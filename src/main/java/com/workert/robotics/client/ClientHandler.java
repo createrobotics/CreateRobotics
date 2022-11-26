@@ -2,7 +2,7 @@ package com.workert.robotics.client;
 
 import com.simibubi.create.content.contraptions.components.structureMovement.render.ContraptionEntityRenderer;
 import com.workert.robotics.Robotics;
-import com.workert.robotics.client.model.ClockcopterModel;
+import com.workert.robotics.client.models.ClockcopterModel;
 import com.workert.robotics.client.renderers.ClockcopterRenderer;
 import com.workert.robotics.entities.DroneContraptionEntity;
 import com.workert.robotics.lists.EntityList;

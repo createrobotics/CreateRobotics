@@ -1,9 +1,10 @@
-package com.workert.robotics.block.entity.custom;
+package com.workert.robotics.blockentities;
 
-import com.workert.robotics.block.entity.ModBlockEntities;
 import com.workert.robotics.lists.ItemList;
-import com.workert.robotics.recipe.SmasherBlockRecipe;
-import com.workert.robotics.screen.SmasherBlockMenu;
+import com.workert.robotics.recipes.SmasherBlockRecipe;
+import com.workert.robotics.lists.BlockEntityList;
+import com.workert.robotics.screens.SmasherBlockMenu;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -53,7 +54,7 @@ public class SmasherBlockEntity extends BlockEntity implements MenuProvider {
 	private int maxProgress = 72;
 
 	public SmasherBlockEntity(BlockPos pWorldPosition, BlockState pBlockState) {
-		super(ModBlockEntities.SMASHER_BLOCK_ENTITY.get(), pWorldPosition, pBlockState);
+		super(BlockEntityList.SMASHER_BLOCK_ENTITY.get(), pWorldPosition, pBlockState);
 		this.data = new ContainerData() {
 			@Override
 			public int get(int index) {

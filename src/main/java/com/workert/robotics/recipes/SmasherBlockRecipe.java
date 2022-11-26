@@ -1,4 +1,4 @@
-package com.workert.robotics.recipe;
+package com.workert.robotics.recipes;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;

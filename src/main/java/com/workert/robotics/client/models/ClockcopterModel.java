@@ -1,4 +1,4 @@
-package com.workert.robotics.client.model;
+package com.workert.robotics.client.models;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;

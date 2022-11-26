@@ -1,6 +1,6 @@
-package com.workert.robotics.block.custom;
+package com.workert.robotics.blocks;
 
-import com.workert.robotics.block.entity.custom.DroneAssemblerBlockEntity;
+import com.workert.robotics.blockentities.DroneAssemblerBlockEntity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
