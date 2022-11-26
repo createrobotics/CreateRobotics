@@ -1,15 +1,15 @@
 package com.workert.robotics;
 
-import com.workert.robotics.recipe.ModRecipes;
 import org.slf4j.Logger;
 
 import com.jozufozu.flywheel.backend.instancing.InstancedRenderRegistry;
 import com.mojang.logging.LogUtils;
-import com.workert.robotics.block.ModBlocks;
 import com.workert.robotics.block.entity.ModBlockEntities;
 import com.workert.robotics.client.flywheel.ClockcopterInstance;
-import com.workert.robotics.entities.ModEntities;
-import com.workert.robotics.item.ModItems;
+import com.workert.robotics.lists.BlockList;
+import com.workert.robotics.lists.EntityList;
+import com.workert.robotics.lists.ItemList;
+import com.workert.robotics.lists.RecipeList;
 import com.workert.robotics.screen.ModMenuTypes;
 import com.workert.robotics.screen.SmasherBlockScreen;
 
@@ -35,27 +35,27 @@ public class Robotics {
 		// this.modEventBus.addListener(this::setup);
 		this.modEventBus.addListener(this::clientSetup);
 
-		this.modEventBus.addListener(ModEntities::addEntityAttributes);
+		this.modEventBus.addListener(EntityList::addEntityAttributes);
 
-		ModBlocks.register(this.modEventBus);
-		ModEntities.EntityTypes.register(this.modEventBus); // Needs to register before ModItems because some items depend on the Registry Objects in ModEntities
-		ModItems.register(this.modEventBus);
+		BlockList.register(this.modEventBus);
+		EntityList.ENTITY_TYPES.register(this.modEventBus); // Needs to register before ModItems because some items depend on the Registry Objects in ModEntities
+		ItemList.register(this.modEventBus);
 		ModBlockEntities.register(this.modEventBus);
 		ModMenuTypes.register(this.modEventBus);
-		ModRecipes.register(this.modEventBus);
+		RecipeList.register(this.modEventBus);
 
 		MinecraftForge.EVENT_BUS.register(this);
 	}
 
 	public void setup(FMLCommonSetupEvent event) {
 		event.enqueueWork(() -> {
-			InstancedRenderRegistry.configure(ModEntities.CLOCKCOPTER.get()).factory(ClockcopterInstance::new).apply();
+			InstancedRenderRegistry.configure(EntityList.CLOCKCOPTER.get()).factory(ClockcopterInstance::new).apply();
 		});
 	}
 
 	private void clientSetup(final FMLClientSetupEvent event) {
-		ItemBlockRenderTypes.setRenderLayer(ModBlocks.SMASHER_BLOCK.get(), RenderType.translucent());
-		ItemBlockRenderTypes.setRenderLayer(ModBlocks.DRONE_ASSEMBLER.get(), RenderType.translucent());
+		ItemBlockRenderTypes.setRenderLayer(BlockList.SMASHER_BLOCK.get(), RenderType.translucent());
+		ItemBlockRenderTypes.setRenderLayer(BlockList.DRONE_ASSEMBLER.get(), RenderType.translucent());
 		MenuScreens.register(ModMenuTypes.SMASHER_BLOCK_MENU.get(), SmasherBlockScreen::new);
 	}
 

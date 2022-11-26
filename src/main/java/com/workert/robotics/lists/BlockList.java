@@ -1,12 +1,10 @@
-package com.workert.robotics.block;
+package com.workert.robotics.lists;
 
 import java.util.function.Supplier;
 
 import com.workert.robotics.Robotics;
 import com.workert.robotics.block.custom.DroneAssembler;
 import com.workert.robotics.block.custom.SmasherBlock;
-import com.workert.robotics.item.ModCreativeModeTab;
-import com.workert.robotics.item.ModItems;
 
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
@@ -22,7 +20,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
-public class ModBlocks {
+public class BlockList {
 	public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS,
 			Robotics.MOD_ID);
 
@@ -50,14 +48,14 @@ public class ModBlocks {
 
 	private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block) {
 		RegistryObject<T> toReturn = BLOCKS.register(name, block);
-		registerBlockItem(name, toReturn, ModCreativeModeTab.ROBOTICS_TAB);
+		registerBlockItem(name, toReturn, ItemList.ROBOTICS_TAB);
 		return toReturn;
 	}
 
 	private static <T extends Block> RegistryObject<Item> registerBlockItem(String name, RegistryObject<T> block,
 			CreativeModeTab tab) {
 
-		return ModItems.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties().tab(tab)));
+		return ItemList.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties().tab(tab)));
 	}
 
 	public static void register(IEventBus eventBus) {

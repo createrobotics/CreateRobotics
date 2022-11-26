@@ -11,17 +11,18 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 public class ModMenuTypes {
-    public static final DeferredRegister<MenuType<?>> MENUS =
-            DeferredRegister.create(ForgeRegistries.CONTAINERS, Robotics.MOD_ID);
+	public static final DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(ForgeRegistries.CONTAINERS,
+			Robotics.MOD_ID);
 
-    public static final RegistryObject<MenuType<SmasherBlockMenu>> SMASHER_BLOCK_MENU =
-            registerMenuType(SmasherBlockMenu::new, "smasher_block_menu");
+	public static final RegistryObject<MenuType<SmasherBlockMenu>> SMASHER_BLOCK_MENU = registerMenuType(
+			SmasherBlockMenu::new, "smasher_block_menu");
 
-    private static <T extends AbstractContainerMenu>RegistryObject<MenuType<T>> registerMenuType(IContainerFactory<T> factory,
-                                                                                                 String name){
-        return MENUS.register(name, () -> IForgeMenuType.create(factory));
-    }
-    public static void register(IEventBus eventBus){
-        MENUS.register(eventBus);
-    }
+	private static <T extends AbstractContainerMenu> RegistryObject<MenuType<T>> registerMenuType(
+			IContainerFactory<T> factory, String name) {
+		return MENUS.register(name, () -> IForgeMenuType.create(factory));
+	}
+
+	public static void register(IEventBus eventBus) {
+		MENUS.register(eventBus);
+	}
 }

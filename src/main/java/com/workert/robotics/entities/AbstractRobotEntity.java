@@ -15,6 +15,7 @@ import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
@@ -43,6 +44,8 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Ownab
 		this.consumeAir((int) pAmount * 20);
 		return false;
 	}
+
+	public static AttributeSupplier createAttributes;
 
 	@Override
 	public void animateHurt() {

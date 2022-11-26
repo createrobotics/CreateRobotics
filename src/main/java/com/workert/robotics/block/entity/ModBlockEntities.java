@@ -1,9 +1,9 @@
 package com.workert.robotics.block.entity;
 
 import com.workert.robotics.Robotics;
-import com.workert.robotics.block.ModBlocks;
 import com.workert.robotics.block.entity.custom.DroneAssemblerBlockEntity;
 import com.workert.robotics.block.entity.custom.SmasherBlockEntity;
+import com.workert.robotics.lists.BlockList;
 
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -17,11 +17,11 @@ public class ModBlockEntities {
 
 	public static final RegistryObject<BlockEntityType<SmasherBlockEntity>> SMASHER_BLOCK_ENTITY = BLOCK_ENTITIES
 			.register("smasher_block_entity", () -> BlockEntityType.Builder
-					.of(SmasherBlockEntity::new, ModBlocks.SMASHER_BLOCK.get()).build(null));
+					.of(SmasherBlockEntity::new, BlockList.SMASHER_BLOCK.get()).build(null));
 
 	public static final RegistryObject<BlockEntityType<DroneAssemblerBlockEntity>> DRONE_ASSEMBLER_BLOCK_ENTITY = BLOCK_ENTITIES
 			.register("drone_assembler_block_entity", () -> BlockEntityType.Builder
-					.of(DroneAssemblerBlockEntity::new, ModBlocks.DRONE_ASSEMBLER.get()).build(null));
+					.of(DroneAssemblerBlockEntity::new, BlockList.DRONE_ASSEMBLER.get()).build(null));
 
 	public static void register(IEventBus eventBus) {
 		BLOCK_ENTITIES.register(eventBus);

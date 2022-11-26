@@ -16,122 +16,117 @@ import javax.annotation.Nullable;
 
 public class SmasherBlockRecipe implements Recipe<SimpleContainer> {
 
-    private final ResourceLocation id;
-    private final ItemStack output;
-    private final NonNullList<Ingredient> recipeItems;
+	private final ResourceLocation id;
+	private final ItemStack output;
+	private final NonNullList<Ingredient> recipeItems;
 
-    public SmasherBlockRecipe(ResourceLocation id, ItemStack output, NonNullList<Ingredient> recipeItems) {
-        this.id = id;
-        this.output = output;
-        this.recipeItems = recipeItems;
-    }
+	public SmasherBlockRecipe(ResourceLocation id, ItemStack output, NonNullList<Ingredient> recipeItems) {
+		this.id = id;
+		this.output = output;
+		this.recipeItems = recipeItems;
+	}
 
+	@Override
+	public boolean matches(SimpleContainer pContainer, Level pLevel) {
+		return recipeItems.get(0).test(pContainer.getItem(1));
+	}
 
-    @Override
-    public boolean matches(SimpleContainer pContainer, Level pLevel) {
-        return recipeItems.get(0).test(pContainer.getItem(1));
-    }
+	@Override
+	public ItemStack assemble(SimpleContainer pContainer) {
+		return output;
+	}
 
-    @Override
-    public ItemStack assemble(SimpleContainer pContainer) {
-        return output;
-    }
+	@Override
+	public boolean canCraftInDimensions(int pWidth, int pHeight) {
+		return true;
+	}
 
-    @Override
-    public boolean canCraftInDimensions(int pWidth, int pHeight) {
-        return true;
-    }
+	@Override
+	public ItemStack getResultItem() {
+		return output.copy();
+	}
 
-    @Override
-    public ItemStack getResultItem() {
-        return output.copy();
-    }
+	@Override
+	public ResourceLocation getId() {
+		return id;
+	}
 
-    @Override
-    public ResourceLocation getId() {
-        return id;
-    }
+	@Override
+	public RecipeSerializer<?> getSerializer() {
+		return Serializer.INSTANCE;
+	}
 
-    @Override
-    public RecipeSerializer<?> getSerializer() {
-        return Serializer.INSTANCE;
-    }
+	@Override
+	public RecipeType<?> getType() {
+		return Type.INSTANCE;
+	}
 
-    @Override
-    public RecipeType<?> getType() {
-        return Type.INSTANCE;
-    }
-    public static class Type implements RecipeType<SmasherBlockRecipe> {
-        private Type() {
-        }
+	public static class Type implements RecipeType<SmasherBlockRecipe> {
+		private Type() {
+		}
 
-        public static final Type INSTANCE = new Type();
-        public static final String ID = "smashing";
-    }
-    public static class Serializer implements RecipeSerializer<SmasherBlockRecipe> {
-        public static final Serializer INSTANCE = new Serializer();
-        public static final ResourceLocation ID =
-                new ResourceLocation(Robotics.MOD_ID,"smashing");
+		public static final Type INSTANCE = new Type();
+		public static final String ID = "smashing";
+	}
 
-        @Override
-        public SmasherBlockRecipe fromJson(ResourceLocation id, JsonObject json) {
-            ItemStack output = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, "output"));
+	public static class Serializer implements RecipeSerializer<SmasherBlockRecipe> {
+		public static final Serializer INSTANCE = new Serializer();
+		public static final ResourceLocation ID = new ResourceLocation(Robotics.MOD_ID, "smashing");
 
-            JsonArray ingredients = GsonHelper.getAsJsonArray(json, "ingredients");
-            NonNullList<Ingredient> inputs = NonNullList.withSize(1, Ingredient.EMPTY);
+		@Override
+		public SmasherBlockRecipe fromJson(ResourceLocation id, JsonObject json) {
+			ItemStack output = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, "output"));
 
-            for (int i = 0; i < inputs.size(); i++) {
-                inputs.set(i, Ingredient.fromJson(ingredients.get(i)));
-            }
+			JsonArray ingredients = GsonHelper.getAsJsonArray(json, "ingredients");
+			NonNullList<Ingredient> inputs = NonNullList.withSize(1, Ingredient.EMPTY);
 
-            return new SmasherBlockRecipe(id, output, inputs);
-        }
+			for (int i = 0; i < inputs.size(); i++) {
+				inputs.set(i, Ingredient.fromJson(ingredients.get(i)));
+			}
 
-        @Override
-        public SmasherBlockRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buf) {
-            NonNullList<Ingredient> inputs = NonNullList.withSize(buf.readInt(), Ingredient.EMPTY);
+			return new SmasherBlockRecipe(id, output, inputs);
+		}
 
-            for (int i = 0; i < inputs.size(); i++) {
-                inputs.set(i, Ingredient.fromNetwork(buf));
-            }
+		@Override
+		public SmasherBlockRecipe fromNetwork(ResourceLocation id, FriendlyByteBuf buf) {
+			NonNullList<Ingredient> inputs = NonNullList.withSize(buf.readInt(), Ingredient.EMPTY);
 
-            ItemStack output = buf.readItem();
-            return new SmasherBlockRecipe(id, output, inputs);
-        }
+			for (int i = 0; i < inputs.size(); i++) {
+				inputs.set(i, Ingredient.fromNetwork(buf));
+			}
 
-        @Override
-        public void toNetwork(FriendlyByteBuf buf, SmasherBlockRecipe recipe) {
-            buf.writeInt(recipe.getIngredients().size());
-            for (Ingredient ing : recipe.getIngredients()) {
-                ing.toNetwork(buf);
-            }
-            buf.writeItemStack(recipe.getResultItem(), false);
-        }
+			ItemStack output = buf.readItem();
+			return new SmasherBlockRecipe(id, output, inputs);
+		}
 
-        @Override
-        public RecipeSerializer<?> setRegistryName(ResourceLocation name) {
-            return INSTANCE;
-        }
+		@Override
+		public void toNetwork(FriendlyByteBuf buf, SmasherBlockRecipe recipe) {
+			buf.writeInt(recipe.getIngredients().size());
+			for (Ingredient ing : recipe.getIngredients()) {
+				ing.toNetwork(buf);
+			}
+			buf.writeItemStack(recipe.getResultItem(), false);
+		}
 
-        @Nullable
-        @Override
-        public ResourceLocation getRegistryName() {
-            return ID;
-        }
+		@Override
+		public RecipeSerializer<?> setRegistryName(ResourceLocation name) {
+			return INSTANCE;
+		}
 
-        @Override
-        public Class<RecipeSerializer<?>> getRegistryType() {
-            return Serializer.castClass(RecipeSerializer.class);
-        }
+		@Nullable
+		@Override
+		public ResourceLocation getRegistryName() {
+			return ID;
+		}
 
-        @SuppressWarnings("unchecked") // Need this wrapper, because generics
-        private static <G> Class<G> castClass(Class<?> cls) {
-            return (Class<G>)cls;
-        }
-    }
+		@Override
+		public Class<RecipeSerializer<?>> getRegistryType() {
+			return Serializer.castClass(RecipeSerializer.class);
+		}
+
+		@SuppressWarnings("unchecked") // Need this wrapper, because generics
+		private static <G> Class<G> castClass(Class<?> cls) {
+			return (Class<G>) cls;
+		}
+	}
 }
-
-
-
-
-

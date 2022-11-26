@@ -11,7 +11,7 @@ import com.simibubi.create.content.contraptions.components.structureMovement.Non
 import com.simibubi.create.content.contraptions.components.structureMovement.render.ContraptionLighter;
 import com.simibubi.create.foundation.utility.UniqueLinkedList;
 import com.workert.robotics.block.custom.DroneAssembler;
-import com.workert.robotics.entities.ModEntities;
+import com.workert.robotics.lists.EntityList;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -50,7 +50,7 @@ public class DroneContraption extends Contraption {
 
 	@Override
 	protected ContraptionType getType() {
-		return ModEntities.DRONE_CONTRAPTION;
+		return EntityList.DRONE_CONTRAPTION;
 	}
 
 	@Override

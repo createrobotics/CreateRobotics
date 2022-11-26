@@ -2,6 +2,7 @@ package com.workert.robotics.entities;
 
 import com.simibubi.create.content.contraptions.components.structureMovement.Contraption;
 import com.simibubi.create.content.contraptions.components.structureMovement.OrientedContraptionEntity;
+import com.workert.robotics.lists.EntityList;
 
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -14,7 +15,7 @@ public class DroneContraptionEntity extends OrientedContraptionEntity {
 	}
 
 	public static DroneContraptionEntity create(Level world, Contraption contraption) {
-		DroneContraptionEntity entity = new DroneContraptionEntity(ModEntities.DRONE.get(), world);
+		DroneContraptionEntity entity = new DroneContraptionEntity(EntityList.DRONE.get(), world);
 		entity.setContraption(contraption);
 		return entity;
 	}

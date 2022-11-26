@@ -1,8 +1,7 @@
 package com.workert.robotics.block.entity.custom;
 
-
 import com.workert.robotics.block.entity.ModBlockEntities;
-import com.workert.robotics.item.ModItems;
+import com.workert.robotics.lists.ItemList;
 import com.workert.robotics.recipe.SmasherBlockRecipe;
 import com.workert.robotics.screen.SmasherBlockMenu;
 import net.minecraft.core.BlockPos;
@@ -31,7 +30,6 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -41,163 +39,171 @@ import java.util.Random;
 
 public class SmasherBlockEntity extends BlockEntity implements MenuProvider {
 
-    private final ItemStackHandler itemHandler = new ItemStackHandler(3){
-        @Override
-        protected void onContentsChanged(int slot) {
-            setChanged();
-        }
-    };
+	private final ItemStackHandler itemHandler = new ItemStackHandler(3) {
+		@Override
+		protected void onContentsChanged(int slot) {
+			setChanged();
+		}
+	};
 
-    private LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.empty();
+	private LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.empty();
 
-    protected final ContainerData data;
-    private int progress = 0;
-    private int maxProgress = 72;
-    public SmasherBlockEntity( BlockPos pWorldPosition, BlockState pBlockState) {
-        super(ModBlockEntities.SMASHER_BLOCK_ENTITY.get(), pWorldPosition, pBlockState);
-        this.data = new ContainerData() {
-            @Override
-            public int get(int index) {
-                switch (index){
-                    case 0: return SmasherBlockEntity.this.progress;
-                    case 1: return SmasherBlockEntity.this.maxProgress;
-                    default: return 0;
-                }
-            }
+	protected final ContainerData data;
+	private int progress = 0;
+	private int maxProgress = 72;
 
-            @Override
-            public void set(int index, int value) {
-                switch (index){
-                    case 0: SmasherBlockEntity.this.progress = value; break;
-                    case 1: SmasherBlockEntity.this.maxProgress = value; break;
-                }
+	public SmasherBlockEntity(BlockPos pWorldPosition, BlockState pBlockState) {
+		super(ModBlockEntities.SMASHER_BLOCK_ENTITY.get(), pWorldPosition, pBlockState);
+		this.data = new ContainerData() {
+			@Override
+			public int get(int index) {
+				switch (index) {
+					case 0:
+						return SmasherBlockEntity.this.progress;
+					case 1:
+						return SmasherBlockEntity.this.maxProgress;
+					default:
+						return 0;
+				}
+			}
 
-            }
+			@Override
+			public void set(int index, int value) {
+				switch (index) {
+					case 0:
+						SmasherBlockEntity.this.progress = value;
+						break;
+					case 1:
+						SmasherBlockEntity.this.maxProgress = value;
+						break;
+				}
 
-            @Override
-            public int getCount() {
-                return 2;
-            }
-        };
-    }
+			}
 
-    @Override
-    public Component getDisplayName() {
-        return new TextComponent("Smasher");
-    }
+			@Override
+			public int getCount() {
+				return 2;
+			}
+		};
+	}
 
-    @Nullable
-    @Override
-    public AbstractContainerMenu createMenu(int pContainerId, Inventory pInventory, Player pPlayer) {
-        return new SmasherBlockMenu(pContainerId, pInventory, this, this.data);
-    }
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @javax.annotation.Nullable Direction side) {
-        if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
-            return lazyItemHandler.cast();
-        }
+	@Override
+	public Component getDisplayName() {
+		return new TextComponent("Smasher");
+	}
 
-        return super.getCapability(cap, side);
-    }
+	@Nullable
+	@Override
+	public AbstractContainerMenu createMenu(int pContainerId, Inventory pInventory, Player pPlayer) {
+		return new SmasherBlockMenu(pContainerId, pInventory, this, this.data);
+	}
 
-    @Override
-    public void onLoad() {
-        super.onLoad();
-        lazyItemHandler = LazyOptional.of(() -> itemHandler);
-    }
+	@Nonnull
+	@Override
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @javax.annotation.Nullable Direction side) {
+		if (cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+			return lazyItemHandler.cast();
+		}
 
-    @Override
-    public void invalidateCaps()  {
-        super.invalidateCaps();
-        lazyItemHandler.invalidate();
-    }
+		return super.getCapability(cap, side);
+	}
 
-    @Override
-    protected void saveAdditional(@NotNull CompoundTag tag) {
-        tag.put("inventory", itemHandler.serializeNBT());
-        tag.putInt("smasher.progress", progress);
-        super.saveAdditional(tag);
-    }
+	@Override
+	public void onLoad() {
+		super.onLoad();
+		lazyItemHandler = LazyOptional.of(() -> itemHandler);
+	}
 
-    @Override
-    public void load(CompoundTag nbt) {
-        super.load(nbt);
-        itemHandler.deserializeNBT(nbt.getCompound("inventory"));
-        progress = nbt.getInt("smasher.progress");
-    }
+	@Override
+	public void invalidateCaps() {
+		super.invalidateCaps();
+		lazyItemHandler.invalidate();
+	}
 
-    public void drops() {
-        SimpleContainer inventory = new SimpleContainer(itemHandler.getSlots());
-        for (int i = 0; i < itemHandler.getSlots(); i++) {
-            inventory.setItem(i, itemHandler.getStackInSlot(i));
-        }
+	@Override
+	protected void saveAdditional(@NotNull CompoundTag tag) {
+		tag.put("inventory", itemHandler.serializeNBT());
+		tag.putInt("smasher.progress", progress);
+		super.saveAdditional(tag);
+	}
 
-        Containers.dropContents(this.level, this.worldPosition, inventory);
-    }
+	@Override
+	public void load(CompoundTag nbt) {
+		super.load(nbt);
+		itemHandler.deserializeNBT(nbt.getCompound("inventory"));
+		progress = nbt.getInt("smasher.progress");
+	}
 
-    public static void tick(Level pLevel, BlockPos pPos, BlockState pState, SmasherBlockEntity pBlockEntity) {
-        if(hasRecipe(pBlockEntity)) {
-            pBlockEntity.progress++;
-            setChanged(pLevel, pPos, pState);
-            if(pBlockEntity.progress > pBlockEntity.maxProgress) {
-                craftItem(pBlockEntity);
-            }
-        } else {
-            pBlockEntity.resetProgress();
-            setChanged(pLevel, pPos, pState);
-        }
-    }
+	public void drops() {
+		SimpleContainer inventory = new SimpleContainer(itemHandler.getSlots());
+		for (int i = 0; i < itemHandler.getSlots(); i++) {
+			inventory.setItem(i, itemHandler.getStackInSlot(i));
+		}
 
-    private static boolean hasRecipe(SmasherBlockEntity entity) {
-        Level level = entity.level;
-        SimpleContainer inventory = new SimpleContainer(entity.itemHandler.getSlots());
-        for (int i = 0; i < entity.itemHandler.getSlots(); i++) {
-            inventory.setItem(i, entity.itemHandler.getStackInSlot(i));
-        }
+		Containers.dropContents(this.level, this.worldPosition, inventory);
+	}
 
-        Optional<SmasherBlockRecipe> match = level.getRecipeManager()
-                .getRecipeFor(SmasherBlockRecipe.Type.INSTANCE, inventory, level);
+	public static void tick(Level pLevel, BlockPos pPos, BlockState pState, SmasherBlockEntity pBlockEntity) {
+		if (hasRecipe(pBlockEntity)) {
+			pBlockEntity.progress++;
+			setChanged(pLevel, pPos, pState);
+			if (pBlockEntity.progress > pBlockEntity.maxProgress) {
+				craftItem(pBlockEntity);
+			}
+		} else {
+			pBlockEntity.resetProgress();
+			setChanged(pLevel, pPos, pState);
+		}
+	}
 
-        return match.isPresent() && canInsertAmountIntoOutputSlot(inventory)
-                && canInsertItemIntoOutputSlot(inventory, match.get().getResultItem())
-                && hasFuelInFuelSlot(entity);
-    }
+	private static boolean hasRecipe(SmasherBlockEntity entity) {
+		Level level = entity.level;
+		SimpleContainer inventory = new SimpleContainer(entity.itemHandler.getSlots());
+		for (int i = 0; i < entity.itemHandler.getSlots(); i++) {
+			inventory.setItem(i, entity.itemHandler.getStackInSlot(i));
+		}
 
-    private static boolean hasFuelInFuelSlot(SmasherBlockEntity entity) {
-        return entity.itemHandler.getStackInSlot(0).getItem() == Items.COAL;
-    }
+		Optional<SmasherBlockRecipe> match = level.getRecipeManager().getRecipeFor(SmasherBlockRecipe.Type.INSTANCE,
+				inventory, level);
 
-    private static void craftItem(SmasherBlockEntity entity) {
-        Level level = entity.level;
-        SimpleContainer inventory = new SimpleContainer(entity.itemHandler.getSlots());
-        for (int i = 0; i < entity.itemHandler.getSlots(); i++) {
-            inventory.setItem(i, entity.itemHandler.getStackInSlot(i));
-        }
+		return match.isPresent() && canInsertAmountIntoOutputSlot(inventory)
+				&& canInsertItemIntoOutputSlot(inventory, match.get().getResultItem()) && hasFuelInFuelSlot(entity);
+	}
 
-        Optional<SmasherBlockRecipe> match = level.getRecipeManager()
-                .getRecipeFor(SmasherBlockRecipe.Type.INSTANCE, inventory, level);
+	private static boolean hasFuelInFuelSlot(SmasherBlockEntity entity) {
+		return entity.itemHandler.getStackInSlot(0).getItem() == Items.COAL;
+	}
 
-        if(match.isPresent()) {
-            entity.itemHandler.extractItem(0,1, false);
-            entity.itemHandler.extractItem(1,1, false);
+	private static void craftItem(SmasherBlockEntity entity) {
+		Level level = entity.level;
+		SimpleContainer inventory = new SimpleContainer(entity.itemHandler.getSlots());
+		for (int i = 0; i < entity.itemHandler.getSlots(); i++) {
+			inventory.setItem(i, entity.itemHandler.getStackInSlot(i));
+		}
 
-            entity.itemHandler.setStackInSlot(2, new ItemStack(match.get().getResultItem().getItem(),
-                    entity.itemHandler.getStackInSlot(2).getCount() + 1));
+		Optional<SmasherBlockRecipe> match = level.getRecipeManager().getRecipeFor(SmasherBlockRecipe.Type.INSTANCE,
+				inventory, level);
 
-            entity.resetProgress();
-        }
-    }
+		if (match.isPresent()) {
+			entity.itemHandler.extractItem(0, 1, false);
+			entity.itemHandler.extractItem(1, 1, false);
 
-    private void resetProgress() {
-        this.progress = 0;
-    }
+			entity.itemHandler.setStackInSlot(2, new ItemStack(match.get().getResultItem().getItem(),
+					entity.itemHandler.getStackInSlot(2).getCount() + 1));
 
-    private static boolean canInsertItemIntoOutputSlot(SimpleContainer inventory, ItemStack output) {
-        return inventory.getItem(3).getItem() == output.getItem() || inventory.getItem(3).isEmpty();
-    }
+			entity.resetProgress();
+		}
+	}
 
-    private static boolean canInsertAmountIntoOutputSlot(SimpleContainer inventory) {
-        return inventory.getItem(3).getMaxStackSize() > inventory.getItem(3).getCount();
-    }
+	private void resetProgress() {
+		this.progress = 0;
+	}
+
+	private static boolean canInsertItemIntoOutputSlot(SimpleContainer inventory, ItemStack output) {
+		return inventory.getItem(3).getItem() == output.getItem() || inventory.getItem(3).isEmpty();
+	}
+
+	private static boolean canInsertAmountIntoOutputSlot(SimpleContainer inventory) {
+		return inventory.getItem(3).getMaxStackSize() > inventory.getItem(3).getCount();
+	}
 }

@@ -5,7 +5,7 @@ import com.workert.robotics.Robotics;
 import com.workert.robotics.client.model.ClockcopterModel;
 import com.workert.robotics.client.renderers.ClockcopterRenderer;
 import com.workert.robotics.entities.DroneContraptionEntity;
-import com.workert.robotics.entities.ModEntities;
+import com.workert.robotics.lists.EntityList;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -18,8 +18,8 @@ public class ClientHandler {
 
 	@SubscribeEvent
 	public static void registerEntityRenders(EntityRenderersEvent.RegisterRenderers event) {
-		event.registerEntityRenderer(ModEntities.DRONE.get(), ContraptionEntityRenderer<DroneContraptionEntity>::new);
-		event.registerEntityRenderer(ModEntities.CLOCKCOPTER.get(), ClockcopterRenderer::new);
+		event.registerEntityRenderer(EntityList.DRONE.get(), ContraptionEntityRenderer<DroneContraptionEntity>::new);
+		event.registerEntityRenderer(EntityList.CLOCKCOPTER.get(), ClockcopterRenderer::new);
 	}
 
 	@SubscribeEvent
