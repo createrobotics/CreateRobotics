@@ -5,10 +5,10 @@ import org.slf4j.Logger;
 import com.jozufozu.flywheel.backend.instancing.InstancedRenderRegistry;
 import com.mojang.logging.LogUtils;
 import com.workert.robotics.client.flywheel.ClockcopterInstance;
+import com.workert.robotics.lists.BlockEntityList;
 import com.workert.robotics.lists.BlockList;
 import com.workert.robotics.lists.EntityList;
 import com.workert.robotics.lists.ItemList;
-import com.workert.robotics.lists.BlockEntityList;
 import com.workert.robotics.lists.RecipeList;
 import com.workert.robotics.screens.ModMenuTypes;
 import com.workert.robotics.screens.SmasherBlockScreen;
@@ -38,7 +38,7 @@ public class Robotics {
 		this.modEventBus.addListener(EntityList::addEntityAttributes);
 
 		BlockList.register(this.modEventBus);
-		EntityList.ENTITY_TYPES.register(this.modEventBus); // Needs to register before ModItems because some items depend on the Registry Objects in ModEntities
+		EntityList.ENTITY_TYPES.register(this.modEventBus); // Needs to register before ModItems because some items depend on the Registry Objects in EntityList.class
 		ItemList.register(this.modEventBus);
 		BlockEntityList.register(this.modEventBus);
 		ModMenuTypes.register(this.modEventBus);
