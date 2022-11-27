@@ -2,9 +2,7 @@ package com.workert.robotics;
 
 import org.slf4j.Logger;
 
-import com.jozufozu.flywheel.backend.instancing.InstancedRenderRegistry;
 import com.mojang.logging.LogUtils;
-import com.workert.robotics.client.flywheel.ClockcopterInstance;
 import com.workert.robotics.lists.BlockEntityList;
 import com.workert.robotics.lists.BlockList;
 import com.workert.robotics.lists.EntityList;
@@ -20,7 +18,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 @Mod(Robotics.MOD_ID)
@@ -32,7 +29,6 @@ public class Robotics {
 	final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
 	public Robotics() {
-		// this.modEventBus.addListener(this::setup);
 		this.modEventBus.addListener(this::clientSetup);
 
 		this.modEventBus.addListener(EntityList::addEntityAttributes);
@@ -45,12 +41,6 @@ public class Robotics {
 		RecipeList.register(this.modEventBus);
 
 		MinecraftForge.EVENT_BUS.register(this);
-	}
-
-	public void setup(FMLCommonSetupEvent event) {
-		event.enqueueWork(() -> {
-			InstancedRenderRegistry.configure(EntityList.CLOCKCOPTER.get()).factory(ClockcopterInstance::new).apply();
-		});
 	}
 
 	private void clientSetup(final FMLClientSetupEvent event) {
