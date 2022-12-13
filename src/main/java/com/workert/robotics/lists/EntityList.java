@@ -28,7 +28,13 @@ public class EntityList {
 			() -> EntityType.Builder.<Clockcopter>of(Clockcopter::new, MobCategory.MISC).sized(0.8f, 0.8f)
 					.build(new ResourceLocation(Robotics.MOD_ID, "clockcopter").toString()));
 
+	public static final RegistryObject<EntityType<Clockcopter>> MINER = ENTITY_TYPES.register("miner",
+			() -> EntityType.Builder.<Clockcopter>of(Clockcopter::new, MobCategory.MISC).sized(0.8f, 0.8f)
+					.build(new ResourceLocation(Robotics.MOD_ID, "miner").toString()));
+
 	public static void addEntityAttributes(EntityAttributeCreationEvent event) {
 		event.put(EntityList.CLOCKCOPTER.get(), Clockcopter.createAttributes());
+
+
 	}
 }

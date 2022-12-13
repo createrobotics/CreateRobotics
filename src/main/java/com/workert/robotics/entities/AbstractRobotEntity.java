@@ -23,8 +23,8 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public abstract class AbstractRobotEntity extends PathfinderMob implements OwnableEntity {
 	public Player owner;
-	private int air;
 
+	private int air;
 	public AbstractRobotEntity(EntityType<? extends PathfinderMob> entity, Level world) {
 		super(entity, world);
 		this.air = BackTankUtil.maxAirWithoutEnchants() * 10;
