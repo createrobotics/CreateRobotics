@@ -4,6 +4,7 @@ import com.simibubi.create.content.contraptions.components.structureMovement.ren
 import com.workert.robotics.Robotics;
 import com.workert.robotics.client.models.ClockcopterModel;
 import com.workert.robotics.client.renderers.ClockcopterRenderer;
+import com.workert.robotics.client.renderers.MinerRenderer;
 import com.workert.robotics.entities.DroneContraptionEntity;
 import com.workert.robotics.lists.EntityList;
 
@@ -20,6 +21,7 @@ public class ClientHandler {
 	public static void registerEntityRenders(EntityRenderersEvent.RegisterRenderers event) {
 		event.registerEntityRenderer(EntityList.DRONE.get(), ContraptionEntityRenderer<DroneContraptionEntity>::new);
 		event.registerEntityRenderer(EntityList.CLOCKCOPTER.get(), ClockcopterRenderer::new);
+		event.registerEntityRenderer(EntityList.MINER.get(), MinerRenderer::new);
 	}
 
 	@SubscribeEvent

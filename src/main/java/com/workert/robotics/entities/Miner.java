@@ -6,7 +6,10 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.*;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.npc.InventoryCarrier;
 import net.minecraft.world.entity.player.Inventory;
@@ -17,8 +20,6 @@ import net.minecraft.world.inventory.MenuConstructor;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.Tags;
-import net.minecraftforge.registries.ForgeRegistries;
 
 public class Miner extends AbstractRobotEntity implements InventoryCarrier {
 
@@ -26,6 +27,11 @@ public class Miner extends AbstractRobotEntity implements InventoryCarrier {
 
     public Miner(EntityType<? extends PathfinderMob> entity, Level world) {
         super(entity, world);
+    }
+
+    public static AttributeSupplier createAttributes() {
+        return Mob.createMobAttributes().add(Attributes.MOVEMENT_SPEED, 0.2F).add(Attributes.MAX_HEALTH, 1.0D)
+                .build();
     }
 
 
@@ -85,3 +91,4 @@ public class Miner extends AbstractRobotEntity implements InventoryCarrier {
     }
 
 }
+

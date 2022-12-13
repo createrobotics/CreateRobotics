@@ -6,6 +6,7 @@ import com.workert.robotics.contraptions.DroneContraption;
 import com.workert.robotics.entities.Clockcopter;
 import com.workert.robotics.entities.DroneContraptionEntity;
 
+import com.workert.robotics.entities.Miner;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -28,13 +29,16 @@ public class EntityList {
 			() -> EntityType.Builder.<Clockcopter>of(Clockcopter::new, MobCategory.MISC).sized(0.8f, 0.8f)
 					.build(new ResourceLocation(Robotics.MOD_ID, "clockcopter").toString()));
 
-	public static final RegistryObject<EntityType<Clockcopter>> MINER = ENTITY_TYPES.register("miner",
-			() -> EntityType.Builder.<Clockcopter>of(Clockcopter::new, MobCategory.MISC).sized(0.8f, 0.8f)
+	public static final RegistryObject<EntityType<Miner>> MINER = ENTITY_TYPES.register("miner",
+			() -> EntityType.Builder.<Miner>of(Miner::new, MobCategory.MISC).sized(0.8f, 0.8f)
 					.build(new ResourceLocation(Robotics.MOD_ID, "miner").toString()));
+
+
 
 	public static void addEntityAttributes(EntityAttributeCreationEvent event) {
 		event.put(EntityList.CLOCKCOPTER.get(), Clockcopter.createAttributes());
-
+	event.put(EntityList.MINER.get(), Miner.createAttributes());
 
 	}
+
 }

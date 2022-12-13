@@ -34,6 +34,10 @@ public class ItemList {
 			() -> new ForgeSpawnEggItem(() -> EntityList.CLOCKCOPTER.get(), 0xb0b0b0, 0xb3793b,
 					new Item.Properties().tab(ROBOTICS_TAB)));
 
+	public static final RegistryObject<Item> MINER = ITEMS.register("miner",
+			() -> new ForgeSpawnEggItem(() -> EntityList.MINER.get(), 0xb0b0b0, 0xb3793b,
+					new Item.Properties().tab(ROBOTICS_TAB)));
+
 	public static void register(IEventBus eventBus) {
 		ITEMS.register(eventBus);
 	}
