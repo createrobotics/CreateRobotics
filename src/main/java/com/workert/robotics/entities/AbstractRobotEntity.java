@@ -25,6 +25,7 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Ownab
 	public Player owner;
 
 	private int air;
+
 	public AbstractRobotEntity(EntityType<? extends PathfinderMob> entity, Level world) {
 		super(entity, world);
 		this.air = BackTankUtil.maxAirWithoutEnchants() * 10;
@@ -63,9 +64,13 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Ownab
 
 	@Override
 	public void readAdditionalSaveData(CompoundTag pCompound) {
-		this.owner = this.level.getPlayerByUUID(pCompound.getUUID("Owner"));
-		this.air = pCompound.getInt("Air");
-		super.readAdditionalSaveData(pCompound);
+		try {
+			this.owner = this.level.getPlayerByUUID(pCompound.getUUID("Owner"));
+			this.air = pCompound.getInt("Air");
+			super.readAdditionalSaveData(pCompound);
+		} catch (NullPointerException exception) {
+			exception.printStackTrace();
+		}
 	}
 
 	@Override

@@ -1,8 +1,8 @@
-package com.workert.robotics.screens;
+package com.workert.robotics.client.screens;
 
 import com.workert.robotics.blockentities.SmasherBlockEntity;
+import com.workert.robotics.client.screens.slots.ModResultSlot;
 import com.workert.robotics.lists.BlockList;
-import com.workert.robotics.screens.slots.ModResultSlot;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;

@@ -4,9 +4,10 @@ import com.simibubi.create.content.contraptions.components.structureMovement.Con
 import com.workert.robotics.Robotics;
 import com.workert.robotics.contraptions.DroneContraption;
 import com.workert.robotics.entities.Clockcopter;
+import com.workert.robotics.entities.CodeDrone;
 import com.workert.robotics.entities.DroneContraptionEntity;
-
 import com.workert.robotics.entities.Miner;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -26,18 +27,21 @@ public class EntityList {
 					.build(new ResourceLocation(Robotics.MOD_ID, "drone").toString()));
 
 	public static final RegistryObject<EntityType<Clockcopter>> CLOCKCOPTER = ENTITY_TYPES.register("clockcopter",
-			() -> EntityType.Builder.<Clockcopter>of(Clockcopter::new, MobCategory.MISC).sized(0.8f, 0.8f)
+			() -> EntityType.Builder.<Clockcopter>of(Clockcopter::new, MobCategory.MISC).sized(0.9f, 0.3f)
 					.build(new ResourceLocation(Robotics.MOD_ID, "clockcopter").toString()));
 
 	public static final RegistryObject<EntityType<Miner>> MINER = ENTITY_TYPES.register("miner",
 			() -> EntityType.Builder.<Miner>of(Miner::new, MobCategory.MISC).sized(0.8f, 0.8f)
 					.build(new ResourceLocation(Robotics.MOD_ID, "miner").toString()));
 
-
+	public static final RegistryObject<EntityType<CodeDrone>> CODE_DRONE = ENTITY_TYPES.register("code_drone",
+			() -> EntityType.Builder.<CodeDrone>of(CodeDrone::new, MobCategory.MISC).sized(0.8f, 0.8f)
+					.build(new ResourceLocation(Robotics.MOD_ID, "code_drone").toString()));
 
 	public static void addEntityAttributes(EntityAttributeCreationEvent event) {
 		event.put(EntityList.CLOCKCOPTER.get(), Clockcopter.createAttributes());
-	event.put(EntityList.MINER.get(), Miner.createAttributes());
+		event.put(EntityList.MINER.get(), Miner.createAttributes());
+		event.put(EntityList.CODE_DRONE.get(), CodeDrone.createAttributes());
 
 	}
 

@@ -3,13 +3,13 @@ package com.workert.robotics;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
+import com.workert.robotics.client.screens.ModMenuTypes;
+import com.workert.robotics.client.screens.SmasherBlockScreen;
 import com.workert.robotics.lists.BlockEntityList;
 import com.workert.robotics.lists.BlockList;
 import com.workert.robotics.lists.EntityList;
 import com.workert.robotics.lists.ItemList;
 import com.workert.robotics.lists.RecipeList;
-import com.workert.robotics.screens.ModMenuTypes;
-import com.workert.robotics.screens.SmasherBlockScreen;
 
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;

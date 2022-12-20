@@ -1,4 +1,4 @@
-package com.workert.robotics.screens.slots;
+package com.workert.robotics.client.screens.slots;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
