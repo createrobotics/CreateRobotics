@@ -16,7 +16,7 @@ public class MinerRenderer extends MobRenderer<Miner, MinerModel<Miner>> {
 
     @Override
     public ResourceLocation getTextureLocation(Miner pEntity) {
-        return new ResourceLocation(Robotics.MOD_ID, "textures/entity/Miner.png");
+        return new ResourceLocation(Robotics.MOD_ID, "textures/entity/miner.png");
     }
 
 }

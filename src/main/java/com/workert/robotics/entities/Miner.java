@@ -3,13 +3,15 @@ package com.workert.robotics.entities;
 import com.workert.robotics.entities.goals.MineBlockAndDropGoal;
 import com.workert.robotics.entities.goals.RobotFollowPlayerOwnerGoal;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.*;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.npc.InventoryCarrier;
 import net.minecraft.world.entity.player.Inventory;
@@ -20,6 +22,8 @@ import net.minecraft.world.inventory.MenuConstructor;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.Tags;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public class Miner extends AbstractRobotEntity implements InventoryCarrier {
 
@@ -34,6 +38,10 @@ public class Miner extends AbstractRobotEntity implements InventoryCarrier {
                 .build();
     }
 
+    @Override
+    protected void registerGoals() {
+        this.goalSelector.addGoal(1, new RobotFollowPlayerOwnerGoal(this, 1.2, 16, 5));
+    }
 
     @Override
     public Container getInventory() {
@@ -81,6 +89,11 @@ public class Miner extends AbstractRobotEntity implements InventoryCarrier {
     }
 
     @Override
+    public void calculateEntityAnimation(LivingEntity p_21044_, boolean p_21045_) {
+        super.calculateEntityAnimation(p_21044_, p_21045_);
+    }
+
+    @Override
     public boolean wantsToPickUp(ItemStack pStack) {
         return this.inventory.canAddItem(pStack);
     }
@@ -88,6 +101,10 @@ public class Miner extends AbstractRobotEntity implements InventoryCarrier {
     @Override
     public boolean canPickUpLoot() {
         return true;
+    }
+
+    public boolean causeFallDamage(float pFallDistance, float pMultiplier, DamageSource pSource) {
+        return false;
     }
 
 }
