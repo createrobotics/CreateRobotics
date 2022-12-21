@@ -82,7 +82,6 @@ public class CodeDroneModel<T extends CodeDrone> extends EntityModel<T> {
 	@Override
 	public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw,
 			float headPitch) {
-
 	}
 
 	@Override

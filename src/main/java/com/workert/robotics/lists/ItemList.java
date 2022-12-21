@@ -3,10 +3,12 @@ package com.workert.robotics.lists;
 import java.util.Optional;
 
 import com.workert.robotics.Robotics;
+import com.workert.robotics.items.ProgramItem;
 
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
@@ -29,6 +31,9 @@ public class ItemList {
 
 	public static final RegistryObject<Item> BRONZE_INGOT = registerBasicItem("bronze_ingot", Optional.empty());
 	public static final RegistryObject<Item> BRONZE_NUGGET = registerBasicItem("bronze_nugget", Optional.empty());
+
+	public static final RegistryObject<Item> PROGRAM = ITEMS.register("program",
+			() -> new ProgramItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON).tab(ROBOTICS_TAB)));
 
 	public static final RegistryObject<Item> CLOCKCOPTER = ITEMS.register("clockcopter",
 			() -> new ForgeSpawnEggItem(() -> EntityList.CLOCKCOPTER.get(), 0xb0b0b0, 0xb3793b,

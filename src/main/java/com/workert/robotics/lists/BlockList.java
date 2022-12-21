@@ -3,6 +3,7 @@ package com.workert.robotics.lists;
 import java.util.function.Supplier;
 
 import com.workert.robotics.Robotics;
+import com.workert.robotics.blocks.CodeEditor;
 import com.workert.robotics.blocks.DroneAssembler;
 import com.workert.robotics.blocks.SmasherBlock;
 
@@ -45,6 +46,9 @@ public class BlockList {
 
 	public static final RegistryObject<Block> DRONE_ASSEMBLER = registerBlock("drone_assembler",
 			() -> new DroneAssembler(Properties.of(Material.METAL).sound(SoundType.METAL)));
+
+	public static final RegistryObject<Block> CODE_EDITOR = registerBlock("code_editor",
+			() -> new CodeEditor(Properties.of(Material.METAL).sound(SoundType.METAL).noOcclusion()));
 
 	private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block) {
 		RegistryObject<T> toReturn = BLOCKS.register(name, block);

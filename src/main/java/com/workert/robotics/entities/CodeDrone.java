@@ -1,8 +1,7 @@
 package com.workert.robotics.entities;
 
 import com.simibubi.create.AllItems;
-import com.simibubi.create.foundation.gui.ScreenOpener;
-import com.workert.robotics.client.screens.CodeDroneScreen;
+import com.workert.robotics.helpers.DroneCompiler;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Container;
@@ -29,7 +28,6 @@ import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.MenuConstructor;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 
 public class CodeDrone extends AbstractRobotEntity implements FlyingAnimal, InventoryCarrier {
@@ -98,23 +96,7 @@ public class CodeDrone extends AbstractRobotEntity implements FlyingAnimal, Inve
 	@Override
 	public InteractionResult mobInteract(Player player, InteractionHand hand) {
 		if (player.getItemInHand(hand).getItem().equals(AllItems.WRENCH.get().asItem()) && !player.isCrouching()) {
-			this.droneCode.lines().forEach(command -> {
-				command = command.replace(" ", "");
-				if (command.startsWith("robot.goTo(")) {
-					String[] coordinateList = command.replace("robot.goTo(", "").replace(")", "").split(",");
-					try {
-						CodeDrone.this.navigation.moveTo(Double.valueOf(coordinateList[0]),
-								Double.valueOf(coordinateList[1]), Double.valueOf(coordinateList[2]), 1);
-					} catch (Exception exception) {
-						throw new IllegalArgumentException(
-								"\"robot.goTo\" takes three arguments from the type \"Double\".\nException message: \""
-										+ exception.getLocalizedMessage() + "\"");
-					}
-				}
-			});
-			return InteractionResult.SUCCESS;
-		} else if (player.getItemInHand(hand).getItem().equals(Items.REDSTONE) && !player.isCrouching()) {
-			ScreenOpener.open(new CodeDroneScreen(this));
+			DroneCompiler.runCode(this, this.droneCode);
 			return InteractionResult.SUCCESS;
 		}
 
