@@ -1,7 +1,7 @@
 package com.workert.robotics.entities;
 
 import com.simibubi.create.AllItems;
-import com.workert.robotics.helpers.DroneCompiler;
+import com.workert.robotics.helpers.CodeHelper;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Container;
@@ -96,7 +96,7 @@ public class CodeDrone extends AbstractRobotEntity implements FlyingAnimal, Inve
 	@Override
 	public InteractionResult mobInteract(Player player, InteractionHand hand) {
 		if (player.getItemInHand(hand).getItem().equals(AllItems.WRENCH.get().asItem()) && !player.isCrouching()) {
-			DroneCompiler.runCode(this, this.droneCode);
+			CodeHelper.runCode(this, this.droneCode);
 			return InteractionResult.SUCCESS;
 		}
 

@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import com.mojang.logging.LogUtils;
 import com.workert.robotics.client.screens.ModMenuTypes;
 import com.workert.robotics.client.screens.SmasherBlockScreen;
+import com.workert.robotics.helpers.CodeHelper;
 import com.workert.robotics.lists.BlockEntityList;
 import com.workert.robotics.lists.BlockList;
 import com.workert.robotics.lists.EntityList;
@@ -41,6 +42,8 @@ public class Robotics {
 		RecipeList.register(this.modEventBus);
 
 		MinecraftForge.EVENT_BUS.register(this);
+
+		CodeHelper.registerDefaultCommands();
 	}
 
 	private void clientSetup(final FMLClientSetupEvent event) {
