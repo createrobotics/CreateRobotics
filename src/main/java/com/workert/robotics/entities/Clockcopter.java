@@ -37,7 +37,8 @@ import net.minecraftforge.common.Tags;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class Clockcopter extends AbstractRobotEntity implements FlyingAnimal, InventoryCarrier {
-	private final SimpleContainer inventory = new SimpleContainer(9);
+	private final SimpleContainer inventory = new SimpleContainer(13);
+
 
 	public static final EntityDataAccessor<Boolean> IS_FLYING = SynchedEntityData.defineId(Clockcopter.class,
 			EntityDataSerializers.BOOLEAN);
