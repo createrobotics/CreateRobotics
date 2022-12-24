@@ -18,11 +18,11 @@ public class RobotFollowPlayerOwnerGoal extends Goal {
 	private Player owner;
 	private int timeToRecalcPath;
 
-	public RobotFollowPlayerOwnerGoal(PathfinderMob robot, double pSpeedModifier, float pStartDistance,
+	public RobotFollowPlayerOwnerGoal(OwnableEntity robot, double pSpeedModifier, float pStartDistance,
 			float pStopDistance) {
-		this.robot = robot;
+		this.robot = (PathfinderMob) robot;
 		this.speedModifier = pSpeedModifier;
-		this.navigation = robot.getNavigation();
+		this.navigation = ((PathfinderMob) robot).getNavigation();
 		this.startDistance = pStartDistance;
 		this.stopDistance = pStopDistance;
 		this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
