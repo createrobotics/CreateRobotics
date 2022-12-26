@@ -11,6 +11,7 @@ import com.workert.robotics.lists.BlockList;
 import com.workert.robotics.lists.EntityList;
 import com.workert.robotics.lists.ItemList;
 import com.workert.robotics.lists.RecipeList;
+import com.workert.robotics.world.feature.ModPlacedFeatures;
 
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
@@ -40,6 +41,7 @@ public class Robotics {
 		BlockEntityList.register(this.modEventBus);
 		ModMenuTypes.register(this.modEventBus);
 		RecipeList.register(this.modEventBus);
+		ModPlacedFeatures.FEATURES.register(this.modEventBus);
 
 		MinecraftForge.EVENT_BUS.register(this);
 

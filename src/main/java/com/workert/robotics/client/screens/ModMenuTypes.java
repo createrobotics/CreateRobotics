@@ -1,6 +1,7 @@
 package com.workert.robotics.client.screens;
 
 import com.workert.robotics.Robotics;
+
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.common.extensions.IForgeMenuType;
@@ -11,7 +12,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 public class ModMenuTypes {
-	public static final DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(ForgeRegistries.CONTAINERS,
+	public static final DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(ForgeRegistries.MENU_TYPES,
 			Robotics.MOD_ID);
 
 	public static final RegistryObject<MenuType<SmasherBlockMenu>> SMASHER_BLOCK_MENU = registerMenuType(

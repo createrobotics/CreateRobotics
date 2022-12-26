@@ -11,7 +11,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.OreBlock;
+import net.minecraft.world.level.block.DropExperienceBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
@@ -26,8 +26,8 @@ public class BlockList {
 			Robotics.MOD_ID);
 
 	public static final RegistryObject<Block> TIN_ORE = registerBlock("tin_ore",
-			() -> new OreBlock(BlockBehaviour.Properties.of(Material.STONE).sound(SoundType.STONE).strength(9f)
-					.requiresCorrectToolForDrops()));
+			() -> new DropExperienceBlock(BlockBehaviour.Properties.of(Material.STONE).sound(SoundType.STONE)
+					.strength(9f).requiresCorrectToolForDrops()));
 
 	public static final RegistryObject<Block> TIN_BLOCK = registerBlock("tin_block",
 			() -> new Block(BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.METAL).strength(9f)
@@ -38,7 +38,7 @@ public class BlockList {
 					.requiresCorrectToolForDrops()));
 
 	public static final RegistryObject<Block> DEEPSLATE_TIN_ORE = registerBlock("deepslate_tin_ore",
-			() -> new OreBlock(BlockBehaviour.Properties.copy(TIN_ORE.get()).sound(SoundType.DEEPSLATE)));
+			() -> new DropExperienceBlock(BlockBehaviour.Properties.copy(TIN_ORE.get()).sound(SoundType.DEEPSLATE)));
 
 	public static final RegistryObject<Block> SMASHER_BLOCK = registerBlock("smasher_block",
 			() -> new SmasherBlock(BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.METAL).strength(9f)
@@ -58,7 +58,6 @@ public class BlockList {
 
 	private static <T extends Block> RegistryObject<Item> registerBlockItem(String name, RegistryObject<T> block,
 			CreativeModeTab tab) {
-
 		return ItemList.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties().tab(tab)));
 	}
 
