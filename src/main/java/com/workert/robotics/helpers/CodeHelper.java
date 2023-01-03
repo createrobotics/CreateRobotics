@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-import javax.annotation.Nonnull;
-
 import com.workert.robotics.Robotics;
 import com.workert.robotics.entities.AbstractRobotEntity;
 
@@ -56,7 +54,7 @@ public class CodeHelper {
 	 * {@link IllegalCommandArgumentTypeException}
 	 *
 	 * @param name the name of the variable, like <code>xPos</code> for
-	 * <code>$xPos$</code>. May only contain a-Z
+	 * <code>$xPos</code>. May only contain a-Z
 	 * @param value a {@link Function} with the Robot Entity as argument.<br>
 	 * Should return a String that will get replaced with the variable.
 	 */
