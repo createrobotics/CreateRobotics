@@ -22,10 +22,10 @@ import net.minecraft.world.phys.AABB;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 public class CodeHelper {
-	private static HashMap<String, BiConsumer<AbstractRobotEntity, @Nonnull List<String>>> commandMap = new HashMap<>();
+	private static HashMap<String, BiConsumer<AbstractRobotEntity, List<String>>> commandMap = new HashMap<>();
 
-	private static HashMap<String, Function<AbstractRobotEntity, @Nonnull String>> internalVariableLookupMap = new HashMap<>();
-	private static HashMap<String, Function<AbstractRobotEntity, @Nonnull String>> globalVariableLookupMap = new HashMap<>();
+	private static HashMap<String, Function<AbstractRobotEntity, String>> internalVariableLookupMap = new HashMap<>();
+	private static HashMap<String, Function<AbstractRobotEntity, String>> globalVariableLookupMap = new HashMap<>();
 
 	/**
 	 * Registers a command for use by the Coding Mechanics.<br>
@@ -42,7 +42,7 @@ public class CodeHelper {
 	 * @param function a {@link BiConsumer} with two arguments: the Robot Entity and
 	 * an {@link ArrayList} with all provided arguments to the command.
 	 */
-	public static void registerCommand(String prefix, BiConsumer<AbstractRobotEntity, @Nonnull List<String>> function) {
+	public static void registerCommand(String prefix, BiConsumer<AbstractRobotEntity, List<String>> function) {
 		commandMap.put(validateRegistryName(prefix), function);
 	}
 
@@ -60,7 +60,7 @@ public class CodeHelper {
 	 * @param value a {@link Function} with the Robot Entity as argument.<br>
 	 * Should return a String that will get replaced with the variable.
 	 */
-	public static void registerGlobalVariableLookup(String name, Function<AbstractRobotEntity, @Nonnull String> value) {
+	public static void registerGlobalVariableLookup(String name, Function<AbstractRobotEntity, String> value) {
 		globalVariableLookupMap.put(validateRegistryName(name), value);
 	}
 

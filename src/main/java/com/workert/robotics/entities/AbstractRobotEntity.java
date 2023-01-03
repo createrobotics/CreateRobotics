@@ -42,7 +42,7 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 
 	private final SimpleContainer inventory = new SimpleContainer(9);
 
-	public HashMap<String, Function<AbstractRobotEntity, @Nonnull String>> localVariableLookupMap = new HashMap<>();
+	public HashMap<String, Function<AbstractRobotEntity, String>> localVariableLookupMap = new HashMap<>();
 	public String code = "";
 
 	public AbstractRobotEntity(EntityType<? extends PathfinderMob> entity, Level world) {
