@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
+import com.simibubi.create.content.contraptions.components.deployer.DeployerFakePlayer;
 import com.workert.robotics.Robotics;
 import com.workert.robotics.entities.AbstractRobotEntity;
 
@@ -14,6 +15,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.phys.AABB;
@@ -23,7 +25,7 @@ public class CodeHelper {
 	private static HashMap<String, BiConsumer<AbstractRobotEntity, List<String>>> commandMap = new HashMap<>();
 
 	private static HashMap<String, Function<AbstractRobotEntity, String>> internalVariableLookupMap = new HashMap<>();
-	private static HashMap<String, Function<AbstractRobotEntity, String>> globalVariableLookupMap = new HashMap<>();
+	private static HashMap<String, Function<AbstractRobotEntity, String>> publicVariableLookupMap = new HashMap<>();
 
 	/**
 	 * Registers a command for use by the Coding Mechanics.<br>
@@ -58,8 +60,8 @@ public class CodeHelper {
 	 * @param value a {@link Function} with the Robot Entity as argument.<br>
 	 * Should return a String that will get replaced with the variable.
 	 */
-	public static void registerGlobalVariableLookup(String name, Function<AbstractRobotEntity, String> value) {
-		globalVariableLookupMap.put(validateRegistryName(name), value);
+	public static void registerInternalVariableLookup(String name, Function<AbstractRobotEntity, String> value) {
+		internalVariableLookupMap.put(validateRegistryName(name), value);
 	}
 
 	private static String validateRegistryName(String name) {
@@ -124,6 +126,13 @@ public class CodeHelper {
 						}
 					});
 		});
+		registerCommand("useOn", (robot, arguments) -> {
+			BlockPos pos = new BlockPos(eval(arguments.get(0)), eval(arguments.get(1)), eval(arguments.get(2)));
+			if (!pos.closerToCenterThan(robot.position(), 5) || robot.getLevel().isClientSide())
+				return;
+			DeployerFakePlayer player = new DeployerFakePlayer((ServerLevel) robot.getLevel());
+			// DeployerHandler.activate(player, robot.position(), pos, Vec3.ZERO, Mode.PUNCH);
+		});
 	}
 
 	private static String commandLine;
@@ -159,7 +168,7 @@ public class CodeHelper {
 						"Trying to replace public variable \"$" + name + "\" with \"" + value.apply(robot) + "\"");
 			});
 
-			globalVariableLookupMap.forEach((name, value) -> {
+			publicVariableLookupMap.forEach((name, value) -> {
 				commandLine = commandLine.replace("$" + name, value.apply(robot));
 				Robotics.LOGGER.debug(
 						"Trying to replace public variable \"$" + name + "\" with \"" + value.apply(robot) + "\"");
@@ -182,7 +191,8 @@ public class CodeHelper {
 			} else if (commandLine.contains("=")) {
 				if (commandLine.startsWith("public ")) {
 					String[] list = commandLine.substring(7).split("=");
-					registerGlobalVariableLookup(list[0].trim(), robotFromFunction -> list[1].trim());
+					internalVariableLookupMap.put(validateRegistryName(list[0].trim()),
+							robotFromFunction -> list[1].trim());
 				} else if (commandLine.startsWith("private ")) {
 					String[] list = commandLine.substring(8).split("=");
 					robot.localVariableLookupMap.put(validateRegistryName(list[0].trim()),
