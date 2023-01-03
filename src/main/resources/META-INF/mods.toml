@@ -10,7 +10,7 @@ version="${file.jarVersion}"
 displayName="Create Robotics"
 logoFile="icon.png"
 
-authors="Workert, OutCraft"
+authors="Workert, OutCraft, RealDarkStudios"
 
 description='''
 Create Robotics is a mod about Robots and Robotics Automation in Minecraft using the Create mod.
