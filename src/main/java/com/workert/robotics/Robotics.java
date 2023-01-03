@@ -1,5 +1,7 @@
 package com.workert.robotics;
 
+import com.workert.robotics.world.feature.ModConfiguredFeatures;
+import com.workert.robotics.world.feature.ModPlacedFeatures;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -40,7 +42,9 @@ public class Robotics {
 		BlockEntityList.register(this.modEventBus);
 		ModMenuTypes.register(this.modEventBus);
 		RecipeList.register(this.modEventBus);
-		//ModPlacedFeatures.FEATURES.register(this.modEventBus);
+
+		ModConfiguredFeatures.register(this.modEventBus);
+		ModPlacedFeatures.register(this.modEventBus);
 
 		MinecraftForge.EVENT_BUS.register(this);
 
