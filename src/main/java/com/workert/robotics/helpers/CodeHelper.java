@@ -11,7 +11,6 @@ import javax.annotation.Nonnull;
 
 import com.workert.robotics.Robotics;
 import com.workert.robotics.entities.AbstractRobotEntity;
-import com.workert.robotics.helpers.exceptions.IllegalCommandArgumentTypeException;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
@@ -30,14 +29,16 @@ public class CodeHelper {
 
 	/**
 	 * Registers a command for use by the Coding Mechanics.<br>
-	 * The provided arguments from the <code>BiConsumer</code> may be an empty array
-	 * if no arguments are provided. To cast an argument to a number
+	 * The provided arguments from the {@link BiConsumer} may be an empty array if
+	 * no arguments are provided. To cast an argument to a number
 	 * (<code>Double</code>) please use the {@link CodeHelper#eval} function. If the
 	 * arguments are illegal / inappropritate, please throw an
-	 * {@link IllegalCommandArgumentTypeException}
+	 * {@link IllegalCommandArgumentTypeException}<br>
+	 * IMPORTANT: The <code>function</code> {@link BiConsumer} will be run on a
+	 * different Thread than the main Minecraft Thread!
 	 *
 	 * @param prefix the prefix of the command, like <code>goTo</code> for
-	 * <code>robot.goTo(1, 1, 1)</code>. May only contain a-Z
+	 * <code>robot.goTo(x, y, z)</code>. May only contain a-Z
 	 * @param function a {@link BiConsumer} with two arguments: the Robot Entity and
 	 * an {@link ArrayList} with all provided arguments to the command.
 	 */
@@ -73,70 +74,57 @@ public class CodeHelper {
 		internalVariableLookupMap.put("yPos", robot -> Double.toString(robot.getY()));
 		internalVariableLookupMap.put("zPos", robot -> Double.toString(robot.getZ()));
 		registerCommand("goTo", (robot, arguments) -> {
-			try {
-				robot.getNavigation().moveTo(eval(arguments.get(0)), eval(arguments.get(1)), eval(arguments.get(2)), 1);
-				while (robot.getNavigation().isInProgress()) {
+
+			robot.getNavigation().moveTo(eval(arguments.get(0)), eval(arguments.get(1)), eval(arguments.get(2)), 1);
+			while (robot.getNavigation().isInProgress()) {
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException exception) {
+					exception.printStackTrace();
 				}
-			} catch (Exception exception) {
-				throw new IllegalCommandArgumentTypeException("goTo",
-						List.of(Double.class, Double.class, Double.class));
+				robot.getNavigation().recomputePath();
 			}
+
 		});
 		registerCommand("getItems", (robot, arguments) -> {
-			try {
-				if (robot.blockPosition().distToCenterSqr(eval(arguments.get(0)), eval(arguments.get(1)),
-						eval(arguments.get(2))) > 5)
-					return;
-				robot.getLevel()
-						.getBlockEntity(
-								new BlockPos(eval(arguments.get(0)), eval(arguments.get(1)), eval(arguments.get(2))))
-						.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(handler -> {
-							for (int slot = 0; slot < handler.getSlots(); slot++) {
-								while (!handler.getStackInSlot(slot).isEmpty()
-										&& (arguments.size() < 4
-												|| Registry.ITEM.getKey(handler.getStackInSlot(slot).getItem())
-														.toString().equals(arguments.get(3).trim()))
-										&& robot.wantsToPickUp(handler.extractItem(slot, 1, true))) {
-									robot.getInventory().addItem(handler.extractItem(slot, 1, false));
-								}
+			BlockPos pos = new BlockPos(eval(arguments.get(0)), eval(arguments.get(1)), eval(arguments.get(2)));
+			if (!pos.closerToCenterThan(robot.position(), 5) || robot.getLevel().isClientSide())
+				return;
+			robot.getLevel().getExistingBlockEntity(pos).getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+					.ifPresent(handler -> {
+						for (int slot = 0; slot < handler.getSlots(); slot++) {
+							while (!handler.getStackInSlot(slot).isEmpty()
+									&& (arguments.size() < 3
+											|| Registry.ITEM.getKey(handler.getStackInSlot(slot).getItem()).toString()
+													.equals(arguments.get(3).trim()))
+									&& robot.wantsToPickUp(handler.extractItem(slot, 1, true))) {
+								robot.getInventory().addItem(handler.extractItem(slot, 1, false));
 							}
-						});
-			} catch (Exception exception) {
-				throw new IllegalCommandArgumentTypeException("goTo",
-						List.of(Double.class, Double.class, Double.class, Item.class));
-			}
-
+						}
+					});
 		});
 		registerCommand("pushItems", (robot, arguments) -> {
-			try {
-				if (robot.blockPosition().distToCenterSqr(eval(arguments.get(0)), eval(arguments.get(1)),
-						eval(arguments.get(2))) > 5)
-					return;
-				robot.getLevel()
-						.getBlockEntity(
-								new BlockPos(eval(arguments.get(0)), eval(arguments.get(1)), eval(arguments.get(2))))
-						.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(handler -> {
-							Item itemToPush = Registry.ITEM.get(new ResourceLocation(
-									arguments.get(3).trim().split(":")[0], arguments.get(3).trim().split(":")[1]));
-							for (int slot = 0; slot < robot.getInventory().getContainerSize(); slot++) {
-								if (robot.getInventory().countItem(itemToPush) > 0
-										&& robot.getInventory().getItem(slot).getItem().equals(itemToPush)) {
-									for (int containerSlot = 0; containerSlot < handler.getSlots(); containerSlot++) {
-										robot.getInventory()
-												.setItem(slot,
-														handler.insertItem(slot,
-																robot.getInventory().removeItemType(itemToPush,
-																		robot.getInventory().countItem(itemToPush)),
-																false));
-									}
+			BlockPos pos = new BlockPos(eval(arguments.get(0)), eval(arguments.get(1)), eval(arguments.get(2)));
+			if (!pos.closerToCenterThan(robot.position(), 5) || robot.getLevel().isClientSide())
+				return;
+			robot.getLevel().getExistingBlockEntity(pos).getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+					.ifPresent(handler -> {
+						Item itemToPush = Registry.ITEM.get(new ResourceLocation(arguments.get(3).trim().split(":")[0],
+								arguments.get(3).trim().split(":")[1]));
+						for (int slot = 0; slot < robot.getInventory().getContainerSize(); slot++) {
+							if (robot.getInventory().countItem(itemToPush) > 0
+									&& robot.getInventory().getItem(slot).getItem().equals(itemToPush)) {
+								for (int containerSlot = 0; containerSlot < handler.getSlots(); containerSlot++) {
+									robot.getInventory()
+											.setItem(slot,
+													handler.insertItem(slot,
+															robot.getInventory().removeItemType(itemToPush,
+																	robot.getInventory().countItem(itemToPush)),
+															false));
 								}
 							}
-						});
-			} catch (Exception exception) {
-				throw new IllegalCommandArgumentTypeException("goTo",
-						List.of(Double.class, Double.class, Double.class, Item.class));
-			}
-
+						}
+					});
 		});
 	}
 
@@ -187,8 +175,10 @@ public class CodeHelper {
 						try {
 							function.accept(robot, Arrays.asList(commandLine
 									.substring(commandLine.indexOf("(") + 1, commandLine.lastIndexOf(")")).split(",")));
-						} catch (IllegalCommandArgumentTypeException exception) {
-							brodcastErrorToNearbyPlayers(robot, exception.getLocalizedMessage());
+						} catch (Exception exception) {
+							brodcastErrorToNearbyPlayers(robot, "robot." + prefix
+									+ " encountered an error. Please look at the Logs to learn more.");
+							exception.printStackTrace();
 						}
 				});
 			} else if (commandLine.contains("=")) {

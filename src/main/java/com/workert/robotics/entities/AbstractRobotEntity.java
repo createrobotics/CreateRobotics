@@ -1,6 +1,7 @@
 package com.workert.robotics.entities;
 
 import java.util.HashMap;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
 import javax.annotation.Nonnull;
@@ -120,7 +121,7 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 	protected InteractionResult mobInteract(Player pPlayer, InteractionHand pHand) {
 		if (this.isProgrammable() && pPlayer.getItemInHand(pHand).getItem().equals(AllItems.WRENCH.get().asItem())
 				&& !pPlayer.isCrouching()) {
-			CodeHelper.runCode(this, this.code);
+			CompletableFuture.runAsync(() -> CodeHelper.runCode(this, this.code));
 			return InteractionResult.SUCCESS;
 		} else if (this.hasInventory() && !pPlayer.isCrouching()) {
 			pPlayer.openMenu(new SimpleMenuProvider(new MenuConstructor() {
