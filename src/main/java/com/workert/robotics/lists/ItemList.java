@@ -3,12 +3,12 @@ package com.workert.robotics.lists;
 import java.util.Optional;
 
 import com.workert.robotics.Robotics;
+import com.workert.robotics.items.ExtendOBootsItem;
+import com.workert.robotics.items.ModArmorMaterials;
 import com.workert.robotics.items.ProgramItem;
 
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Rarity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.*;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
@@ -41,6 +41,10 @@ public class ItemList {
 
 	public static final RegistryObject<Item> MINER = ITEMS.register("miner",
 			() -> new ForgeSpawnEggItem(() -> EntityList.MINER.get(), 0xb0b0b0, 0xb3793b,
+					new Item.Properties().tab(ROBOTICS_TAB)));
+
+	public static final RegistryObject<Item> EXTEND_O_BOOTS = ITEMS.register("extend_o_boots",
+			() -> new ExtendOBootsItem(ModArmorMaterials.EXTEND_O_BOOTS, EquipmentSlot.FEET,
 					new Item.Properties().tab(ROBOTICS_TAB)));
 
 	public static void register(IEventBus eventBus) {
