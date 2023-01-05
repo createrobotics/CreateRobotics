@@ -3,18 +3,13 @@ package com.workert.robotics.recipes;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.workert.robotics.Robotics;
-
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 
 public class SmasherBlockRecipe implements Recipe<SimpleContainer> {
@@ -31,6 +26,8 @@ public class SmasherBlockRecipe implements Recipe<SimpleContainer> {
 
 	@Override
 	public boolean matches(SimpleContainer pContainer, Level pLevel) {
+		if (pLevel == null)
+			return false;
 		return this.recipeItems.get(0).test(pContainer.getItem(1));
 	}
 

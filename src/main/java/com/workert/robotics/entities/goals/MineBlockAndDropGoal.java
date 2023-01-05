@@ -1,9 +1,5 @@
 package com.workert.robotics.entities.goals;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.BlockParticleOption;
@@ -18,13 +14,17 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
+
 public class MineBlockAndDropGoal extends MoveToBlockGoal {
 
-	private List<Block> blocksToRemove;
+	private final List<Block> blocksToRemove;
 
-	private PathfinderMob mob;
+	private final PathfinderMob mob;
 	private int ticksSinceReachedGoal;
-	private List<BlockPos> posBlackList = new ArrayList<BlockPos>();
+	private final List<BlockPos> posBlackList = new ArrayList<>();
 
 	public MineBlockAndDropGoal(PathfinderMob pMob, List<Block> blocksToRemove, double pSpeedModifier, int pSearchRange,
 			int pVerticalSearchRange) {
@@ -42,7 +42,7 @@ public class MineBlockAndDropGoal extends MoveToBlockGoal {
 
 	@Override
 	public double acceptedDistance() {
-		return 1.6;
+		return 2;
 	}
 
 	// Tick method copied from RemoveBlockGoal and edited for block drop
@@ -52,11 +52,11 @@ public class MineBlockAndDropGoal extends MoveToBlockGoal {
 		Level level = this.mob.level;
 		RandomSource random = this.mob.getRandom();
 
-		if (this.blockPos != null && this.isValidTarget(level, this.blockPos)
-				&& this.blockPos.closerToCenterThan(this.mob.position(), this.acceptedDistance())) {
+		if (this.blockPos != null && this.isValidTarget(level, this.blockPos) && this.blockPos.closerToCenterThan(
+				this.mob.position(), this.acceptedDistance())) {
 
-			this.mob.getLookControl().setLookAt(this.blockPos.getX() + 0.5, this.blockPos.getY() + 0.5,
-					this.blockPos.getZ() + 0.5);
+			this.mob.getLookControl()
+					.setLookAt(this.blockPos.getX() + 0.5, this.blockPos.getY() + 0.5, this.blockPos.getZ() + 0.5);
 
 			this.mob.getNavigation().stop();
 
@@ -68,7 +68,7 @@ public class MineBlockAndDropGoal extends MoveToBlockGoal {
 					((ServerLevel) level).sendParticles(
 							new BlockParticleOption(ParticleTypes.BLOCK, level.getBlockState(this.blockPos)),
 							this.blockPos.getX() + 0.5D, this.blockPos.getY() + 0.5D, this.blockPos.getZ() + 0.5D, 1,
-							d3, d1, d2, (double) 0.15F);
+							d3, d1, d2, 0.15F);
 				}
 			}
 
@@ -81,9 +81,8 @@ public class MineBlockAndDropGoal extends MoveToBlockGoal {
 			++this.ticksSinceReachedGoal;
 		}
 
-		if (this.blockPos != null && this.mob.getNavigation().isDone()
-				&& !this.blockPos.closerToCenterThan(this.mob.position(), this.acceptedDistance())
-				&& this.isValidTarget(level, this.blockPos))
+		if (this.blockPos != null && this.mob.getNavigation().isDone() && !this.blockPos.closerToCenterThan(
+				this.mob.position(), this.acceptedDistance()) && this.isValidTarget(level, this.blockPos))
 			this.posBlackList.add(this.blockPos);
 	}
 

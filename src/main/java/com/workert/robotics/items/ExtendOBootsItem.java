@@ -48,6 +48,8 @@ public class ExtendOBootsItem extends ArmorItem {
 
 	@SubscribeEvent
 	public void detectScroll(InputEvent.MouseScrollingEvent mouseEvent) {
+		if (this.player == null)
+			return;
 		if (mouseEvent.getScrollDelta() > 0 && this.currentHeight < MAX_HEIGHT && this.activated) {
 			this.currentHeight += 0.5;
 		} else if (mouseEvent.getScrollDelta() < 0 && this.currentHeight > 0 && this.activated) {
@@ -57,6 +59,8 @@ public class ExtendOBootsItem extends ArmorItem {
 
 	@SubscribeEvent
 	public void detectInput(InputEvent.Key event) {
+		if (this.player == null)
+			return;
 		if (event.getKey() == GLFW.GLFW_KEY_LEFT_CONTROL && event.getAction() == InputConstants.PRESS
 				&& this.player.isOnGround()) {
 			this.currentHeight = 0;
