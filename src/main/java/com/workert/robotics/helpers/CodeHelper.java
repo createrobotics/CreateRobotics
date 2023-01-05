@@ -1,16 +1,8 @@
 package com.workert.robotics.helpers;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-
 import com.simibubi.create.content.contraptions.components.deployer.DeployerFakePlayer;
 import com.workert.robotics.Robotics;
 import com.workert.robotics.entities.AbstractRobotEntity;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
@@ -19,46 +11,45 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 public class CodeHelper {
-	private static HashMap<String, BiConsumer<AbstractRobotEntity, List<String>>> commandMap = new HashMap<>();
+	private static final HashMap<String, BiConsumer<AbstractRobotEntity, List<String>>> commandMap = new HashMap<>();
 
-	private static HashMap<String, Function<AbstractRobotEntity, String>> internalVariableLookupMap = new HashMap<>();
-	private static HashMap<String, Function<AbstractRobotEntity, String>> publicVariableLookupMap = new HashMap<>();
+	private static final HashMap<String, Function<AbstractRobotEntity, String>> internalVariableLookupMap = new HashMap<>();
+	private static final HashMap<String, Function<AbstractRobotEntity, String>> publicVariableLookupMap = new HashMap<>();
 
 	/**
-	 * Registers a command for use by the Coding Mechanics.<br>
-	 * The provided arguments from the {@link BiConsumer} may be an empty array if
-	 * no arguments are provided. To cast an argument to a number
-	 * (<code>Double</code>) please use the {@link CodeHelper#eval} function. If the
-	 * arguments are illegal / inappropritate, please throw an
-	 * {@link IllegalCommandArgumentTypeException}<br>
-	 * IMPORTANT: The <code>function</code> {@link BiConsumer} will be run on a
+	 * Registers a command for use by the Coding Mechanics.<br> The provided arguments from the {@link BiConsumer} may
+	 * be an empty array if no arguments are provided. To cast an argument to a number (<code>Double</code>) please use
+	 * the {@link CodeHelper#eval} function. IMPORTANT: The <code>function</code> {@link BiConsumer} will be run on a
 	 * different Thread than the main Minecraft Thread!
 	 *
 	 * @param prefix the prefix of the command, like <code>goTo</code> for
 	 * <code>robot.goTo(x, y, z)</code>. May only contain a-Z
-	 * @param function a {@link BiConsumer} with two arguments: the Robot Entity and
-	 * an {@link ArrayList} with all provided arguments to the command.
+	 * @param function a {@link BiConsumer} with two arguments: the Robot Entity and an {@link ArrayList} with all
+	 * provided arguments to the command.
 	 */
 	public static void registerCommand(String prefix, BiConsumer<AbstractRobotEntity, List<String>> function) {
 		commandMap.put(validateRegistryName(prefix), function);
 	}
 
 	/**
-	 * Registers a variable lookup for use by the Coding Mechanics.<br>
-	 * The provided arguments from the <code>BiConsumer</code> may be an empty array
-	 * if no arguments are provided.<br>
-	 * To cast an argument to a number (<code>Double</code>) please use the
-	 * {@link CodeHelper#eval} function as the argument may contain variables. If
-	 * the arguments are illegal / inappropritate, please throw an
-	 * {@link IllegalCommandArgumentTypeException}
+	 * Registers a variable lookup for use by the Coding Mechanics.<br> The provided arguments from the
+	 * <code>BiConsumer</code> may be an empty array if no arguments are provided.<br> To cast an argument to a number
+	 * (<code>Double</code>) please use the {@link CodeHelper#eval} function as the argument may contain variables.
 	 *
 	 * @param name the name of the variable, like <code>xPos</code> for
 	 * <code>$xPos</code>. May only contain a-Z
-	 * @param value a {@link Function} with the Robot Entity as argument.<br>
-	 * Should return a String that will get replaced with the variable.
+	 * @param value a {@link Function} with the Robot Entity as argument.<br> Should return a String that will get
+	 * replaced with the variable.
 	 */
 	public static void registerInternalVariableLookup(String name, Function<AbstractRobotEntity, String> value) {
 		internalVariableLookupMap.put(validateRegistryName(name), value);
@@ -90,14 +81,13 @@ public class CodeHelper {
 			BlockPos pos = new BlockPos(eval(arguments.get(0)), eval(arguments.get(1)), eval(arguments.get(2)));
 			if (!pos.closerToCenterThan(robot.position(), 5) || robot.getLevel().isClientSide())
 				return;
-			robot.getLevel().getExistingBlockEntity(pos).getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+			robot.getLevel().getExistingBlockEntity(pos).getCapability(ForgeCapabilities.ITEM_HANDLER)
 					.ifPresent(handler -> {
 						for (int slot = 0; slot < handler.getSlots(); slot++) {
-							while (!handler.getStackInSlot(slot).isEmpty()
-									&& (arguments.size() < 3
-											|| Registry.ITEM.getKey(handler.getStackInSlot(slot).getItem()).toString()
-													.equals(arguments.get(3).trim()))
-									&& robot.wantsToPickUp(handler.extractItem(slot, 1, true))) {
+							while (!handler.getStackInSlot(slot).isEmpty() && (arguments.size() < 3
+									|| Registry.ITEM.getKey(handler.getStackInSlot(slot).getItem()).toString()
+									.equals(arguments.get(3).trim())) && robot.wantsToPickUp(
+									handler.extractItem(slot, 1, true))) {
 								robot.getInventory().addItem(handler.extractItem(slot, 1, false));
 							}
 						}
@@ -107,20 +97,17 @@ public class CodeHelper {
 			BlockPos pos = new BlockPos(eval(arguments.get(0)), eval(arguments.get(1)), eval(arguments.get(2)));
 			if (!pos.closerToCenterThan(robot.position(), 5) || robot.getLevel().isClientSide())
 				return;
-			robot.getLevel().getExistingBlockEntity(pos).getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+			robot.getLevel().getExistingBlockEntity(pos).getCapability(ForgeCapabilities.ITEM_HANDLER)
 					.ifPresent(handler -> {
 						Item itemToPush = Registry.ITEM.get(new ResourceLocation(arguments.get(3).trim().split(":")[0],
 								arguments.get(3).trim().split(":")[1]));
 						for (int slot = 0; slot < robot.getInventory().getContainerSize(); slot++) {
-							if (robot.getInventory().countItem(itemToPush) > 0
-									&& robot.getInventory().getItem(slot).getItem().equals(itemToPush)) {
+							if (robot.getInventory().countItem(itemToPush) > 0 && robot.getInventory().getItem(slot)
+									.getItem().equals(itemToPush)) {
 								for (int containerSlot = 0; containerSlot < handler.getSlots(); containerSlot++) {
-									robot.getInventory()
-											.setItem(slot,
-													handler.insertItem(slot,
-															robot.getInventory().removeItemType(itemToPush,
-																	robot.getInventory().countItem(itemToPush)),
-															false));
+									robot.getInventory().setItem(slot, handler.insertItem(slot, robot.getInventory()
+													.removeItemType(itemToPush, robot.getInventory().countItem(itemToPush)),
+											false));
 								}
 							}
 						}
@@ -180,8 +167,9 @@ public class CodeHelper {
 				commandMap.forEach((prefix, function) -> {
 					if (commandLine.startsWith("robot." + prefix))
 						try {
-							function.accept(robot, Arrays.asList(commandLine
-									.substring(commandLine.indexOf("(") + 1, commandLine.lastIndexOf(")")).split(",")));
+							function.accept(robot, Arrays.asList(
+									commandLine.substring(commandLine.indexOf("(") + 1, commandLine.lastIndexOf(")"))
+											.split(",")));
 						} catch (Exception exception) {
 							brodcastErrorToNearbyPlayers(robot, "robot." + prefix
 									+ " encountered an error. Please look at the Logs to learn more.");
@@ -209,8 +197,7 @@ public class CodeHelper {
 
 	private static void brodcastErrorToNearbyPlayers(AbstractRobotEntity robot, String message) {
 		int messageDistance = 10;
-		robot.getLevel()
-				.getEntitiesOfClass(Player.class,
+		robot.getLevel().getEntitiesOfClass(Player.class,
 						new AABB(robot.blockPosition().offset(-messageDistance, -messageDistance, -messageDistance),
 								robot.blockPosition().offset(messageDistance, messageDistance, messageDistance)))
 				.forEach(player -> {
@@ -246,7 +233,7 @@ public class CodeHelper {
 
 			double parseExpression() {
 				double x = this.parseTerm();
-				for (;;) {
+				for (; ; ) {
 					if (this.eat('+'))
 						x += this.parseTerm(); // addition
 					else if (this.eat('-'))
@@ -258,7 +245,7 @@ public class CodeHelper {
 
 			double parseTerm() {
 				double x = this.parseFactor();
-				for (;;) {
+				for (; ; ) {
 					if (this.eat('*'))
 						x *= this.parseFactor(); // multiplication
 					else if (this.eat('/'))

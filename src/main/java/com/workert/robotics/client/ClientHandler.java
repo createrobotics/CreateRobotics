@@ -5,14 +5,10 @@ import com.workert.robotics.Robotics;
 import com.workert.robotics.client.models.ClockcopterModel;
 import com.workert.robotics.client.models.CodeDroneModel;
 import com.workert.robotics.client.models.MinerModel;
-import com.workert.robotics.client.renderers.ClockcopterRenderer;
-import com.workert.robotics.client.renderers.CodeDroneRenderer;
-import com.workert.robotics.client.renderers.CodeEditorRenderer;
-import com.workert.robotics.client.renderers.MinerRenderer;
+import com.workert.robotics.client.renderers.*;
 import com.workert.robotics.entities.DroneContraptionEntity;
 import com.workert.robotics.lists.BlockEntityList;
 import com.workert.robotics.lists.EntityList;
-
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -28,6 +24,8 @@ public class ClientHandler {
 		event.registerEntityRenderer(EntityList.CLOCKCOPTER.get(), ClockcopterRenderer::new);
 		event.registerEntityRenderer(EntityList.MINER.get(), MinerRenderer::new);
 		event.registerEntityRenderer(EntityList.CODE_DRONE.get(), CodeDroneRenderer::new);
+		event.registerEntityRenderer(EntityList.EXTEND_O_BOOTS.get(), ExtendOBootsRenderer::new);
+
 		event.registerBlockEntityRenderer(BlockEntityList.CODE_EDITOR_BLOCK_ENTITY.get(), CodeEditorRenderer::new);
 	}
 
