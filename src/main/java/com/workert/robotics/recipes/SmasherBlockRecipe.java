@@ -26,7 +26,7 @@ public class SmasherBlockRecipe implements Recipe<SimpleContainer> {
 
 	@Override
 	public boolean matches(SimpleContainer pContainer, Level pLevel) {
-		if (pLevel == null)
+		if (pLevel == null || this.recipeItems.isEmpty())
 			return false;
 		return this.recipeItems.get(0).test(pContainer.getItem(1));
 	}
