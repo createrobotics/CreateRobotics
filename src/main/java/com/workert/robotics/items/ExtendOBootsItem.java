@@ -18,9 +18,11 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
+import java.util.HashMap;
+
 public class ExtendOBootsItem extends ArmorItem {
 	public static final double MAX_HEIGHT = 10;
-	private ExtendOBoots extendOBootsEntity;
+	private final HashMap<ItemStack, ExtendOBoots> extendOBootsEntites = new HashMap<>();
 	private Player player;
 
 	private boolean clientSentOff;
@@ -42,21 +44,24 @@ public class ExtendOBootsItem extends ArmorItem {
 		}
 		this.player = player;
 		if (stack.getOrCreateTag().getDouble("currentHeight") > 0) {
-			if (this.extendOBootsEntity == null) {
-				this.extendOBootsEntity = new ExtendOBoots(EntityList.EXTEND_O_BOOTS.get(), this.player.getLevel());
-				this.extendOBootsEntity.setPos(this.player.position());
-				this.extendOBootsEntity.setYRot(this.player.getYRot());
-				this.player.getLevel().addFreshEntity(this.extendOBootsEntity);
+			ExtendOBoots extendOBoots = this.extendOBootsEntites.get(stack);
+			if (extendOBoots == null) {
+				extendOBoots = new ExtendOBoots(EntityList.EXTEND_O_BOOTS.get(), this.player.getLevel());
+				extendOBoots.setPos(this.player.position());
+				extendOBoots.setYRot(this.player.getYRot());
+				this.player.getLevel().addFreshEntity(extendOBoots);
+				this.extendOBootsEntites.put(stack, extendOBoots);
 			}
-			player.teleportTo(player.getX(),
-					this.extendOBootsEntity.getY() + stack.getOrCreateTag().getDouble("currentHeight"), player.getZ());
-			this.player.setYRot(this.extendOBootsEntity.getYRot());
-			if (this.player.position().distanceTo(this.extendOBootsEntity.position().with(Direction.Axis.Y,
-					this.extendOBootsEntity.getY() + stack.getOrCreateTag().getDouble("currentHeight"))) > 0.1)
+			player.teleportTo(player.getX(), extendOBoots.getY() + stack.getOrCreateTag().getDouble("currentHeight"),
+					player.getZ());
+			this.player.setYRot(extendOBoots.getYRot());
+			if (this.player.position().distanceTo(extendOBoots.position()
+					.with(Direction.Axis.Y, extendOBoots.getY() + stack.getOrCreateTag().getDouble("currentHeight")))
+					> 0.1)
 				stack.getOrCreateTag().putDouble("currentHeight", 0);
-		} else if (this.extendOBootsEntity != null) {
-			this.extendOBootsEntity.discard();
-			this.extendOBootsEntity = null;
+		} else if (this.extendOBootsEntites.get(stack) != null) {
+			this.extendOBootsEntites.get(stack).discard();
+			this.extendOBootsEntites.put(stack, null);
 		}
 	}
 
