@@ -144,21 +144,21 @@ public class CodeHelper {
 			commandLine = commandLine.trim();
 
 			robot.localVariableLookupMap.forEach((name, value) -> {
-				commandLine = commandLine.replace("$" + name, value.apply(robot));
+				commandLine = commandLine.replace("${" + name + "}", value.apply(robot));
 				Robotics.LOGGER.debug(
-						"Trying to replace local variable \"$" + name + "\" with \"" + value.apply(robot) + "\"");
+						"Trying to replace local variable \"${" + name + "}\" with \"" + value.apply(robot) + "\"");
 			});
 
 			internalVariableLookupMap.forEach((name, value) -> {
-				commandLine = commandLine.replace("$" + name, value.apply(robot));
+				commandLine = commandLine.replace("${" + name + "}", value.apply(robot));
 				Robotics.LOGGER.debug(
-						"Trying to replace public variable \"$" + name + "\" with \"" + value.apply(robot) + "\"");
+						"Trying to replace public variable \"${" + name + "}\" with \"" + value.apply(robot) + "\"");
 			});
 
 			publicVariableLookupMap.forEach((name, value) -> {
-				commandLine = commandLine.replace("$" + name, value.apply(robot));
+				commandLine = commandLine.replace("${" + name + "}", value.apply(robot));
 				Robotics.LOGGER.debug(
-						"Trying to replace public variable \"$" + name + "\" with \"" + value.apply(robot) + "\"");
+						"Trying to replace public variable \"${" + name + "}\" with \"" + value.apply(robot) + "\"");
 			});
 
 			Robotics.LOGGER.debug("Reduced to:\"" + commandLine + "\"");
