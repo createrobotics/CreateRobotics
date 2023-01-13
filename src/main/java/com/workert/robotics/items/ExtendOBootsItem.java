@@ -21,7 +21,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import java.util.HashMap;
 
 public class ExtendOBootsItem extends ArmorItem {
-	public static final double MAX_HEIGHT = 10;
+	public static final float MAX_HEIGHT = 5;
 	private final HashMap<ItemStack, ExtendOBoots> extendOBootsEntites = new HashMap<>();
 	private Player player;
 
@@ -43,7 +43,7 @@ public class ExtendOBootsItem extends ArmorItem {
 			return;
 		}
 		this.player = player;
-		if (stack.getOrCreateTag().getDouble("currentHeight") > 0) {
+		if (stack.getOrCreateTag().getFloat("currentHeight") > 0) {
 			ExtendOBoots extendOBoots = this.extendOBootsEntites.get(stack);
 			if (extendOBoots == null) {
 				extendOBoots = new ExtendOBoots(EntityList.EXTEND_O_BOOTS.get(), this.player.getLevel());
@@ -52,13 +52,14 @@ public class ExtendOBootsItem extends ArmorItem {
 				this.player.getLevel().addFreshEntity(extendOBoots);
 				this.extendOBootsEntites.put(stack, extendOBoots);
 			}
-			player.teleportTo(player.getX(), extendOBoots.getY() + stack.getOrCreateTag().getDouble("currentHeight"),
+			player.teleportTo(player.getX(), extendOBoots.getY() + stack.getOrCreateTag().getFloat("currentHeight"),
 					player.getZ());
 			this.player.setYRot(extendOBoots.getYRot());
 			if (this.player.position().distanceTo(extendOBoots.position()
-					.with(Direction.Axis.Y, extendOBoots.getY() + stack.getOrCreateTag().getDouble("currentHeight")))
+					.with(Direction.Axis.Y, extendOBoots.getY() + stack.getOrCreateTag().getFloat("currentHeight")))
 					> 0.1)
-				stack.getOrCreateTag().putDouble("currentHeight", 0);
+				stack.getOrCreateTag().putFloat("currentHeight", 0);
+			extendOBoots.getEntityData().set(ExtendOBoots.HEIGHT, stack.getOrCreateTag().getFloat("currentHeight"));
 		} else if (this.extendOBootsEntites.get(stack) != null) {
 			this.extendOBootsEntites.get(stack).discard();
 			this.extendOBootsEntites.put(stack, null);

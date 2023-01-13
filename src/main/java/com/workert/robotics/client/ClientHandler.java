@@ -4,6 +4,7 @@ import com.simibubi.create.content.contraptions.components.structureMovement.ren
 import com.workert.robotics.Robotics;
 import com.workert.robotics.client.models.ClockcopterModel;
 import com.workert.robotics.client.models.CodeDroneModel;
+import com.workert.robotics.client.models.ExtendOBootsModel;
 import com.workert.robotics.client.models.MinerModel;
 import com.workert.robotics.client.renderers.*;
 import com.workert.robotics.entities.DroneContraptionEntity;
@@ -34,6 +35,7 @@ public class ClientHandler {
 		event.registerLayerDefinition(ClockcopterModel.LAYER_LOCATION, ClockcopterModel::createBodyLayer);
 		event.registerLayerDefinition(MinerModel.LAYER_LOCATION, MinerModel::createBodyLayer);
 		event.registerLayerDefinition(CodeDroneModel.LAYER_LOCATION, CodeDroneModel::createBodyLayer);
+		event.registerLayerDefinition(ExtendOBootsModel.LAYER_LOCATION, ExtendOBootsModel::createBodyLayer);
 	}
 
 }

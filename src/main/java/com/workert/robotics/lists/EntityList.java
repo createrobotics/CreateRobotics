@@ -36,13 +36,14 @@ public class EntityList {
 
 	public static final RegistryObject<EntityType<ExtendOBoots>> EXTEND_O_BOOTS = ENTITY_TYPES.register(
 			"extend_o_boots",
-			() -> EntityType.Builder.of(ExtendOBoots::new, MobCategory.MISC).sized(0.2f, 0.0f).noSummon()
+			() -> EntityType.Builder.of(ExtendOBoots::new, MobCategory.MISC).sized(0.2f, 0.2f).noSummon()
 					.clientTrackingRange(64).build(new ResourceLocation(Robotics.MOD_ID, "extend_o_boots").toString()));
 
 	public static void addEntityAttributes(EntityAttributeCreationEvent event) {
 		event.put(EntityList.CLOCKCOPTER.get(), Clockcopter.createAttributes());
 		event.put(EntityList.MINER.get(), Miner.createAttributes());
 		event.put(EntityList.CODE_DRONE.get(), CodeDrone.createAttributes());
+		event.put(EntityList.EXTEND_O_BOOTS.get(), ExtendOBoots.createAttributes());
 	}
 
 }
