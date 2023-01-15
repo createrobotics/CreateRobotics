@@ -1,7 +1,6 @@
 package com.workert.robotics.lists;
 
 import com.workert.robotics.Robotics;
-import com.workert.robotics.blockentities.CodeEditorBlockEntity;
 import com.workert.robotics.blockentities.DroneAssemblerBlockEntity;
 import com.workert.robotics.blockentities.SmasherBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -22,10 +21,6 @@ public class BlockEntityList {
 			"drone_assembler_block_entity",
 			() -> BlockEntityType.Builder.of(DroneAssemblerBlockEntity::new, BlockList.DRONE_ASSEMBLER.get())
 					.build(null));
-
-	public static final RegistryObject<BlockEntityType<CodeEditorBlockEntity>> CODE_EDITOR_BLOCK_ENTITY = BLOCK_ENTITIES.register(
-			"code_editor_block_entity",
-			() -> BlockEntityType.Builder.of(CodeEditorBlockEntity::new, BlockList.CODE_EDITOR.get()).build(null));
 
 	public static void register(IEventBus eventBus) {
 		BLOCK_ENTITIES.register(eventBus);

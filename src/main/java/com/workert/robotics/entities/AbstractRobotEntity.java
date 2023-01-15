@@ -3,6 +3,7 @@ package com.workert.robotics.entities;
 import com.simibubi.create.AllItems;
 import com.simibubi.create.content.curiosities.armor.BackTankUtil;
 import com.workert.robotics.helpers.CodeHelper;
+import com.workert.robotics.lists.ItemList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.*;
@@ -112,9 +113,17 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 
 	@Override
 	protected InteractionResult mobInteract(Player pPlayer, InteractionHand pHand) {
-		if (this.isProgrammable() && pPlayer.getItemInHand(pHand).getItem().equals(AllItems.WRENCH.get().asItem())
+		if (this.isProgrammable() && pPlayer.getItemInHand(pHand).is(AllItems.WRENCH.get().asItem())
 				&& !pPlayer.isCrouching()) {
 			CompletableFuture.runAsync(() -> CodeHelper.runCode(this, this.code));
+			return InteractionResult.SUCCESS;
+		} else if (this.isProgrammable() && pPlayer.getItemInHand(pHand).is(ItemList.PROGRAM.get())
+				&& !pPlayer.isCrouching()) {
+			this.code = pPlayer.getItemInHand(pHand).getOrCreateTag().getString("code");
+			if (!pPlayer.isCreative()) {
+				pPlayer.setItemInHand(pHand, ItemStack.EMPTY);
+				return InteractionResult.CONSUME;
+			}
 			return InteractionResult.SUCCESS;
 		} else if (this.hasInventory() && !pPlayer.isCrouching()) {
 			pPlayer.openMenu(new SimpleMenuProvider(new MenuConstructor() {

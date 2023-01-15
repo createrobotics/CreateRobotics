@@ -105,7 +105,7 @@ public class CodeHelper {
 								arguments.get(3).trim().split(":")[1]));
 						for (int slot = 0; slot < robot.getInventory().getContainerSize(); slot++) {
 							if (robot.getInventory().countItem(itemToPush) > 0 && robot.getInventory().getItem(slot)
-									.getItem().equals(itemToPush)) {
+									.is(itemToPush)) {
 								for (int containerSlot = 0; containerSlot < handler.getSlots(); containerSlot++) {
 									robot.getInventory().setItem(slot, handler.insertItem(slot, robot.getInventory()
 													.removeItemType(itemToPush, robot.getInventory().countItem(itemToPush)),
@@ -130,6 +130,8 @@ public class CodeHelper {
 	public static void runCode(AbstractRobotEntity robot, String code) {
 		if (code == null || code.isBlank())
 			return;
+
+		code.replace("|", "");
 
 		Robotics.LOGGER.debug("Starting to run code!");
 		for (String command : code.split(";")) {

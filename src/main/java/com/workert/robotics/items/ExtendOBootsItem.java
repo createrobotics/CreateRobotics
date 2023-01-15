@@ -1,6 +1,5 @@
 package com.workert.robotics.items;
 
-import com.workert.robotics.Robotics;
 import com.workert.robotics.client.KeybindList;
 import com.workert.robotics.entities.ExtendOBoots;
 import com.workert.robotics.lists.EntityList;
@@ -68,13 +67,10 @@ public class ExtendOBootsItem extends ArmorItem {
 
 	@SubscribeEvent
 	public void detectScroll(InputEvent.MouseScrollingEvent mouseEvent) {
-		Robotics.LOGGER.info("Detected Scroll!");
 		if (mouseEvent.getScrollDelta() > 0 && KeybindList.changeExtendOBootsHeight.isDown()) {
-			Robotics.LOGGER.info("Detected positive Scroll!");
 			this.clientSentOff = false;
 			PacketList.CHANNEL.sendToServer(new ChangeExtendOBootsHeightPacket(0.5));
 		} else if (mouseEvent.getScrollDelta() < 0 && KeybindList.changeExtendOBootsHeight.isDown()) {
-			Robotics.LOGGER.info("Detected negative Scroll!");
 			this.clientSentOff = false;
 			PacketList.CHANNEL.sendToServer(new ChangeExtendOBootsHeightPacket(-0.5));
 		}
