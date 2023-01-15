@@ -16,7 +16,6 @@ import net.minecraft.network.chat.Component;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
-import java.lang.reflect.Field;
 
 public class CodeEditorScreen extends AbstractSimiScreen {
 
@@ -95,33 +94,23 @@ public class CodeEditorScreen extends AbstractSimiScreen {
 				.rotateX(-22).rotateY(63);
 
 		ms.popPose();
+
+		GuiComponent.drawCenteredString(ms, new NoShadowFontWrapper(this.font), "Drone Programmer", this.width / 2,
+				this.guiTop + 4, 0x442000);
+
+		GuiComponent.drawCenteredString(ms, new NoShadowFontWrapper(this.font), "yes I will make", this.width / 2,
+				this.guiTop + 64, 0x4a4a4a);
+		GuiComponent.drawCenteredString(ms, new NoShadowFontWrapper(this.font), "my own background!", this.width / 2,
+				this.guiTop + 73, 0x4a4a4a);
+
+		GuiComponent.drawCenteredString(ms, new NoShadowFontWrapper(this.font), "Click this to edit code ->",
+				this.width / 2 - 27, this.guiTop + 109, 0x442000);
 	}
 
 	@Override
 	public void render(PoseStack ms, int pMouseX, int pMouseY, float pPartialTick) {
-		GuiComponent.drawCenteredString(ms, new NoShadowFontWrapper(this.font), "Drone Programmer", this.width / 2,
-				this.guiTop + 4, 0x442000);
-
 		this.renderBackground(ms);
-		this.setFocused(null);
-
 		super.render(ms, pMouseX, pMouseY, pPartialTick);
-	}
-
-	private static void setHeadless(boolean enabled) {
-		try {
-			System.setProperty("java.awt.headless", Boolean.toString(enabled));
-			Field defaultHeadlessField = java.awt.GraphicsEnvironment.class.getDeclaredField("defaultHeadless");
-			defaultHeadlessField.setAccessible(true);
-			defaultHeadlessField.set(null, enabled);
-			Field headlessField = java.awt.GraphicsEnvironment.class.getDeclaredField("headless");
-			headlessField.setAccessible(true);
-			headlessField.set(null, enabled);
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (NoSuchFieldException e) {
-			e.printStackTrace();
-		}
 	}
 
 }
