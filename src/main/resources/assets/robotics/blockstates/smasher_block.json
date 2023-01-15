@@ -1,8 +1,19 @@
 {
   "variants": {
-    "facing=north": { "model":  "robotics:block/smasher_block"},
-    "facing=east": { "model":  "robotics:block/smasher_block", "y":  90},
-    "facing=south": { "model":  "robotics:block/smasher_block", "y":  180},
-    "facing=west": { "model":  "robotics:block/smasher_block", "y":  270}
+    "facing=north": {
+      "model": "robotics:block/smasher_block"
+    },
+    "facing=east": {
+      "model": "robotics:block/smasher_block",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "robotics:block/smasher_block",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "robotics:block/smasher_block",
+      "y": 270
+    }
   }
 }

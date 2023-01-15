@@ -3,7 +3,6 @@ package com.workert.robotics.blocks;
 import com.simibubi.create.AllShapes;
 import com.simibubi.create.content.logistics.block.depot.SharedDepotBlockMethods;
 import com.workert.robotics.blockentities.CodeEditorBlockEntity;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;

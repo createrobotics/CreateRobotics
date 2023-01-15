@@ -1,15 +1,9 @@
 package com.workert.robotics.world.feature;
 
-import java.util.List;
-import java.util.function.Supplier;
-
 import com.google.common.base.Suppliers;
 import com.workert.robotics.Robotics;
 import com.workert.robotics.lists.BlockList;
-
-import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
-import net.minecraft.data.worldgen.features.FeatureUtils;
 import net.minecraft.data.worldgen.features.OreFeatures;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
@@ -18,12 +12,14 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 
+import java.util.List;
+import java.util.function.Supplier;
+
 public class ModConfiguredFeatures {
-	public static final DeferredRegister<ConfiguredFeature<?, ?>> CONFIGURED_FEATURES = DeferredRegister
-			.create(Registry.CONFIGURED_FEATURE_REGISTRY, Robotics.MOD_ID);
-	public static final Supplier<List<OreConfiguration.TargetBlockState>> OVERWORLD_TIN_ORES = Suppliers
-			.memoize(() -> List.of(
-					OreConfiguration.target(OreFeatures.STONE_ORE_REPLACEABLES,
+	public static final DeferredRegister<ConfiguredFeature<?, ?>> CONFIGURED_FEATURES = DeferredRegister.create(
+			Registry.CONFIGURED_FEATURE_REGISTRY, Robotics.MOD_ID);
+	public static final Supplier<List<OreConfiguration.TargetBlockState>> OVERWORLD_TIN_ORES = Suppliers.memoize(
+			() -> List.of(OreConfiguration.target(OreFeatures.STONE_ORE_REPLACEABLES,
 							BlockList.TIN_ORE.get().defaultBlockState()),
 					OreConfiguration.target(OreFeatures.DEEPSLATE_ORE_REPLACEABLES,
 							BlockList.DEEPSLATE_TIN_ORE.get().defaultBlockState())));

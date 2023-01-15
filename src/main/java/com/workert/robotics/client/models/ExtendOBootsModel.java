@@ -28,20 +28,26 @@ public class ExtendOBootsModel<T extends ExtendOBoots> extends EntityModel<T> {
 		PartDefinition post0 = partdefinition.addOrReplaceChild("post0", CubeListBuilder.create(),
 				PartPose.offset(0.0F, 24.0F, 0.0F));
 
-		PartDefinition cube_r1 = post0.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(0, 0)
-						.addBox(-8.0F, -80.0F, 0.0F, 16.0F, 80.0F, 0.0F, new CubeDeformation(0.0F)).texOffs(0, -16)
+		PartDefinition cube_r1 = post0.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(0, -16)
 						.addBox(0.0F, -80.0F, -8.0F, 0.0F, 80.0F, 16.0F, new CubeDeformation(0.0F)),
 				PartPose.offsetAndRotation(-3.0F, 0.0F, 0.0F, 0.0F, -0.7854F, 0.0F));
+
+		PartDefinition cube_r2 = post0.addOrReplaceChild("cube_r2", CubeListBuilder.create().texOffs(0, -16)
+						.addBox(0.0F, -80.0F, -8.0F, 0.0F, 80.0F, 16.0F, new CubeDeformation(0.0F)),
+				PartPose.offsetAndRotation(-3.0F, 0.0F, 0.0F, 0.0F, 0.7854F, 0.0F));
 
 		PartDefinition post1 = partdefinition.addOrReplaceChild("post1", CubeListBuilder.create(),
 				PartPose.offset(0.0F, 24.0F, 0.0F));
 
-		PartDefinition cube_r2 = post1.addOrReplaceChild("cube_r2", CubeListBuilder.create().texOffs(0, 0)
-						.addBox(-8.0F, -80.0F, 0.0F, 16.0F, 80.0F, 0.0F, new CubeDeformation(0.0F)).texOffs(0, -16)
+		PartDefinition cube_r3 = post1.addOrReplaceChild("cube_r3", CubeListBuilder.create().texOffs(0, -16)
+						.addBox(0.0F, -80.0F, -8.0F, 0.0F, 80.0F, 16.0F, new CubeDeformation(0.0F)),
+				PartPose.offsetAndRotation(3.0F, 0.0F, 0.0F, 0.0F, 0.7854F, 0.0F));
+
+		PartDefinition cube_r4 = post1.addOrReplaceChild("cube_r4", CubeListBuilder.create().texOffs(0, -16)
 						.addBox(0.0F, -80.0F, -8.0F, 0.0F, 80.0F, 16.0F, new CubeDeformation(0.0F)),
 				PartPose.offsetAndRotation(3.0F, 0.0F, 0.0F, 0.0F, -0.7854F, 0.0F));
 
-		return LayerDefinition.create(meshdefinition, 32, 32);
+		return LayerDefinition.create(meshdefinition, 256, 256);
 	}
 
 	@Override

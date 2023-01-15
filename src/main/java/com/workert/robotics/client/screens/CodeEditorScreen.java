@@ -1,28 +1,16 @@
 package com.workert.robotics.client.screens;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.mutable.MutableBoolean;
-import org.apache.commons.lang3.mutable.MutableInt;
-
 import com.google.common.collect.Lists;
 import com.jozufozu.flywheel.util.transform.TransformStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.*;
 import com.simibubi.create.content.logistics.trains.management.edgePoint.station.NoShadowFontWrapper;
 import com.simibubi.create.foundation.gui.AbstractSimiScreen;
 import com.simibubi.create.foundation.gui.AllGuiTextures;
 import com.simibubi.create.foundation.gui.AllIcons;
 import com.simibubi.create.foundation.gui.widget.IconButton;
-
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.SharedConstants;
@@ -30,7 +18,6 @@ import net.minecraft.Util;
 import net.minecraft.client.StringSplitter;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiComponent;
-import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.font.TextFieldHelper;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.BookViewScreen;
@@ -41,6 +28,12 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.mutable.MutableBoolean;
+import org.apache.commons.lang3.mutable.MutableInt;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class CodeEditorScreen extends AbstractSimiScreen {
 
@@ -54,8 +47,8 @@ public class CodeEditorScreen extends AbstractSimiScreen {
 	private long lastClickTime;
 	private int lastIndex = -1;
 
-	private DisplayCache displayCache = new DisplayCache("", new CodeEditorScreen.Pos2i(0, 0), true, new int[] { 0 },
-			new CodeEditorScreen.LineInfo[] { new CodeEditorScreen.LineInfo(Style.EMPTY, "", 0, 0) }, new Rect2i[0]);
+	private DisplayCache displayCache = new DisplayCache("", new CodeEditorScreen.Pos2i(0, 0), true, new int[] {0},
+			new CodeEditorScreen.LineInfo[] {new CodeEditorScreen.LineInfo(Style.EMPTY, "", 0, 0)}, new Rect2i[0]);
 	private String code = "";
 
 	private int frameTick;
@@ -98,7 +91,7 @@ public class CodeEditorScreen extends AbstractSimiScreen {
 		this.codeTextBox.setTextColor(0xFFFFFF);
 		this.codeTextBox.setValue(this.drone.droneCode);
 		this.codeTextBox.mouseClicked(0, 0, 0);
-		
+
 		this.addRenderableWidget(this.codeTextBox);*/
 	}
 
@@ -123,7 +116,7 @@ public class CodeEditorScreen extends AbstractSimiScreen {
 				this.guiTop + 4, 0x442000);
 
 		this.renderBackground(ms);
-		this.setFocused((GuiEventListener) null);
+		this.setFocused(null);
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderSystem.setShaderTexture(0, BookViewScreen.BOOK_LOCATION);
@@ -410,8 +403,8 @@ public class CodeEditorScreen extends AbstractSimiScreen {
 				mutableboolean.setValue(s2.endsWith("\n"));
 				String s3 = StringUtils.stripEnd(s2, " \n");
 				int l3 = k3 * 9;
-				CodeEditorScreen.Pos2i CodeDroneScreen$pos2i1 = this
-						.convertLocalToScreen(new CodeEditorScreen.Pos2i(0, l3));
+				CodeEditorScreen.Pos2i CodeDroneScreen$pos2i1 = this.convertLocalToScreen(
+						new CodeEditorScreen.Pos2i(0, l3));
 				intlist.add(p_98133_);
 				list.add(new CodeEditorScreen.LineInfo(p_98132_, s3, CodeDroneScreen$pos2i1.x,
 						CodeDroneScreen$pos2i1.y));
@@ -464,9 +457,8 @@ public class CodeEditorScreen extends AbstractSimiScreen {
 
 	@OnlyIn(Dist.CLIENT)
 	static class DisplayCache {
-		static final DisplayCache EMPTY = new DisplayCache("", new CodeEditorScreen.Pos2i(0, 0), true, new int[] { 0 },
-				new CodeEditorScreen.LineInfo[] { new CodeEditorScreen.LineInfo(Style.EMPTY, "", 0, 0) },
-				new Rect2i[0]);
+		static final DisplayCache EMPTY = new DisplayCache("", new CodeEditorScreen.Pos2i(0, 0), true, new int[] {0},
+				new CodeEditorScreen.LineInfo[] {new CodeEditorScreen.LineInfo(Style.EMPTY, "", 0, 0)}, new Rect2i[0]);
 		private final String fullText;
 		final CodeEditorScreen.Pos2i cursor;
 		final boolean cursorAtEnd;
@@ -492,8 +484,9 @@ public class CodeEditorScreen extends AbstractSimiScreen {
 				return this.fullText.length();
 			} else {
 				CodeEditorScreen.LineInfo CodeDroneScreen$lineinfo = this.lines[i];
-				return this.lineStarts[i] + pFont.getSplitter().plainIndexAtWidth(CodeDroneScreen$lineinfo.contents,
-						pCursorPosition.x, CodeDroneScreen$lineinfo.style);
+				return this.lineStarts[i] + pFont.getSplitter()
+						.plainIndexAtWidth(CodeDroneScreen$lineinfo.contents, pCursorPosition.x,
+								CodeDroneScreen$lineinfo.style);
 			}
 		}
 

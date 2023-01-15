@@ -4,16 +4,11 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.workert.robotics.Robotics;
 import com.workert.robotics.entities.CodeDrone;
-
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.CubeDeformation;
-import net.minecraft.client.model.geom.builders.CubeListBuilder;
-import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.model.geom.builders.PartDefinition;
+import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
 
 public class CodeDroneModel<T extends CodeDrone> extends EntityModel<T> {
@@ -37,11 +32,11 @@ public class CodeDroneModel<T extends CodeDrone> extends EntityModel<T> {
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
 
-		PartDefinition body = partdefinition.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 0).addBox(
-				-2.5F, -2.0F, -2.5F, 5.0F, 5.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 21.0F, 0.0F));
+		PartDefinition body = partdefinition.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 0)
+						.addBox(-2.5F, -2.0F, -2.5F, 5.0F, 5.0F, 5.0F, new CubeDeformation(0.0F)),
+				PartPose.offset(0.0F, 21.0F, 0.0F));
 
-		PartDefinition fan0 = partdefinition.addOrReplaceChild("fan0",
-				CubeListBuilder.create().texOffs(0, 0)
+		PartDefinition fan0 = partdefinition.addOrReplaceChild("fan0", CubeListBuilder.create().texOffs(0, 0)
 						.addBox(-5.5F, -0.5F, -5.5F, 5.0F, 1.0F, 5.0F, new CubeDeformation(0.0F)).texOffs(0, 0)
 						.addBox(-6.5F, -1.0F, -6.5F, 7.0F, 2.0F, 1.0F, new CubeDeformation(0.0F)).texOffs(0, 0)
 						.addBox(-6.5F, -1.0F, -5.5F, 1.0F, 2.0F, 5.0F, new CubeDeformation(0.0F)).texOffs(0, 0)
@@ -49,8 +44,7 @@ public class CodeDroneModel<T extends CodeDrone> extends EntityModel<T> {
 						.addBox(-0.5F, -1.0F, -5.5F, 1.0F, 2.0F, 5.0F, new CubeDeformation(0.0F)),
 				PartPose.offset(-2.5F, 19.5F, -2.5F));
 
-		PartDefinition fan1 = partdefinition.addOrReplaceChild("fan1",
-				CubeListBuilder.create().texOffs(0, 0)
+		PartDefinition fan1 = partdefinition.addOrReplaceChild("fan1", CubeListBuilder.create().texOffs(0, 0)
 						.addBox(-5.5F, -0.5F, 0.5F, 5.0F, 1.0F, 5.0F, new CubeDeformation(0.0F)).texOffs(0, 0)
 						.addBox(-6.5F, -1.0F, -0.5F, 7.0F, 2.0F, 1.0F, new CubeDeformation(0.0F)).texOffs(0, 0)
 						.addBox(-6.5F, -1.0F, 0.5F, 1.0F, 2.0F, 5.0F, new CubeDeformation(0.0F)).texOffs(0, 0)
@@ -58,8 +52,7 @@ public class CodeDroneModel<T extends CodeDrone> extends EntityModel<T> {
 						.addBox(-0.5F, -1.0F, 0.5F, 1.0F, 2.0F, 5.0F, new CubeDeformation(0.0F)),
 				PartPose.offset(-2.5F, 19.5F, 2.5F));
 
-		PartDefinition fan2 = partdefinition.addOrReplaceChild("fan2",
-				CubeListBuilder.create().texOffs(0, 0)
+		PartDefinition fan2 = partdefinition.addOrReplaceChild("fan2", CubeListBuilder.create().texOffs(0, 0)
 						.addBox(0.5F, -0.5F, -5.5F, 5.0F, 1.0F, 5.0F, new CubeDeformation(0.0F)).texOffs(0, 0)
 						.addBox(-0.5F, -1.0F, -6.5F, 7.0F, 2.0F, 1.0F, new CubeDeformation(0.0F)).texOffs(0, 0)
 						.addBox(-0.5F, -1.0F, -5.5F, 1.0F, 2.0F, 5.0F, new CubeDeformation(0.0F)).texOffs(0, 0)
@@ -67,8 +60,7 @@ public class CodeDroneModel<T extends CodeDrone> extends EntityModel<T> {
 						.addBox(5.5F, -1.0F, -5.5F, 1.0F, 2.0F, 5.0F, new CubeDeformation(0.0F)),
 				PartPose.offset(2.5F, 19.5F, -2.5F));
 
-		PartDefinition fan3 = partdefinition.addOrReplaceChild("fan3",
-				CubeListBuilder.create().texOffs(0, 0)
+		PartDefinition fan3 = partdefinition.addOrReplaceChild("fan3", CubeListBuilder.create().texOffs(0, 0)
 						.addBox(0.5F, -0.5F, 0.5F, 5.0F, 1.0F, 5.0F, new CubeDeformation(0.0F)).texOffs(0, 0)
 						.addBox(-0.5F, -1.0F, -0.5F, 7.0F, 2.0F, 1.0F, new CubeDeformation(0.0F)).texOffs(0, 0)
 						.addBox(-0.5F, -1.0F, 0.5F, 1.0F, 2.0F, 5.0F, new CubeDeformation(0.0F)).texOffs(0, 0)

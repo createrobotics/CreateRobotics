@@ -1,20 +1,20 @@
 package com.workert.robotics.entities.goals;
 
-import java.util.EnumSet;
-
 import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.player.Player;
 
+import java.util.EnumSet;
+
 public class RobotFollowPlayerOwnerGoal extends Goal {
 
-	private PathfinderMob robot;
-	private double speedModifier;
-	private PathNavigation navigation;
-	private float startDistance;
-	private float stopDistance;
+	private final PathfinderMob robot;
+	private final double speedModifier;
+	private final PathNavigation navigation;
+	private final float startDistance;
+	private final float stopDistance;
 	private Player owner;
 	private int timeToRecalcPath;
 
@@ -31,8 +31,8 @@ public class RobotFollowPlayerOwnerGoal extends Goal {
 	@Override
 	public boolean canUse() {
 		Player livingentity = (Player) ((OwnableEntity) this.robot).getOwner();
-		if (((livingentity == null) || livingentity.isSpectator())
-				|| (this.robot.distanceToSqr(livingentity) < this.startDistance * this.startDistance)) {
+		if (((livingentity == null) || livingentity.isSpectator()) || (this.robot.distanceToSqr(livingentity)
+				< this.startDistance * this.startDistance)) {
 			return false;
 		} else {
 			this.owner = livingentity;

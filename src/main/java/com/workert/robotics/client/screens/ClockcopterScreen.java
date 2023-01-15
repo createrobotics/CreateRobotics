@@ -5,7 +5,6 @@ import com.simibubi.create.foundation.gui.AbstractSimiScreen;
 import com.simibubi.create.foundation.gui.AllGuiTextures;
 import com.simibubi.create.foundation.gui.widget.IconButton;
 import com.workert.robotics.entities.Clockcopter;
-import com.workert.robotics.entities.CodeDrone;
 import net.minecraft.client.gui.components.EditBox;
 
 public class ClockcopterScreen extends AbstractSimiScreen {

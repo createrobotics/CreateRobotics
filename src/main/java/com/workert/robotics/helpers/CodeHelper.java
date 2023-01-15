@@ -3,9 +3,11 @@ package com.workert.robotics.helpers;
 import com.simibubi.create.content.contraptions.components.deployer.DeployerFakePlayer;
 import com.workert.robotics.Robotics;
 import com.workert.robotics.entities.AbstractRobotEntity;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
@@ -201,7 +203,8 @@ public class CodeHelper {
 						new AABB(robot.blockPosition().offset(-messageDistance, -messageDistance, -messageDistance),
 								robot.blockPosition().offset(messageDistance, messageDistance, messageDistance)))
 				.forEach(player -> {
-					player.displayClientMessage(Component.literal(message), false);
+					player.displayClientMessage(Component.literal("<!> ").withStyle(ChatFormatting.YELLOW)
+							.append(Component.literal(message).withStyle(Style.EMPTY)), false);
 				});
 	}
 

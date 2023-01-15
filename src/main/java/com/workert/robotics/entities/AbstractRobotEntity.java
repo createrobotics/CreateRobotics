@@ -1,22 +1,11 @@
 package com.workert.robotics.entities;
 
-import java.util.HashMap;
-import java.util.concurrent.CompletableFuture;
-import java.util.function.Function;
-
-import javax.annotation.Nonnull;
-
 import com.simibubi.create.AllItems;
 import com.simibubi.create.content.curiosities.armor.BackTankUtil;
 import com.workert.robotics.helpers.CodeHelper;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.SimpleContainer;
-import net.minecraft.world.SimpleMenuProvider;
+import net.minecraft.world.*;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EntityType;
@@ -36,6 +25,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
+
+import java.util.HashMap;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 
 public abstract class AbstractRobotEntity extends PathfinderMob implements InventoryCarrier {
 	private int air;
@@ -160,7 +153,7 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 
 	@Override
 	public boolean wantsToPickUp(ItemStack pStack) {
-		return this.hasInventory() ? this.inventory.canAddItem(pStack) : false;
+		return this.hasInventory() && this.inventory.canAddItem(pStack);
 	}
 
 	@Override

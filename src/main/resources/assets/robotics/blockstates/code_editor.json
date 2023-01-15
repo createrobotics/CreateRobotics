@@ -1,5 +1,7 @@
 {
   "variants": {
-    "": { "model":  "create:block/depot/block"}
+    "": {
+      "model": "create:block/depot/block"
+    }
   }
 }

@@ -1,18 +1,18 @@
-modLoader="javafml"
-loaderVersion="[42,)"
+modLoader = "javafml"
+loaderVersion = "[42,)"
 
-license="All rights reserved"
+license = "All rights reserved"
 
 [[mods]]
-modId="robotics"
-version="${file.jarVersion}"
+modId = "robotics"
+version = "${file.jarVersion}"
 
-displayName="Create Robotics"
-logoFile="icon.png"
+displayName = "Create Robotics"
+logoFile = "icon.png"
 
-authors="Workert, OutCraft, RealDarkStudios"
+authors = "Workert, OutCraft, RealDarkStudios"
 
-description='''
+description = '''
 Create Robotics is a mod about Robots and Robotics Automation in Minecraft using the Create mod.
 Robots have many uses, some help you at specific tasks, some automate your factory and some fight your enemies.
 Create Robotics has also a system planned for you to build and code your own robots.
@@ -20,15 +20,15 @@ Create Robotics has also a system planned for you to build and code your own rob
 
 
 [[dependencies.robotics]]
-    modId="forge"
-    mandatory=true
-    versionRange="[42,)"
-    ordering="NONE"
-    side="BOTH"
+modId = "forge"
+mandatory = true
+versionRange = "[42,)"
+ordering = "NONE"
+side = "BOTH"
 
 [[dependencies.robotics]]
-    modId="minecraft"
-    mandatory=true
-    versionRange="[1.19.2,1.20)"
-    ordering="NONE"
-    side="BOTH"
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.19.2,1.20)"
+ordering = "NONE"
+side = "BOTH"

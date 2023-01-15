@@ -6,7 +6,6 @@ import com.workert.robotics.blocks.DroneAssembler;
 import com.workert.robotics.contraptions.DroneContraption;
 import com.workert.robotics.entities.DroneContraptionEntity;
 import com.workert.robotics.lists.BlockEntityList;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntity;

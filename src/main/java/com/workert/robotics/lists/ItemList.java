@@ -1,19 +1,21 @@
 package com.workert.robotics.lists;
 
-import java.util.Optional;
-
 import com.workert.robotics.Robotics;
 import com.workert.robotics.items.ExtendOBootsItem;
 import com.workert.robotics.items.ModArmorMaterials;
 import com.workert.robotics.items.ProgramItem;
-
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+
+import java.util.Optional;
 
 public class ItemList {
 	public static final CreativeModeTab ROBOTICS_TAB = new CreativeModeTab("robotics") {

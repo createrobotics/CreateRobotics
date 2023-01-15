@@ -1,5 +1,7 @@
 {
   "variants": {
-    "": { "model":  "robotics:block/tin_ore"}
+    "": {
+      "model": "robotics:block/tin_ore"
+    }
   }
 }

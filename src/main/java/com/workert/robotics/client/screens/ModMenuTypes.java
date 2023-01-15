@@ -1,7 +1,6 @@
 package com.workert.robotics.client.screens;
 
 import com.workert.robotics.Robotics;
-
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.common.extensions.IForgeMenuType;

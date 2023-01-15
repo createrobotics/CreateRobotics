@@ -1,7 +1,6 @@
 package com.workert.robotics.entities;
 
 import com.workert.robotics.entities.goals.MineBlockAndDropGoal;
-
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -50,8 +49,9 @@ public class Clockcopter extends AbstractRobotEntity implements FlyingAnimal {
 
 	@Override
 	protected void registerGoals() {
-		this.goalSelector.addGoal(0, new MineBlockAndDropGoal(this,
-				ForgeRegistries.BLOCKS.tags().getTag(Tags.Blocks.ORES).stream().toList(), 0.9, 16, 4));
+		this.goalSelector.addGoal(0,
+				new MineBlockAndDropGoal(this, ForgeRegistries.BLOCKS.tags().getTag(Tags.Blocks.ORES).stream().toList(),
+						0.9, 16, 4));
 		// this.goalSelector.addGoal(1, new RobotFollowPlayerOwnerGoal(this, 1.2, 16, 5));
 	}
 

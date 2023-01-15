@@ -1,16 +1,8 @@
 package com.workert.robotics.blockentities;
 
-import java.util.Optional;
-
-import javax.annotation.Nonnull;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import com.workert.robotics.client.screens.SmasherBlockMenu;
 import com.workert.robotics.lists.BlockEntityList;
 import com.workert.robotics.recipes.SmasherBlockRecipe;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -32,6 +24,11 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.Nonnull;
+import java.util.Optional;
 
 public class SmasherBlockEntity extends BlockEntity implements MenuProvider {
 
@@ -159,11 +156,11 @@ public class SmasherBlockEntity extends BlockEntity implements MenuProvider {
 			inventory.setItem(i, entity.itemHandler.getStackInSlot(i));
 		}
 
-		Optional<SmasherBlockRecipe> match = level.getRecipeManager().getRecipeFor(SmasherBlockRecipe.Type.INSTANCE,
-				inventory, level);
+		Optional<SmasherBlockRecipe> match = level.getRecipeManager()
+				.getRecipeFor(SmasherBlockRecipe.Type.INSTANCE, inventory, level);
 
-		return match.isPresent() && canInsertAmountIntoOutputSlot(inventory)
-				&& canInsertItemIntoOutputSlot(inventory, match.get().getResultItem()) && hasFuelInFuelSlot(entity);
+		return match.isPresent() && canInsertAmountIntoOutputSlot(inventory) && canInsertItemIntoOutputSlot(inventory,
+				match.get().getResultItem()) && hasFuelInFuelSlot(entity);
 	}
 
 	private static boolean hasFuelInFuelSlot(SmasherBlockEntity entity) {
@@ -177,8 +174,8 @@ public class SmasherBlockEntity extends BlockEntity implements MenuProvider {
 			inventory.setItem(i, entity.itemHandler.getStackInSlot(i));
 		}
 
-		Optional<SmasherBlockRecipe> match = level.getRecipeManager().getRecipeFor(SmasherBlockRecipe.Type.INSTANCE,
-				inventory, level);
+		Optional<SmasherBlockRecipe> match = level.getRecipeManager()
+				.getRecipeFor(SmasherBlockRecipe.Type.INSTANCE, inventory, level);
 
 		if (match.isPresent()) {
 			entity.itemHandler.extractItem(0, 1, false);

@@ -7,5 +7,4 @@ public class ProgramItem extends Item {
 	public ProgramItem(Properties pProperties) {
 		super(pProperties);
 	}
-
 }
