@@ -141,6 +141,9 @@ public class CodeHelper {
 			}
 			commandLine = command;
 
+			if (commandLine.startsWith("//"))
+				return;
+
 			Robotics.LOGGER.debug("Running line:\"" + commandLine + "\"");
 
 			if (commandLine == null || commandLine.isBlank())

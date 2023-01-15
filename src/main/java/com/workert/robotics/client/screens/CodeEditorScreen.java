@@ -35,7 +35,8 @@ public class CodeEditorScreen extends AbstractSimiScreen {
 			if (code != null) {
 				code.replace("|", CommonComponents.NEW_LINE.getString());
 				BufferedWriter writer = new BufferedWriter(new FileWriter(this.editFile));
-				writer.write(code);
+				writer.write(
+						code + CommonComponents.NEW_LINE.getString() + "// Don't forget to save before closing :)");
 				writer.close();
 			}
 		} catch (IOException e) {
