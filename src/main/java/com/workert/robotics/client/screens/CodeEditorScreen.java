@@ -71,7 +71,6 @@ public class CodeEditorScreen extends AbstractSimiScreen {
 				} finally {
 					inputStream.close();
 				}
-				this.editFile.delete();
 				this.onClose();
 			} catch (Exception e) {
 				e.fillInStackTrace();
@@ -114,4 +113,9 @@ public class CodeEditorScreen extends AbstractSimiScreen {
 		super.render(ms, pMouseX, pMouseY, pPartialTick);
 	}
 
+	@Override
+	public void onClose() {
+		this.editFile.delete();
+		super.onClose();
+	}
 }
