@@ -26,7 +26,7 @@ public class SmasherBlockMenu extends AbstractContainerMenu {
 
 	public SmasherBlockMenu(int pContainerId, Inventory inv, BlockEntity entity, ContainerData data) {
 		super(ModMenuTypes.SMASHER_BLOCK_MENU.get(), pContainerId);
-		checkContainerSize(inv, 3);
+		AbstractContainerMenu.checkContainerSize(inv, 3);
 		this.blockEntity = ((SmasherBlockEntity) entity);
 		this.level = inv.player.level;
 		this.data = data;
@@ -64,10 +64,13 @@ public class SmasherBlockMenu extends AbstractContainerMenu {
 	private static final int HOTBAR_SLOT_COUNT = 9;
 	private static final int PLAYER_INVENTORY_ROW_COUNT = 3;
 	private static final int PLAYER_INVENTORY_COLUMN_COUNT = 9;
-	private static final int PLAYER_INVENTORY_SLOT_COUNT = PLAYER_INVENTORY_COLUMN_COUNT * PLAYER_INVENTORY_ROW_COUNT;
-	private static final int VANILLA_SLOT_COUNT = HOTBAR_SLOT_COUNT + PLAYER_INVENTORY_SLOT_COUNT;
+	private static final int PLAYER_INVENTORY_SLOT_COUNT =
+			SmasherBlockMenu.PLAYER_INVENTORY_COLUMN_COUNT * SmasherBlockMenu.PLAYER_INVENTORY_ROW_COUNT;
+	private static final int VANILLA_SLOT_COUNT =
+			SmasherBlockMenu.HOTBAR_SLOT_COUNT + SmasherBlockMenu.PLAYER_INVENTORY_SLOT_COUNT;
 	private static final int VANILLA_FIRST_SLOT_INDEX = 0;
-	private static final int TE_INVENTORY_FIRST_SLOT_INDEX = VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT;
+	private static final int TE_INVENTORY_FIRST_SLOT_INDEX =
+			SmasherBlockMenu.VANILLA_FIRST_SLOT_INDEX + SmasherBlockMenu.VANILLA_SLOT_COUNT;
 
 	// THIS YOU HAVE TO DEFINE!
 	private static final int TE_INVENTORY_SLOT_COUNT = 3; // must be the number of slots you have!
@@ -75,22 +78,21 @@ public class SmasherBlockMenu extends AbstractContainerMenu {
 	@Override
 	public ItemStack quickMoveStack(Player playerIn, int index) {
 		Slot sourceSlot = this.slots.get(index);
-		if (sourceSlot == null || !sourceSlot.hasItem())
-			return ItemStack.EMPTY; //EMPTY_ITEM
+		if (sourceSlot == null || !sourceSlot.hasItem()) return ItemStack.EMPTY; //EMPTY_ITEM
 		ItemStack sourceStack = sourceSlot.getItem();
 		ItemStack copyOfSourceStack = sourceStack.copy();
 
 		// Check if the slot clicked is one of the vanilla container slots
-		if (index < VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT) {
+		if (index < SmasherBlockMenu.VANILLA_FIRST_SLOT_INDEX + SmasherBlockMenu.VANILLA_SLOT_COUNT) {
 			// This is a vanilla container slot so merge the stack into the tile inventory
-			if (!this.moveItemStackTo(sourceStack, TE_INVENTORY_FIRST_SLOT_INDEX,
-					TE_INVENTORY_FIRST_SLOT_INDEX + TE_INVENTORY_SLOT_COUNT, false)) {
+			if (!this.moveItemStackTo(sourceStack, SmasherBlockMenu.TE_INVENTORY_FIRST_SLOT_INDEX,
+					SmasherBlockMenu.TE_INVENTORY_FIRST_SLOT_INDEX + SmasherBlockMenu.TE_INVENTORY_SLOT_COUNT, false)) {
 				return ItemStack.EMPTY; // EMPTY_ITEM
 			}
-		} else if (index < TE_INVENTORY_FIRST_SLOT_INDEX + TE_INVENTORY_SLOT_COUNT) {
+		} else if (index < SmasherBlockMenu.TE_INVENTORY_FIRST_SLOT_INDEX + SmasherBlockMenu.TE_INVENTORY_SLOT_COUNT) {
 			// This is a TE slot so merge the stack into the players inventory
-			if (!this.moveItemStackTo(sourceStack, VANILLA_FIRST_SLOT_INDEX,
-					VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT, false)) {
+			if (!this.moveItemStackTo(sourceStack, SmasherBlockMenu.VANILLA_FIRST_SLOT_INDEX,
+					SmasherBlockMenu.VANILLA_FIRST_SLOT_INDEX + SmasherBlockMenu.VANILLA_SLOT_COUNT, false)) {
 				return ItemStack.EMPTY;
 			}
 		} else {
@@ -109,8 +111,8 @@ public class SmasherBlockMenu extends AbstractContainerMenu {
 
 	@Override
 	public boolean stillValid(Player pPlayer) {
-		return stillValid(ContainerLevelAccess.create(this.level, this.blockEntity.getBlockPos()), pPlayer,
-				BlockList.SMASHER_BLOCK.get());
+		return AbstractContainerMenu.stillValid(ContainerLevelAccess.create(this.level, this.blockEntity.getBlockPos()),
+				pPlayer, BlockList.SMASHER_BLOCK.get());
 	}
 
 	private void addPlayerInventory(Inventory playerInventory) {

@@ -303,7 +303,7 @@ public class MinerModel<T extends Miner> extends EntityModel<T> {
 
 	@Override
 	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay,
-			float red, float green, float blue, float alpha) {
+							   float red, float green, float blue, float alpha) {
 		this.head.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 		this.body.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 		this.legs.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
@@ -311,7 +311,7 @@ public class MinerModel<T extends Miner> extends EntityModel<T> {
 
 	@Override
 	public void setupAnim(T pEntity, float pLimbSwing, float pLimbSwingAmount, float pAgeInTicks, float pNetHeadYaw,
-			float pHeadPitch) {
+						  float pHeadPitch) {
 
 	}
 }

@@ -9,8 +9,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.io.File;
 
-@Mixin(CrashReport.class)
-public abstract class CrashReportMixin {
+@Mixin(CrashReport.class) public abstract class CrashReportMixin {
 
 	@Inject(method = "saveToFile", at = @At(value = "RETURN"))
 	private void saveToFile(File pToFile, CallbackInfoReturnable<Boolean> cir) {

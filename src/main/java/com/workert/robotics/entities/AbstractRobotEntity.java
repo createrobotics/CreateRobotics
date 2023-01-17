@@ -46,7 +46,7 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 
 	@Override
 	public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty,
-			MobSpawnType pReason, SpawnGroupData pSpawnData, CompoundTag pDataTag) {
+										MobSpawnType pReason, SpawnGroupData pSpawnData, CompoundTag pDataTag) {
 		return super.finalizeSpawn(pLevel, pDifficulty, pReason, pSpawnData, pDataTag);
 	}
 
@@ -69,8 +69,7 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 	@Override
 	public void addAdditionalSaveData(CompoundTag pCompound) {
 		pCompound.putInt("Air", this.air);
-		if (this.hasInventory())
-			pCompound.put("Inventory", this.inventory.createTag());
+		if (this.hasInventory()) pCompound.put("Inventory", this.inventory.createTag());
 		pCompound.putString("Code", this.code);
 		super.addAdditionalSaveData(pCompound);
 	}
@@ -79,8 +78,7 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 	public void readAdditionalSaveData(CompoundTag pCompound) {
 		try {
 			this.air = pCompound.getInt("Air");
-			if (this.hasInventory())
-				this.inventory.fromTag(pCompound.getList("Inventory", 10));
+			if (this.hasInventory()) this.inventory.fromTag(pCompound.getList("Inventory", 10));
 			this.code = pCompound.getString("Code");
 			super.readAdditionalSaveData(pCompound);
 		} catch (NullPointerException exception) {
@@ -94,14 +92,12 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 
 	public void consumeAir(int amount) {
 		this.air = Math.max(this.air -= amount, 0);
-		if (this.air <= 0)
-			this.navigation.stop();
+		if (this.air <= 0) this.navigation.stop();
 	}
 
 	@Override
 	public void tick() {
-		if (this.isPathFinding())
-			this.consumeAir(1);
+		if (this.isPathFinding()) this.consumeAir(1);
 		if (this.air <= 0) {
 			this.navigation.stop();
 			this.lookControl.setLookAt(this);
@@ -113,12 +109,12 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 
 	@Override
 	protected InteractionResult mobInteract(Player pPlayer, InteractionHand pHand) {
-		if (this.isProgrammable() && pPlayer.getItemInHand(pHand).is(AllItems.WRENCH.get().asItem())
-				&& !pPlayer.isCrouching()) {
+		if (this.isProgrammable() && pPlayer.getItemInHand(pHand).is(AllItems.WRENCH.get().asItem()) &&
+				!pPlayer.isCrouching()) {
 			CompletableFuture.runAsync(() -> CodeHelper.runCode(this, this.code));
 			return InteractionResult.SUCCESS;
-		} else if (this.isProgrammable() && pPlayer.getItemInHand(pHand).is(ItemList.PROGRAM.get())
-				&& !pPlayer.isCrouching()) {
+		} else if (this.isProgrammable() && pPlayer.getItemInHand(pHand).is(ItemList.PROGRAM.get()) &&
+				!pPlayer.isCrouching()) {
 			this.code = pPlayer.getItemInHand(pHand).getOrCreateTag().getString("code");
 			if (!pPlayer.isCreative()) {
 				pPlayer.setItemInHand(pHand, ItemStack.EMPTY);

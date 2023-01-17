@@ -26,8 +26,7 @@ public class SmasherBlockRecipe implements Recipe<SimpleContainer> {
 
 	@Override
 	public boolean matches(SimpleContainer pContainer, Level pLevel) {
-		if (pLevel == null || this.recipeItems.isEmpty())
-			return false;
+		if (pLevel == null || this.recipeItems.isEmpty()) return false;
 		return this.recipeItems.get(0).test(pContainer.getItem(1));
 	}
 
@@ -108,7 +107,7 @@ public class SmasherBlockRecipe implements Recipe<SimpleContainer> {
 			buf.writeItemStack(recipe.getResultItem(), false);
 		}
 
-		@SuppressWarnings("unchecked") // Need this wrapper, because generics
+		// Need this wrapper, because generics
 		private static <G> Class<G> castClass(Class<?> cls) {
 			return (Class<G>) cls;
 		}

@@ -19,18 +19,15 @@ public class DroneAssemblerBlockEntity extends BlockEntity {
 
 	public void tryAssemble() {
 
-		if (!(this.level instanceof ServerLevel))
-			return;
+		if (!(this.level instanceof ServerLevel)) return;
 
 		BlockState blockState = this.getBlockState();
-		if (!(blockState.getBlock() instanceof DroneAssembler))
-			return;
+		if (!(blockState.getBlock() instanceof DroneAssembler)) return;
 
 		DroneContraption contraption = new DroneContraption();
 
 		try {
-			if (!contraption.assemble(this.level, this.worldPosition))
-				return;
+			if (!contraption.assemble(this.level, this.worldPosition)) return;
 		} catch (AssemblyException e) {
 			return;
 		}

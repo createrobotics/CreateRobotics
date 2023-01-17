@@ -83,7 +83,7 @@ public class SmasherBlock extends BaseEntityBlock {
 
 	@Override
 	public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand,
-			BlockHitResult pHit) {
+								 BlockHitResult pHit) {
 		if (!pLevel.isClientSide()) {
 			BlockEntity entity = pLevel.getBlockEntity(pPos);
 			if (entity instanceof SmasherBlockEntity) {
@@ -105,7 +105,7 @@ public class SmasherBlock extends BaseEntityBlock {
 	@Nullable
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState,
-			BlockEntityType<T> pBlockEntityType) {
+																  BlockEntityType<T> pBlockEntityType) {
 		return createTickerHelper(pBlockEntityType, BlockEntityList.SMASHER_BLOCK_ENTITY.get(),
 				SmasherBlockEntity::tick);
 	}

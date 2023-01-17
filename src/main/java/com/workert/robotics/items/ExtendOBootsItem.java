@@ -55,9 +55,8 @@ public class ExtendOBootsItem extends ArmorItem {
 					player.getZ());
 			this.player.setYRot(extendOBoots.getYRot());
 			if (this.player.position().distanceTo(extendOBoots.position()
-					.with(Direction.Axis.Y, extendOBoots.getY() + stack.getOrCreateTag().getFloat("currentHeight")))
-					> 0.1)
-				stack.getOrCreateTag().putFloat("currentHeight", 0);
+					.with(Direction.Axis.Y, extendOBoots.getY() + stack.getOrCreateTag().getFloat("currentHeight"))) >
+					0.1) stack.getOrCreateTag().putFloat("currentHeight", 0);
 			extendOBoots.getEntityData().set(ExtendOBoots.HEIGHT, stack.getOrCreateTag().getFloat("currentHeight"));
 		} else if (this.extendOBootsEntites.get(stack) != null) {
 			this.extendOBootsEntites.get(stack).discard();

@@ -56,7 +56,7 @@ public class BlockList {
 	}
 
 	private static <T extends Block> RegistryObject<Item> registerBlockItem(String name, RegistryObject<T> block,
-			CreativeModeTab tab) {
+																			CreativeModeTab tab) {
 		return ItemList.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties().tab(tab)));
 	}
 

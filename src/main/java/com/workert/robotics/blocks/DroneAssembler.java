@@ -24,7 +24,7 @@ public class DroneAssembler extends BaseEntityBlock {
 
 	@Override
 	public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand,
-			BlockHitResult pHit) {
+								 BlockHitResult pHit) {
 
 		BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
 

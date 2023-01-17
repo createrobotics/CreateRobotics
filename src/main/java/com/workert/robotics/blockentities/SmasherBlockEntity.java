@@ -137,15 +137,15 @@ public class SmasherBlockEntity extends BlockEntity implements MenuProvider {
 	}
 
 	public static void tick(Level pLevel, BlockPos pPos, BlockState pState, SmasherBlockEntity pBlockEntity) {
-		if (hasRecipe(pBlockEntity)) {
+		if (SmasherBlockEntity.hasRecipe(pBlockEntity)) {
 			pBlockEntity.progress++;
-			setChanged(pLevel, pPos, pState);
+			BlockEntity.setChanged(pLevel, pPos, pState);
 			if (pBlockEntity.progress > pBlockEntity.maxProgress) {
-				craftItem(pBlockEntity);
+				SmasherBlockEntity.craftItem(pBlockEntity);
 			}
 		} else {
 			pBlockEntity.resetProgress();
-			setChanged(pLevel, pPos, pState);
+			BlockEntity.setChanged(pLevel, pPos, pState);
 		}
 	}
 
@@ -159,8 +159,9 @@ public class SmasherBlockEntity extends BlockEntity implements MenuProvider {
 		Optional<SmasherBlockRecipe> match = level.getRecipeManager()
 				.getRecipeFor(SmasherBlockRecipe.Type.INSTANCE, inventory, level);
 
-		return match.isPresent() && canInsertAmountIntoOutputSlot(inventory) && canInsertItemIntoOutputSlot(inventory,
-				match.get().getResultItem()) && hasFuelInFuelSlot(entity);
+		return match.isPresent() && SmasherBlockEntity.canInsertAmountIntoOutputSlot(inventory) &&
+				SmasherBlockEntity.canInsertItemIntoOutputSlot(inventory, match.get().getResultItem()) &&
+				SmasherBlockEntity.hasFuelInFuelSlot(entity);
 	}
 
 	private static boolean hasFuelInFuelSlot(SmasherBlockEntity entity) {

@@ -52,12 +52,12 @@ public class ExtendOBootsModel<T extends ExtendOBoots> extends EntityModel<T> {
 
 	@Override
 	public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw,
-			float headPitch) {
+						  float headPitch) {
 	}
 
 	@Override
 	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay,
-			float red, float green, float blue, float alpha) {
+							   float red, float green, float blue, float alpha) {
 		this.post0.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 		this.post1.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}

@@ -11,24 +11,24 @@ import net.minecraftforge.fml.common.Mod;
 import java.util.ArrayList;
 import java.util.List;
 
-@Mod.EventBusSubscriber(value = Dist.CLIENT, modid = Robotics.MOD_ID)
-public class KeybindList {
+@Mod.EventBusSubscriber(value = Dist.CLIENT, modid = Robotics.MOD_ID) public class KeybindList {
 	public static List<KeyMapping> keyMappings = new ArrayList<>();
 	public static KeyMapping changeExtendOBootsHeight;
 
 	public static void init() {
-		changeExtendOBootsHeight = registerKeyMapping("changeExtendOBootsHeight", InputConstants.KEY_LCONTROL);
+		KeybindList.changeExtendOBootsHeight = KeybindList.registerKeyMapping("changeExtendOBootsHeight",
+				InputConstants.KEY_LCONTROL);
 	}
 
 	private static KeyMapping registerKeyMapping(String name, int defaultKey) {
 		KeyMapping key = new KeyMapping("key." + Robotics.MOD_ID + "." + name, defaultKey, "itemGroup.robotics");
-		keyMappings.add(key);
+		KeybindList.keyMappings.add(key);
 		return key;
 	}
 
 	@SubscribeEvent
 	public static void registerAllKeyMappings(RegisterKeyMappingsEvent event) {
-		for (KeyMapping keyMapping : keyMappings) {
+		for (KeyMapping keyMapping : KeybindList.keyMappings) {
 			event.register(keyMapping);
 		}
 	}

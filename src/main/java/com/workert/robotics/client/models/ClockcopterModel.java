@@ -213,16 +213,15 @@ public class ClockcopterModel<T extends Clockcopter> extends EntityModel<T> {
 
 	@Override
 	public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw,
-			float headPitch) {
+						  float headPitch) {
 		this.gear0.xRot += this.gearTurnSpeed;
 		this.gear1.xRot -= this.gearTurnSpeed;
-		if (entity.getEntityData().get(Clockcopter.IS_FLYING))
-			this.propeller.yRot += this.propellerTurnSpeed;
+		if (entity.getEntityData().get(Clockcopter.IS_FLYING)) this.propeller.yRot += this.propellerTurnSpeed;
 	}
 
 	@Override
 	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay,
-			float red, float green, float blue, float alpha) {
+							   float red, float green, float blue, float alpha) {
 		this.body.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 		this.gear0.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 		this.gear1.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);

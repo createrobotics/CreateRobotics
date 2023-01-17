@@ -8,7 +8,6 @@ import com.workert.robotics.helpers.CodeHelper;
 import com.workert.robotics.lists.*;
 import com.workert.robotics.world.feature.ModConfiguredFeatures;
 import com.workert.robotics.world.feature.ModPlacedFeatures;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
@@ -19,8 +18,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 
-@Mod(Robotics.MOD_ID)
-public class Robotics {
+@Mod(Robotics.MOD_ID) public class Robotics {
 
 	public static final String MOD_ID = "robotics";
 	public static final Logger LOGGER = LogUtils.getLogger();
@@ -48,8 +46,6 @@ public class Robotics {
 		MinecraftForge.EVENT_BUS.register(this);
 
 		CodeHelper.registerDefaultCommands();
-
-		boolean isLocal = Minecraft.getInstance().player.isLocalPlayer();
 	}
 
 	private static void clientSetup(final FMLClientSetupEvent event) {

@@ -31,7 +31,7 @@ public enum PacketList {
 	private final PacketList.LoadedPacket<?> packet;
 
 	<T extends SimplePacketBase> PacketList(Class<T> type, Function<FriendlyByteBuf, T> factory,
-			NetworkDirection direction) {
+											NetworkDirection direction) {
 		this.packet = new PacketList.LoadedPacket<>(type, factory, direction);
 	}
 

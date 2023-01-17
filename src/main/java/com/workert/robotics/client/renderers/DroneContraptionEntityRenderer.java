@@ -23,17 +23,15 @@ public class DroneContraptionEntityRenderer extends EntityRenderer<DroneContrapt
 
 	@Override
 	public boolean shouldRender(DroneContraptionEntity entity, Frustum frustum, double cameraX, double cameraY,
-			double cameraZ) {
-		if (entity.getContraption() == null)
-			return false;
-		if (!entity.isAlive())
-			return false;
+								double cameraZ) {
+		if (entity.getContraption() == null) return false;
+		if (!entity.isAlive()) return false;
 		return super.shouldRender(entity, frustum, cameraX, cameraY, cameraZ);
 	}
 
 	@Override
 	public void render(DroneContraptionEntity entity, float yaw, float partialTicks, PoseStack ms,
-			MultiBufferSource buffers, int overlay) {
+					   MultiBufferSource buffers, int overlay) {
 
 		super.render(entity, yaw, partialTicks, ms, buffers, overlay);
 		Contraption contraption = entity.getContraption();

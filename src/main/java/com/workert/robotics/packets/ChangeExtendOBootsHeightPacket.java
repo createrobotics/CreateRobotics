@@ -30,11 +30,9 @@ public class ChangeExtendOBootsHeightPacket extends SimplePacketBase {
 	public void handle(Supplier<NetworkEvent.Context> context) {
 		context.get().enqueueWork(() -> {
 			if (!context.get().getSender().getItemBySlot(EquipmentSlot.FEET).getItem()
-					.equals(ItemList.EXTEND_O_BOOTS.get()))
-				return;
-			if (context.get().getSender().getItemBySlot(EquipmentSlot.FEET).getOrCreateTag().getDouble("currentHeight")
-					== 0 && !context.get().getSender().isOnGround())
-				return;
+					.equals(ItemList.EXTEND_O_BOOTS.get())) return;
+			if (context.get().getSender().getItemBySlot(EquipmentSlot.FEET).getOrCreateTag()
+					.getDouble("currentHeight") == 0 && !context.get().getSender().isOnGround()) return;
 			context.get().getSender().getItemBySlot(EquipmentSlot.FEET).getOrCreateTag().putDouble("currentHeight",
 					Mth.clamp(context.get().getSender().getItemBySlot(EquipmentSlot.FEET).getOrCreateTag()
 							.getDouble("currentHeight") + this.value, 0, ExtendOBootsItem.MAX_HEIGHT));

@@ -12,10 +12,10 @@ import net.minecraft.world.item.crafting.Ingredient;
 import java.util.function.Supplier;
 
 public enum ModArmorMaterials implements ArmorMaterial {
-	EXTEND_O_BOOTS("citrine", 28, new int[] {2, 5, 8, 3}, 19, SoundEvents.ARMOR_EQUIP_IRON, 2.0F, 0.0F,
+	EXTEND_O_BOOTS("citrine", 28, new int[]{2, 5, 8, 3}, 19, SoundEvents.ARMOR_EQUIP_IRON, 2.0F, 0.0F,
 			() -> Ingredient.of(AllItems.ZINC_INGOT.get()));
 
-	private static final int[] HEALTH_PER_SLOT = new int[] {13, 15, 16, 11};
+	private static final int[] HEALTH_PER_SLOT = new int[]{13, 15, 16, 11};
 	private final String name;
 	private final int durabilityMultiplier;
 	private final int[] slotProtections;
@@ -26,7 +26,7 @@ public enum ModArmorMaterials implements ArmorMaterial {
 	private final LazyLoadedValue<Ingredient> repairIngredient;
 
 	ModArmorMaterials(String p_40474_, int p_40475_, int[] p_40476_, int p_40477_, SoundEvent p_40478_, float p_40479_,
-			float p_40480_, Supplier<Ingredient> p_40481_) {
+					  float p_40480_, Supplier<Ingredient> p_40481_) {
 		this.name = p_40474_;
 		this.durabilityMultiplier = p_40475_;
 		this.slotProtections = p_40476_;

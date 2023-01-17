@@ -22,19 +22,16 @@ public class DroneContraption extends Contraption {
 
 	@Override
 	public boolean assemble(Level world, BlockPos pos) throws AssemblyException {
-		if (!(world.getBlockState(pos).getBlock() instanceof DroneAssembler))
-			return false;
+		if (!(world.getBlockState(pos).getBlock() instanceof DroneAssembler)) return false;
 
-		if (!this.searchMovedStructure(world, pos.above(), null))
-			return false;
+		if (!this.searchMovedStructure(world, pos.above(), null)) return false;
 
 		Queue<BlockPos> frontier = new UniqueLinkedList<>();
 		frontier.add(pos.above());
 
-		if (world.getBlockState(pos.above()).getBlock() != Blocks.AIR)
-			this.addBlock(pos.above(),
-					Pair.of(new StructureTemplate.StructureBlockInfo(pos.above(), world.getBlockState(pos.above()),
-							null), world.getBlockEntity(pos.above())));
+		if (world.getBlockState(pos.above()).getBlock() != Blocks.AIR) this.addBlock(pos.above(),
+				Pair.of(new StructureTemplate.StructureBlockInfo(pos.above(), world.getBlockState(pos.above()), null),
+						world.getBlockEntity(pos.above())));
 
 		this.startMoving(world);
 
