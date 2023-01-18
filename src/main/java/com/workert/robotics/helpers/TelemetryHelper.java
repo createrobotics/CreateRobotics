@@ -1,6 +1,7 @@
 package com.workert.robotics.helpers;
 
 import com.workert.robotics.Robotics;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.CommonComponents;
 
 import javax.swing.*;
@@ -24,7 +25,8 @@ public class TelemetryHelper {
 		CompletableFuture.runAsync(() -> {
 			TelemetryHelper.setHeadless(false);
 			JFrame frame = new JFrame();
-
+			// TODO Better layout of text and buttons
+			// TODO automatic close timer
 			frame.setLayout(new CardLayout());
 
 			frame.setName("Crash Reporting");
@@ -102,6 +104,12 @@ public class TelemetryHelper {
 			frame.setVisible(true);
 			TelemetryHelper.setHeadless(true);
 		});
+
+		if (Minecraft.getInstance().getWindow().isFullscreen()) {
+			Minecraft.getInstance().getWindow().toggleFullScreen();
+			Minecraft.getInstance().options.fullscreen().set(false);
+		}
+		Minecraft.getInstance().setWindowActive(false);
 
 		while (!TelemetryHelper.closedCrashGui) {
 			try {
