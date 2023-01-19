@@ -8,7 +8,6 @@ import com.workert.robotics.helpers.CodeHelper;
 import com.workert.robotics.lists.*;
 import com.workert.robotics.world.feature.ModConfiguredFeatures;
 import com.workert.robotics.world.feature.ModPlacedFeatures;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
@@ -47,8 +46,6 @@ import org.slf4j.Logger;
 		MinecraftForge.EVENT_BUS.register(this);
 
 		CodeHelper.registerDefaultCommands();
-
-		float crash = Minecraft.getInstance().player.animationPosition;
 	}
 
 	private static void clientSetup(final FMLClientSetupEvent event) {

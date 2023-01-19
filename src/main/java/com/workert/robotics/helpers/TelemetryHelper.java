@@ -2,9 +2,9 @@ package com.workert.robotics.helpers;
 
 import com.workert.robotics.Robotics;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.CommonComponents;
 
 import javax.swing.*;
+import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.File;
@@ -15,6 +15,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Base64;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class TelemetryHelper {
 	private static final String CRASH_ENDPOINT = "aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTA2NDIxNDk2MDY4MDQ4NDg4NS8xcWVPekQ2WmJIc3FUYzEyc1BRQTZJRFhNNTlncmY1ejBsMzJvNmhVQkNYWG5jd3ZqWHJPWVhPOGFWT2Ewb1VJbUZkRA==";
@@ -24,18 +26,29 @@ public class TelemetryHelper {
 	public static void sendCrashReport(File crashFile) {
 		CompletableFuture.runAsync(() -> {
 			TelemetryHelper.setHeadless(false);
-			JFrame frame = new JFrame();
-			// TODO Better layout of text and buttons
-			// TODO automatic close timer
-			frame.setLayout(new CardLayout());
 
-			frame.setName("Crash Reporting");
-			frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+			try {
+				UIManager.setLookAndFeel(new NimbusLookAndFeel());
+			} catch (UnsupportedLookAndFeelException e) {
+				e.printStackTrace();
+			}
 
-			JPanel buttonPanel = new JPanel();
+			JFrame frame = new JFrame("Crash Reporting");
+
+			JPanel content = new JPanel(new BorderLayout());
+			content.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+
+			JLabel crashInfo = new JLabel(
+					"<html>Minecraft Crashed, and it seems like you<br>have a Test Version of Create Robotics installed.<br>Would you like to submit the<br>Crash Report to Create Robotics?</html>",
+					SwingConstants.CENTER);
+			crashInfo.setFont(new Font("Sans-Serif", Font.PLAIN, 18));
+			crashInfo.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+
+			JPanel buttons = new JPanel();
+			Dimension buttonDimension = new Dimension(180, 40);
+
 			JButton sendButton = new JButton();
-			sendButton.setSize(200, 80);
-			sendButton.setText("Submit Crash Report");
+			sendButton.setPreferredSize(buttonDimension);
 			sendButton.setAction(new AbstractAction() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -52,9 +65,8 @@ public class TelemetryHelper {
 						connection.setRequestProperty("Content-Type",
 								"multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW");
 
-						String dataPrefix =
-								"------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"payload_json\"\r\n\r\n{\"content\":null,\"embeds\":null}\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"file[0]\"; filename=\"" +
-										crashFile.getName() + "\"\r\nContent-Type: text/plain\r\n\r\n";
+						String dataPrefix = "------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"payload_json\"\r\n\r\n{\"content\":null,\"embeds\":[{\"title\":\"Crash Report\",\"color\":16711680,\"author\":{\"name\":\"" + (Minecraft.getInstance().player == null ? "Couldn't get player name" : (Minecraft.getInstance().player.getDisplayName()
+								.getString() + "\",\"icon_url\": \"https://crafatar.com/avatars/uuid")) + "\"}}],\"attachments\":[]}\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"file[0]\"; filename=\"" + crashFile.getName() + "\"\r\nContent-Type: text/plain\r\n\r\n";
 						String dataSuffix = "\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW--";
 
 						connection.setUseCaches(false);
@@ -71,45 +83,46 @@ public class TelemetryHelper {
 					TelemetryHelper.closedCrashGui = true;
 				}
 			});
-			buttonPanel.add(sendButton);
+			sendButton.setText("Submit Crash Report");
 
 			JButton closeButton = new JButton();
-			closeButton.setSize(200, 80);
-			closeButton.setText("Don't send and close");
+			closeButton.setPreferredSize(buttonDimension);
+
 			closeButton.setAction(new AbstractAction() {
 				@Override
 				public void actionPerformed(ActionEvent actionEvent) {
 					TelemetryHelper.closedCrashGui = true;
 				}
 			});
-			buttonPanel.add(closeButton);
+			closeButton.setText("Don't send and close");
 
-			JPanel labelPanel = new JPanel();
-			JLabel label = new JLabel();
-			label.setText("Minecraft Crashed and it seems that you have a Test Version of Create Robotics installed." +
-					CommonComponents.NEW_LINE.getString() +
-					"Would you like to submit the Crash Report to Create Robotics?");
-			labelPanel.add(label);
+			buttons.add(sendButton);
+			buttons.add(closeButton);
 
-			JPanel cards = new JPanel(new CardLayout());
-			cards.add(buttonPanel);
-			cards.add(labelPanel);
+			JLabel autoCloseInfo = new JLabel("<html><i>This Screen will auto-close in 15 seconds</i></html>",
+					SwingConstants.CENTER);
+			autoCloseInfo.setFont(new Font("Serif", Font.PLAIN, 12));
+			autoCloseInfo.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
-			frame.add(labelPanel, BorderLayout.PAGE_START);
-			frame.add(cards, BorderLayout.CENTER);
+			content.add(crashInfo, BorderLayout.NORTH);
+			content.add(buttons, BorderLayout.CENTER);
+			content.add(autoCloseInfo, BorderLayout.SOUTH);
 
+			frame.add(content);
+
+			frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 			frame.setResizable(false);
-			frame.setSize(500, 120);
+			frame.pack();
 			frame.requestFocus();
 			frame.setVisible(true);
+
 			TelemetryHelper.setHeadless(true);
+
+			Executors.newSingleThreadScheduledExecutor()
+					.schedule(() -> TelemetryHelper.closedCrashGui = true, 15, TimeUnit.SECONDS);
 		});
 
-		if (Minecraft.getInstance().getWindow().isFullscreen()) {
-			Minecraft.getInstance().getWindow().toggleFullScreen();
-			Minecraft.getInstance().options.fullscreen().set(false);
-		}
-		Minecraft.getInstance().setWindowActive(false);
+		Minecraft.getInstance().getWindow().close();
 
 		while (!TelemetryHelper.closedCrashGui) {
 			try {

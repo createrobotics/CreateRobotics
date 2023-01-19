@@ -45,8 +45,7 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 	}
 
 	@Override
-	public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty,
-										MobSpawnType pReason, SpawnGroupData pSpawnData, CompoundTag pDataTag) {
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, SpawnGroupData pSpawnData, CompoundTag pDataTag) {
 		return super.finalizeSpawn(pLevel, pDifficulty, pReason, pSpawnData, pDataTag);
 	}
 
@@ -109,12 +108,12 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 
 	@Override
 	protected InteractionResult mobInteract(Player pPlayer, InteractionHand pHand) {
-		if (this.isProgrammable() && pPlayer.getItemInHand(pHand).is(AllItems.WRENCH.get().asItem()) &&
-				!pPlayer.isCrouching()) {
+		if (this.isProgrammable() && pPlayer.getItemInHand(pHand)
+				.is(AllItems.WRENCH.get().asItem()) && !pPlayer.isCrouching()) {
 			CompletableFuture.runAsync(() -> CodeHelper.runCode(this, this.code));
 			return InteractionResult.SUCCESS;
-		} else if (this.isProgrammable() && pPlayer.getItemInHand(pHand).is(ItemList.PROGRAM.get()) &&
-				!pPlayer.isCrouching()) {
+		} else if (this.isProgrammable() && pPlayer.getItemInHand(pHand)
+				.is(ItemList.PROGRAM.get()) && !pPlayer.isCrouching()) {
 			this.code = pPlayer.getItemInHand(pHand).getOrCreateTag().getString("code");
 			if (!pPlayer.isCreative()) {
 				pPlayer.setItemInHand(pHand, ItemStack.EMPTY);
