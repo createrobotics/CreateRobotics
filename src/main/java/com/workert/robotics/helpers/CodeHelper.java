@@ -87,7 +87,7 @@ public class CodeHelper {
 			robot.getLevel().getExistingBlockEntity(pos).getCapability(ForgeCapabilities.ITEM_HANDLER)
 					.ifPresent(handler -> {
 						for (int slot = 0; slot < handler.getSlots(); slot++) {
-							while (!handler.getStackInSlot(slot).isEmpty() && (arguments.size() < 3 ||
+							while (!handler.getStackInSlot(slot).isEmpty() && (arguments.size() < 4 ||
 									Registry.ITEM.getKey(handler.getStackInSlot(slot).getItem()).toString()
 											.equals(arguments.get(3).trim())) &&
 									robot.wantsToPickUp(handler.extractItem(slot, 1, true))) {
