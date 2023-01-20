@@ -7,8 +7,8 @@ buildscript {
         maven { url = 'https://repo.spongepowered.org/maven' }
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: "5.1.+", changing: true
-        classpath "org.spongepowered:mixingradle:0.7-SNAPSHOT"
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: forgegradle_version, changing: true
+        classpath "org.spongepowered:mixingradle:${mixingradle_version}"
         classpath 'org.parchmentmc:librarian:1.+'
     }
 }
@@ -19,7 +19,23 @@ apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = '0.1'
+def getGitHash = { ->
+    def stdout = new ByteArrayOutputStream()
+    exec {
+        commandLine 'git', 'rev-parse', '--short', 'HEAD'
+        standardOutput = stdout
+    }
+    return stdout.toString().trim()
+}
+
+version = "${mc_version}-${mod_version}"
+if (System.getenv("DEV") == "true") {
+    version = "${mc_version}-${mod_version}-dev-${getGitHash()}"
+}
+if (System.getenv("CI") == "true") {
+    version = "${mc_version}-nightly-${getGitHash()}";
+}
+
 group = 'com.workert.robotics'
 archivesBaseName = 'robotics'
 
@@ -27,7 +43,7 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
 minecraft {
-    mappings channel: 'parchment', version: '2022.11.27-1.19.2'
+    mappings channel: 'parchment', version: "${parchment_version}-${mc_version}"
 
     // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
@@ -115,11 +131,11 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.19.2-43.2.0'
+    minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
 
-    implementation fg.deobf("com.simibubi.create:create-1.19.2:0.5.0.g-19:slim")
-    implementation fg.deobf("com.jozufozu.flywheel:flywheel-forge-1.19.2:0.6.8-13")
-    implementation fg.deobf("com.tterrag.registrate:Registrate:MC1.19-1.1.5")
+    implementation fg.deobf("com.simibubi.create:create-${mc_version}:${create_version}:slim") { transitive = false }
+    implementation fg.deobf("com.jozufozu.flywheel:flywheel-forge-${mc_version}:${flywheel_version}")
+    compileOnly fg.deobf("com.tterrag.registrate:Registrate:${registrate_version}")
 }
 
 mixin {
@@ -151,12 +167,23 @@ jar.finalizedBy('reobfJar')
 publishing {
     publications {
         mavenJava(MavenPublication) {
+            groupId = group
+            artifactId = archivesBaseName
+            version = version
             artifact jar
         }
     }
     repositories {
         maven {
             url "file://${project.projectDir}/mcmodsrepo"
+        }
+        maven {
+            name = "GitHubPackages"
+            url = "https://maven.pkg.github.com/rbasamoyai/createbigcannons"
+            credentials {
+                username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
+                password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
+            }
         }
     }
 }
