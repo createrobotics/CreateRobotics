@@ -37,7 +37,7 @@ if (System.getenv("CI") == "true") {
 }
 
 group = 'com.workert.robotics'
-archivesBaseName = 'robotics'
+archivesBaseName = 'createrobotics'
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
