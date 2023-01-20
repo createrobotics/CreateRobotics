@@ -1,45 +1,81 @@
-name: Build mod on push and send to Discord
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+# This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
+
+name: Java CI with Gradle
 
 on:
-  push:
+    workflow_dispatch:
+    push:
+    pull_request:
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    steps:
-      - uses: actions/checkout@v3
+    build:
+        runs-on: ubuntu-latest
+        timeout-minutes: 20
+        steps:
+            - uses: actions/checkout@v3
 
-      - name: Get branch name
-        id: get_branch
-        run: echo "branch=${GITHUB_REF#refs/heads/}" >> $GITHUB_OUTPUT
+            - name: Get branch name
+              id: get_branch
+              run: echo "branch=${GITHUB_REF#refs/heads/}" >> $GITHUB_OUTPUT
 
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          java-version: 17
-          distribution: temurin
+            - name: Get latest commit hash
+              id: get_hash
+              run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
+            - name: Get MC version
+              uses: christian-draeger/read-properties@908f99d3334be3802ec7cb528395a69d19914e7b
+              id: get_mc_version
+              with:
+                  path: gradle.properties
+                  properties: mc_version
 
-      - name: Validate Gradle wrapper
-        uses: gradle/wrapper-validation-action@9aa31f26bc8e536d1faf4b332bb8365350743a18
+            - name: Set up JDK 17
+              uses: actions/setup-java@v3
+              with:
+                  java-version: 17
+                  distribution: temurin
 
-      - name: Build jar
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: build
+            - name: Grant execute permission for gradlew
+              run: chmod +x gradlew
 
-      - name: Send building message to discord
-        uses: realRobotix/action-discord-notifier@release-master
-        with:
-          webhook: ${{ secrets.DISCORD_WEBHOOK }}
-          message-title: Building mod from branch ${{ steps.get_branch.outputs.branch }}
+            - name: Validate Gradle wrapper
+              uses: gradle/wrapper-validation-action@9aa31f26bc8e536d1faf4b332bb8365350743a18
 
-      - name: Send built file to discord
-        uses: sinshutu/upload-to-discord@master
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-        with:
-          args: ./build/libs/*.*
+            - name: Build jar
+              uses: gradle/gradle-build-action@v2
+              with:
+                  arguments: build
+
+            - name: Publish to GitHub Packages
+              if: github.event_name == 'push' && github.repository_id == '521749383'
+              uses: gradle/gradle-build-action@v2
+              with:
+                  arguments: publishMavenJavaPublicationToGitHubPackagesRepository
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Send building message to discord
+              if: github.event_name == 'push'
+              uses: realRobotix/action-discord-notifier@release-master
+              with:
+                  webhook: ${{ secrets.DISCORD_WEBHOOK }}
+                  message-title: Building mod from branch ${{ steps.get_branch.outputs.branch }}
+
+            - name: Send built file to discord
+              if: github.event_name == 'push'
+              uses: sinshutu/upload-to-discord@master
+              env:
+                  DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+              with:
+                  args: ./build/libs/*.*
+
+            - name: Archive Artifacts
+              uses: actions/upload-artifact@v3
+              with:
+                  name: createrobotics-${{ steps.get_mc_version.outputs.mc_version }}-nightly-${{ steps.get_hash.outputs.sha_short }}
+                  path: build/libs/
