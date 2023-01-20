@@ -135,7 +135,7 @@ dependencies {
 
     implementation fg.deobf("com.simibubi.create:create-${mc_version}:${create_version}:slim") { transitive = false }
     implementation fg.deobf("com.jozufozu.flywheel:flywheel-forge-${mc_version}:${flywheel_version}")
-    compileOnly fg.deobf("com.tterrag.registrate:Registrate:${registrate_version}")
+    implementation fg.deobf("com.tterrag.registrate:Registrate:${registrate_version}")
 
     if (System.getProperty('idea.sync.active') != 'true') {
         annotationProcessor "org.spongepowered:mixin:${mixin_version}:processor"
