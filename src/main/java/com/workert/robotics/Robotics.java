@@ -27,7 +27,6 @@ import org.slf4j.Logger;
 
 	public Robotics() {
 		this.modEventBus.addListener(Robotics::clientSetup);
-
 		this.modEventBus.addListener(EntityList::addEntityAttributes);
 
 		BlockList.register(this.modEventBus);
