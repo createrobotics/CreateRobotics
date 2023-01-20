@@ -31,14 +31,7 @@ public class CodeEditorScreen extends AbstractSimiScreen {
 		super(Component.literal("Code Editor"));
 		this.code = code;
 		try {
-			this.editFile = File.createTempFile("code-", ".code");
-			if (code != null) {
-				code.replace("|", CommonComponents.NEW_LINE.getString());
-				BufferedWriter writer = new BufferedWriter(new FileWriter(this.editFile));
-				writer.write(
-						code + CommonComponents.NEW_LINE.getString() + "// Don't forget to save before closing :)");
-				writer.close();
-			}
+			this.editFile = File.createTempFile("robotprogram-", ".code");
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
