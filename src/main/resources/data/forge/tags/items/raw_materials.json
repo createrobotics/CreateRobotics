@@ -1,0 +1,7 @@
+{
+    "replace": false,
+    "values": [
+        "robotics:raw_tin",
+		"robotics:raw_bronze"
+    ]
+}

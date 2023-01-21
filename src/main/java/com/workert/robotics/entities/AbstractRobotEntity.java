@@ -97,10 +97,10 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 	@Override
 	public void tick() {
 		if (this.isPathFinding()) this.consumeAir(1);
-		if (this.air <= 0) {
+		/*if (this.air <= 0) {
 			this.navigation.stop();
 			this.lookControl.setLookAt(this);
-		}
+		}*/
 		super.tick();
 	}
 

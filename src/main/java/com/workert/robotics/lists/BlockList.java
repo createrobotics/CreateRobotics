@@ -28,6 +28,9 @@ public class BlockList {
 			BlockBehaviour.Properties.of(Material.STONE).sound(SoundType.STONE).strength(9f)
 					.requiresCorrectToolForDrops()));
 
+	public static final RegistryObject<Block> DEEPSLATE_TIN_ORE = registerBlock("deepslate_tin_ore",
+			() -> new DropExperienceBlock(BlockBehaviour.Properties.copy(TIN_ORE.get()).sound(SoundType.DEEPSLATE)));
+
 	public static final RegistryObject<Block> TIN_BLOCK = registerBlock("tin_block", () -> new Block(
 			BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.METAL).strength(9f)
 					.requiresCorrectToolForDrops()));
@@ -35,9 +38,6 @@ public class BlockList {
 	public static final RegistryObject<Block> BRONZE_BLOCK = registerBlock("bronze_block", () -> new Block(
 			BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.METAL).strength(9f)
 					.requiresCorrectToolForDrops()));
-
-	public static final RegistryObject<Block> DEEPSLATE_TIN_ORE = registerBlock("deepslate_tin_ore",
-			() -> new DropExperienceBlock(BlockBehaviour.Properties.copy(TIN_ORE.get()).sound(SoundType.DEEPSLATE)));
 
 	public static final RegistryObject<Block> SMASHER_BLOCK = registerBlock("smasher_block", () -> new SmasherBlock(
 			BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.METAL).strength(9f)

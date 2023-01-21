@@ -33,6 +33,7 @@ public class ItemList {
 
 	public static final RegistryObject<Item> BRONZE_INGOT = registerBasicItem("bronze_ingot", Optional.empty());
 	public static final RegistryObject<Item> BRONZE_NUGGET = registerBasicItem("bronze_nugget", Optional.empty());
+	public static final RegistryObject<Item> RAW_BRONZE = registerBasicItem("raw_bronze", Optional.empty());
 
 	public static final RegistryObject<Item> PROGRAM = ITEMS.register("program",
 			() -> new ProgramItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON).tab(ROBOTICS_TAB)));
