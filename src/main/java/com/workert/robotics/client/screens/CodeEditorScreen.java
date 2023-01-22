@@ -32,6 +32,9 @@ public class CodeEditorScreen extends AbstractSimiScreen {
 		this.code = code;
 		try {
 			this.editFile = File.createTempFile("robotprogram-", ".code");
+			FileWriter writer = new FileWriter(this.editFile);
+			writer.write(code);
+			writer.close();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

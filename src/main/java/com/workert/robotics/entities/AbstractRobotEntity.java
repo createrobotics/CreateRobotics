@@ -114,10 +114,6 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 		} else if (this.isProgrammable() && pPlayer.getItemInHand(pHand)
 				.is(ItemList.PROGRAM.get()) && !pPlayer.isCrouching()) {
 			this.code = pPlayer.getItemInHand(pHand).getOrCreateTag().getString("code");
-			if (!pPlayer.isCreative()) {
-				pPlayer.setItemInHand(pHand, ItemStack.EMPTY);
-				return InteractionResult.CONSUME;
-			}
 			return InteractionResult.SUCCESS;
 		} else if (this.hasInventory() && !pPlayer.isCrouching()) {
 			pPlayer.openMenu(new SimpleMenuProvider(new MenuConstructor() {
