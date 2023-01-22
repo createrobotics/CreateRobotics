@@ -1,6 +1,7 @@
 package com.workert.robotics.helpers;
 
 import com.workert.robotics.Robotics;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 
 import javax.swing.*;
@@ -23,17 +24,13 @@ public class TelemetryHelper {
 
 	protected static boolean closedCrashGui = false;
 
-	public static void sendCrashReport(File crashFile) {
-		CompletableFuture.runAsync(() -> {
-			try {
-				if (Files.readString(crashFile.toPath()).matches("(?s).*\\bMod\\b.*\\brequires\\b.*")) {
-					TelemetryHelper.closedCrashGui = true;
-					return;
-				}
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
+	public static void sendCrashReport(String crashText) {
+		if (crashText.matches("(?s).*\\bMod\\b.*\\brequires\\b.*")) {
+			TelemetryHelper.closedCrashGui = true;
+			return;
+		}
 
+		CompletableFuture.runAsync(() -> {
 			TelemetryHelper.setHeadless(false);
 
 			try {
@@ -75,12 +72,12 @@ public class TelemetryHelper {
 								"multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW");
 
 						String dataPrefix = "------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"payload_json\"\r\n\r\n{\"content\":null,\"embeds\":[{\"title\":\"Crash Report\",\"color\":16711680,\"author\":{\"name\":\"" + (Minecraft.getInstance().player == null ? "Couldn't get player name" : (Minecraft.getInstance().player.getDisplayName()
-								.getString() + "\",\"icon_url\": \"https://crafatar.com/avatars/uuid")) + "\"}}],\"attachments\":[]}\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"file[0]\"; filename=\"" + crashFile.getName() + "\"\r\nContent-Type: text/plain\r\n\r\n";
+								.getString() + "\",\"icon_url\": \"https://crafatar.com/avatars/uuid")) + "\"}}],\"attachments\":[]}\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"file[0]\"; filename=\"crash-" + Util.getFilenameFormattedDateTime() + "\"\r\nContent-Type: text/plain\r\n\r\n";
 						String dataSuffix = "\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW--";
 
 						connection.setUseCaches(false);
 						connection.getOutputStream().write(dataPrefix.getBytes());
-						connection.getOutputStream().write(Files.readAllBytes(crashFile.toPath()));
+						connection.getOutputStream().write(crashText.getBytes());
 						connection.getOutputStream().write(dataSuffix.getBytes());
 						connection.getOutputStream().close();
 
