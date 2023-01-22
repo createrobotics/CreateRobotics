@@ -25,6 +25,15 @@ public class TelemetryHelper {
 
 	public static void sendCrashReport(File crashFile) {
 		CompletableFuture.runAsync(() -> {
+			try {
+				if (Files.readString(crashFile.toPath()).matches("(?s).*\\bMod\\b.*\\brequires\\b.*")) {
+					TelemetryHelper.closedCrashGui = true;
+					return;
+				}
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+
 			TelemetryHelper.setHeadless(false);
 
 			try {
