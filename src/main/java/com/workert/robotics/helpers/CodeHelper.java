@@ -76,8 +76,9 @@ public class CodeHelper {
 				} catch (InterruptedException exception) {
 					exception.printStackTrace();
 				}
-				robot.getNavigation().recomputePath();
 			}
+			robot.getNavigation().stop();
+			robot.setDeltaMovement(robot.getDeltaMovement().x, 0, robot.getDeltaMovement().z);
 
 		});
 		CodeHelper.registerCommand("getItems", (robot, arguments) -> {
@@ -87,10 +88,11 @@ public class CodeHelper {
 			robot.getLevel().getExistingBlockEntity(pos).getCapability(ForgeCapabilities.ITEM_HANDLER)
 					.ifPresent(handler -> {
 						for (int slot = 0; slot < handler.getSlots(); slot++) {
-							while (!handler.getStackInSlot(slot).isEmpty() && (arguments.size() < 4 ||
-									Registry.ITEM.getKey(handler.getStackInSlot(slot).getItem()).toString()
-											.equals(arguments.get(3).trim())) &&
-									robot.wantsToPickUp(handler.extractItem(slot, 1, true))) {
+							while (!handler.getStackInSlot(slot)
+									.isEmpty() && (arguments.size() < 4 || Registry.ITEM.getKey(
+											handler.getStackInSlot(slot).getItem()).toString()
+									.equals(arguments.get(3).trim())) && robot.wantsToPickUp(
+									handler.extractItem(slot, 1, true))) {
 								robot.getInventory().addItem(handler.extractItem(slot, 1, false));
 							}
 						}
@@ -105,8 +107,8 @@ public class CodeHelper {
 						Item itemToPush = Registry.ITEM.get(new ResourceLocation(arguments.get(3).trim().split(":")[0],
 								arguments.get(3).trim().split(":")[1]));
 						for (int slot = 0; slot < robot.getInventory().getContainerSize(); slot++) {
-							if (robot.getInventory().countItem(itemToPush) > 0 &&
-									robot.getInventory().getItem(slot).is(itemToPush)) {
+							if (robot.getInventory().countItem(itemToPush) > 0 && robot.getInventory().getItem(slot)
+									.is(itemToPush)) {
 								for (int containerSlot = 0; containerSlot < handler.getSlots(); containerSlot++) {
 									robot.getInventory().setItem(slot, handler.insertItem(slot, robot.getInventory()
 													.removeItemType(itemToPush, robot.getInventory().countItem(itemToPush)),
@@ -191,8 +193,7 @@ public class CodeHelper {
 							robotFromFunction -> list[1].trim());
 				} else {
 					CodeHelper.brodcastErrorToNearbyPlayers(robot,
-							"The Variable Declaration expected a \"public\" or \"private\" declaration infront, got \"" +
-									CodeHelper.commandLine + "\"");
+							"The Variable Declaration expected a \"public\" or \"private\" declaration infront, got \"" + CodeHelper.commandLine + "\"");
 				}
 			}
 		}

@@ -59,10 +59,6 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 
 	public static AttributeSupplier createAttributes;
 
-	@Override
-	public void animateHurt() {
-	}
-
 	public abstract boolean hasInventory();
 
 	@Override
@@ -178,6 +174,10 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 	@Override
 	public boolean canBreatheUnderwater() {
 		return true;
+	}
+
+	@Override
+	public void animateHurt() {
 	}
 
 	@Override
