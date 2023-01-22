@@ -82,7 +82,7 @@ public class CodeHelper {
 					}
 					if (robot.getNavigation().isStuck()) {
 						CodeHelper.brodcastErrorToNearbyPlayers(robot,
-								"Robot \"" + robot.getName() + "\" is stuck! Trying to recompute path.");
+								"Robot \"" + robot.getName().getString() + "\" is stuck! Trying to recompute path.");
 						robot.getNavigation().recomputePath();
 					}
 				} catch (InterruptedException exception) {
