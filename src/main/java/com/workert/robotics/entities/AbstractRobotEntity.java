@@ -90,8 +90,7 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 	}
 
 	public void consumeAir(int amount) {
-		this.air = Math.max(this.air -= amount, 0);
-		if (this.air <= 0) this.navigation.stop();
+		this.air = Math.max(this.air - amount, 0);
 	}
 
 	@Override
