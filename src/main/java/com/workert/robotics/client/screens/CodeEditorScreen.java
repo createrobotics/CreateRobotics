@@ -11,11 +11,13 @@ import com.workert.robotics.lists.PacketList;
 import com.workert.robotics.packets.ReturnEditedCodePacket;
 import net.minecraft.Util;
 import net.minecraft.client.gui.GuiComponent;
-import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import org.apache.commons.io.IOUtils;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class CodeEditorScreen extends AbstractSimiScreen {
 
@@ -62,7 +64,6 @@ public class CodeEditorScreen extends AbstractSimiScreen {
 				FileInputStream inputStream = new FileInputStream(this.editFile);
 				try {
 					String fileCode = IOUtils.toString(inputStream);
-					this.code.replace(CommonComponents.NEW_LINE.getString(), "|");
 					PacketList.CHANNEL.sendToServer(new ReturnEditedCodePacket(fileCode));
 				} finally {
 					inputStream.close();

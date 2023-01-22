@@ -12,6 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 
@@ -97,6 +98,7 @@ public class CodeHelper {
 							}
 						}
 					});
+			robot.getLevel().blockUpdated(pos, robot.getLevel().getBlockState(pos).getBlock());
 		});
 		CodeHelper.registerCommand("pushItems", (robot, arguments) -> {
 			BlockPos pos = new BlockPos(CodeHelper.eval(arguments.get(0)), CodeHelper.eval(arguments.get(1)),
@@ -104,19 +106,23 @@ public class CodeHelper {
 			if (!pos.closerToCenterThan(robot.position(), 5) || robot.getLevel().isClientSide()) return;
 			robot.getLevel().getExistingBlockEntity(pos).getCapability(ForgeCapabilities.ITEM_HANDLER)
 					.ifPresent(handler -> {
-						Item itemToPush = Registry.ITEM.get(new ResourceLocation(arguments.get(3).trim().split(":")[0],
-								arguments.get(3).trim().split(":")[1]));
+						Item itemToPush = Items.AIR;
+						if (arguments.size() > 3) {
+							itemToPush = Registry.ITEM.get(new ResourceLocation(arguments.get(4).trim().split(":")[0],
+									arguments.get(4).trim().split(":")[1]));
+						}
 						for (int slot = 0; slot < robot.getInventory().getContainerSize(); slot++) {
-							if (robot.getInventory().countItem(itemToPush) > 0 && robot.getInventory().getItem(slot)
-									.is(itemToPush)) {
+							if (itemToPush.equals(Items.AIR) || (robot.getInventory()
+									.countItem(itemToPush) > 0 && robot.getInventory().getItem(slot).is(itemToPush))) {
 								for (int containerSlot = 0; containerSlot < handler.getSlots(); containerSlot++) {
-									robot.getInventory().setItem(slot, handler.insertItem(slot, robot.getInventory()
-													.removeItemType(itemToPush, robot.getInventory().countItem(itemToPush)),
-											false));
+									robot.getInventory().setItem(slot,
+											handler.insertItem(containerSlot, robot.getInventory().getItem(slot),
+													false));
 								}
 							}
 						}
 					});
+			robot.getLevel().blockUpdated(pos, robot.getLevel().getBlockState(pos).getBlock());
 		});
 		CodeHelper.registerCommand("useOn", (robot, arguments) -> {
 			BlockPos pos = new BlockPos(CodeHelper.eval(arguments.get(0)), CodeHelper.eval(arguments.get(1)),
@@ -133,7 +139,7 @@ public class CodeHelper {
 	public static void runCode(AbstractRobotEntity robot, String code) {
 		if (code == null || code.isBlank()) return;
 
-		code.replace("|", "");
+		code = code.replace("\n", "").replace("\r", "");
 
 		Robotics.LOGGER.debug("Starting to run code!");
 		for (String command : code.split(";")) {
