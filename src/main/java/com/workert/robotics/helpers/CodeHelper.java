@@ -156,16 +156,17 @@ public class CodeHelper {
 			if (CodeHelper.commandLine == null || CodeHelper.commandLine.isBlank()) return;
 			CodeHelper.commandLine = CodeHelper.commandLine.trim();
 
-			robot.localVariableLookupMap.forEach((name, value) -> {
-				CodeHelper.commandLine = CodeHelper.commandLine.replace("${" + name + "}", value.apply(robot));
-				Robotics.LOGGER.debug(
-						"Trying to replace local variable \"${" + name + "}\" with \"" + value.apply(robot) + "\"");
-			});
 
 			CodeHelper.internalVariableLookupMap.forEach((name, value) -> {
 				CodeHelper.commandLine = CodeHelper.commandLine.replace("${" + name + "}", value.apply(robot));
 				Robotics.LOGGER.debug(
 						"Trying to replace public variable \"${" + name + "}\" with \"" + value.apply(robot) + "\"");
+			});
+
+			robot.privateVariableLookupMap.forEach((name, value) -> {
+				CodeHelper.commandLine = CodeHelper.commandLine.replace("${" + name + "}", value.apply(robot));
+				Robotics.LOGGER.debug(
+						"Trying to replace local variable \"${" + name + "}\" with \"" + value.apply(robot) + "\"");
 			});
 
 			CodeHelper.publicVariableLookupMap.forEach((name, value) -> {
@@ -195,7 +196,7 @@ public class CodeHelper {
 							robotFromFunction -> list[1].trim());
 				} else if (CodeHelper.commandLine.startsWith("private ")) {
 					String[] list = CodeHelper.commandLine.substring(8).split("=");
-					robot.localVariableLookupMap.put(CodeHelper.validateRegistryName(list[0].trim()),
+					robot.privateVariableLookupMap.put(CodeHelper.validateRegistryName(list[0].trim()),
 							robotFromFunction -> list[1].trim());
 				} else {
 					CodeHelper.brodcastErrorToNearbyPlayers(robot,
