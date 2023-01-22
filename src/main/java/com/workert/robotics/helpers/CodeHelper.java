@@ -71,9 +71,20 @@ public class CodeHelper {
 
 			robot.getNavigation().moveTo(CodeHelper.eval(arguments.get(0)), CodeHelper.eval(arguments.get(1)),
 					CodeHelper.eval(arguments.get(2)), 1);
+			int tryTimer = 0;
 			while (robot.getNavigation().isInProgress()) {
 				try {
-					Thread.sleep(100);
+					Thread.sleep(200);
+					tryTimer++;
+					if (tryTimer >= 10) {
+						robot.getNavigation().recomputePath();
+						tryTimer = 0;
+					}
+					if (robot.getNavigation().isStuck()) {
+						CodeHelper.brodcastErrorToNearbyPlayers(robot,
+								"Robot \"" + robot.getName().getString() + "\" is stuck! Trying to recompute path.");
+						robot.getNavigation().recomputePath();
+					}
 				} catch (InterruptedException exception) {
 					exception.printStackTrace();
 				}
@@ -160,7 +171,7 @@ public class CodeHelper {
 			robot.privateVariableLookupMap.forEach((name, value) -> {
 				commandLine[0] = commandLine[0].replace("${" + name + "}", value.apply(robot));
 				Robotics.LOGGER.debug(
-						"Trying to replace local variable \"${" + name + "}\" with \"" + value.apply(robot) + "\"");
+						"Trying to replace private variable \"${" + name + "}\" with \"" + value.apply(robot) + "\"");
 			});
 
 			CodeHelper.publicVariableLookupMap.forEach((name, value) -> {
@@ -201,7 +212,7 @@ public class CodeHelper {
 	}
 
 	private static void brodcastErrorToNearbyPlayers(AbstractRobotEntity robot, String message) {
-		int messageDistance = 10;
+		int messageDistance = 256;
 		robot.getLevel().getEntitiesOfClass(Player.class,
 						new AABB(robot.blockPosition().offset(-messageDistance, -messageDistance, -messageDistance),
 								robot.blockPosition().offset(messageDistance, messageDistance, messageDistance)))
