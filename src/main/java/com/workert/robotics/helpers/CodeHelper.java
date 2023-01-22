@@ -133,74 +133,67 @@ public class CodeHelper {
 		});
 	}
 
-	private static String commandLine;
-	private static int skipLines = 0;
-
 	public static void runCode(AbstractRobotEntity robot, String code) {
+		final String[] commandLine = new String[1];
 		if (code == null || code.isBlank()) return;
 
 		code = code.replace("\n", "").replace("\r", "");
 
 		Robotics.LOGGER.debug("Starting to run code!");
 		for (String command : code.split(";")) {
-			if (CodeHelper.skipLines > 0) {
-				CodeHelper.skipLines--;
-				return;
-			}
-			CodeHelper.commandLine = command;
+			commandLine[0] = command;
 
-			if (CodeHelper.commandLine.startsWith("//")) return;
+			if (commandLine[0].startsWith("//")) return;
 
-			Robotics.LOGGER.debug("Running line:\"" + CodeHelper.commandLine + "\"");
+			Robotics.LOGGER.debug("Running line:\"" + commandLine[0] + "\"");
 
-			if (CodeHelper.commandLine == null || CodeHelper.commandLine.isBlank()) return;
-			CodeHelper.commandLine = CodeHelper.commandLine.trim();
+			if (commandLine[0] == null || commandLine[0].isBlank()) return;
+			commandLine[0] = commandLine[0].trim();
 
 
 			CodeHelper.internalVariableLookupMap.forEach((name, value) -> {
-				CodeHelper.commandLine = CodeHelper.commandLine.replace("${" + name + "}", value.apply(robot));
+				commandLine[0] = commandLine[0].replace("${" + name + "}", value.apply(robot));
 				Robotics.LOGGER.debug(
 						"Trying to replace public variable \"${" + name + "}\" with \"" + value.apply(robot) + "\"");
 			});
 
 			robot.privateVariableLookupMap.forEach((name, value) -> {
-				CodeHelper.commandLine = CodeHelper.commandLine.replace("${" + name + "}", value.apply(robot));
+				commandLine[0] = commandLine[0].replace("${" + name + "}", value.apply(robot));
 				Robotics.LOGGER.debug(
 						"Trying to replace local variable \"${" + name + "}\" with \"" + value.apply(robot) + "\"");
 			});
 
 			CodeHelper.publicVariableLookupMap.forEach((name, value) -> {
-				CodeHelper.commandLine = CodeHelper.commandLine.replace("${" + name + "}", value.apply(robot));
+				commandLine[0] = commandLine[0].replace("${" + name + "}", value.apply(robot));
 				Robotics.LOGGER.debug(
 						"Trying to replace public variable \"${" + name + "}\" with \"" + value.apply(robot) + "\"");
 			});
 
-			Robotics.LOGGER.debug("Reduced to:\"" + CodeHelper.commandLine + "\"");
+			Robotics.LOGGER.debug("Reduced to:\"" + commandLine[0] + "\"");
 
-			if (CodeHelper.commandLine.startsWith("robot.")) {
+			if (commandLine[0].startsWith("robot.")) {
 				CodeHelper.commandMap.forEach((prefix, function) -> {
-					if (CodeHelper.commandLine.startsWith("robot." + prefix)) try {
-						function.accept(robot, Arrays.asList(
-								CodeHelper.commandLine.substring(CodeHelper.commandLine.indexOf("(") + 1,
-										CodeHelper.commandLine.lastIndexOf(")")).split(",")));
+					if (commandLine[0].startsWith("robot." + prefix)) try {
+						function.accept(robot, Arrays.asList(commandLine[0].substring(commandLine[0].indexOf("(") + 1,
+								commandLine[0].lastIndexOf(")")).split(",")));
 					} catch (Exception exception) {
 						CodeHelper.brodcastErrorToNearbyPlayers(robot,
 								"robot." + prefix + " encountered an error. Please look at the Logs to learn more.");
 						exception.printStackTrace();
 					}
 				});
-			} else if (CodeHelper.commandLine.contains("=")) {
-				if (CodeHelper.commandLine.startsWith("public ")) {
-					String[] list = CodeHelper.commandLine.substring(7).split("=");
+			} else if (commandLine[0].contains("=")) {
+				if (commandLine[0].startsWith("public ")) {
+					String[] list = commandLine[0].substring(7).split("=");
 					CodeHelper.internalVariableLookupMap.put(CodeHelper.validateRegistryName(list[0].trim()),
 							robotFromFunction -> list[1].trim());
-				} else if (CodeHelper.commandLine.startsWith("private ")) {
-					String[] list = CodeHelper.commandLine.substring(8).split("=");
+				} else if (commandLine[0].startsWith("private ")) {
+					String[] list = commandLine[0].substring(8).split("=");
 					robot.privateVariableLookupMap.put(CodeHelper.validateRegistryName(list[0].trim()),
 							robotFromFunction -> list[1].trim());
 				} else {
 					CodeHelper.brodcastErrorToNearbyPlayers(robot,
-							"The Variable Declaration expected a \"public\" or \"private\" declaration infront, got \"" + CodeHelper.commandLine + "\"");
+							"The Variable Declaration expected a \"public\" or \"private\" declaration infront, got \"" + commandLine[0] + "\"");
 				}
 			}
 		}
