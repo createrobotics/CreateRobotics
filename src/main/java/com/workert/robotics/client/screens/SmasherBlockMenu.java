@@ -1,6 +1,6 @@
 package com.workert.robotics.client.screens;
 
-import com.workert.robotics.blockentities.SmasherBlockEntity;
+import com.workert.robotics.blocks.blockentities.SmasherBlockEntity;
 import com.workert.robotics.client.screens.slots.ModResultSlot;
 import com.workert.robotics.lists.BlockList;
 import net.minecraft.network.FriendlyByteBuf;
@@ -64,13 +64,10 @@ public class SmasherBlockMenu extends AbstractContainerMenu {
 	private static final int HOTBAR_SLOT_COUNT = 9;
 	private static final int PLAYER_INVENTORY_ROW_COUNT = 3;
 	private static final int PLAYER_INVENTORY_COLUMN_COUNT = 9;
-	private static final int PLAYER_INVENTORY_SLOT_COUNT =
-			SmasherBlockMenu.PLAYER_INVENTORY_COLUMN_COUNT * SmasherBlockMenu.PLAYER_INVENTORY_ROW_COUNT;
-	private static final int VANILLA_SLOT_COUNT =
-			SmasherBlockMenu.HOTBAR_SLOT_COUNT + SmasherBlockMenu.PLAYER_INVENTORY_SLOT_COUNT;
+	private static final int PLAYER_INVENTORY_SLOT_COUNT = SmasherBlockMenu.PLAYER_INVENTORY_COLUMN_COUNT * SmasherBlockMenu.PLAYER_INVENTORY_ROW_COUNT;
+	private static final int VANILLA_SLOT_COUNT = SmasherBlockMenu.HOTBAR_SLOT_COUNT + SmasherBlockMenu.PLAYER_INVENTORY_SLOT_COUNT;
 	private static final int VANILLA_FIRST_SLOT_INDEX = 0;
-	private static final int TE_INVENTORY_FIRST_SLOT_INDEX =
-			SmasherBlockMenu.VANILLA_FIRST_SLOT_INDEX + SmasherBlockMenu.VANILLA_SLOT_COUNT;
+	private static final int TE_INVENTORY_FIRST_SLOT_INDEX = SmasherBlockMenu.VANILLA_FIRST_SLOT_INDEX + SmasherBlockMenu.VANILLA_SLOT_COUNT;
 
 	// THIS YOU HAVE TO DEFINE!
 	private static final int TE_INVENTORY_SLOT_COUNT = 3; // must be the number of slots you have!

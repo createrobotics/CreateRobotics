@@ -1,4 +1,4 @@
-package com.workert.robotics.blockentities;
+package com.workert.robotics.blocks.blockentities;
 
 import com.workert.robotics.client.screens.SmasherBlockMenu;
 import com.workert.robotics.lists.BlockEntityList;
@@ -159,9 +159,9 @@ public class SmasherBlockEntity extends BlockEntity implements MenuProvider {
 		Optional<SmasherBlockRecipe> match = level.getRecipeManager()
 				.getRecipeFor(SmasherBlockRecipe.Type.INSTANCE, inventory, level);
 
-		return match.isPresent() && SmasherBlockEntity.canInsertAmountIntoOutputSlot(inventory) &&
-				SmasherBlockEntity.canInsertItemIntoOutputSlot(inventory, match.get().getResultItem()) &&
-				SmasherBlockEntity.hasFuelInFuelSlot(entity);
+		return match.isPresent() && SmasherBlockEntity.canInsertAmountIntoOutputSlot(
+				inventory) && SmasherBlockEntity.canInsertItemIntoOutputSlot(inventory,
+				match.get().getResultItem()) && SmasherBlockEntity.hasFuelInFuelSlot(entity);
 	}
 
 	private static boolean hasFuelInFuelSlot(SmasherBlockEntity entity) {

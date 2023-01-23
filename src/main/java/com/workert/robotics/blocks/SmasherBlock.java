@@ -1,6 +1,6 @@
 package com.workert.robotics.blocks;
 
-import com.workert.robotics.blockentities.SmasherBlockEntity;
+import com.workert.robotics.blocks.blockentities.SmasherBlockEntity;
 import com.workert.robotics.lists.BlockEntityList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
@@ -82,8 +82,7 @@ public class SmasherBlock extends BaseEntityBlock {
 	}
 
 	@Override
-	public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand,
-								 BlockHitResult pHit) {
+	public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
 		if (!pLevel.isClientSide()) {
 			BlockEntity entity = pLevel.getBlockEntity(pPos);
 			if (entity instanceof SmasherBlockEntity) {
@@ -104,8 +103,7 @@ public class SmasherBlock extends BaseEntityBlock {
 
 	@Nullable
 	@Override
-	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState,
-																  BlockEntityType<T> pBlockEntityType) {
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
 		return createTickerHelper(pBlockEntityType, BlockEntityList.SMASHER_BLOCK_ENTITY.get(),
 				SmasherBlockEntity::tick);
 	}

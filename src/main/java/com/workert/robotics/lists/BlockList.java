@@ -2,7 +2,6 @@ package com.workert.robotics.lists;
 
 import com.workert.robotics.Robotics;
 import com.workert.robotics.blocks.CodeEditor;
-import com.workert.robotics.blocks.DroneAssembler;
 import com.workert.robotics.blocks.SmasherBlock;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
@@ -43,9 +42,6 @@ public class BlockList {
 			BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.METAL).strength(9f)
 					.requiresCorrectToolForDrops()));
 
-	public static final RegistryObject<Block> DRONE_ASSEMBLER = registerBlock("drone_assembler",
-			() -> new DroneAssembler(Properties.of(Material.METAL).sound(SoundType.METAL)));
-
 	public static final RegistryObject<Block> CODE_EDITOR = registerBlock("code_editor",
 			() -> new CodeEditor(Properties.of(Material.METAL).sound(SoundType.METAL).noOcclusion()));
 
@@ -55,8 +51,7 @@ public class BlockList {
 		return toReturn;
 	}
 
-	private static <T extends Block> RegistryObject<Item> registerBlockItem(String name, RegistryObject<T> block,
-																			CreativeModeTab tab) {
+	private static <T extends Block> RegistryObject<Item> registerBlockItem(String name, RegistryObject<T> block, CreativeModeTab tab) {
 		return ItemList.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties().tab(tab)));
 	}
 

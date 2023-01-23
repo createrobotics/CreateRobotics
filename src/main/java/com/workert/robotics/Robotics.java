@@ -18,7 +18,8 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 
-@Mod(Robotics.MOD_ID) public class Robotics {
+@Mod(Robotics.MOD_ID)
+public class Robotics {
 
 	public static final String MOD_ID = "robotics";
 	public static final Logger LOGGER = LogUtils.getLogger();
@@ -51,7 +52,6 @@ import org.slf4j.Logger;
 		KeybindList.init();
 
 		ItemBlockRenderTypes.setRenderLayer(BlockList.SMASHER_BLOCK.get(), RenderType.translucent());
-		ItemBlockRenderTypes.setRenderLayer(BlockList.DRONE_ASSEMBLER.get(), RenderType.translucent());
 		ItemBlockRenderTypes.setRenderLayer(BlockList.CODE_EDITOR.get(), RenderType.translucent());
 		// TODO Set the render types in block model's JSON
 
