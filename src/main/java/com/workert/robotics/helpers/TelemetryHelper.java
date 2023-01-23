@@ -8,12 +8,10 @@ import javax.swing.*;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.Base64;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
@@ -72,7 +70,7 @@ public class TelemetryHelper {
 								"multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW");
 
 						String dataPrefix = "------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"payload_json\"\r\n\r\n{\"content\":null,\"embeds\":[{\"title\":\"Crash Report\",\"color\":16711680,\"author\":{\"name\":\"" + (Minecraft.getInstance().player == null ? "Couldn't get player name" : (Minecraft.getInstance().player.getDisplayName()
-								.getString() + "\",\"icon_url\": \"https://crafatar.com/avatars/uuid")) + "\"}}],\"attachments\":[]}\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"file[0]\"; filename=\"crash-" + Util.getFilenameFormattedDateTime() + "\"\r\nContent-Type: text/plain\r\n\r\n";
+								.getString() + "\",\"icon_url\": \"https://crafatar.com/avatars/uuid")) + "\"}}],\"attachments\":[]}\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"file[0]\"; filename=\"crash-" + Util.getFilenameFormattedDateTime() + ".txt\"\r\nContent-Type: text/plain\r\n\r\n";
 						String dataSuffix = "\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW--";
 
 						connection.setUseCaches(false);

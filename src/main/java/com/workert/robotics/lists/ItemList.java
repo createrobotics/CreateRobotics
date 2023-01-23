@@ -18,7 +18,7 @@ import net.minecraftforge.registries.RegistryObject;
 import java.util.Optional;
 
 public class ItemList {
-	public static final CreativeModeTab ROBOTICS_TAB = new CreativeModeTab("robotics") {
+	public static final CreativeModeTab ROBOTICS_TAB = new CreativeModeTab(Robotics.MOD_ID) {
 		@Override
 		public ItemStack makeIcon() {
 			return new ItemStack(ItemList.BRONZE_INGOT.get());
