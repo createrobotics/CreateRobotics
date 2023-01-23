@@ -20,6 +20,13 @@ Create Robotics has also a system planned for you to build and code your own rob
 
 
 [[dependencies.robotics]]
+modId = "create"
+mandatory = true
+versionRange = "[0.5.0.g-19,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.robotics]]
 modId = "forge"
 mandatory = true
 versionRange = "[42,)"
