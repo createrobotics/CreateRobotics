@@ -105,11 +105,13 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 	protected InteractionResult mobInteract(Player pPlayer, InteractionHand pHand) {
 		if (this.isProgrammable() && pPlayer.getItemInHand(pHand)
 				.is(AllItems.WRENCH.get().asItem()) && !pPlayer.isCrouching()) {
-			CompletableFuture.runAsync(() -> CodeHelper.runCode(this, this.code));
+			if (!this.level.isClientSide)
+				CompletableFuture.runAsync(() -> CodeHelper.runCode(this, this.code));
 			return InteractionResult.SUCCESS;
 		} else if (this.isProgrammable() && pPlayer.getItemInHand(pHand)
 				.is(ItemList.PROGRAM.get()) && !pPlayer.isCrouching()) {
-			this.code = pPlayer.getItemInHand(pHand).getOrCreateTag().getString("code");
+			if (!this.level.isClientSide)
+				this.code = pPlayer.getItemInHand(pHand).getOrCreateTag().getString("code");
 			return InteractionResult.SUCCESS;
 		} else if (this.hasInventory() && !pPlayer.isCrouching()) {
 			pPlayer.openMenu(new SimpleMenuProvider(new MenuConstructor() {
