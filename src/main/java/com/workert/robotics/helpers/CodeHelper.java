@@ -100,7 +100,7 @@ public class CodeHelper {
 		CodeHelper.registerCommand("getItems", (robot, arguments) -> {
 			BlockPos pos = new BlockPos(CodeHelper.eval(arguments.get(0)), CodeHelper.eval(arguments.get(1)),
 					CodeHelper.eval(arguments.get(2)));
-			if (!pos.closerToCenterThan(robot.position(), 5) || robot.getLevel().isClientSide()) return;
+			if (!pos.closerToCenterThan(robot.position(), 5)) return;
 			robot.getLevel().getExistingBlockEntity(pos).getCapability(ForgeCapabilities.ITEM_HANDLER)
 					.ifPresent(handler -> {
 						for (int slot = 0; slot < handler.getSlots(); slot++) {
@@ -118,7 +118,7 @@ public class CodeHelper {
 		CodeHelper.registerCommand("pushItems", (robot, arguments) -> {
 			BlockPos pos = new BlockPos(CodeHelper.eval(arguments.get(0)), CodeHelper.eval(arguments.get(1)),
 					CodeHelper.eval(arguments.get(2)));
-			if (!pos.closerToCenterThan(robot.position(), 5) || robot.getLevel().isClientSide()) return;
+			if (!pos.closerToCenterThan(robot.position(), 5)) return;
 			robot.getLevel().getExistingBlockEntity(pos).getCapability(ForgeCapabilities.ITEM_HANDLER)
 					.ifPresent(handler -> {
 						Item itemToPush = Items.AIR;
@@ -144,7 +144,7 @@ public class CodeHelper {
 				throw new IllegalArgumentException();
 			BlockPos pos = new BlockPos(CodeHelper.eval(arguments.get(0)), CodeHelper.eval(arguments.get(1)),
 					CodeHelper.eval(arguments.get(2)));
-			if (!pos.closerToCenterThan(robot.position(), 5) || robot.getLevel().isClientSide()) return;
+			if (!pos.closerToCenterThan(robot.position(), 5)) return;
 			try {
 				DeployerFakePlayer fakePlayer = new DeployerFakePlayer((ServerLevel) robot.getLevel());
 				fakePlayer.setItemInHand(InteractionHand.MAIN_HAND, robot.getInventory().getItem(0));
