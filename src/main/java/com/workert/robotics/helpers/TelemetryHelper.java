@@ -43,7 +43,7 @@ public class TelemetryHelper {
 			content.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
 			JLabel crashInfo = new JLabel(
-					"<html>Minecraft Crashed, and it seems like you<br>have a Test Version of Create Robotics installed.<br>Would you like to submit the<br>Crash Report to Create Robotics?</html>",
+					"<html>Minecraft crashed, and it seems like you<br>have a Test Version of Create Robotics installed.<br>Would you like to submit the<br>Crash Report to Create Robotics?</html>",
 					SwingConstants.CENTER);
 			crashInfo.setFont(new Font("Sans-Serif", Font.PLAIN, 18));
 			crashInfo.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
