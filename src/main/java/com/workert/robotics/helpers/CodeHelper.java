@@ -4,6 +4,7 @@ import com.simibubi.create.content.contraptions.components.deployer.DeployerFake
 import com.simibubi.create.content.contraptions.components.deployer.DeployerHandler;
 import com.workert.robotics.Robotics;
 import com.workert.robotics.entities.AbstractRobotEntity;
+import com.workert.robotics.helpers.exceptions.TooFewItemsException;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
@@ -14,6 +15,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -147,7 +149,26 @@ public class CodeHelper {
 			if (!pos.closerToCenterThan(robot.position(), 5)) return;
 			try {
 				DeployerFakePlayer fakePlayer = new DeployerFakePlayer((ServerLevel) robot.getLevel());
-				fakePlayer.setItemInHand(InteractionHand.MAIN_HAND, robot.getInventory().getItem(0));
+
+				if (arguments.size() > 4) {
+					Item itemToClickWith = Registry.ITEM.get(new ResourceLocation(arguments.get(4).trim().split(":")[0],
+							arguments.get(4).trim().split(":")[1]));
+					if (robot.getInventory().countItem(itemToClickWith) <= 0)
+						throw new TooFewItemsException();
+					for (int slot = 0; slot < robot.getInventory().getContainerSize(); slot++) {
+						if (robot.getInventory().getItem(slot).is(itemToClickWith)) {
+							ItemStack stackToAddToPlayer = robot.getInventory().removeItem(slot, 1);
+							if (stackToAddToPlayer.isEmpty())
+								break;
+							stackToAddToPlayer.setCount(
+									fakePlayer.getItemInHand(InteractionHand.MAIN_HAND).getCount() + 1);
+							fakePlayer.setItemInHand(InteractionHand.MAIN_HAND, stackToAddToPlayer);
+
+						}
+
+					}
+				}
+
 				fakePlayer.setPos(robot.position());
 
 				Method method = DeployerHandler.class.getDeclaredMethod("activate", DeployerFakePlayer.class,
@@ -169,7 +190,7 @@ public class CodeHelper {
 
 				method.invoke(DeployerHandler.class, fakePlayer, robot.position(), pos, Vec3.ZERO, mode);
 
-				robot.getInventory().setItem(0, fakePlayer.getItemInHand(InteractionHand.MAIN_HAND));
+				robot.getInventory().addItem(fakePlayer.getItemInHand(InteractionHand.MAIN_HAND));
 				fakePlayer.discard();
 			} catch (Exception e) {
 				throw new RuntimeException(e);
