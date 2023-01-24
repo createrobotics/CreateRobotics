@@ -1,5 +1,8 @@
 package com.workert.robotics.entities;
 
+import com.workert.robotics.Robotics;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
@@ -12,15 +15,58 @@ import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.animal.FlyingAnimal;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.world.ForgeChunkManager;
 
 public class CodeDrone extends AbstractRobotEntity implements FlyingAnimal {
 	private final SimpleContainer inventory = new SimpleContainer(9);
 
-	public String code = "";
+	public int last_chunk_x;
+	public int last_chunk_z;
+
+	@Override
+	public void addAdditionalSaveData(CompoundTag compound) {
+		super.addAdditionalSaveData(compound);
+		compound.putInt("lastChunkX", this.last_chunk_x);
+		compound.putInt("lastChunkZ", this.last_chunk_z);
+	}
+
+	@Override
+	public void readAdditionalSaveData(CompoundTag compound) {
+		super.readAdditionalSaveData(compound);
+		this.last_chunk_x = compound.getInt("lastChunkX");
+		this.last_chunk_z = compound.getInt("lastChunkZ");
+	}
 
 	public CodeDrone(EntityType<? extends PathfinderMob> entity, Level world) {
 		super(entity, world);
 		this.moveControl = new FlyingMoveControl(this, 128, true);
+	}
+
+	@Override
+	public void tick() {
+		for (int i = -1; i <= 1; i++) {
+			for (int j = -1; j <= 1; j++) {
+				ForgeChunkManager.forceChunk((ServerLevel) this.level, Robotics.MOD_ID, this, this.last_chunk_x + i,
+						this.last_chunk_z + j,
+						false, true);
+				ForgeChunkManager.forceChunk((ServerLevel) this.level, Robotics.MOD_ID, this,
+						this.chunkPosition().x + i, this.chunkPosition().z + j,
+						false, true);
+			}
+		}
+		super.tick();
+	}
+
+	@Override
+	public void remove(RemovalReason pReason) {
+		for (int i = -1; i <= 1; i++) {
+			for (int j = -1; j <= 1; j++) {
+				ForgeChunkManager.forceChunk((ServerLevel) this.level, Robotics.MOD_ID, this, this.last_chunk_x + i,
+						this.last_chunk_z + j,
+						false, true);
+			}
+		}
+		super.remove(pReason);
 	}
 
 	@Override
