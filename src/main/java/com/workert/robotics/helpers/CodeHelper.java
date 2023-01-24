@@ -155,7 +155,7 @@ public class CodeHelper {
 								"com.simibubi.create.content.contraptions.components.deployer.DeployerTileEntity$Mode"));
 				method.setAccessible(true);
 
-				Object mode;
+				Object mode = null;
 				switch (arguments.get(3).trim()) {
 					case "Mode.PUNCH":
 						mode = Class.forName(
@@ -167,9 +167,7 @@ public class CodeHelper {
 								.getEnumConstants()[1];
 				}
 
-				method.invoke(DeployerHandler.class, fakePlayer, robot.position(), pos, Vec3.ZERO, Class.forName(
-								"com.simibubi.create.content.contraptions.components.deployer.DeployerTileEntity$Mode")
-						.getEnumConstants()[1]);
+				method.invoke(DeployerHandler.class, fakePlayer, robot.position(), pos, Vec3.ZERO, mode);
 
 				robot.getInventory().setItem(0, fakePlayer.getItemInHand(InteractionHand.MAIN_HAND));
 				fakePlayer.discard();
