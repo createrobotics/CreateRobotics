@@ -1,6 +1,7 @@
 package com.workert.robotics.helpers;
 
 import com.simibubi.create.content.contraptions.components.deployer.DeployerFakePlayer;
+import com.simibubi.create.content.contraptions.components.deployer.DeployerHandler;
 import com.workert.robotics.Robotics;
 import com.workert.robotics.entities.AbstractRobotEntity;
 import net.minecraft.ChatFormatting;
@@ -10,12 +11,15 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -135,12 +139,43 @@ public class CodeHelper {
 					});
 			robot.getLevel().blockUpdated(pos, robot.getLevel().getBlockState(pos).getBlock());
 		});
-		CodeHelper.registerCommand("useOn", (robot, arguments) -> {
+		CodeHelper.registerCommand("click", (robot, arguments) -> {
+			if (arguments.size() < 3)
+				throw new IllegalArgumentException();
 			BlockPos pos = new BlockPos(CodeHelper.eval(arguments.get(0)), CodeHelper.eval(arguments.get(1)),
 					CodeHelper.eval(arguments.get(2)));
 			if (!pos.closerToCenterThan(robot.position(), 5) || robot.getLevel().isClientSide()) return;
-			DeployerFakePlayer player = new DeployerFakePlayer((ServerLevel) robot.getLevel());
-			// DeployerHandler.activate(player, robot.position(), pos, Vec3.ZERO, DeployerTileEntity.Mode.PUNCH);
+			try {
+				DeployerFakePlayer fakePlayer = new DeployerFakePlayer((ServerLevel) robot.getLevel());
+				fakePlayer.setItemInHand(InteractionHand.MAIN_HAND, robot.getInventory().getItem(0));
+				fakePlayer.setPos(robot.position());
+
+				Method method = DeployerHandler.class.getDeclaredMethod("activate", DeployerFakePlayer.class,
+						Vec3.class, BlockPos.class, Vec3.class, Class.forName(
+								"com.simibubi.create.content.contraptions.components.deployer.DeployerTileEntity$Mode"));
+				method.setAccessible(true);
+
+				Object mode;
+				switch (arguments.get(3).trim()) {
+					case "Mode.PUNCH":
+						mode = Class.forName(
+										"com.simibubi.create.content.contraptions.components.deployer.DeployerTileEntity$Mode")
+								.getEnumConstants()[0];
+					case "Mode.USE":
+						mode = Class.forName(
+										"com.simibubi.create.content.contraptions.components.deployer.DeployerTileEntity$Mode")
+								.getEnumConstants()[1];
+				}
+
+				method.invoke(DeployerHandler.class, fakePlayer, robot.position(), pos, Vec3.ZERO, Class.forName(
+								"com.simibubi.create.content.contraptions.components.deployer.DeployerTileEntity$Mode")
+						.getEnumConstants()[1]);
+
+				robot.getInventory().setItem(0, fakePlayer.getItemInHand(InteractionHand.MAIN_HAND));
+				fakePlayer.discard();
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
 		});
 	}
 
@@ -189,7 +224,7 @@ public class CodeHelper {
 								commandLine[0].lastIndexOf(")")).split(",")));
 					} catch (Exception exception) {
 						CodeHelper.brodcastErrorToNearbyPlayers(robot,
-								"robot." + prefix + " encountered an error. Please look at the Logs to learn more.");
+								"\"" + commandLine[0] + "\" encountered an error. Please open the logs to learn more.");
 						exception.printStackTrace();
 					}
 				});
