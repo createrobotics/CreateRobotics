@@ -140,7 +140,7 @@ public class CodeHelper {
 					CodeHelper.eval(arguments.get(2)));
 			if (!pos.closerToCenterThan(robot.position(), 5) || robot.getLevel().isClientSide()) return;
 			DeployerFakePlayer player = new DeployerFakePlayer((ServerLevel) robot.getLevel());
-			// DeployerHandler.activate(player, robot.position(), pos, Vec3.ZERO, Mode.PUNCH);
+			// DeployerHandler.activate(player, robot.position(), pos, Vec3.ZERO, DeployerTileEntity.Mode.PUNCH);
 		});
 	}
 

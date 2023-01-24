@@ -23,6 +23,13 @@ public class CodeDrone extends AbstractRobotEntity implements FlyingAnimal {
 	public int last_chunk_x;
 	public int last_chunk_z;
 
+	public CodeDrone(EntityType<? extends PathfinderMob> entity, Level world) {
+		super(entity, world);
+		this.moveControl = new FlyingMoveControl(this, 128, true);
+		this.last_chunk_x = this.chunkPosition().x;
+		this.last_chunk_z = this.chunkPosition().z;
+	}
+
 	@Override
 	public void addAdditionalSaveData(CompoundTag compound) {
 		super.addAdditionalSaveData(compound);
@@ -35,11 +42,6 @@ public class CodeDrone extends AbstractRobotEntity implements FlyingAnimal {
 		super.readAdditionalSaveData(compound);
 		this.last_chunk_x = compound.getInt("lastChunkX");
 		this.last_chunk_z = compound.getInt("lastChunkZ");
-	}
-
-	public CodeDrone(EntityType<? extends PathfinderMob> entity, Level world) {
-		super(entity, world);
-		this.moveControl = new FlyingMoveControl(this, 128, true);
 	}
 
 	@Override
