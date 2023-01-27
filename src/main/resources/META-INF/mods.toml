@@ -12,6 +12,8 @@ logoFile = "icon.png"
 
 authors = "Workert, OutCraft, RealDarkStudios"
 
+credits = "Thanks to darkMode for the amazing Tin Block and Program item textures!"
+
 description = '''
 Create Robotics is a mod about Robots and Robotics Automation in Minecraft using the Create mod.
 Robots have many uses, some help you at specific tasks, some automate your factory and some fight your enemies.
