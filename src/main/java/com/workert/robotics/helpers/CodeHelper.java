@@ -4,9 +4,9 @@ import com.simibubi.create.content.contraptions.components.deployer.DeployerFake
 import com.simibubi.create.content.contraptions.components.deployer.DeployerHandler;
 import com.workert.robotics.Robotics;
 import com.workert.robotics.entities.AbstractRobotEntity;
-import com.workert.robotics.helpers.exceptions.TooFewItemsException;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -21,6 +21,8 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 
+import javax.annotation.Nullable;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -65,14 +67,15 @@ public class CodeHelper {
 	}
 
 	private static String validateRegistryName(String name) {
-		name.replaceAll("[^a-zA-Z]", "").trim();
+		name = name.replaceAll("[^a-zA-Z]", "").trim();
 		return String.valueOf(name.charAt(0)).toLowerCase() + name.substring(1);
 	}
 
 	public static void registerDefaultCommands() {
-		CodeHelper.internalVariableLookupMap.put("xPos", robot -> Double.toString(robot.getX()));
-		CodeHelper.internalVariableLookupMap.put("yPos", robot -> Double.toString(robot.getY()));
-		CodeHelper.internalVariableLookupMap.put("zPos", robot -> Double.toString(robot.getZ()));
+		CodeHelper.registerInternalVariableLookup("xPos", robot -> Double.toString(robot.getX()));
+		CodeHelper.registerInternalVariableLookup("yPos", robot -> Double.toString(robot.getY()));
+		CodeHelper.registerInternalVariableLookup("zPos", robot -> Double.toString(robot.getZ()));
+
 		CodeHelper.registerCommand("goTo", (robot, arguments) -> {
 
 			robot.getNavigation().moveTo(CodeHelper.eval(arguments.get(0)), CodeHelper.eval(arguments.get(1)),
@@ -87,7 +90,7 @@ public class CodeHelper {
 						tryTimer = 0;
 					}
 					if (robot.getNavigation().isStuck()) {
-						CodeHelper.brodcastErrorToNearbyPlayers(robot,
+						CodeHelper.broadcastErrorToNearbyPlayers(robot,
 								"Robot \"" + robot.getName().getString() + "\" is stuck! Trying to recompute path.");
 						robot.getNavigation().recomputePath();
 					}
@@ -107,10 +110,10 @@ public class CodeHelper {
 					.ifPresent(handler -> {
 						for (int slot = 0; slot < handler.getSlots(); slot++) {
 							while (!handler.getStackInSlot(slot)
-									.isEmpty() && (arguments.size() < 4 || Registry.ITEM.getKey(
-											handler.getStackInSlot(slot).getItem()).toString()
-									.equals(arguments.get(3).trim())) && robot.wantsToPickUp(
-									handler.extractItem(slot, 1, true))) {
+									.isEmpty() && (arguments.size() < 4 || CodeHelper.getItemById(arguments.get(3))
+									.equals(handler.getStackInSlot(slot).getItem())
+									&& robot.wantsToPickUp(
+									handler.extractItem(slot, 1, true)))) {
 								robot.getInventory().addItem(handler.extractItem(slot, 1, false));
 							}
 						}
@@ -125,8 +128,7 @@ public class CodeHelper {
 					.ifPresent(handler -> {
 						Item itemToPush = Items.AIR;
 						if (arguments.size() > 3) {
-							itemToPush = Registry.ITEM.get(new ResourceLocation(arguments.get(4).trim().split(":")[0],
-									arguments.get(4).trim().split(":")[1]));
+							itemToPush = CodeHelper.getItemById(arguments.get(3));
 						}
 						for (int slot = 0; slot < robot.getInventory().getContainerSize(); slot++) {
 							if (itemToPush.equals(Items.AIR) || (robot.getInventory()
@@ -141,57 +143,39 @@ public class CodeHelper {
 					});
 			robot.getLevel().blockUpdated(pos, robot.getLevel().getBlockState(pos).getBlock());
 		});
-		CodeHelper.registerCommand("click", (robot, arguments) -> {
+		CodeHelper.registerCommand("punch", (robot, arguments) -> {
 			if (arguments.size() < 3)
-				throw new IllegalArgumentException();
-			BlockPos pos = new BlockPos(CodeHelper.eval(arguments.get(0)), CodeHelper.eval(arguments.get(1)),
+				throw new IllegalArgumentException("Expected three or more arguments for command \"punch\"");
+			BlockPos clickPos = new BlockPos(CodeHelper.eval(arguments.get(0)), CodeHelper.eval(arguments.get(1)),
 					CodeHelper.eval(arguments.get(2)));
-			if (!pos.closerToCenterThan(robot.position(), 5)) return;
+			if (!clickPos.closerToCenterThan(robot.position(), 5)) return;
+
+			Item item = null;
+			if (arguments.size() > 4)
+				item = CodeHelper.getItemById(arguments.get(4));
+
 			try {
-				DeployerFakePlayer fakePlayer = new DeployerFakePlayer((ServerLevel) robot.getLevel());
+				CodeHelper.click(robot, clickPos, Direction.valueOf(arguments.get(3).trim().replace("Direction.", "")),
+						false,
+						item);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		});
+		CodeHelper.registerCommand("use", (robot, arguments) -> {
+			if (arguments.size() < 3)
+				throw new IllegalArgumentException("Expected three or more arguments for command \"use\"");
+			BlockPos clickPos = new BlockPos(CodeHelper.eval(arguments.get(0)), CodeHelper.eval(arguments.get(1)),
+					CodeHelper.eval(arguments.get(2)));
+			if (!clickPos.closerToCenterThan(robot.position(), 5)) return;
 
-				if (arguments.size() > 4) {
-					Item itemToClickWith = Registry.ITEM.get(new ResourceLocation(arguments.get(4).trim().split(":")[0],
-							arguments.get(4).trim().split(":")[1]));
-					if (robot.getInventory().countItem(itemToClickWith) <= 0)
-						throw new TooFewItemsException();
-					for (int slot = 0; slot < robot.getInventory().getContainerSize(); slot++) {
-						if (robot.getInventory().getItem(slot).is(itemToClickWith)) {
-							ItemStack stackToAddToPlayer = robot.getInventory().removeItem(slot, 1);
-							if (stackToAddToPlayer.isEmpty())
-								break;
-							stackToAddToPlayer.setCount(
-									fakePlayer.getItemInHand(InteractionHand.MAIN_HAND).getCount() + 1);
-							fakePlayer.setItemInHand(InteractionHand.MAIN_HAND, stackToAddToPlayer);
+			Item item = null;
+			if (arguments.size() > 4)
+				item = CodeHelper.getItemById(arguments.get(4));
 
-						}
-
-					}
-				}
-
-				fakePlayer.setPos(robot.position());
-
-				Method method = DeployerHandler.class.getDeclaredMethod("activate", DeployerFakePlayer.class,
-						Vec3.class, BlockPos.class, Vec3.class, Class.forName(
-								"com.simibubi.create.content.contraptions.components.deployer.DeployerTileEntity$Mode"));
-				method.setAccessible(true);
-
-				Object mode = null;
-				switch (arguments.get(3).trim()) {
-					case "Mode.PUNCH":
-						mode = Class.forName(
-										"com.simibubi.create.content.contraptions.components.deployer.DeployerTileEntity$Mode")
-								.getEnumConstants()[0];
-					case "Mode.USE":
-						mode = Class.forName(
-										"com.simibubi.create.content.contraptions.components.deployer.DeployerTileEntity$Mode")
-								.getEnumConstants()[1];
-				}
-
-				method.invoke(DeployerHandler.class, fakePlayer, robot.position(), pos, Vec3.ZERO, mode);
-
-				robot.getInventory().addItem(fakePlayer.getItemInHand(InteractionHand.MAIN_HAND));
-				fakePlayer.discard();
+			try {
+				CodeHelper.click(robot, clickPos, Direction.valueOf(arguments.get(3).trim().replace("Direction.", "")),
+						false, item);
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
@@ -242,8 +226,8 @@ public class CodeHelper {
 						function.accept(robot, Arrays.asList(commandLine[0].substring(commandLine[0].indexOf("(") + 1,
 								commandLine[0].lastIndexOf(")")).split(",")));
 					} catch (Exception exception) {
-						CodeHelper.brodcastErrorToNearbyPlayers(robot,
-								"\"" + commandLine[0] + "\" encountered an error. Please open the logs to learn more.");
+						CodeHelper.broadcastErrorToNearbyPlayers(robot,
+								"\"" + commandLine[0] + "\" encountered an error. Detail message:\n" + exception.getLocalizedMessage() + "\nPlease look at the logs to learn more.");
 						exception.printStackTrace();
 					}
 				});
@@ -257,23 +241,81 @@ public class CodeHelper {
 					robot.privateVariableLookupMap.put(CodeHelper.validateRegistryName(list[0].trim()),
 							robotFromFunction -> list[1].trim());
 				} else {
-					CodeHelper.brodcastErrorToNearbyPlayers(robot,
-							"The Variable Declaration expected a \"public\" or \"private\" declaration infront, got \"" + commandLine[0] + "\"");
+					CodeHelper.broadcastErrorToNearbyPlayers(robot,
+							"The Variable Declaration expected a \"public\" or \"private\" declaration in front, got \"" + commandLine[0] + "\"");
 				}
 			}
 		}
-
 	}
 
-	private static void brodcastErrorToNearbyPlayers(AbstractRobotEntity robot, String message) {
+	public static Item getItemById(String id) {
+		Item item = Registry.ITEM.get(new ResourceLocation(id.trim().split(":")[0],
+				id.trim().split(":")[1]));
+
+		if (item.equals(Items.AIR))
+			throw new IllegalArgumentException("Unknown item: \"" + id.trim() + "\"");
+
+		return item;
+	}
+
+	public static void click(AbstractRobotEntity robot, BlockPos posToClick, Direction direction, boolean use, @Nullable Item itemToClickWith)
+			throws ClassNotFoundException, NoSuchMethodException, InterruptedException,
+			InvocationTargetException, IllegalAccessException {
+		DeployerFakePlayer fakePlayer = new DeployerFakePlayer((ServerLevel) robot.getLevel());
+
+		if (itemToClickWith != null) {
+			if (robot.getInventory().countItem(itemToClickWith) <= 0) return;
+			for (int slot = 0; slot < robot.getInventory().getContainerSize(); slot++) {
+				if (robot.getInventory().getItem(slot).is(itemToClickWith)) {
+					ItemStack stackToAddToPlayer = robot.getInventory().removeItem(slot, 1);
+					if (stackToAddToPlayer.isEmpty())
+						break;
+					stackToAddToPlayer.setCount(
+							fakePlayer.getItemInHand(InteractionHand.MAIN_HAND).getCount() + 1);
+					fakePlayer.setItemInHand(InteractionHand.MAIN_HAND, stackToAddToPlayer);
+
+				}
+
+			}
+		}
+
+		if (direction == null) {
+			direction = Direction.DOWN;
+		}
+
+		fakePlayer.setXRot(direction == Direction.UP ? -90 : direction == Direction.DOWN ? 90 : 0);
+		fakePlayer.setYRot(direction.toYRot());
+
+		Method method = DeployerHandler.class.getDeclaredMethod("activate", DeployerFakePlayer.class,
+				Vec3.class, BlockPos.class, Vec3.class, Class.forName(
+						"com.simibubi.create.content.contraptions.components.deployer.DeployerTileEntity$Mode"));
+		method.setAccessible(true);
+
+		method.invoke(DeployerHandler.class, fakePlayer, robot.position(), posToClick,
+				Vec3.atLowerCornerOf(direction.getNormal()), Class.forName(
+								"com.simibubi.create.content.contraptions.components.deployer.DeployerTileEntity$Mode")
+						.getEnumConstants()[use ? 0 : 1]);
+
+		fakePlayer.getInventory().items.forEach(itemStack -> {
+			if (robot.wantsToPickUp(itemStack)) {
+				robot.getInventory().addItem(itemStack);
+			} else {
+				fakePlayer.drop(itemStack, true);
+			}
+		});
+		fakePlayer.discard();
+
+		Thread.sleep(200);
+	}
+
+	public static void broadcastErrorToNearbyPlayers(AbstractRobotEntity robot, String message) {
 		int messageDistance = 256;
-		robot.getLevel().getEntitiesOfClass(Player.class,
-						new AABB(robot.blockPosition().offset(-messageDistance, -messageDistance, -messageDistance),
-								robot.blockPosition().offset(messageDistance, messageDistance, messageDistance)))
-				.forEach(player -> {
-					player.displayClientMessage(Component.literal("<!> ").withStyle(ChatFormatting.YELLOW)
-							.append(Component.literal(message).withStyle(Style.EMPTY)), false);
-				});
+		for (Player player : robot.getLevel().getEntitiesOfClass(Player.class,
+				new AABB(robot.blockPosition().offset(-messageDistance, -messageDistance, -messageDistance),
+						robot.blockPosition().offset(messageDistance, messageDistance, messageDistance)))) {
+			player.displayClientMessage(Component.literal("<!> ").withStyle(ChatFormatting.YELLOW)
+					.append(Component.literal(message).withStyle(Style.EMPTY)), false);
+		}
 	}
 
 	public static double eval(final String str) {
@@ -339,11 +381,13 @@ public class CodeHelper {
 					} else {
 						x = this.parseFactor();
 					}
-					if (func.equals("sqrt")) x = Math.sqrt(x);
-					else if (func.equals("sin")) x = Math.sin(Math.toRadians(x));
-					else if (func.equals("cos")) x = Math.cos(Math.toRadians(x));
-					else if (func.equals("tan")) x = Math.tan(Math.toRadians(x));
-					else throw new RuntimeException("Unknown function: " + func);
+					x = switch (func) {
+						case "sqrt" -> Math.sqrt(x);
+						case "sin" -> Math.sin(Math.toRadians(x));
+						case "cos" -> Math.cos(Math.toRadians(x));
+						case "tan" -> Math.tan(Math.toRadians(x));
+						default -> throw new RuntimeException("Unknown function: " + func);
+					};
 				} else {
 					throw new RuntimeException("Unexpected: " + (char) this.ch);
 				}
