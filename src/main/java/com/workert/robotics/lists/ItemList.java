@@ -3,7 +3,6 @@ package com.workert.robotics.lists;
 import com.workert.robotics.Robotics;
 import com.workert.robotics.items.ExtendOBootsItem;
 import com.workert.robotics.items.ModArmorMaterials;
-import com.workert.robotics.items.ProgramItem;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -35,8 +34,8 @@ public class ItemList {
 	public static final RegistryObject<Item> BRONZE_NUGGET = registerBasicItem("bronze_nugget", Optional.empty());
 	public static final RegistryObject<Item> RAW_BRONZE = registerBasicItem("raw_bronze", Optional.empty());
 
-	public static final RegistryObject<Item> PROGRAM = ITEMS.register("program",
-			() -> new ProgramItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON).tab(ROBOTICS_TAB)));
+	public static final RegistryObject<Item> PROGRAM = registerBasicItem("program",
+			Optional.of(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON).tab(ROBOTICS_TAB)));
 
 	public static final RegistryObject<Item> CLOCKCOPTER = ITEMS.register("clockcopter",
 			() -> new ForgeSpawnEggItem(() -> EntityList.CLOCKCOPTER.get(), 0xb0b0b0, 0xb3793b,
