@@ -151,14 +151,17 @@ public class CodeHelper {
 			if (!clickPos.closerToCenterThan(robot.position(), 5)) return;
 
 			Item item = null;
-			if (arguments.size() > 4)
-				item = CodeHelper.getItemById(arguments.get(4));
+			Direction direction = null;
+			if (arguments.size() > 3) {
+				if (arguments.get(3).trim().startsWith("Direction")) {
+					direction = Direction.valueOf(arguments.get(3).trim().replace("Direction.", ""));
+					if (arguments.size() > 4)
+						item = CodeHelper.getItemById(arguments.get(4));
+				} else item = CodeHelper.getItemById(arguments.get(3));
+			}
 
 			try {
-				CodeHelper.click(robot, clickPos, arguments.size() > 3 ? Direction.valueOf(
-								arguments.get(3).trim().replace("Direction.", "")) : null,
-						false,
-						item);
+				CodeHelper.click(robot, clickPos, direction, false, item);
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
@@ -171,13 +174,17 @@ public class CodeHelper {
 			if (!clickPos.closerToCenterThan(robot.position(), 5)) return;
 
 			Item item = null;
-			if (arguments.size() > 4)
-				item = CodeHelper.getItemById(arguments.get(4));
+			Direction direction = null;
+			if (arguments.size() > 3) {
+				if (arguments.get(3).trim().startsWith("Direction")) {
+					direction = Direction.valueOf(arguments.get(3).trim().replace("Direction.", ""));
+					if (arguments.size() > 4)
+						item = CodeHelper.getItemById(arguments.get(4));
+				} else item = CodeHelper.getItemById(arguments.get(3));
+			}
 
 			try {
-				CodeHelper.click(robot, clickPos, arguments.size() > 3 ? Direction.valueOf(
-								arguments.get(3).trim().replace("Direction.", "")) : null,
-						false, item);
+				CodeHelper.click(robot, clickPos, direction, false, item);
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
