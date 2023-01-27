@@ -180,6 +180,15 @@ public class CodeHelper {
 				throw new RuntimeException(e);
 			}
 		});
+		CodeHelper.registerCommand("wait", (robot, arguments) -> {
+			if (arguments.size() < 1)
+				throw new IllegalArgumentException("Expected one argument for command \"wait\"");
+			try {
+				Thread.sleep((long) CodeHelper.eval(arguments.get(0)));
+			} catch (InterruptedException e) {
+				throw new RuntimeException(e);
+			}
+		});
 	}
 
 	public static void runCode(AbstractRobotEntity robot, String code) {
