@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "iron_ingot",
+  "ingredients": [
+    {
+      "item": "robotics:bronze_block"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "item": "robotics:bronze_ingot"
+  }
+}

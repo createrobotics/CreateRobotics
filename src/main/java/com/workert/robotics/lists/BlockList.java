@@ -24,18 +24,19 @@ public class BlockList {
 			Robotics.MOD_ID);
 
 	public static final RegistryObject<Block> TIN_ORE = registerBlock("tin_ore", () -> new DropExperienceBlock(
-			BlockBehaviour.Properties.of(Material.STONE).sound(SoundType.STONE).strength(9f)
+			BlockBehaviour.Properties.of(Material.STONE).sound(SoundType.STONE).strength(3.0F, 3.0F)
 					.requiresCorrectToolForDrops()));
 
 	public static final RegistryObject<Block> DEEPSLATE_TIN_ORE = registerBlock("deepslate_tin_ore",
-			() -> new DropExperienceBlock(BlockBehaviour.Properties.copy(TIN_ORE.get()).sound(SoundType.DEEPSLATE)));
+			() -> new DropExperienceBlock(
+					BlockBehaviour.Properties.copy(TIN_ORE.get()).sound(SoundType.DEEPSLATE).strength(4.5F, 3.0F)));
 
 	public static final RegistryObject<Block> TIN_BLOCK = registerBlock("tin_block", () -> new Block(
-			BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.METAL).strength(9f)
+			BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.METAL).strength(5.0F, 6.0F)
 					.requiresCorrectToolForDrops()));
-
+	
 	public static final RegistryObject<Block> BRONZE_BLOCK = registerBlock("bronze_block", () -> new Block(
-			BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.METAL).strength(9f)
+			BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.METAL).strength(6.0F, 7.0F)
 					.requiresCorrectToolForDrops()));
 
 	public static final RegistryObject<Block> SMASHER_BLOCK = registerBlock("smasher_block", () -> new SmasherBlock(
