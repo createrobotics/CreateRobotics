@@ -44,6 +44,10 @@ public class ItemList {
 			() -> new ForgeSpawnEggItem(() -> EntityList.MINER.get(), 0xb0b0b0, 0xb3793b,
 					new Item.Properties().tab(ROBOTICS_TAB)));
 
+	public static final RegistryObject<Item> CODE_DRONE = ITEMS.register("code_drone",
+			() -> new ForgeSpawnEggItem(() -> EntityList.CODE_DRONE.get(), 0xb0b0b0, 0xb3793b,
+					new Item.Properties().tab(ROBOTICS_TAB)));
+
 	public static final RegistryObject<Item> EXTEND_O_BOOTS = ITEMS.register("extend_o_boots",
 			() -> new ExtendOBootsItem(ModArmorMaterials.EXTEND_O_BOOTS, EquipmentSlot.FEET,
 					new Item.Properties().tab(ROBOTICS_TAB)));
