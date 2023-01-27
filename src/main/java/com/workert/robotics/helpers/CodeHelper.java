@@ -155,7 +155,8 @@ public class CodeHelper {
 				item = CodeHelper.getItemById(arguments.get(4));
 
 			try {
-				CodeHelper.click(robot, clickPos, Direction.valueOf(arguments.get(3).trim().replace("Direction.", "")),
+				CodeHelper.click(robot, clickPos, arguments.size() > 3 ? Direction.valueOf(
+								arguments.get(3).trim().replace("Direction.", "")) : null,
 						false,
 						item);
 			} catch (Exception e) {
@@ -174,7 +175,8 @@ public class CodeHelper {
 				item = CodeHelper.getItemById(arguments.get(4));
 
 			try {
-				CodeHelper.click(robot, clickPos, Direction.valueOf(arguments.get(3).trim().replace("Direction.", "")),
+				CodeHelper.click(robot, clickPos, arguments.size() > 3 ? Direction.valueOf(
+								arguments.get(3).trim().replace("Direction.", "")) : null,
 						false, item);
 			} catch (Exception e) {
 				throw new RuntimeException(e);
