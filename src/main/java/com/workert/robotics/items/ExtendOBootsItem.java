@@ -1,5 +1,6 @@
 package com.workert.robotics.items;
 
+import com.google.common.collect.Maps;
 import com.workert.robotics.client.KeybindList;
 import com.workert.robotics.entities.ExtendOBoots;
 import com.workert.robotics.lists.EntityList;
@@ -17,11 +18,11 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-import java.util.HashMap;
+import java.util.Map;
 
 public class ExtendOBootsItem extends ArmorItem {
 	public static final float MAX_HEIGHT = 5;
-	private final HashMap<ItemStack, ExtendOBoots> extendOBootsEntites = new HashMap<>();
+	private static final Map<ItemStack, ExtendOBoots> BY_ID = Maps.newIdentityHashMap();
 	private Player player;
 
 	private boolean clientSentOff;
@@ -43,13 +44,13 @@ public class ExtendOBootsItem extends ArmorItem {
 		}
 		this.player = player;
 		if (stack.getOrCreateTag().getFloat("currentHeight") > 0) {
-			ExtendOBoots extendOBoots = this.extendOBootsEntites.get(stack);
+			ExtendOBoots extendOBoots = this.BY_ID.get(stack);
 			if (extendOBoots == null) {
 				extendOBoots = new ExtendOBoots(EntityList.EXTEND_O_BOOTS.get(), this.player.getLevel());
 				extendOBoots.setPos(this.player.position());
 				extendOBoots.setYRot(this.player.getYRot());
 				this.player.getLevel().addFreshEntity(extendOBoots);
-				this.extendOBootsEntites.put(stack, extendOBoots);
+				this.BY_ID.put(stack, extendOBoots);
 			}
 			player.teleportTo(player.getX(), extendOBoots.getY() + stack.getOrCreateTag().getFloat("currentHeight"),
 					player.getZ());
@@ -58,9 +59,9 @@ public class ExtendOBootsItem extends ArmorItem {
 					.with(Direction.Axis.Y, extendOBoots.getY() + stack.getOrCreateTag().getFloat("currentHeight"))) >
 					0.1) stack.getOrCreateTag().putFloat("currentHeight", 0);
 			extendOBoots.getEntityData().set(ExtendOBoots.HEIGHT, stack.getOrCreateTag().getFloat("currentHeight"));
-		} else if (this.extendOBootsEntites.get(stack) != null) {
-			this.extendOBootsEntites.get(stack).discard();
-			this.extendOBootsEntites.put(stack, null);
+		} else if (this.BY_ID.get(stack) != null) {
+			this.BY_ID.get(stack).discard();
+			this.BY_ID.put(stack, null);
 		}
 	}
 
