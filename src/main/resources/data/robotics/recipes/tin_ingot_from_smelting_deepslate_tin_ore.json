@@ -2,7 +2,7 @@
   "type": "minecraft:smelting",
   "cookingtime": 200,
   "experience": 0.7,
-  "group": "iron_ingot",
+  "group": "tin_ingot",
   "ingredient": {
     "item": "minecraft:deepslate_tin_ore"
   },
