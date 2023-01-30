@@ -28,4 +28,8 @@ public class ExtendOBootsRenderer extends LivingEntityRenderer<ExtendOBoots, Ext
 				"textures/entity/extend_o_boots/" + pEntity.getEntityData().get(ExtendOBoots.HEIGHT) + ".png");
 	}
 
+	@Override
+	protected boolean shouldShowName(ExtendOBoots pEntity) {
+		return false;
+	}
 }

@@ -1,5 +1,6 @@
 package com.workert.robotics.entities;
 
+import com.workert.robotics.lists.ItemList;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
@@ -8,6 +9,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 
 public class Miner extends AbstractRobotEntity {
@@ -40,6 +42,11 @@ public class Miner extends AbstractRobotEntity {
 	@Override
 	public boolean causeFallDamage(float pFallDistance, float pMultiplier, DamageSource pSource) {
 		return false;
+	}
+
+	@Override
+	public Item getRobotItem() {
+		return ItemList.MINER.get();
 	}
 
 	@Override

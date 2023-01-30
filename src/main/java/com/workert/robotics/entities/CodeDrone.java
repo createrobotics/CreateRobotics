@@ -1,6 +1,7 @@
 package com.workert.robotics.entities;
 
 import com.workert.robotics.Robotics;
+import com.workert.robotics.lists.ItemList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.SimpleContainer;
@@ -14,6 +15,7 @@ import net.minecraft.world.entity.ai.control.FlyingMoveControl;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.animal.FlyingAnimal;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.world.ForgeChunkManager;
 
@@ -95,6 +97,11 @@ public class CodeDrone extends AbstractRobotEntity implements FlyingAnimal {
 	@Override
 	public boolean causeFallDamage(float pFallDistance, float pMultiplier, DamageSource pSource) {
 		return false;
+	}
+
+	@Override
+	public Item getRobotItem() {
+		return ItemList.CODE_DRONE.get();
 	}
 
 	@Override

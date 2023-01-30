@@ -1,6 +1,7 @@
 package com.workert.robotics.entities;
 
 import com.workert.robotics.entities.goals.MineBlockAndDropGoal;
+import com.workert.robotics.lists.ItemList;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -16,6 +17,7 @@ import net.minecraft.world.entity.ai.control.FlyingMoveControl;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.animal.FlyingAnimal;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -73,6 +75,11 @@ public class Clockcopter extends AbstractRobotEntity implements FlyingAnimal {
 	@Override
 	public boolean causeFallDamage(float pFallDistance, float pMultiplier, DamageSource pSource) {
 		return false;
+	}
+
+	@Override
+	public Item getRobotItem() {
+		return ItemList.CLOCKCOPTER.get();
 	}
 
 	@Override

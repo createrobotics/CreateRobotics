@@ -22,7 +22,7 @@ import java.util.Map;
 
 public class ExtendOBootsItem extends ArmorItem {
 	public static final float MAX_HEIGHT = 5;
-	private static final Map<ItemStack, ExtendOBoots> BY_ID = Maps.newIdentityHashMap();
+	private static final Map<ItemStack, ExtendOBoots> ENTITIES = Maps.newIdentityHashMap();
 	private Player player;
 
 	private boolean clientSentOff;
@@ -44,13 +44,13 @@ public class ExtendOBootsItem extends ArmorItem {
 		}
 		this.player = player;
 		if (stack.getOrCreateTag().getFloat("currentHeight") > 0) {
-			ExtendOBoots extendOBoots = this.BY_ID.get(stack);
+			ExtendOBoots extendOBoots = this.ENTITIES.get(stack);
 			if (extendOBoots == null) {
 				extendOBoots = new ExtendOBoots(EntityList.EXTEND_O_BOOTS.get(), this.player.getLevel());
 				extendOBoots.setPos(this.player.position());
 				extendOBoots.setYRot(this.player.getYRot());
 				this.player.getLevel().addFreshEntity(extendOBoots);
-				this.BY_ID.put(stack, extendOBoots);
+				this.ENTITIES.put(stack, extendOBoots);
 			}
 			player.teleportTo(player.getX(), extendOBoots.getY() + stack.getOrCreateTag().getFloat("currentHeight"),
 					player.getZ());
@@ -59,9 +59,9 @@ public class ExtendOBootsItem extends ArmorItem {
 					.with(Direction.Axis.Y, extendOBoots.getY() + stack.getOrCreateTag().getFloat("currentHeight"))) >
 					0.1) stack.getOrCreateTag().putFloat("currentHeight", 0);
 			extendOBoots.getEntityData().set(ExtendOBoots.HEIGHT, stack.getOrCreateTag().getFloat("currentHeight"));
-		} else if (this.BY_ID.get(stack) != null) {
-			this.BY_ID.get(stack).discard();
-			this.BY_ID.put(stack, null);
+		} else if (this.ENTITIES.get(stack) != null) {
+			this.ENTITIES.get(stack).discard();
+			this.ENTITIES.put(stack, null);
 		}
 	}
 

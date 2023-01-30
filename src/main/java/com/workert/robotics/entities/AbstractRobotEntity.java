@@ -22,6 +22,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.MenuConstructor;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
@@ -99,11 +100,21 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 		super.tick();
 	}
 
+	public abstract Item getRobotItem();
+
 	public abstract boolean isProgrammable();
 
 	@Override
 	protected InteractionResult mobInteract(Player pPlayer, InteractionHand pHand) {
-		if (this.isProgrammable() && pPlayer.getItemInHand(pHand)
+		if (pPlayer.getItemInHand(pHand)
+				.is(AllItems.WRENCH.get().asItem()) && pPlayer.isCrouching()) {
+			ItemStack stack = new ItemStack(this.getRobotItem());
+			CompoundTag saveTag = new CompoundTag();
+			this.save(saveTag);
+			stack.getOrCreateTag().put("robot", saveTag);
+			pPlayer.getInventory().add(stack);
+			this.discard();
+		} else if (this.isProgrammable() && pPlayer.getItemInHand(pHand)
 				.is(AllItems.WRENCH.get().asItem()) && !pPlayer.isCrouching()) {
 			if (!this.level.isClientSide)
 				CompletableFuture.runAsync(() -> CodeHelper.runCode(this, this.code));

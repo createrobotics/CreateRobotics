@@ -18,7 +18,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class TelemetryHelper {
-	private static final String CRASH_ENDPOINT = "aHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTA2NDIxNDk2MDY4MDQ4NDg4NS8xcWVPekQ2WmJIc3FUYzEyc1BRQTZJRFhNNTlncmY1ejBsMzJvNmhVQkNYWG5jd3ZqWHJPWVhPOGFWT2Ewb1VJbUZkRA==";
+	private static final String CRASH_ENDPOINT = "YUhSMGNITTZMeTlrYVhOamIzSmtMbU52YlM5aGNHa3ZkMlZpYUc5dmEzTXZNVEEyTkRJeE5EazJNRFk0TURRNE5EZzROUzh4Y1dWUGVrUTJXbUpJYzNGVVl6RXljMUJSUVRaSlJGaE5OVGxuY21ZMWVqQnNNekp2Tm1oVlFrTllXRzVqZDNacVdISlBXVmhQT0dGV1QyRXdiMVZKYlVaa1JBPT0=";
 
 	protected static boolean closedCrashGui = false;
 
@@ -58,7 +58,8 @@ public class TelemetryHelper {
 				public void actionPerformed(ActionEvent e) {
 
 					Robotics.LOGGER.info("Sending Crash Report File");
-					String decodedEndpoint = new String(Base64.getDecoder().decode(TelemetryHelper.CRASH_ENDPOINT),
+					String decodedEndpoint = new String(
+							Base64.getDecoder().decode(Base64.getDecoder().decode(TelemetryHelper.CRASH_ENDPOINT)),
 							StandardCharsets.UTF_8);
 					try {
 						URL url = new URL(decodedEndpoint);
@@ -139,7 +140,9 @@ public class TelemetryHelper {
 
 	private static void setHeadless(boolean headless) {
 		System.setProperty("java.awt.headless", Boolean.toString(headless));
-		if (GraphicsEnvironment.isHeadless() != headless)
-			Robotics.LOGGER.warn("Couldn't change Java Headless Mode to " + headless);
+		if (GraphicsEnvironment.isHeadless() != headless) {
+			Robotics.LOGGER.error("Couldn't change Java Headless Mode to " + headless);
+			System.exit(42);
+		}
 	}
 }
