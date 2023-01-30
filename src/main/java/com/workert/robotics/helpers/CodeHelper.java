@@ -32,9 +32,15 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 public class CodeHelper {
-	private static final HashMap<String, BiConsumer<AbstractRobotEntity, List<String>>> commandMap = new HashMap<>();
+	/**
+	 * DO NOT USE!<br>See {@link CodeHelper#registerCommand} to register commands.
+	 */
+	public static final HashMap<String, BiConsumer<AbstractRobotEntity, List<String>>> commandMap = new HashMap<>();
 
-	private static final HashMap<String, Function<AbstractRobotEntity, String>> internalVariableLookupMap = new HashMap<>();
+	/**
+	 * DO NOT USE!<br>See {@link CodeHelper#registerInternalVariableLookup} to register variable lookups.
+	 */
+	public static final HashMap<String, Function<AbstractRobotEntity, String>> internalVariableLookupMap = new HashMap<>();
 	private static final HashMap<String, Function<AbstractRobotEntity, String>> publicVariableLookupMap = new HashMap<>();
 
 	/**
@@ -205,8 +211,10 @@ public class CodeHelper {
 		if (code == null || code.isBlank()) return;
 
 		code = code.replace("\n", "").replace("\r", "");
+		code = code.replaceAll("/\\*.*?\\*/", "");
 
 		Robotics.LOGGER.debug("Starting to run code!");
+		Robotics.LOGGER.debug("Full code: \"" + code + "\"");
 		for (String command : code.split(";")) {
 			commandLine[0] = command;
 

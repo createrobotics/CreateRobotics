@@ -7,10 +7,12 @@ import com.simibubi.create.foundation.gui.AbstractSimiScreen;
 import com.simibubi.create.foundation.gui.AllGuiTextures;
 import com.simibubi.create.foundation.gui.AllIcons;
 import com.simibubi.create.foundation.gui.widget.IconButton;
+import com.workert.robotics.helpers.CodeHelper;
 import com.workert.robotics.lists.PacketList;
 import com.workert.robotics.packets.ReturnEditedCodePacket;
 import net.minecraft.Util;
 import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import org.apache.commons.io.IOUtils;
 
@@ -21,21 +23,45 @@ import java.io.IOException;
 
 public class CodeEditorScreen extends AbstractSimiScreen {
 
-	private final String code;
+	private final String DEFAULT_TEXT = "\n\n\n/*\nThis is a comment showing some basic commands. It is meant to allow certain text editors to autocomplete them.\nFor more information visit the Programming Mechanic page of the Create Robotics Wiki:\nhttps://github.com/Worker20/CreateRobotics/wiki/Programming-Mechanic\n\nDirection.UP\nDirection.DOWN\nDirection.NORTH\nDirection.EAST\nDirection.SOUTH\nDirection.WEST\n{variables}\n{commands}\n{items}\n*/";
 
 	protected AllGuiTextures background;
 	private IconButton confirmButton;
 	private IconButton editButton;
 
-	private final File editFile;
+	private File editFile = null;
 
 	public CodeEditorScreen(String code) {
 		super(Component.literal("Code Editor"));
-		this.code = code;
 		try {
 			this.editFile = File.createTempFile("robotprogram-", ".code");
 			FileWriter writer = new FileWriter(this.editFile);
-			writer.write(code);
+			if (code != "") {
+				writer.write(code);
+			} else {
+				String defaultText = this.DEFAULT_TEXT;
+
+				final String[] variables = {""};
+				CodeHelper.internalVariableLookupMap.forEach(
+						(variable, function) -> variables[0] = variables[0].concat("\n" + variable));
+				defaultText = defaultText.replace("{variables}", variables[0]);
+
+				final String[] commands = {""};
+				CodeHelper.commandMap.forEach(
+						(command, biConsumer) -> {
+							commands[0] = commands[0].concat("\nrobot." + command);
+							System.out.println(command);
+						});
+				defaultText = defaultText.replace("{commands}", commands[0]);
+				System.out.println(commands[0]);
+
+				final String[] items = {""};
+				Registry.ITEM.forEach(
+						consumer -> items[0] = items[0].concat("\n" + Registry.ITEM.getKey(consumer)));
+				defaultText = defaultText.replace("{items}", items[0]);
+
+				writer.write(defaultText);
+			}
 			writer.close();
 		} catch (IOException e) {
 			throw new RuntimeException(e);
