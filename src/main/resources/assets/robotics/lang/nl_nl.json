@@ -1,0 +1,20 @@
+{
+  "itemGroup.robotics": "Create Robotica",
+  "item.robotics.tin_ingot": "Tinstaaf",
+  "item.robotics.tin_nugget": "Tinklompje",
+  "item.robotics.raw_tin": "Rauwe tin",
+  "item.robotics.bronze_ingot": "Bronsstaaf",
+  "item.robotics.bronze_nugget": "Bronsklompje",
+  "item.robotics.program": "Programma",
+  "item.robotics.clockcopter": "Clockcopter",
+  "item.robotics.miner": "Mijner",
+  "item.robotics.code_drone": "Code Drone",
+  "item.robotics.extend_o_boots": "Uitklapbare Schoenen",
+  "block.robotics.tin_ore": "Tin erts",
+  "block.robotics.deepslate_tin_ore": "Wrevelsteen tin erts",
+  "block.robotics.tin_block": "Tin blok",
+  "block.robotics.bronze_block": "Bronzen blok",
+  "block.robotics.smasher_block": "Beuker",
+  "block.robotics.code_editor": "Code wijziger",
+  "description.robotics.extend_o_boots": "Ctrl + Scroll om te activeren!"
+}
