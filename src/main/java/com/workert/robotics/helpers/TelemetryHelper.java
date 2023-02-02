@@ -16,6 +16,9 @@ import java.util.Base64;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.lang.reflect.Field;
+import java.lang.IllegalAccessException;
+import java.lang.NoSuchFieldException;
 
 public class TelemetryHelper {
 	private static final String CRASH_ENDPOINT = "YUhSMGNITTZMeTlrYVhOamIzSmtMbU52YlM5aGNHa3ZkMlZpYUc5dmEzTXZNVEEyTkRJeE5EazJNRFk0TURRNE5EZzROUzh4Y1dWUGVrUTJXbUpJYzNGVVl6RXljMUJSUVRaSlJGaE5OVGxuY21ZMWVqQnNNekp2Tm1oVlFrTllXRzVqZDNacVdISlBXVmhQT0dGV1QyRXdiMVZKYlVaa1JBPT0=";
