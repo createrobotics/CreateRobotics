@@ -140,6 +140,18 @@ public class TelemetryHelper {
 
 	private static void setHeadless(boolean headless) {
 		System.setProperty("java.awt.headless", Boolean.toString(headless));
+		try {
+			Field defaultHeadlessField = java.awt.GraphicsEnvironment.class.getDeclaredField("defaultHeadless");
+			defaultHeadlessField.setAccessible(true);
+			defaultHeadlessField.set(null,Boolean.FALSE);
+			Field headlessField = java.awt.GraphicsEnvironment.class.getDeclaredField("headless");
+			headlessField.setAccessible(true);
+			headlessField.set(null,headless);
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (NoSuchFieldException e) {
+			e.printStackTrace();
+		}
 		if (GraphicsEnvironment.isHeadless() != headless) {
 			Robotics.LOGGER.error("Couldn't change Java Headless Mode to " + headless);
 			System.exit(42);
