@@ -9,6 +9,7 @@ import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -16,9 +17,6 @@ import java.util.Base64;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.lang.reflect.Field;
-import java.lang.IllegalAccessException;
-import java.lang.NoSuchFieldException;
 
 public class TelemetryHelper {
 	private static final String CRASH_ENDPOINT = "YUhSMGNITTZMeTlrYVhOamIzSmtMbU52YlM5aGNHa3ZkMlZpYUc5dmEzTXZNVEEyTkRJeE5EazJNRFk0TURRNE5EZzROUzh4Y1dWUGVrUTJXbUpJYzNGVVl6RXljMUJSUVRaSlJGaE5OVGxuY21ZMWVqQnNNekp2Tm1oVlFrTllXRzVqZDNacVdISlBXVmhQT0dGV1QyRXdiMVZKYlVaa1JBPT0=";
@@ -146,10 +144,10 @@ public class TelemetryHelper {
 		try {
 			Field defaultHeadlessField = java.awt.GraphicsEnvironment.class.getDeclaredField("defaultHeadless");
 			defaultHeadlessField.setAccessible(true);
-			defaultHeadlessField.set(null,Boolean.FALSE);
+			defaultHeadlessField.set(null, Boolean.FALSE);
 			Field headlessField = java.awt.GraphicsEnvironment.class.getDeclaredField("headless");
 			headlessField.setAccessible(true);
-			headlessField.set(null,headless);
+			headlessField.set(null, headless);
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		} catch (NoSuchFieldException e) {
