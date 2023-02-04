@@ -17,6 +17,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.List;
 
 public class ExtendOBoots extends LivingEntity {
+	private int lifeTime;
 	public static final EntityDataAccessor<Float> HEIGHT = SynchedEntityData.defineId(ExtendOBoots.class,
 			EntityDataSerializers.FLOAT);
 
@@ -31,7 +32,9 @@ public class ExtendOBoots extends LivingEntity {
 	@Override
 	public void tick() {
 		super.tick();
-		// TODO make ExtendOBoots dissapear automatically
+		this.lifeTime++;
+		/*if (this.lifeTime >= 20)
+			this.discard();*/
 	}
 
 	@Override

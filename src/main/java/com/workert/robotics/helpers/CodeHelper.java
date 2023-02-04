@@ -117,9 +117,9 @@ public class CodeHelper {
 						for (int slot = 0; slot < handler.getSlots(); slot++) {
 							while (!handler.getStackInSlot(slot)
 									.isEmpty() && (arguments.size() < 4 || CodeHelper.getItemById(arguments.get(3))
-									.equals(handler.getStackInSlot(slot).getItem())
+									.equals(handler.getStackInSlot(slot).getItem()))
 									&& robot.wantsToPickUp(
-									handler.extractItem(slot, 1, true)))) {
+									handler.extractItem(slot, 1, true))) {
 								robot.getInventory().addItem(handler.extractItem(slot, 1, false));
 							}
 						}
