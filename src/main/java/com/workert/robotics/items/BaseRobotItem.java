@@ -62,6 +62,8 @@ public class BaseRobotItem extends Item {
 				if (!savedCompound.isEmpty())
 					entity.load(savedCompound);
 
+				entity.teleportTo(blockpos1.getX() + 0.5, blockpos1.getY(), blockpos1.getZ() + 0.5);
+
 				itemstack.shrink(1);
 				level.gameEvent(pContext.getPlayer(), GameEvent.ENTITY_PLACE, blockpos);
 			}
@@ -94,6 +96,8 @@ public class BaseRobotItem extends Item {
 					CompoundTag savedCompound = itemstack.getOrCreateTag().getCompound("savedRobot");
 					if (!savedCompound.isEmpty())
 						entity.load(savedCompound);
+
+					entity.teleportTo(blockpos.getX() + 0.5, blockpos.getY(), blockpos.getZ() + 0.5);
 
 					if (!pPlayer.getAbilities().instabuild) {
 						itemstack.shrink(1);

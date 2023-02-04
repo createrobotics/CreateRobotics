@@ -111,7 +111,6 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 			ItemStack stack = new ItemStack(this.getRobotItem());
 			CompoundTag saveTag = new CompoundTag();
 			this.save(saveTag);
-			saveTag.remove("Pos");
 			stack.getOrCreateTag().put("savedRobot", saveTag);
 			stack.setHoverName(this.getCustomName());
 			pPlayer.getInventory().add(stack);
