@@ -112,6 +112,8 @@ public class CodeHelper {
 			BlockPos pos = new BlockPos(CodeHelper.eval(arguments.get(0)), CodeHelper.eval(arguments.get(1)),
 					CodeHelper.eval(arguments.get(2)));
 			if (!pos.closerToCenterThan(robot.position(), 5)) return;
+			if (robot.getLevel().getExistingBlockEntity(pos) == null) throw new IllegalArgumentException(
+					"The block at the specified coordinates has no tile entity (is no container)!");
 			robot.getLevel().getExistingBlockEntity(pos).getCapability(ForgeCapabilities.ITEM_HANDLER)
 					.ifPresent(handler -> {
 						for (int slot = 0; slot < handler.getSlots(); slot++) {
@@ -130,6 +132,8 @@ public class CodeHelper {
 			BlockPos pos = new BlockPos(CodeHelper.eval(arguments.get(0)), CodeHelper.eval(arguments.get(1)),
 					CodeHelper.eval(arguments.get(2)));
 			if (!pos.closerToCenterThan(robot.position(), 5)) return;
+			if (robot.getLevel().getExistingBlockEntity(pos) == null) throw new IllegalArgumentException(
+					"The block at the specified coordinates has no tile entity (is no container)!");
 			robot.getLevel().getExistingBlockEntity(pos).getCapability(ForgeCapabilities.ITEM_HANDLER)
 					.ifPresent(handler -> {
 						Item itemToPush = Items.AIR;
