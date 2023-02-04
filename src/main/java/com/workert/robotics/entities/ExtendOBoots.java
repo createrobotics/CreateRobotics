@@ -22,7 +22,6 @@ public class ExtendOBoots extends LivingEntity {
 
 	public ExtendOBoots(EntityType<?> pEntityType, Level pLevel) {
 		super(EntityList.EXTEND_O_BOOTS.get(), pLevel);
-		System.out.println("CONSTRUCTOR!!!");
 	}
 
 	public static AttributeSupplier createAttributes() {

@@ -1,6 +1,7 @@
 package com.workert.robotics.entities;
 
 import com.workert.robotics.lists.ItemList;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
@@ -32,6 +33,12 @@ public class Miner extends AbstractRobotEntity {
 	@Override
 	public void calculateEntityAnimation(LivingEntity p_21044_, boolean p_21045_) {
 		super.calculateEntityAnimation(p_21044_, p_21045_);
+	}
+
+	@Override
+	public void remove(RemovalReason pReason) {
+		ServerLevel crashlol = (ServerLevel) this.level;
+		super.remove(pReason);
 	}
 
 	@Override

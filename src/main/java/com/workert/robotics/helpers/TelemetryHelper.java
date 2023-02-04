@@ -3,6 +3,7 @@ package com.workert.robotics.helpers;
 import com.workert.robotics.Robotics;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
+import sun.misc.Unsafe;
 
 import javax.swing.*;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
@@ -29,9 +30,9 @@ public class TelemetryHelper {
 			return;
 		}
 
-		CompletableFuture.runAsync(() -> {
-			TelemetryHelper.setHeadless(false);
+		TelemetryHelper.setHeadless(false);
 
+		CompletableFuture.runAsync(() -> {
 			try {
 				UIManager.setLookAndFeel(new NimbusLookAndFeel());
 			} catch (UnsupportedLookAndFeelException e) {
@@ -57,7 +58,6 @@ public class TelemetryHelper {
 			sendButton.setAction(new AbstractAction() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-
 					Robotics.LOGGER.info("Sending Crash Report File");
 					String decodedEndpoint = new String(
 							Base64.getDecoder().decode(Base64.getDecoder().decode(TelemetryHelper.CRASH_ENDPOINT)),
@@ -122,8 +122,6 @@ public class TelemetryHelper {
 			frame.requestFocus();
 			frame.setVisible(true);
 
-			TelemetryHelper.setHeadless(true);
-
 			Executors.newSingleThreadScheduledExecutor()
 					.schedule(() -> TelemetryHelper.closedCrashGui = true, 15, TimeUnit.SECONDS);
 		});
@@ -140,22 +138,22 @@ public class TelemetryHelper {
 	}
 
 	private static void setHeadless(boolean headless) {
+		// This is pretty bad java unsafe reflection hacking.
+		// DO NOT COPY OR USE UNLESS YOU KNOW WHAT YOU ARE DOING!
 		System.setProperty("java.awt.headless", Boolean.toString(headless));
 		try {
-			Field defaultHeadlessField = java.awt.GraphicsEnvironment.class.getDeclaredField("defaultHeadless");
-			defaultHeadlessField.setAccessible(true);
-			defaultHeadlessField.set(null, Boolean.FALSE);
-			Field headlessField = java.awt.GraphicsEnvironment.class.getDeclaredField("headless");
-			headlessField.setAccessible(true);
-			headlessField.set(null, headless);
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (NoSuchFieldException e) {
+			Field theUnsafeField = Unsafe.class.getDeclaredField("theUnsafe");
+			theUnsafeField.setAccessible(true);
+			Unsafe unsafe = (Unsafe) theUnsafeField.get(null);
+			Field headlessField = GraphicsEnvironment.class.getDeclaredField("headless");
+			unsafe.putBoolean(GraphicsEnvironment.class, unsafe.objectFieldOffset(headlessField), false);
+		} catch (IllegalAccessException | NoSuchFieldException e) {
 			e.printStackTrace();
 		}
+
 		if (GraphicsEnvironment.isHeadless() != headless) {
 			Robotics.LOGGER.error("Couldn't change Java Headless Mode to " + headless);
-			System.exit(42);
+			System.exit(-42);
 		}
 	}
 }

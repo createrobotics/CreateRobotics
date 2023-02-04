@@ -65,13 +65,13 @@ public class CodeDrone extends AbstractRobotEntity implements FlyingAnimal {
 
 	@Override
 	public void remove(RemovalReason pReason) {
-		if (this.level.isClientSide())
-			super.remove(pReason);
-		for (int i = -1; i <= 1; i++) {
-			for (int j = -1; j <= 1; j++) {
-				ForgeChunkManager.forceChunk((ServerLevel) this.level, Robotics.MOD_ID, this, this.last_chunk_x + i,
-						this.last_chunk_z + j,
-						false, true);
+		if (!this.level.isClientSide()) {
+			for (int i = -1; i <= 1; i++) {
+				for (int j = -1; j <= 1; j++) {
+					ForgeChunkManager.forceChunk((ServerLevel) this.level, Robotics.MOD_ID, this, this.last_chunk_x + i,
+							this.last_chunk_z + j,
+							false, true);
+				}
 			}
 		}
 		super.remove(pReason);

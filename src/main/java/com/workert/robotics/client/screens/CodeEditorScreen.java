@@ -76,21 +76,15 @@ public class CodeEditorScreen extends AbstractSimiScreen {
 
 		this.confirmButton = new IconButton(x + this.background.width - 33, y + this.background.height - 24,
 				AllIcons.I_CONFIRM).withCallback((mouseX, mouseY) -> {
-			System.out.println("0");
 			try {
 				FileInputStream inputStream = new FileInputStream(this.editFile);
-				System.out.println("1");
 				try {
 					String fileCode = IOUtils.toString(inputStream);
-					System.out.println("2");
 					PacketList.CHANNEL.sendToServer(new ReturnEditedCodePacket(fileCode));
-					System.out.println("3");
 				} finally {
 					inputStream.close();
-					System.out.println("4");
 				}
 				this.onClose();
-				System.out.println("5");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

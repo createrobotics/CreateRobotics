@@ -1,6 +1,7 @@
 package com.workert.robotics.lists;
 
 import com.workert.robotics.Robotics;
+import com.workert.robotics.items.BaseRobotItem;
 import com.workert.robotics.items.ExtendOBootsItem;
 import com.workert.robotics.items.ModArmorMaterials;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -8,7 +9,6 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
-import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -37,15 +37,15 @@ public class ItemList {
 			Optional.of(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON).tab(ROBOTICS_TAB)));
 
 	public static final RegistryObject<Item> CLOCKCOPTER = ITEMS.register("clockcopter",
-			() -> new ForgeSpawnEggItem(() -> EntityList.CLOCKCOPTER.get(), 0xb0b0b0, 0xb3793b,
+			() -> new BaseRobotItem(() -> EntityList.CLOCKCOPTER.get(),
 					new Item.Properties().tab(ROBOTICS_TAB)));
 
 	public static final RegistryObject<Item> MINER = ITEMS.register("miner",
-			() -> new ForgeSpawnEggItem(() -> EntityList.MINER.get(), 0xb0b0b0, 0xb3793b,
+			() -> new BaseRobotItem(() -> EntityList.MINER.get(),
 					new Item.Properties().tab(ROBOTICS_TAB)));
 
 	public static final RegistryObject<Item> CODE_DRONE = ITEMS.register("code_drone",
-			() -> new ForgeSpawnEggItem(() -> EntityList.CODE_DRONE.get(), 0xb0b0b0, 0xb3793b,
+			() -> new BaseRobotItem(() -> EntityList.CODE_DRONE.get(),
 					new Item.Properties().tab(ROBOTICS_TAB)));
 
 	public static final RegistryObject<Item> EXTEND_O_BOOTS = ITEMS.register("extend_o_boots",

@@ -1,5 +1,6 @@
 package com.workert.robotics.items;
 
+import com.workert.robotics.entities.AbstractRobotEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -24,12 +25,14 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 
 import java.util.Objects;
+import java.util.function.Supplier;
 
-public abstract class AbstractRobotItem extends Item {
-	// TODO
+public class BaseRobotItem extends Item {
+	private Supplier<? extends EntityType<? extends AbstractRobotEntity>> entity;
 
-	public AbstractRobotItem(Properties pProperties) {
+	public BaseRobotItem(Supplier<? extends EntityType<? extends AbstractRobotEntity>> entity, Properties pProperties) {
 		super(pProperties);
+		this.entity = entity;
 	}
 
 	@Override
@@ -51,9 +54,14 @@ public abstract class AbstractRobotItem extends Item {
 			}
 
 			EntityType<?> entitytype = this.getType(itemstack.getTag());
-			if (entitytype.spawn((ServerLevel) level, itemstack, pContext.getPlayer(), blockpos1,
-					MobSpawnType.SPAWN_EGG, true,
-					!Objects.equals(blockpos, blockpos1) && direction == Direction.UP) != null) {
+			Entity entity = entitytype.spawn((ServerLevel) level, itemstack, pContext.getPlayer(), blockpos1,
+					MobSpawnType.TRIGGERED, true,
+					!Objects.equals(blockpos, blockpos1) && direction == Direction.UP);
+			if (entity != null) {
+				CompoundTag savedCompound = itemstack.getOrCreateTag().getCompound("savedRobot");
+				if (!savedCompound.isEmpty())
+					entity.load(savedCompound);
+
 				itemstack.shrink(1);
 				level.gameEvent(pContext.getPlayer(), GameEvent.ENTITY_PLACE, blockpos);
 			}
@@ -79,10 +87,14 @@ public abstract class AbstractRobotItem extends Item {
 					blockhitresult.getDirection(), itemstack)) {
 				EntityType<?> entitytype = this.getType(itemstack.getTag());
 				Entity entity = entitytype.spawn((ServerLevel) pLevel, itemstack, pPlayer, blockpos,
-						MobSpawnType.SPAWN_EGG, false, false);
+						MobSpawnType.TRIGGERED, false, false);
 				if (entity == null) {
 					return InteractionResultHolder.pass(itemstack);
 				} else {
+					CompoundTag savedCompound = itemstack.getOrCreateTag().getCompound("savedRobot");
+					if (!savedCompound.isEmpty())
+						entity.load(savedCompound);
+
 					if (!pPlayer.getAbilities().instabuild) {
 						itemstack.shrink(1);
 					}
@@ -97,5 +109,7 @@ public abstract class AbstractRobotItem extends Item {
 		}
 	}
 
-	abstract EntityType<?> getType(CompoundTag tag);
+	private EntityType<?> getType(CompoundTag tag) {
+		return this.entity.get();
+	}
 }

@@ -1,5 +1,6 @@
 package com.workert.robotics.client.screens;
 
+import com.workert.robotics.Robotics;
 import com.workert.robotics.blocks.blockentities.SmasherBlockEntity;
 import com.workert.robotics.client.screens.slots.ModResultSlot;
 import com.workert.robotics.lists.BlockList;
@@ -93,7 +94,7 @@ public class SmasherBlockMenu extends AbstractContainerMenu {
 				return ItemStack.EMPTY;
 			}
 		} else {
-			System.out.println("Invalid slotIndex:" + index);
+			Robotics.LOGGER.warn("Invalid slotIndex:" + index);
 			return ItemStack.EMPTY;
 		}
 		// If stack size == 0 (the entire stack was moved) set slot contents to null
