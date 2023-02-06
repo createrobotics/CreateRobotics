@@ -3,14 +3,12 @@ package com.workert.robotics.helpers;
 import com.workert.robotics.Robotics;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
-import sun.misc.Unsafe;
 
 import javax.swing.*;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -138,19 +136,8 @@ public class TelemetryHelper {
 	}
 
 	private static void setHeadless(boolean headless) {
-		// This is pretty bad java unsafe reflection hacking.
-		// DO NOT COPY OR USE UNLESS YOU KNOW WHAT YOU ARE DOING!
 		System.setProperty("java.awt.headless", Boolean.toString(headless));
-		try {
-			Field theUnsafeField = Unsafe.class.getDeclaredField("theUnsafe");
-			theUnsafeField.setAccessible(true);
-			Unsafe unsafe = (Unsafe) theUnsafeField.get(null);
-			Field headlessField = GraphicsEnvironment.class.getDeclaredField("headless");
-			unsafe.putBoolean(GraphicsEnvironment.class, unsafe.objectFieldOffset(headlessField), false);
-		} catch (IllegalAccessException | NoSuchFieldException e) {
-			e.printStackTrace();
-		}
-
+		
 		if (GraphicsEnvironment.isHeadless() != headless) {
 			Robotics.LOGGER.error("Couldn't change Java Headless Mode to " + headless);
 			System.exit(-42);
