@@ -212,7 +212,7 @@ public class CodeHelper {
 			}
 		});
 		CodeHelper.registerCommand("waitForRedstoneLink", (robot, arguments) -> {
-			if (arguments.size() < 1)
+			if (arguments.size() < 2)
 				throw new IllegalArgumentException("Expected two arguments for command \"waitForRedstoneLink\"");
 			try {
 				while (Create.REDSTONE_LINK_NETWORK_HANDLER.hasAnyLoadedPower(Couple.create(
