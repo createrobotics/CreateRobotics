@@ -212,14 +212,20 @@ public class CodeHelper {
 			}
 		});
 		CodeHelper.registerCommand("waitForRedstoneLink", (robot, arguments) -> {
-			if (arguments.size() < 2)
-				throw new IllegalArgumentException("Expected two arguments for command \"waitForRedstoneLink\"");
+			if (arguments.size() < 1)
+				throw new IllegalArgumentException(
+						"Expected one or more arguments for command \"waitForRedstoneLink\"");
+
+
+			RedstoneLinkNetworkHandler.Frequency secondFrequency = RedstoneLinkNetworkHandler.Frequency.EMPTY;
+			if (arguments.size() > 1)
+				secondFrequency = RedstoneLinkNetworkHandler.Frequency.of(
+						CodeHelper.getItemById(arguments.get(1)).getDefaultInstance());
+
 			try {
-				while (Create.REDSTONE_LINK_NETWORK_HANDLER.hasAnyLoadedPower(Couple.create(
-						RedstoneLinkNetworkHandler.Frequency.of(
-								CodeHelper.getItemById(arguments.get(0)).getDefaultInstance()),
-						RedstoneLinkNetworkHandler.Frequency.of(
-								CodeHelper.getItemById(arguments.get(0)).getDefaultInstance())))) {
+				while (Create.REDSTONE_LINK_NETWORK_HANDLER.hasAnyLoadedPower(
+						Couple.create(RedstoneLinkNetworkHandler.Frequency.of(
+								CodeHelper.getItemById(arguments.get(0)).getDefaultInstance()), secondFrequency))) {
 					Thread.sleep(200);
 				}
 			} catch (InterruptedException e) {
