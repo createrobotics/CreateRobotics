@@ -3,6 +3,7 @@ package com.workert.robotics.helpers;
 import com.simibubi.create.Create;
 import com.simibubi.create.content.contraptions.components.deployer.DeployerFakePlayer;
 import com.simibubi.create.content.contraptions.components.deployer.DeployerHandler;
+import com.simibubi.create.content.logistics.IRedstoneLinkable;
 import com.simibubi.create.content.logistics.RedstoneLinkNetworkHandler;
 import com.simibubi.create.foundation.utility.Couple;
 import com.workert.robotics.Robotics;
@@ -222,15 +223,44 @@ public class CodeHelper {
 				secondFrequency = RedstoneLinkNetworkHandler.Frequency.of(
 						CodeHelper.getItemById(arguments.get(1)).getDefaultInstance());
 
-			try {
-				while (Create.REDSTONE_LINK_NETWORK_HANDLER.hasAnyLoadedPower(
-						Couple.create(RedstoneLinkNetworkHandler.Frequency.of(
-								CodeHelper.getItemById(arguments.get(0)).getDefaultInstance()), secondFrequency))) {
+			while (!Create.REDSTONE_LINK_NETWORK_HANDLER.hasAnyLoadedPower(
+					Couple.create(RedstoneLinkNetworkHandler.Frequency.of(
+							CodeHelper.getItemById(arguments.get(0)).getDefaultInstance()), secondFrequency))) {
+				try {
 					Thread.sleep(200);
+				} catch (InterruptedException e) {
+					throw new RuntimeException(e);
+
 				}
-			} catch (InterruptedException e) {
-				throw new RuntimeException(e);
 			}
+		});
+		CodeHelper.registerCommand("setRedstoneLink", (robot, arguments) -> {
+			if (arguments.size() < 1)
+				throw new IllegalArgumentException(
+						"Expected one or more arguments for command \"setRedstoneLink\"");
+
+			RedstoneLinkNetworkHandler.Frequency secondFrequency = RedstoneLinkNetworkHandler.Frequency.EMPTY;
+			int signalStrength = 0;
+			if (arguments.size() > 1) {
+				try {
+					signalStrength = (int) CodeHelper.eval(arguments.get(1));
+				} catch (RuntimeException e) {
+					secondFrequency = RedstoneLinkNetworkHandler.Frequency.of(
+							CodeHelper.getItemById(arguments.get(1)).getDefaultInstance());
+					if (arguments.size() > 2)
+						signalStrength = (int) CodeHelper.eval(arguments.get(1));
+				}
+			}
+
+			RobotFrequencyEntry entry = robot.getRobotFrequencyEntry();
+			entry.frequency = Couple.create(RedstoneLinkNetworkHandler.Frequency.of(
+					CodeHelper.getItemById(arguments.get(0)).getDefaultInstance()), secondFrequency);
+			entry.signalStrength = signalStrength;
+
+			System.out.println(entry);
+			System.out.println(Create.REDSTONE_LINK_NETWORK_HANDLER.networksIn(robot.getLevel()).containsKey(entry));
+			Create.REDSTONE_LINK_NETWORK_HANDLER.addToNetwork(robot.getLevel(), entry);
+
 		});
 	}
 
@@ -276,7 +306,7 @@ public class CodeHelper {
 
 			if (commandLine[0].startsWith("robot.")) {
 				CodeHelper.commandMap.forEach((prefix, function) -> {
-					if (commandLine[0].startsWith("robot." + prefix)) try {
+					if (commandLine[0].startsWith("robot." + prefix + "(")) try {
 						function.accept(robot, Arrays.asList(commandLine[0].substring(commandLine[0].indexOf("(") + 1,
 								commandLine[0].lastIndexOf(")")).split(",")));
 					} catch (Exception exception) {
@@ -451,5 +481,47 @@ public class CodeHelper {
 				return x;
 			}
 		}.parse();
+	}
+
+	public static class RobotFrequencyEntry implements IRedstoneLinkable {
+		private AbstractRobotEntity robot;
+		private Couple<RedstoneLinkNetworkHandler.Frequency> frequency;
+		private int signalStrength;
+
+		public RobotFrequencyEntry(AbstractRobotEntity robot, Couple<RedstoneLinkNetworkHandler.Frequency> frequency, int signalStrength) {
+			this.robot = robot;
+			this.frequency = frequency;
+			this.signalStrength = signalStrength;
+		}
+
+		@Override
+		public int getTransmittedStrength() {
+			return this.signalStrength;
+		}
+
+		@Override
+		public void setReceivedStrength(int power) {
+		}
+
+		@Override
+		public boolean isListening() {
+			return false;
+		}
+
+		@Override
+		public boolean isAlive() {
+			return true;
+		}
+
+
+		@Override
+		public Couple<RedstoneLinkNetworkHandler.Frequency> getNetworkKey() {
+			return this.frequency;
+		}
+
+		@Override
+		public BlockPos getLocation() {
+			return this.robot.blockPosition();
+		}
 	}
 }

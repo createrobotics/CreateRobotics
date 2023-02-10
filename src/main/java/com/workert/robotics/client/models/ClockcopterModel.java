@@ -26,7 +26,6 @@ public class ClockcopterModel<T extends Clockcopter> extends EntityModel<T> {
 	private final ModelPart propeller;
 
 	public ClockcopterModel(ModelPart root) {
-		System.out.println("ClockcopterModel CONSTRUCTOR");
 		this.body = root.getChild("body");
 		this.gear0 = root.getChild("gear0");
 		this.gear1 = root.getChild("gear1");

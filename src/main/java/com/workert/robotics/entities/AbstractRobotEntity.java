@@ -2,6 +2,8 @@ package com.workert.robotics.entities;
 
 import com.simibubi.create.AllItems;
 import com.simibubi.create.content.curiosities.armor.BackTankUtil;
+import com.simibubi.create.content.logistics.RedstoneLinkNetworkHandler;
+import com.simibubi.create.foundation.utility.Couple;
 import com.workert.robotics.helpers.CodeHelper;
 import com.workert.robotics.lists.ItemList;
 import net.minecraft.core.BlockPos;
@@ -39,6 +41,7 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 
 	public HashMap<String, Function<AbstractRobotEntity, String>> privateVariableLookupMap = new HashMap<>();
 	public String code = "";
+	private CodeHelper.RobotFrequencyEntry robotFrequencyEntry = null;
 
 	public AbstractRobotEntity(EntityType<? extends PathfinderMob> entity, Level world) {
 		super(entity, world);
@@ -103,6 +106,15 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 	public abstract Item getRobotItem();
 
 	public abstract boolean isProgrammable();
+
+	public CodeHelper.RobotFrequencyEntry getRobotFrequencyEntry() {
+		if (!this.isProgrammable())
+			return null;
+		if (this.robotFrequencyEntry == null)
+			this.robotFrequencyEntry = new CodeHelper.RobotFrequencyEntry(this, Couple.create(
+					RedstoneLinkNetworkHandler.Frequency.EMPTY, RedstoneLinkNetworkHandler.Frequency.EMPTY), 0);
+		return this.robotFrequencyEntry;
+	}
 
 	@Override
 	protected InteractionResult mobInteract(Player pPlayer, InteractionHand pHand) {
