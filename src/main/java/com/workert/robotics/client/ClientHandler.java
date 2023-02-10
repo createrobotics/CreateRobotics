@@ -16,7 +16,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 
-@EventBusSubscriber(modid = Robotics.MOD_ID, value = Dist.CLIENT, bus = Bus.MOD) public class ClientHandler {
+@EventBusSubscriber(modid = Robotics.MOD_ID, value = Dist.CLIENT, bus = Bus.MOD)
+public class ClientHandler {
 
 	@SubscribeEvent
 	public static void registerEntityRenders(EntityRenderersEvent.RegisterRenderers event) {
@@ -33,5 +34,4 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 		event.registerLayerDefinition(CodeDroneModel.LAYER_LOCATION, CodeDroneModel::createBodyLayer);
 		event.registerLayerDefinition(ExtendOBootsModel.LAYER_LOCATION, ExtendOBootsModel::createBodyLayer);
 	}
-
 }

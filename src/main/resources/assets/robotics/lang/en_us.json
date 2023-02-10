@@ -1,5 +1,6 @@
 {
   "itemGroup.robotics": "Create Robotics",
+
   "item.robotics.tin_ingot": "Tin ingot",
   "item.robotics.tin_nugget": "Tin nugget",
   "item.robotics.raw_tin": "Raw tin",
@@ -10,11 +11,13 @@
   "item.robotics.miner": "Miner",
   "item.robotics.code_drone": "Code Drone",
   "item.robotics.extend_o_boots": "Extend-O-Boots",
+
   "block.robotics.tin_ore": "Tin ore",
   "block.robotics.deepslate_tin_ore": "Deepslate tin ore",
   "block.robotics.tin_block": "Tin block",
   "block.robotics.bronze_block": "Bronze block",
   "block.robotics.smasher_block": "Smasher",
   "block.robotics.code_editor": "Code Editor",
-  "description.robotics.extend_o_boots": "Ctrl + Scroll to activate"
+
+  "item.robotics.extend_o_boots.tooltip": "Ctrl + Scroll to activate"
 }

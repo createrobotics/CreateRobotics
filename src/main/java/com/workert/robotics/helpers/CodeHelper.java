@@ -1,7 +1,10 @@
 package com.workert.robotics.helpers;
 
+import com.simibubi.create.Create;
 import com.simibubi.create.content.contraptions.components.deployer.DeployerFakePlayer;
 import com.simibubi.create.content.contraptions.components.deployer.DeployerHandler;
+import com.simibubi.create.content.logistics.RedstoneLinkNetworkHandler;
+import com.simibubi.create.foundation.utility.Couple;
 import com.workert.robotics.Robotics;
 import com.workert.robotics.entities.AbstractRobotEntity;
 import net.minecraft.ChatFormatting;
@@ -204,6 +207,21 @@ public class CodeHelper {
 				throw new IllegalArgumentException("Expected one argument for command \"wait\"");
 			try {
 				Thread.sleep((long) CodeHelper.eval(arguments.get(0)));
+			} catch (InterruptedException e) {
+				throw new RuntimeException(e);
+			}
+		});
+		CodeHelper.registerCommand("waitForRedstoneLink", (robot, arguments) -> {
+			if (arguments.size() < 1)
+				throw new IllegalArgumentException("Expected two arguments for command \"waitForRedstoneLink\"");
+			try {
+				while (Create.REDSTONE_LINK_NETWORK_HANDLER.hasAnyLoadedPower(Couple.create(
+						RedstoneLinkNetworkHandler.Frequency.of(
+								CodeHelper.getItemById(arguments.get(0)).getDefaultInstance()),
+						RedstoneLinkNetworkHandler.Frequency.of(
+								CodeHelper.getItemById(arguments.get(0)).getDefaultInstance())))) {
+					Thread.sleep(200);
+				}
 			} catch (InterruptedException e) {
 				throw new RuntimeException(e);
 			}
