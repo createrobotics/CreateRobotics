@@ -17,11 +17,8 @@ import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.npc.InventoryCarrier;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ChestMenu;
-import net.minecraft.world.inventory.MenuConstructor;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -135,15 +132,9 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 				this.code = pPlayer.getItemInHand(pHand).getOrCreateTag().getString("code");
 			return InteractionResult.SUCCESS;
 		} else if (this.hasInventory() && !pPlayer.isCrouching()) {
-			pPlayer.openMenu(new SimpleMenuProvider(new MenuConstructor() {
-
-				@Override
-				public AbstractContainerMenu createMenu(int id, Inventory playerInventory, Player player) {
-					return new ChestMenu(MenuType.GENERIC_3x3, id, playerInventory, AbstractRobotEntity.this.inventory,
-							1);
-				}
-			}, this.getDisplayName()));
-
+			pPlayer.openMenu(new SimpleMenuProvider(
+					(id, playerInventory, player) -> new ChestMenu(MenuType.GENERIC_3x3, id, playerInventory,
+							AbstractRobotEntity.this.inventory, 1), this.getDisplayName()));
 			return InteractionResult.SUCCESS;
 		}
 		return super.mobInteract(pPlayer, pHand);

@@ -2,6 +2,7 @@ package com.workert.robotics;
 
 import com.mojang.logging.LogUtils;
 import com.simibubi.create.foundation.data.CreateRegistrate;
+import com.workert.robotics.client.ClientHandler;
 import com.workert.robotics.client.KeybindList;
 import com.workert.robotics.client.screens.MenuList;
 import com.workert.robotics.client.screens.SmasherBlockScreen;
@@ -30,7 +31,8 @@ public class Robotics {
 
 	public Robotics() {
 		this.modEventBus.addListener(Robotics::clientSetup);
-
+		this.modEventBus.addListener(ClientHandler::registerLayerDefinition);
+		
 		REGISTRATE.registerEventListeners(this.modEventBus);
 
 		BlockList.register();
@@ -46,9 +48,12 @@ public class Robotics {
 		PacketList.registerPackets();
 
 		CodeHelper.registerDefaultCommands();
+
+
 	}
 
 	private static void clientSetup(final FMLClientSetupEvent event) {
+		ClientHandler.init();
 		KeybindList.init();
 
 		// TODO Set the render types in block model's JSON

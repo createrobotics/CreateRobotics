@@ -47,8 +47,8 @@ public class ItemList {
 			BaseRobotItem::new).onRegister(item -> item.setEntity(() -> EntityList.CLOCKCOPTER.get())).register();
 
 
-	public static final ItemEntry<BaseRobotItem> MINER = Robotics.REGISTRATE.item("miner",
-			BaseRobotItem::new).onRegister(item -> item.setEntity(() -> EntityList.MINER.get())).register();
+	/*public static final ItemEntry<BaseRobotItem> MINER = Robotics.REGISTRATE.item("miner",
+			BaseRobotItem::new).onRegister(item -> item.setEntity(() -> EntityList.MINER.get())).register();*/
 
 	public static final ItemEntry<BaseRobotItem> CODE_DRONE = Robotics.REGISTRATE.item("code_drone",
 			BaseRobotItem::new).onRegister(item -> item.setEntity(() -> EntityList.CODE_DRONE.get())).register();
