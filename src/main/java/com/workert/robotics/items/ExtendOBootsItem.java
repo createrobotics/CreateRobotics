@@ -10,7 +10,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.client.event.InputEvent;
@@ -27,8 +26,8 @@ public class ExtendOBootsItem extends ArmorItem {
 
 	private boolean clientSentOff;
 
-	public ExtendOBootsItem(ArmorMaterial pMaterial, EquipmentSlot pSlot, Properties pProperties) {
-		super(pMaterial, pSlot, pProperties);
+	public ExtendOBootsItem(Properties pProperties) {
+		super(ModArmorMaterials.EXTEND_O_BOOTS, EquipmentSlot.FEET, pProperties);
 		MinecraftForge.EVENT_BUS.register(this);
 	}
 

@@ -6,10 +6,7 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 
@@ -19,10 +16,6 @@ public class Miner extends AbstractRobotEntity {
 
 	public Miner(EntityType<? extends PathfinderMob> entity, Level world) {
 		super(entity, world);
-	}
-
-	public static AttributeSupplier createAttributes() {
-		return Mob.createMobAttributes().add(Attributes.MOVEMENT_SPEED, 0.2F).add(Attributes.MAX_HEALTH, 1.0D).build();
 	}
 
 	@Override

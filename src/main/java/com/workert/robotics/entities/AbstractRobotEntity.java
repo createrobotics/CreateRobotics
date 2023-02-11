@@ -15,7 +15,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.SpawnGroupData;
-import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.npc.InventoryCarrier;
 import net.minecraft.world.entity.player.Inventory;
@@ -60,8 +59,6 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 		this.consumeAir((int) pAmount * 2);
 		return false;
 	}
-
-	public static AttributeSupplier createAttributes;
 
 	public abstract boolean hasInventory();
 

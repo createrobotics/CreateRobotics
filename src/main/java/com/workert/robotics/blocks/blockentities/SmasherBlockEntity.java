@@ -1,7 +1,6 @@
 package com.workert.robotics.blocks.blockentities;
 
 import com.workert.robotics.client.screens.SmasherBlockMenu;
-import com.workert.robotics.lists.BlockEntityList;
 import com.workert.robotics.recipes.SmasherBlockRecipe;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -18,6 +17,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -45,8 +45,8 @@ public class SmasherBlockEntity extends BlockEntity implements MenuProvider {
 	private int progress = 0;
 	private int maxProgress = 72;
 
-	public SmasherBlockEntity(BlockPos pWorldPosition, BlockState pBlockState) {
-		super(BlockEntityList.SMASHER_BLOCK_ENTITY.get(), pWorldPosition, pBlockState);
+	public SmasherBlockEntity(BlockEntityType<?> type, BlockPos pWorldPosition, BlockState pBlockState) {
+		super(type, pWorldPosition, pBlockState);
 		this.data = new ContainerData() {
 			@Override
 			public int get(int index) {

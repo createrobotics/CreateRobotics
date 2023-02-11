@@ -30,8 +30,11 @@ import java.util.function.Supplier;
 public class BaseRobotItem extends Item {
 	private Supplier<? extends EntityType<? extends AbstractRobotEntity>> entity;
 
-	public BaseRobotItem(Supplier<? extends EntityType<? extends AbstractRobotEntity>> entity, Properties pProperties) {
+	public BaseRobotItem(Properties pProperties) {
 		super(pProperties);
+	}
+
+	public void setEntity(Supplier<? extends EntityType<? extends AbstractRobotEntity>> entity) {
 		this.entity = entity;
 	}
 

@@ -1,64 +1,58 @@
 package com.workert.robotics.lists;
 
+import com.simibubi.create.AllTags;
+import com.simibubi.create.content.AllSections;
+import com.tterrag.registrate.util.entry.ItemEntry;
 import com.workert.robotics.Robotics;
 import com.workert.robotics.items.BaseRobotItem;
 import com.workert.robotics.items.ExtendOBootsItem;
-import com.workert.robotics.items.ModArmorMaterials;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
-
-import java.util.Optional;
+import net.minecraftforge.common.Tags;
 
 public class ItemList {
+	public static void register() {
+	}
+
+	static {
+		Robotics.REGISTRATE.creativeModeTab(() -> ItemList.ROBOTICS_TAB);
+		Robotics.REGISTRATE.startSection(AllSections.MATERIALS);
+	}
+
 	public static final CreativeModeTab ROBOTICS_TAB = new CreativeModeTab(Robotics.MOD_ID) {
 		@Override
 		public ItemStack makeIcon() {
-			return new ItemStack(ItemList.BRONZE_INGOT.get());
+			return ItemList.BRONZE_INGOT.get().getDefaultInstance();
 		}
 	};
 
-	public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Robotics.MOD_ID);
+	public static final ItemEntry<Item> TIN_INGOT = Robotics.REGISTRATE.item("tin_ingot", Item::new)
+			.tag(Tags.Items.INGOTS).tag(AllTags.forgeItemTag("ingots/tin")).register();
+	public static final ItemEntry<Item> TIN_NUGGET = Robotics.REGISTRATE.item("tin_nugget", Item::new)
+			.tag(Tags.Items.NUGGETS).tag(AllTags.forgeItemTag("nuggets/tin")).register();
+	public static final ItemEntry<Item> RAW_TIN = Robotics.REGISTRATE.item("raw_tin", Item::new)
+			.tag(Tags.Items.RAW_MATERIALS).register();
 
-	public static final RegistryObject<Item> TIN_INGOT = registerBasicItem("tin_ingot", Optional.empty());
-	public static final RegistryObject<Item> TIN_NUGGET = registerBasicItem("tin_nugget", Optional.empty());
-	public static final RegistryObject<Item> RAW_TIN = registerBasicItem("raw_tin", Optional.empty());
+	public static final ItemEntry<Item> BRONZE_INGOT = Robotics.REGISTRATE.item("bronze_ingot", Item::new)
+			.tag(Tags.Items.INGOTS).tag(AllTags.forgeItemTag("ingots/bronze")).register();
+	public static final ItemEntry<Item> BRONZE_NUGGET = Robotics.REGISTRATE.item("bronze_nugget", Item::new)
+			.tag(Tags.Items.NUGGETS).tag(AllTags.forgeItemTag("nuggets/bronze")).register();
 
-	public static final RegistryObject<Item> BRONZE_INGOT = registerBasicItem("bronze_ingot", Optional.empty());
-	public static final RegistryObject<Item> BRONZE_NUGGET = registerBasicItem("bronze_nugget", Optional.empty());
+	public static final ItemEntry<Item> PROGRAM = Robotics.REGISTRATE.item("program",
+			Item::new).properties(properties -> properties.stacksTo(1).rarity(Rarity.UNCOMMON)).register();
 
-	public static final RegistryObject<Item> PROGRAM = registerBasicItem("program",
-			Optional.of(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON).tab(ROBOTICS_TAB)));
+	public static final ItemEntry<BaseRobotItem> CLOCKCOPTER = Robotics.REGISTRATE.item("clockcopter",
+			BaseRobotItem::new).onRegister(item -> item.setEntity(() -> EntityList.CLOCKCOPTER.get())).register();
 
-	public static final RegistryObject<Item> CLOCKCOPTER = ITEMS.register("clockcopter",
-			() -> new BaseRobotItem(() -> EntityList.CLOCKCOPTER.get(),
-					new Item.Properties().tab(ROBOTICS_TAB)));
 
-	public static final RegistryObject<Item> MINER = ITEMS.register("miner",
-			() -> new BaseRobotItem(() -> EntityList.MINER.get(),
-					new Item.Properties().tab(ROBOTICS_TAB)));
+	public static final ItemEntry<BaseRobotItem> MINER = Robotics.REGISTRATE.item("miner",
+			BaseRobotItem::new).onRegister(item -> item.setEntity(() -> EntityList.MINER.get())).register();
 
-	public static final RegistryObject<Item> CODE_DRONE = ITEMS.register("code_drone",
-			() -> new BaseRobotItem(() -> EntityList.CODE_DRONE.get(),
-					new Item.Properties().tab(ROBOTICS_TAB)));
+	public static final ItemEntry<BaseRobotItem> CODE_DRONE = Robotics.REGISTRATE.item("code_drone",
+			BaseRobotItem::new).onRegister(item -> item.setEntity(() -> EntityList.CODE_DRONE.get())).register();
 
-	public static final RegistryObject<Item> EXTEND_O_BOOTS = ITEMS.register("extend_o_boots",
-			() -> new ExtendOBootsItem(ModArmorMaterials.EXTEND_O_BOOTS, EquipmentSlot.FEET,
-					new Item.Properties().tab(ROBOTICS_TAB)));
-
-	public static void register(IEventBus eventBus) {
-		ITEMS.register(eventBus);
-	}
-
-	public static RegistryObject<Item> registerBasicItem(String id, Optional<Item.Properties> itemProperties) {
-		RegistryObject<Item> registyObject = ITEMS.register(id,
-				() -> new Item(itemProperties.orElse(new Item.Properties()).tab(ROBOTICS_TAB)));
-		return registyObject;
-	}
+	public static final ItemEntry<ExtendOBootsItem> EXTEND_O_BOOTS = Robotics.REGISTRATE.item("extend_o_boots",
+			ExtendOBootsItem::new).register();
 }
