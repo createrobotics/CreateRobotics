@@ -25,6 +25,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
@@ -153,6 +154,12 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 				itemstack.setCount(itemstack1.getCount());
 			}
 		}
+	}
+
+	@Nullable
+	@Override
+	public ItemStack getPickResult() {
+		return this.getRobotItem().getDefaultInstance();
 	}
 
 	@Override

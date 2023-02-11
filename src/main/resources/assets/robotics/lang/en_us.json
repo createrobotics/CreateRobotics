@@ -34,5 +34,10 @@
   "block.robotics.code_editor.tooltip": "CODE EDITOR",
   "block.robotics.code_editor.tooltip.summary": "A block that allows you to _edit_ a program's _contents_!",
   "block.robotics.code_editor.tooltip.condition1": "When R-Clicked with Program",
-  "block.robotics.code_editor.tooltip.behavior1": "Allows you to _edit_ the _program_"
+  "block.robotics.code_editor.tooltip.behavior1": "Allows you to _edit_ the _program_",
+
+  "robotics.ponder.programming.header": "Programming using a Code Editor.",
+  "robotics.ponder.programming.text_1": "To change the contents of a Program you need a code editor.",
+  "robotics.ponder.programming.text_2": "Right click the code editor with the program to get started!",
+  "robotics.ponder.programming.text_3": "Right click with the program on a programmable robot to apply your code to it."
 }

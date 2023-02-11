@@ -29,7 +29,7 @@ public class BlockList {
 	}
 
 	public static final BlockEntry<DropExperienceBlock> TIN_ORE = Robotics.REGISTRATE.block(
-					"tin_ore", DropExperienceBlock::new)
+					"tin_ore", DropExperienceBlock::new).lang("Tin ore")
 			.properties(properties -> properties.of(Material.STONE).sound(SoundType.STONE).strength(3.0F, 3.0F)
 					.requiresCorrectToolForDrops()).transform(TagGen.pickaxeOnly()).loot((lt, b) -> lt.add(b,
 					RegistrateBlockLootTables.createSilkTouchDispatchTable(b,
@@ -42,7 +42,7 @@ public class BlockList {
 			.tag(Tags.Items.ORES).build().register();
 
 	public static final BlockEntry<DropExperienceBlock> DEEPSLATE_TIN_ORE = Robotics.REGISTRATE.block(
-					"deepslate_tin_ore", DropExperienceBlock::new)
+					"deepslate_tin_ore", DropExperienceBlock::new).lang("Deepslate tin ore")
 			.initialProperties(() -> BlockList.TIN_ORE.get())
 			.properties(properties -> properties.sound(SoundType.DEEPSLATE).strength(4.5F, 3.0F)
 					.requiresCorrectToolForDrops()).transform(TagGen.pickaxeOnly()).loot((lt, b) -> lt.add(b,
@@ -55,13 +55,16 @@ public class BlockList {
 			.transform(tagBlockAndItem("ores/tin", "ores_in_ground/deepslate"))
 			.tag(Tags.Items.ORES).build().register();
 
-	public static final BlockEntry<Block> TIN_BLOCK = Robotics.REGISTRATE.block("tin_block", Block::new).properties(
+	public static final BlockEntry<Block> TIN_BLOCK = Robotics.REGISTRATE.block("tin_block", Block::new)
+			.lang("Tin block").properties(
 					properties -> properties.of(Material.METAL).sound(SoundType.METAL).strength(5.0F, 6.0F)
-							.requiresCorrectToolForDrops()).transform(TagGen.pickaxeOnly()).tag(BlockTags.NEEDS_IRON_TOOL)
+							.requiresCorrectToolForDrops()).transform(TagGen.pickaxeOnly())
+			.tag(BlockTags.NEEDS_IRON_TOOL)
 			.tag(Tags.Blocks.STORAGE_BLOCKS).tag(BlockTags.BEACON_BASE_BLOCKS)
 			.transform(tagBlockAndItem("storage_blocks/tin")).tag(Tags.Items.STORAGE_BLOCKS).build().register();
 
 	public static final BlockEntry<Block> BRONZE_BLOCK = Robotics.REGISTRATE.block("bronze_block", Block::new)
+			.lang("Bronze block")
 			.properties(
 					properties -> properties.of(Material.METAL).sound(SoundType.METAL).strength(6.0F, 7.0F)
 							.requiresCorrectToolForDrops()).transform(TagGen.pickaxeOnly())
@@ -70,11 +73,11 @@ public class BlockList {
 			.transform(tagBlockAndItem("storage_blocks/bronze")).tag(Tags.Items.STORAGE_BLOCKS).build().register();
 
 	public static final BlockEntry<SmasherBlock> SMASHER = Robotics.REGISTRATE.block(
-			"smasher", SmasherBlock::new).properties(properties ->
+			"smasher", SmasherBlock::new).lang("Smasher").properties(properties ->
 			properties.of(Material.METAL).sound(SoundType.METAL).strength(9f)
 					.requiresCorrectToolForDrops()).simpleItem().register();
 
 	public static final BlockEntry<CodeEditor> CODE_EDITOR = Robotics.REGISTRATE.block(
-			"code_editor", CodeEditor::new).properties(properties ->
+			"code_editor", CodeEditor::new).lang("Code Editor").properties(properties ->
 			properties.of(Material.WOOD).sound(SoundType.WOOD).noOcclusion()).simpleItem().register();
 }

@@ -15,8 +15,15 @@ import net.minecraft.world.entity.animal.FlyingAnimal;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.world.ForgeChunkManager;
+import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.PlayState;
+import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.controller.AnimationController;
+import software.bernie.geckolib3.core.manager.AnimationData;
+import software.bernie.geckolib3.core.manager.AnimationFactory;
+import software.bernie.geckolib3.util.GeckoLibUtil;
 
-public class CodeDrone extends AbstractRobotEntity implements FlyingAnimal {
+public class CodeDrone extends AbstractRobotEntity implements FlyingAnimal, IAnimatable {
 	private final SimpleContainer inventory = new SimpleContainer(9);
 
 	public int last_chunk_x;
@@ -25,6 +32,7 @@ public class CodeDrone extends AbstractRobotEntity implements FlyingAnimal {
 	public CodeDrone(EntityType<? extends PathfinderMob> entity, Level world) {
 		super(entity, world);
 		this.moveControl = new FlyingMoveControl(this, 128, true);
+		this.setNoGravity(true);
 		this.last_chunk_x = this.chunkPosition().x;
 		this.last_chunk_z = this.chunkPosition().z;
 	}
@@ -108,4 +116,16 @@ public class CodeDrone extends AbstractRobotEntity implements FlyingAnimal {
 		return true;
 	}
 
+	@Override
+	public void registerControllers(AnimationData data) {
+		data.addAnimationController(new AnimationController(this, "controller", 0, event -> {
+			event.getController().setAnimation(new AnimationBuilder().loop("animation.code_drone.idle"));
+			return PlayState.CONTINUE;
+		}));
+	}
+
+	@Override
+	public AnimationFactory getFactory() {
+		return GeckoLibUtil.createFactory(this);
+	}
 }

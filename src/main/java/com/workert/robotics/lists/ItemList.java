@@ -29,30 +29,33 @@ public class ItemList {
 	};
 
 	public static final ItemEntry<Item> TIN_INGOT = Robotics.REGISTRATE.item("tin_ingot", Item::new)
-			.tag(Tags.Items.INGOTS).tag(AllTags.forgeItemTag("ingots/tin")).register();
+			.lang("Tin ingot").tag(Tags.Items.INGOTS).tag(AllTags.forgeItemTag("ingots/tin")).register();
 	public static final ItemEntry<Item> TIN_NUGGET = Robotics.REGISTRATE.item("tin_nugget", Item::new)
-			.tag(Tags.Items.NUGGETS).tag(AllTags.forgeItemTag("nuggets/tin")).register();
+			.lang("Tin nugget").tag(Tags.Items.NUGGETS).tag(AllTags.forgeItemTag("nuggets/tin")).register();
 	public static final ItemEntry<Item> RAW_TIN = Robotics.REGISTRATE.item("raw_tin", Item::new)
-			.tag(Tags.Items.RAW_MATERIALS).register();
+			.lang("Raw tin").tag(Tags.Items.RAW_MATERIALS).register();
 
 	public static final ItemEntry<Item> BRONZE_INGOT = Robotics.REGISTRATE.item("bronze_ingot", Item::new)
-			.tag(Tags.Items.INGOTS).tag(AllTags.forgeItemTag("ingots/bronze")).register();
+			.lang("Bronze ingot").tag(Tags.Items.INGOTS).tag(AllTags.forgeItemTag("ingots/bronze")).register();
 	public static final ItemEntry<Item> BRONZE_NUGGET = Robotics.REGISTRATE.item("bronze_nugget", Item::new)
-			.tag(Tags.Items.NUGGETS).tag(AllTags.forgeItemTag("nuggets/bronze")).register();
+			.lang("Bronze nugget").tag(Tags.Items.NUGGETS).tag(AllTags.forgeItemTag("nuggets/bronze")).register();
 
 	public static final ItemEntry<Item> PROGRAM = Robotics.REGISTRATE.item("program",
-			Item::new).properties(properties -> properties.stacksTo(1).rarity(Rarity.UNCOMMON)).register();
+					Item::new).lang("Program").properties(properties -> properties.stacksTo(1).rarity(Rarity.UNCOMMON))
+			.register();
 
 	public static final ItemEntry<BaseRobotItem> CLOCKCOPTER = Robotics.REGISTRATE.item("clockcopter",
-			BaseRobotItem::new).onRegister(item -> item.setEntity(() -> EntityList.CLOCKCOPTER.get())).register();
+					BaseRobotItem::new).lang("Clockcopter")
+			.onRegister(item -> item.setEntity(() -> EntityList.CLOCKCOPTER.get())).register();
 
 
 	/*public static final ItemEntry<BaseRobotItem> MINER = Robotics.REGISTRATE.item("miner",
 			BaseRobotItem::new).onRegister(item -> item.setEntity(() -> EntityList.MINER.get())).register();*/
 
 	public static final ItemEntry<BaseRobotItem> CODE_DRONE = Robotics.REGISTRATE.item("code_drone",
-			BaseRobotItem::new).onRegister(item -> item.setEntity(() -> EntityList.CODE_DRONE.get())).register();
+					BaseRobotItem::new).lang("Code Drone").onRegister(item -> item.setEntity(() -> EntityList.CODE_DRONE.get()))
+			.register();
 
 	public static final ItemEntry<ExtendOBootsItem> EXTEND_O_BOOTS = Robotics.REGISTRATE.item("extend_o_boots",
-			ExtendOBootsItem::new).register();
+			ExtendOBootsItem::new).lang("Extend-O-Boots").register();
 }

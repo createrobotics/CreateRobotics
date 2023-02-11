@@ -1,7 +1,9 @@
 package com.workert.robotics.entities;
 
+import com.workert.robotics.items.ExtendOBootsItem;
 import com.workert.robotics.lists.EntityList;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -11,6 +13,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -18,7 +21,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.List;
 
 public class ExtendOBoots extends LivingEntity {
-	private int lifeTime;
 	public static final EntityDataAccessor<Float> HEIGHT = SynchedEntityData.defineId(ExtendOBoots.class,
 			EntityDataSerializers.FLOAT);
 
@@ -29,9 +31,14 @@ public class ExtendOBoots extends LivingEntity {
 	@Override
 	public void tick() {
 		super.tick();
-		this.lifeTime++;
-		/*if (this.lifeTime >= 20)
-			this.discard();*/
+		Player nearestPlayer = this.level.getNearestPlayer(this, ExtendOBootsItem.MAX_HEIGHT + 1);
+		if (nearestPlayer == null)
+			this.discard();
+		else {
+			if (nearestPlayer.position()
+					.distanceTo(this.position().with(Direction.Axis.Y, nearestPlayer.position().y)) > 2)
+				this.discard();
+		}
 	}
 
 	@Override
