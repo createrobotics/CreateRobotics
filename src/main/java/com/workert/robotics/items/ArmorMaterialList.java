@@ -1,40 +1,41 @@
 package com.workert.robotics.items;
 
-import com.simibubi.create.AllItems;
 import com.workert.robotics.Robotics;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.LazyLoadedValue;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 
 import java.util.function.Supplier;
 
-public enum ModArmorMaterials implements ArmorMaterial {
-	EXTEND_O_BOOTS("zinc", 28, new int[]{2, 5, 8, 3}, 19, SoundEvents.ARMOR_EQUIP_IRON, 2.0F, 0.0F,
-			() -> Ingredient.of(AllItems.ZINC_INGOT.get()));
+public enum ArmorMaterialList implements ArmorMaterial {
+	EXTEND_O_BOOTS("scaffolding", 4, new int[]{1, 2, 2, 1}, 0, SoundEvents.SCAFFOLDING_PLACE, 0.0F, 0.0F,
+			() -> Ingredient.of(Items.SCAFFOLDING));
 
 	private static final int[] HEALTH_PER_SLOT = new int[]{13, 15, 16, 11};
 	private final String name;
 	private final int durabilityMultiplier;
 	private final int[] slotProtections;
-	private final int enchantmentValue;
+	private final int enchantability;
 	private final SoundEvent sound;
 	private final float toughness;
 	private final float knockbackResistance;
 	private final LazyLoadedValue<Ingredient> repairIngredient;
 
-	ModArmorMaterials(String p_40474_, int p_40475_, int[] p_40476_, int p_40477_, SoundEvent p_40478_, float p_40479_,
-					  float p_40480_, Supplier<Ingredient> p_40481_) {
-		this.name = p_40474_;
-		this.durabilityMultiplier = p_40475_;
-		this.slotProtections = p_40476_;
-		this.enchantmentValue = p_40477_;
-		this.sound = p_40478_;
-		this.toughness = p_40479_;
-		this.knockbackResistance = p_40480_;
-		this.repairIngredient = new LazyLoadedValue<>(p_40481_);
+	ArmorMaterialList(String name, int durabilityMultiplier, int[] slotProtections, int enchantability,
+					  SoundEvent sound, float toughness, float knockbackResistance, Supplier<Ingredient> repairIngredient) {
+		this.name = name;
+		this.durabilityMultiplier = durabilityMultiplier;
+		this.slotProtections = slotProtections;
+		this.enchantability = enchantability;
+		this.sound = sound;
+		this.toughness = toughness;
+		this.knockbackResistance = knockbackResistance;
+		this.repairIngredient = new LazyLoadedValue<>(repairIngredient);
 	}
 
 	@Override
@@ -49,7 +50,7 @@ public enum ModArmorMaterials implements ArmorMaterial {
 
 	@Override
 	public int getEnchantmentValue() {
-		return this.enchantmentValue;
+		return this.enchantability;
 	}
 
 	@Override
@@ -64,7 +65,7 @@ public enum ModArmorMaterials implements ArmorMaterial {
 
 	@Override
 	public String getName() {
-		return Robotics.MOD_ID + ":" + this.name;
+		return new ResourceLocation(Robotics.MOD_ID, this.name).toString();
 	}
 
 	@Override

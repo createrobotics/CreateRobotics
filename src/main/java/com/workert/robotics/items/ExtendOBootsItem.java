@@ -27,7 +27,7 @@ public class ExtendOBootsItem extends ArmorItem {
 	private boolean clientSentOff;
 
 	public ExtendOBootsItem(Properties pProperties) {
-		super(ModArmorMaterials.EXTEND_O_BOOTS, EquipmentSlot.FEET, pProperties);
+		super(ArmorMaterialList.EXTEND_O_BOOTS, EquipmentSlot.FEET, pProperties);
 		MinecraftForge.EVENT_BUS.register(this);
 	}
 
@@ -46,7 +46,7 @@ public class ExtendOBootsItem extends ArmorItem {
 			ExtendOBoots extendOBoots = this.ENTITIES.get(stack);
 			if (extendOBoots == null || extendOBoots.isRemoved()) {
 				extendOBoots = new ExtendOBoots(EntityList.EXTEND_O_BOOTS.get(), this.player.getLevel());
-				
+
 				extendOBoots.setPos(this.player.position());
 
 				extendOBoots.setYRot(this.player.getYRot());
