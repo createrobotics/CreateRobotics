@@ -1,6 +1,7 @@
 package com.workert.robotics.items;
 
 import com.google.common.collect.Maps;
+import com.simibubi.create.foundation.utility.animation.LerpedFloat;
 import com.workert.robotics.client.KeybindList;
 import com.workert.robotics.entities.ExtendOBoots;
 import com.workert.robotics.lists.EntityList;
@@ -22,6 +23,8 @@ import java.util.Map;
 public class ExtendOBootsItem extends ArmorItem {
 	public static final float MAX_HEIGHT = 5;
 	private static final Map<ItemStack, ExtendOBoots> ENTITIES = Maps.newIdentityHashMap();
+
+	private static final Map<ItemStack, LerpedFloat> HEIGHT = Maps.newIdentityHashMap();
 	private Player player;
 
 	private boolean clientSentOff;
@@ -43,6 +46,17 @@ public class ExtendOBootsItem extends ArmorItem {
 		}
 		this.player = player;
 		if (stack.getOrCreateTag().getFloat("currentHeight") > 0) {
+			if (this.HEIGHT.get(stack) == null)
+				this.HEIGHT.put(stack, LerpedFloat.linear());
+			if (stack.getOrCreateTag().getFloat("currentHeight") > this.HEIGHT.get(stack).getValue())
+				this.HEIGHT.get(stack)
+						.chase(stack.getOrCreateTag().getFloat("currentHeight"), 0.2, LerpedFloat.Chaser.LINEAR);
+			else
+				this.HEIGHT.get(stack)
+						.chase(stack.getOrCreateTag().getFloat("currentHeight"), 0.55, LerpedFloat.Chaser.EXP);
+			this.HEIGHT.get(stack)
+					.tickChaser();
+
 			ExtendOBoots extendOBoots = this.ENTITIES.get(stack);
 			if (extendOBoots == null || extendOBoots.isRemoved()) {
 				extendOBoots = new ExtendOBoots(EntityList.EXTEND_O_BOOTS.get(), this.player.getLevel());
@@ -53,11 +67,11 @@ public class ExtendOBootsItem extends ArmorItem {
 				this.player.getLevel().addFreshEntity(extendOBoots);
 				this.ENTITIES.put(stack, extendOBoots);
 			}
-			player.teleportTo(player.getX(), extendOBoots.getY() + stack.getOrCreateTag().getFloat("currentHeight"),
+			player.teleportTo(player.getX(), extendOBoots.getY() + this.HEIGHT.get(stack).getValue(),
 					player.getZ());
 			this.player.setYRot(extendOBoots.getYRot());
 			if (this.player.position().distanceTo(extendOBoots.position()
-					.with(Direction.Axis.Y, extendOBoots.getY() + stack.getOrCreateTag().getFloat("currentHeight"))) >
+					.with(Direction.Axis.Y, extendOBoots.getY() + this.HEIGHT.get(stack).getValue())) >
 					0.1) stack.getOrCreateTag().putFloat("currentHeight", 0);
 			extendOBoots.getEntityData().set(ExtendOBoots.HEIGHT, stack.getOrCreateTag().getFloat("currentHeight"));
 		} else if (this.ENTITIES.get(stack) != null) {
