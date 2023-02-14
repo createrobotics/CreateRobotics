@@ -52,7 +52,7 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 
 	@Override
 	public boolean hurt(DamageSource pSource, float pAmount) {
-		if (pSource == DamageSource.GENERIC || pSource == DamageSource.OUT_OF_WORLD)
+		if (pSource == DamageSource.OUT_OF_WORLD)
 			return super.hurt(pSource, pAmount);
 		this.consumeAir((int) pAmount * 2);
 		return false;
