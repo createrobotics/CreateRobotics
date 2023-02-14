@@ -16,10 +16,9 @@ public class PonderList {
 		scene.title("programming", "Programming using a Code Editor");
 		scene.configureBasePlate(0, 0, 3);
 		scene.showBasePlate();
-		scene.rotateCameraY(85);
 
 		BlockPos codeEditorPos = util.grid.at(1, 1, 1);
-		Vec3 dronePos = new Vec3(1, 1, 0);
+		Vec3 dronePos = new Vec3(1.5, 1, 1.5);
 
 		scene.idle(10);
 
@@ -31,7 +30,7 @@ public class PonderList {
 
 		scene.idle(100);
 
-		scene.overlay.showText(60)
+		scene.overlay.showText(80)
 				.pointAt(util.vector.topOf(codeEditorPos)).attachKeyFrame().placeNearTarget()
 				.text("Right click the code editor with the program to get started!");
 
@@ -40,7 +39,11 @@ public class PonderList {
 		scene.overlay.showControls(new InputWindowElement(util.vector.blockSurface(codeEditorPos, Direction.UP),
 				Pointing.DOWN).rightClick().withItem(ItemList.PROGRAM.asStack()), 40);
 
-		scene.idle(80);
+		scene.idle(70);
+
+		scene.world.hideSection(util.select.position(codeEditorPos), Direction.UP);
+
+		scene.idle(20);
 
 		scene.world.createEntity(world -> {
 			CodeDrone entity = EntityList.CODE_DRONE.create(world);
@@ -56,8 +59,8 @@ public class PonderList {
 			return entity;
 		});
 
-		scene.overlay.showText(100).pointAt(dronePos.add(0, 0.5, 0)).attachKeyFrame().placeNearTarget()
-				.text("Right click with the program on a programmable robot to apply your code to it.");
+		scene.overlay.showText(120).pointAt(dronePos.add(0, 0.5, 0)).attachKeyFrame().placeNearTarget()
+				.text("When you're finished coding right click with the program on a programmable robot to apply your code to it.");
 
 		scene.idle(20);
 
@@ -65,5 +68,6 @@ public class PonderList {
 				new InputWindowElement(dronePos.add(0, 0.5, 0), Pointing.DOWN).rightClick()
 						.withItem(ItemList.PROGRAM.asStack()), 40);
 
+		scene.idle(100);
 	}
 }

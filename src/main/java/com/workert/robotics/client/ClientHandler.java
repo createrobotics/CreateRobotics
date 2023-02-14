@@ -1,21 +1,14 @@
 package com.workert.robotics.client;
 
-import com.simibubi.create.content.contraptions.base.IRotate;
-import com.simibubi.create.content.contraptions.components.steam.SteamEngineBlock;
-import com.simibubi.create.content.contraptions.itemAssembly.SequencedAssemblyRecipe;
 import com.simibubi.create.foundation.config.AllConfigs;
-import com.simibubi.create.foundation.item.ItemDescription;
 import com.simibubi.create.foundation.item.TooltipHelper;
 import com.simibubi.create.foundation.ponder.PonderRegistrationHelper;
-import com.simibubi.create.foundation.ponder.PonderTooltipHandler;
-import com.simibubi.create.foundation.utility.Components;
 import com.workert.robotics.Robotics;
 import com.workert.robotics.client.models.ClockcopterModel;
 import com.workert.robotics.client.models.ExtendOBootsModel;
 import com.workert.robotics.client.models.MinerModel;
 import com.workert.robotics.lists.ItemList;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -62,21 +55,5 @@ public class ClientHandler {
 						.addInformation(toolTip);
 				itemTooltip.addAll(0, toolTip);
 			}
-
-		if (stack.getItem() instanceof BlockItem) {
-			BlockItem item = (BlockItem) stack.getItem();
-			if (item.getBlock() instanceof IRotate || item.getBlock() instanceof SteamEngineBlock) {
-				List<Component> kineticStats = ItemDescription.getKineticStats(item.getBlock());
-				if (!kineticStats.isEmpty()) {
-					event.getToolTip()
-							.add(Components.immutableEmpty());
-					event.getToolTip()
-							.addAll(kineticStats);
-				}
-			}
-		}
-
-		PonderTooltipHandler.addToTooltip(event.getToolTip(), stack);
-		SequencedAssemblyRecipe.addToTooltip(event.getToolTip(), stack);
 	}
 }

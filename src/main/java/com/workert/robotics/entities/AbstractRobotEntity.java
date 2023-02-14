@@ -206,4 +206,13 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 		return false;
 	}
 
+	@Override
+	public boolean displayFireAnimation() {
+		return false;
+	}
+
+	@Override
+	public void die(DamageSource pDamageSource) {
+		super.die(pDamageSource);
+	}
 }

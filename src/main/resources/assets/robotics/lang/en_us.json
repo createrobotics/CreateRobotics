@@ -19,8 +19,13 @@
   "block.robotics.smasher_block": "Smasher",
   "block.robotics.code_editor": "Code Editor",
 
+  "entity.robotics.clockcopter": "Clockcopter",
+  "entity.robotics.code_drone": "Juan",
+  "entity.robotics.miner": "Miner",
+  "entity.robotics.extend_o_boots": "Extend-O-Boots",
+
   "item.robotics.extend_o_boots.tooltip": "EXTEND-O-BOOTS",
-  "item.robotics.extend_o_boots.tooltip.summary": "Your _handheld Scaffolding_! Allows you to create an _extendable temporary scaffolding_ under you.",
+  "item.robotics.extend_o_boots.tooltip.summary": "Your _equipable Scaffolding_! Allows you to create an _extendable temporary scaffolding_ under you.",
   "item.robotics.extend_o_boots.tooltip.control1": "Hold Ctrl while wearing",
   "item.robotics.extend_o_boots.tooltip.action1": "Allows you to _activate_ the ExtendOBoots through _scrolling up or down_",
 
@@ -34,10 +39,10 @@
   "block.robotics.code_editor.tooltip": "CODE EDITOR",
   "block.robotics.code_editor.tooltip.summary": "A block that allows you to _edit_ a program's _contents_!",
   "block.robotics.code_editor.tooltip.condition1": "When R-Clicked with Program",
-  "block.robotics.code_editor.tooltip.behavior1": "Allows you to _edit_ the _program_",
+  "block.robotics.code_editor.tooltip.behaviour1": "Allows you to _edit_ the _program_",
 
   "robotics.ponder.programming.header": "Programming using a Code Editor.",
   "robotics.ponder.programming.text_1": "To change the contents of a Program you need a code editor.",
   "robotics.ponder.programming.text_2": "Right click the code editor with the program to get started!",
-  "robotics.ponder.programming.text_3": "Right click with the program on a programmable robot to apply your code to it."
+  "robotics.ponder.programming.text_3": "When you're finished coding right click with the program on a programmable robot to apply your code to it."
 }
