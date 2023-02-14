@@ -22,16 +22,18 @@ public class PonderList {
 
 		scene.idle(10);
 
-		scene.world.showSection(util.select.position(codeEditorPos), Direction.DOWN);
-
 		scene.overlay.showText(80)
-				.pointAt(util.vector.topOf(codeEditorPos)).attachKeyFrame().placeNearTarget()
+				.independent(60).attachKeyFrame().placeNearTarget()
 				.text("To change the contents of a Program you need a code editor.");
 
-		scene.idle(100);
+		scene.idle(30);
+
+		scene.world.showSection(util.select.position(codeEditorPos), Direction.DOWN);
+
+		scene.idle(70);
 
 		scene.overlay.showText(80)
-				.pointAt(util.vector.topOf(codeEditorPos)).attachKeyFrame().placeNearTarget()
+				.pointAt(util.vector.topOf(codeEditorPos)).placeNearTarget()
 				.text("Right click the code editor with the program to get started!");
 
 		scene.idle(20);
@@ -39,7 +41,7 @@ public class PonderList {
 		scene.overlay.showControls(new InputWindowElement(util.vector.blockSurface(codeEditorPos, Direction.UP),
 				Pointing.DOWN).rightClick().withItem(ItemList.PROGRAM.asStack()), 40);
 
-		scene.idle(70);
+		scene.idle(60);
 
 		scene.world.hideSection(util.select.position(codeEditorPos), Direction.UP);
 
@@ -51,11 +53,6 @@ public class PonderList {
 			entity.xo = dronePos.x;
 			entity.yo = dronePos.y;
 			entity.zo = dronePos.z;
-			entity.animationPosition = 0;
-			entity.yRotO = 210;
-			entity.setYRot(210);
-			entity.yHeadRotO = 210;
-			entity.yHeadRot = 210;
 			return entity;
 		});
 

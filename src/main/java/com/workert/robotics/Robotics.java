@@ -32,7 +32,7 @@ public class Robotics {
 	public Robotics() {
 		this.modEventBus.addListener(Robotics::clientSetup);
 		this.modEventBus.addListener(ClientHandler::registerLayerDefinition);
-		
+
 		REGISTRATE.registerEventListeners(this.modEventBus);
 
 		BlockList.register();
@@ -48,8 +48,6 @@ public class Robotics {
 		PacketList.registerPackets();
 
 		CodeHelper.registerDefaultCommands();
-
-
 	}
 
 	private static void clientSetup(final FMLClientSetupEvent event) {
