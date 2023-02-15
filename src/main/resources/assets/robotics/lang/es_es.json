@@ -1,0 +1,48 @@
+{
+  "itemGroup.robotics": "Create Robotics",
+
+  "item.robotics.tin_ingot": "Lingote de estaño",
+  "item.robotics.tin_nugget": "Pepita de estaño",
+  "item.robotics.raw_tin": "Estaño crudo",
+  "item.robotics.bronze_ingot": "Lingote de bronce",
+  "item.robotics.bronze_nugget": "Pepita de bronce",
+  "item.robotics.program": "Programa",
+  "item.robotics.clockcopter": "Clockcopter",
+  "item.robotics.miner": "Miner",
+  "item.robotics.code_drone": "Code Drone",
+  "item.robotics.extend_o_boots": "Extend-O-Boots",
+
+  "block.robotics.tin_ore": "Mineral de estaño",
+  "block.robotics.deepslate_tin_ore": "Mineral de estaño de pizarra profunda",
+  "block.robotics.tin_block": "Bloque de estaño",
+  "block.robotics.bronze_block": "Bloque de bronce",
+  "block.robotics.smasher_block": "Smasher",
+  "block.robotics.code_editor": "Editor de codigo",
+
+  "entity.robotics.clockcopter": "Clockcopter",
+  "entity.robotics.code_drone": "Juan",
+  "entity.robotics.miner": "Miner",
+  "entity.robotics.extend_o_boots": "Extend-O-Boots",
+
+  "item.robotics.extend_o_boots.tooltip": "EXTEND-O-BOOTS",
+  "item.robotics.extend_o_boots.tooltip.summary": "Your _equipable Scaffolding_! Allows you to create an _extendable temporary scaffolding_ under you.",
+  "item.robotics.extend_o_boots.tooltip.control1": "Mantenga presionada la tecla Ctrl mientras usa",
+  "item.robotics.extend_o_boots.tooltip.action1": "Allows you to _activate_ the ExtendOBoots through _scrolling up or down_",
+
+  "item.robotics.program.tooltip": "PROGRAM",
+  "item.robotics.program.tooltip.summary": "A _program containing code_! Allows you to _program robots_.",
+  "item.robotics.program.tooltip.control1": "R-Click at Code Editor",
+  "item.robotics.program.tooltip.action1": "Allows you to _edit_ the program's _contents_",
+  "item.robotics.program.tooltip.control2": "R-Click at programmable robot",
+  "item.robotics.program.tooltip.action2": "Allows you to _apply_ the program's _code_ to the _robot_",
+
+  "block.robotics.code_editor.tooltip": "EDITOR DE CODIGO",
+  "block.robotics.code_editor.tooltip.summary": "A block that allows you to _edit_ a program's _contents_!",
+  "block.robotics.code_editor.tooltip.condition1": "When R-Clicked with Program",
+  "block.robotics.code_editor.tooltip.behaviour1": "Allows you to _edit_ the _program_",
+
+  "robotics.ponder.programming.header": "Programar usando un editor de codigo.",
+  "robotics.ponder.programming.text_1": "Para cambiar el contenido de un programa, necesita un editor de código.",
+  "robotics.ponder.programming.text_2": "¡Haz clic derecho en el editor de código con el programa para comenzar!",
+  "robotics.ponder.programming.text_3": "Cuando haya terminado de codificar, haga clic derecho con el programa en un robot programable para aplicarle su código."
+}
