@@ -25,9 +25,7 @@
   "entity.robotics.extend_o_boots": "Extend-O-Boots",
 
   "item.robotics.extend_o_boots.tooltip": "EXTEND-O-BOOTS",
-  "item.robotics.extend_o_boots.tooltip.summary": "Vos _fidèles paires d'échafaudage_! Vous permet d'obtenir des _échafaudages temporaire extensible
-
-_ en dessous de vous.",
+  "item.robotics.extend_o_boots.tooltip.summary": "Vos _fidèles paires d'échafaudage_! Vous permet d'obtenir des _échafaudages temporaire extensible_ en dessous de vous.",
   "item.robotics.extend_o_boots.tooltip.control1": "Maintenez la touche Ctrl enfoncée pendant l'utilisation",
   "item.robotics.extend_o_boots.tooltip.action1": "Vous permet d'_activez_les ExtendOBoots en _défilent vers le haut ou vers le bas_",
 
