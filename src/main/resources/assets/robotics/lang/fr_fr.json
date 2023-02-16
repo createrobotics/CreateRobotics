@@ -27,17 +27,17 @@
   "item.robotics.extend_o_boots.tooltip": "EXTEND-O-BOOTS",
   "item.robotics.extend_o_boots.tooltip.summary": "Vos _fidèles paires d'échafaudage_! Vous permet d'obtenir des _échafaudages temporaire extensible_ en dessous de vous.",
   "item.robotics.extend_o_boots.tooltip.control1": "Maintenez la touche Ctrl enfoncée pendant l'utilisation",
-  "item.robotics.extend_o_boots.tooltip.action1": "Vous permet d'_activez_les ExtendOBoots en _défilent vers le haut ou vers le bas_",
+  "item.robotics.extend_o_boots.tooltip.action1": "Vous permet d'_activez_ les ExtendOBoots en _défilent vers le haut ou vers le bas_.",
 
   "item.robotics.program.tooltip": "PROGRAMME",
-  "item.robotics.program.tooltip.summary": "Un _programme contenant du code_! Vous permez de_programmer des robots_.",
+  "item.robotics.program.tooltip.summary": "Un _programme contenant du code_! Vous permez de _programmer des robots_.",
   "item.robotics.program.tooltip.control1": "Click-D sur un éditeur de code",
-  "item.robotics.program.tooltip.action1": "Vous permet d'_editer_ le_contenu_d'un programme",
+  "item.robotics.program.tooltip.action1": "Vous permet d'_éditer_ le _contenu_d'un programme",
   "item.robotics.program.tooltip.control2": "Click-D sur un robot programmable",
   "item.robotics.program.tooltip.action2": "Vous permet d' _appliquer_ le _code_ du programme au _robot_",
 
   "block.robotics.code_editor.tooltip": "EDITEUR DE CODE",
-  "block.robotics.code_editor.tooltip.summary": "Un bloc qui vous permets d' _editer_ le _contenu_ d'un programme!",
+  "block.robotics.code_editor.tooltip.summary": "Un bloc qui vous permets d'_éditer_ le _contenu_ d'un programme!",
   "block.robotics.code_editor.tooltip.condition1": "Quand click-D avec un Programme",
   "block.robotics.code_editor.tooltip.behaviour1": "Permet de _modifier_ le _programme_",
 
