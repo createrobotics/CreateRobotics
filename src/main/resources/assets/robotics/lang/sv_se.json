@@ -1,0 +1,48 @@
+{
+  "itemGroup.robotics": "Create: Robotik",
+
+  "item.robotics.tin_ingot": "Tenntacka",
+  "item.robotics.tin_nugget": "Tennklimp",
+  "item.robotics.raw_tin": "Råtenn",
+  "item.robotics.bronze_ingot": "Bronstacka",
+  "item.robotics.bronze_nugget": "Bronsklimp",
+  "item.robotics.program": "Program",
+  "item.robotics.clockcopter": "Urverksdrönare",
+  "item.robotics.miner": "Grävare",
+  "item.robotics.code_drone": "Koddrönare",
+  "item.robotics.extend_o_boots": "Extend-O-Boots",
+
+  "block.robotics.tin_ore": "Tennmalm",
+  "block.robotics.deepslate_tin_ore": "Djupskifferinbäddad tennmalm",
+  "block.robotics.tin_block": "Tennblock",
+  "block.robotics.bronze_block": "Bronsblock",
+  "block.robotics.smasher_block": "Krossare",
+  "block.robotics.code_editor": "Kodredigerare",
+
+  "entity.robotics.clockcopter": "Urverksdrönare",
+  "entity.robotics.code_drone": "Juan",
+  "entity.robotics.miner": "Grävare",
+  "entity.robotics.extend_o_boots": "Extend-O-Boots",
+
+  "item.robotics.extend_o_boots.tooltip": "EXTEND-O-BOOTS",
+  "item.robotics.extend_o_boots.tooltip.summary": "Your _equipable Scaffolding_! Allows you to create an _extendable temporary scaffolding_ under you.",
+  "item.robotics.extend_o_boots.tooltip.control1": "Hold Ctrl while wearing",
+  "item.robotics.extend_o_boots.tooltip.action1": "Allows you to _activate_ the ExtendOBoots through _scrolling up or down_",
+
+  "item.robotics.program.tooltip": "PROGRAM",
+  "item.robotics.program.tooltip.summary": "Ett _program som innehåller kod_! Gör det möjligt att _programmera robotar_.",
+  "item.robotics.program.tooltip.control1": "Högerklicka på en kodredigerare",
+  "item.robotics.program.tooltip.action1": "Gör det möjligt att _koda om_ ett program",
+  "item.robotics.program.tooltip.control2": "Högerklicka på en programmerbar robot",
+  "item.robotics.program.tooltip.action2": "_Tillämpar_ ett program på _roboten_",
+
+  "block.robotics.code_editor.tooltip": "KODREDIGERARE",
+  "block.robotics.code_editor.tooltip.summary": "Ett block som gör det möjligt att _koda om_ ett program!",
+  "block.robotics.code_editor.tooltip.condition1": "Högerklicka med ett program",
+  "block.robotics.code_editor.tooltip.behaviour1": "Gör det möjligt att koda om programmet",
+
+  "robotics.ponder.programming.header": "Att programmera",
+  "robotics.ponder.programming.text_1": "För att ändra koden i ett program behövs en kodredigerare",
+  "robotics.ponder.programming.text_2": "Högerklicka på en kodredigerare med ett program för att komma igång",
+  "robotics.ponder.programming.text_3": "När du är klar med kodningen kan du högerklicka på en programmerbar robot för att programmera den",
+}
