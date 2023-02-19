@@ -27,22 +27,22 @@
   "item.robotics.extend_o_boots.tooltip": "EXTEND-O-BOOTS",
   "item.robotics.extend_o_boots.tooltip.summary": "Votre _échafaudage portable_! Vous permet de créer un _échafaudage extensible temporaire_ en dessous de vous.",
   "item.robotics.extend_o_boots.tooltip.control1": "Maintenez la touche Ctrl enfoncée pendant l'utilisation",
-  "item.robotics.extend_o_boots.tooltip.action1": "Vous permet _d'activer_ les ExtendOBoots en _défilant vers le haut ou le bas_",
+  "item.robotics.extend_o_boots.tooltip.action1": "Vous permet _d'activer_ les ExtendOBoots en _défilant vers le haut ou le bas_.",
 
   "item.robotics.program.tooltip": "PROGRAMME",
   "item.robotics.program.tooltip.summary": "Un _programme contenant du code_! Vous permet de _programmer des robots_.",
-  "item.robotics.program.tooltip.control1": "Clic droit sur un  Éditeur de Code",
-  "item.robotics.program.tooltip.action1": "Vous permet d'_éditer_ le  _contenu_ d'un progamme",
+  "item.robotics.program.tooltip.control1": "Clic droit sur un Éditeur de Code",
+  "item.robotics.program.tooltip.action1": "Vous permet d'_éditer_ le _contenu_ d'un programme",
   "item.robotics.program.tooltip.control2": "Clic droit sur un robot programmable",
   "item.robotics.program.tooltip.action2": "Vous permet d'_appliquer_ le _code_ du programme au _robot_",
 
   "block.robotics.code_editor.tooltip": "ÉDITEUR DE CODE",
   "block.robotics.code_editor.tooltip.summary": "Un bloc qui vous permet d'_éditer_ le _contenu_ d'un programme!",
-  "block.robotics.code_editor.tooltip.condition1": "Clic droit avec un Programme",
+  "block.robotics.code_editor.tooltip.condition1": "Lorsque vous faites un clic droit avec un Programme",
   "block.robotics.code_editor.tooltip.behaviour1": "Vous permet d'_éditer_ le _programme_",
 
   "robotics.ponder.programming.header": "Programmation avec un Éditeur de Code.",
   "robotics.ponder.programming.text_1": "Pour modifier le contenu d'un programme, il faut un éditeur de code.",
-  "robotics.ponder.programming.text_2": "Faites un lic droit sur l'éditeur de code avec le programme pour démarrer!",
+  "robotics.ponder.programming.text_2": "Faites un clic droit sur l'éditeur de code avec le programme pour démarrer!",
   "robotics.ponder.programming.text_3": "Lorsque vous avez terminé de coder, faites un clic droit avec votre programme sur un robot programmable pour lui appliquer votre code."
 }
