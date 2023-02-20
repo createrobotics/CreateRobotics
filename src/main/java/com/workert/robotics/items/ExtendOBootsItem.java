@@ -60,10 +60,7 @@ public class ExtendOBootsItem extends ArmorItem {
 			ExtendOBoots extendOBoots = this.ENTITIES.get(stack);
 			if (extendOBoots == null || extendOBoots.isRemoved()) {
 				extendOBoots = new ExtendOBoots(EntityList.EXTEND_O_BOOTS.get(), this.player.getLevel());
-
 				extendOBoots.setPos(this.player.position());
-
-				extendOBoots.setYRot(this.player.getYRot());
 				this.player.getLevel().addFreshEntity(extendOBoots);
 				this.ENTITIES.put(stack, extendOBoots);
 			}
@@ -73,7 +70,7 @@ public class ExtendOBootsItem extends ArmorItem {
 			if (this.player.position().distanceTo(extendOBoots.position()
 					.with(Direction.Axis.Y, extendOBoots.getY() + this.HEIGHT.get(stack).getValue())) >
 					0.1) stack.getOrCreateTag().putFloat("currentHeight", 0);
-			extendOBoots.getEntityData().set(ExtendOBoots.HEIGHT, stack.getOrCreateTag().getFloat("currentHeight"));
+			extendOBoots.setHeight(stack.getOrCreateTag().getFloat("currentHeight"));
 		} else if (this.ENTITIES.get(stack) != null) {
 			this.ENTITIES.get(stack).discard();
 			this.ENTITIES.put(stack, null);

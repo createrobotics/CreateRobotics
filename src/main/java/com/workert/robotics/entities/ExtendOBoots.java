@@ -22,7 +22,7 @@ import net.minecraft.world.phys.AABB;
 import java.util.List;
 
 public class ExtendOBoots extends LivingEntity {
-	public static final EntityDataAccessor<Float> HEIGHT = SynchedEntityData.defineId(ExtendOBoots.class,
+	private static final EntityDataAccessor<Float> HEIGHT = SynchedEntityData.defineId(ExtendOBoots.class,
 			EntityDataSerializers.FLOAT);
 
 	public ExtendOBoots(EntityType<?> pEntityType, Level pLevel) {
@@ -37,7 +37,7 @@ public class ExtendOBoots extends LivingEntity {
 			this.discard();
 		else {
 			if (nearestPlayer.position()
-					.distanceTo(this.position().with(Direction.Axis.Y, nearestPlayer.position().y)) > 2)
+					.distanceTo(this.position().with(Direction.Axis.Y, nearestPlayer.position().y)) > 1)
 				this.discard();
 		}
 	}
@@ -45,7 +45,15 @@ public class ExtendOBoots extends LivingEntity {
 	@Override
 	protected void defineSynchedData() {
 		super.defineSynchedData();
-		this.entityData.define(HEIGHT, 0f);
+		this.entityData.define(HEIGHT, 0.5f);
+	}
+
+	public float getHeight() {
+		return this.entityData.get(HEIGHT);
+	}
+
+	public void setHeight(float height) {
+		this.entityData.set(HEIGHT, height);
 	}
 
 	@Override

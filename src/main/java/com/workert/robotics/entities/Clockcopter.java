@@ -2,13 +2,8 @@ package com.workert.robotics.entities;
 
 import com.workert.robotics.entities.goals.MineBlockAndDropGoal;
 import com.workert.robotics.lists.ItemList;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.control.FlyingMoveControl;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
@@ -19,10 +14,6 @@ import net.minecraftforge.common.Tags;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class Clockcopter extends AbstractRobotEntity implements FlyingAnimal {
-	private final SimpleContainer inventory = new SimpleContainer(13);
-
-	public static final EntityDataAccessor<Boolean> IS_FLYING = SynchedEntityData.defineId(Clockcopter.class,
-			EntityDataSerializers.BOOLEAN);
 
 	public Clockcopter(EntityType<? extends AbstractRobotEntity> entity, Level world) {
 		super(entity, world);
@@ -32,12 +23,6 @@ public class Clockcopter extends AbstractRobotEntity implements FlyingAnimal {
 	@Override
 	public boolean isFlying() {
 		return !this.isOnGround();
-	}
-
-	@Override
-	protected void defineSynchedData() {
-		super.defineSynchedData();
-		this.entityData.define(IS_FLYING, false);
 	}
 
 	@Override
@@ -55,12 +40,6 @@ public class Clockcopter extends AbstractRobotEntity implements FlyingAnimal {
 		flyingpathnavigation.setCanFloat(true);
 		flyingpathnavigation.setCanPassDoors(false);
 		return flyingpathnavigation;
-	}
-
-	@Override
-	public void calculateEntityAnimation(LivingEntity p_21044_, boolean p_21045_) {
-		super.calculateEntityAnimation(p_21044_, p_21045_);
-		this.entityData.set(IS_FLYING, this.isFlying());
 	}
 
 	@Override

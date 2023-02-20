@@ -15,8 +15,8 @@ public class ClockcopterModel<T extends Clockcopter> extends EntityModel<T> {
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(
 			new ResourceLocation(Robotics.MOD_ID, "clockcopter"), "clockcopter");
 
-	private final float gearTurnSpeed = 0.3f;
-	private final float propellerTurnSpeed = 0.3f;
+	private static final float gearTurnSpeed = 0.3f;
+	private static final float propellerTurnSpeed = 0.3f;
 
 	private final ModelPart body;
 	private final ModelPart gear0;
@@ -214,9 +214,11 @@ public class ClockcopterModel<T extends Clockcopter> extends EntityModel<T> {
 	@Override
 	public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw,
 						  float headPitch) {
-		this.gear0.xRot += this.gearTurnSpeed;
-		this.gear1.xRot -= this.gearTurnSpeed;
-		if (entity.getEntityData().get(Clockcopter.IS_FLYING)) this.propeller.yRot += this.propellerTurnSpeed;
+		this.gear0.xRot += gearTurnSpeed;
+		this.gear1.xRot -= gearTurnSpeed;
+		if (entity.isFlying()) {
+			this.propeller.yRot += propellerTurnSpeed;
+		}
 	}
 
 	@Override

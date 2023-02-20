@@ -18,14 +18,13 @@ public class ExtendOBootsRenderer extends LivingEntityRenderer<ExtendOBoots, Ext
 	@Override
 	public void render(ExtendOBoots pEntity, float pEntityYaw, float pPartialTicks, PoseStack pPoseStack,
 					   MultiBufferSource pBuffer, int pPackedLight) {
-
 		super.render(pEntity, pEntityYaw, pPartialTicks, pPoseStack, pBuffer, pPackedLight);
 	}
 
 	@Override
 	public ResourceLocation getTextureLocation(ExtendOBoots pEntity) {
 		return new ResourceLocation(Robotics.MOD_ID,
-				"textures/entity/extend_o_boots/" + pEntity.getEntityData().get(ExtendOBoots.HEIGHT) + ".png");
+				"textures/entity/extend_o_boots.png");// "textures/entity/extend_o_boots/" + pEntity.getHeight() + ".png");
 	}
 
 	@Override
