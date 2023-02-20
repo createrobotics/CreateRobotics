@@ -35,7 +35,7 @@ public class EntityList {
 					.add(Attributes.FLYING_SPEED, 0.8F)).renderer(() -> CodeDroneRenderer::new).register();
 
 	public static final EntityEntry<ExtendOBoots> EXTEND_O_BOOTS = Robotics.REGISTRATE.entity("extend_o_boots",
-					ExtendOBoots::new, MobCategory.MISC).properties(properties -> properties.sized(0.2f, 0.2f)).attributes(
+					ExtendOBoots::new, MobCategory.MISC).properties(properties -> properties.sized(1f, 0f)).attributes(
 					() -> Mob.createMobAttributes().add(Attributes.MOVEMENT_SPEED, 0F).add(Attributes.MAX_HEALTH, 1.0D))
 			.renderer(() -> ExtendOBootsRenderer::new).register();
 

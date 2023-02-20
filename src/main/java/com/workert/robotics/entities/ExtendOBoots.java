@@ -37,7 +37,7 @@ public class ExtendOBoots extends LivingEntity {
 			this.discard();
 		else {
 			if (nearestPlayer.position()
-					.distanceTo(this.position().with(Direction.Axis.Y, nearestPlayer.position().y)) > 1)
+					.distanceTo(this.position().with(Direction.Axis.Y, nearestPlayer.position().y)) > 0.2)
 				this.discard();
 		}
 	}
