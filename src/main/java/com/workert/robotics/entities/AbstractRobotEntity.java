@@ -6,8 +6,11 @@ import com.simibubi.create.content.logistics.RedstoneLinkNetworkHandler;
 import com.simibubi.create.foundation.utility.Couple;
 import com.workert.robotics.helpers.CodeHelper;
 import com.workert.robotics.lists.ItemList;
+import net.minecraft.commands.CommandSource;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.*;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -22,9 +25,12 @@ import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.WrittenBookItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec2;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -131,6 +137,23 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 				.is(ItemList.PROGRAM.get()) && !pPlayer.isCrouching()) {
 			if (!this.level.isClientSide)
 				this.code = pPlayer.getItemInHand(pHand).getOrCreateTag().getString("code");
+			return InteractionResult.SUCCESS;
+		} else if (this.isProgrammable() && (pPlayer.getItemInHand(pHand)
+				.is(Items.WRITTEN_BOOK) || pPlayer.getItemInHand(pHand)
+				.is(Items.WRITABLE_BOOK)) && !pPlayer.isCrouching()) {
+			if (this.level.isClientSide)
+				return InteractionResult.SUCCESS;
+			WrittenBookItem.resolveBookComponents(pPlayer.getItemInHand(pHand),
+					new CommandSourceStack(
+							CommandSource.NULL, pPlayer.position(), Vec2.ZERO, (ServerLevel) this.level, 2,
+							pPlayer.getName().getString(), pPlayer.getDisplayName(), this.level.getServer(), pPlayer),
+					pPlayer);
+			CompoundTag compoundtag = pPlayer.getItemInHand(pHand).getOrCreateTag();
+			this.code = "";
+			compoundtag.getList("pages", 8).forEach(page -> {
+				this.code = this.code.concat(page.getAsString());
+			});
+			this.code = this.code.replace("{\"text\":\"", "").replace("\"}", "\n").replace("\\n", "\n").trim();
 			return InteractionResult.SUCCESS;
 		} else if (this.hasInventory() && !pPlayer.isCrouching()) {
 			pPlayer.openMenu(new SimpleMenuProvider(

@@ -293,6 +293,11 @@ public class CodeHelper {
 			Robotics.LOGGER.debug("Command: \"" + command + "\"");
 
 			if (command.matches("^if\\s*\\(.*")) { // Matches "if (" with zero or more spaces between "if" and "("
+				Pattern pattern = Pattern.compile("\\)\\s*\\{"); // Matches ") {" with zero or more spaces
+				Matcher matcher = pattern.matcher(command);
+				String condition = command.substring(command.indexOf("("), matcher.start());
+				System.out.println(condition);
+
 				String codeInsideCurlyBraces = getTextInsideCurlyBraces(
 						code.substring(charPos + command.indexOf("{") + 1));
 				runFormattedCodeSnippet(robot, codeInsideCurlyBraces);
