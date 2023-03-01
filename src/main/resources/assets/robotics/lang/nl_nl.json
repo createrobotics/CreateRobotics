@@ -3,23 +3,46 @@
 
   "item.robotics.tin_ingot": "Tinstaaf",
   "item.robotics.tin_nugget": "Tinklompje",
-  "item.robotics.raw_tin": "Rauwe tin",
+  "item.robotics.raw_tin": "Ruwe tin",
   "item.robotics.bronze_ingot": "Bronsstaaf",
   "item.robotics.bronze_nugget": "Bronsklompje",
   "item.robotics.program": "Programma",
   "item.robotics.clockcopter": "Clockcopter",
   "item.robotics.miner": "Mijner",
   "item.robotics.code_drone": "Code Drone",
-  "item.robotics.extend_o_boots": "Uitklapbare Schoenen",
+  "item.robotics.extend_o_boots": "Extend-O-Boots",
 
-  "block.robotics.tin_ore": "Tin erts",
-  "block.robotics.deepslate_tin_ore": "Wrevelsteen tin erts",
-  "block.robotics.tin_block": "Tin blok",
-  "block.robotics.bronze_block": "Bronzen blok",
+  "block.robotics.tin_ore": "Tinerts",
+  "block.robotics.deepslate_tin_ore": "Wervelsteentinerts",
+  "block.robotics.tin_block": "Tinblok",
+  "block.robotics.bronze_block": "Bronzenblok",
   "block.robotics.smasher_block": "Beuker",
-  "block.robotics.code_editor": "Code wijziger",
+  "block.robotics.code_editor": "Code Bewerker",
 
-  "description.robotics.extend_o_boots": "Ctrl + Scroll om te activeren!",
+  "entity.robotics.clockcopter": "Clockcopter",
+  "entity.robotics.code_drone": "Juan",
+  "entity.robotics.miner": "Mijner",
+  "entity.robotics.extend_o_boots": "Uitschuifbare laarzen",
 
-  "item.robotics.code_drone.tooltip": "Test tooltip"
+  "item.robotics.extend_o_boots.tooltip": "EXTEND-O-BOOTS",
+  "item.robotics.extend_o_boots.tooltip.summary": "Jouw _draagbare Stijger_! Maakt het mogelijk om tijdelijke stijgers te maken onder je voeten.",
+  "item.robotics.extend_o_boots.tooltip.control1": "Houd Ctrl ingedrukt om te gebruiken!",
+  "item.robotics.extend_o_boots.tooltip.action1": "Maakt het mogelijk om de Extend-O-Boots te _activeren_ door _omhoog of omlaag te scrollen._",
+
+  "item.robotics.program.tooltip": "PROGRAMMA",
+  "item.robotics.program.tooltip.summary": "Een _programma met code_! Maakt het mogelijk om _robots te programmeren_.",
+  "item.robotics.program.tooltip.control1": "Rechtermuisklik op een Code Bewerker",
+  "item.robotics.program.tooltip.action1": "Maakt het mogelijk om de _inhoud_ van een programma te _bewerken_.",
+  "item.robotics.program.tooltip.control2": "Rechtermuisklik op een robot",
+  "item.robotics.program.tooltip.action2": "Maakt het mogelijk om de _code_ van een programma _toe te passen_ op de _robot_.",
+
+  "block.robotics.code_editor.tooltip": "CODE BEWERKER",
+  "block.robotics.code_editor.tooltip.summary": "Een blok waarmee je de _inhoud_ van een programma kunt _bewerken_!",
+  "block.robotics.code_editor.tooltip.condition1": "Rechtermuisklik met een programma",
+  "block.robotics.code_editor.tooltip.behaviour1": "Maakt het mogelijk om de _inhoud_ van het _programma_ te bewerken",
+
+  "robotics.ponder.programming.header": "Programmeren met een Code Bewerker.",
+  "robotics.ponder.programming.text_1": "Om de inhoud van een programma te bewerken, heb je een code bewerker nodig.",
+  "robotics.ponder.programming.text_2": "Rechtermuisklik op de code bewerker met een programma om te beginnen!",
+  "robotics.ponder.programming.text_3": "Wanneer je klaar bent met programmeren, rechtermuisklik met het programma op een programmeerbare robot om de code toe te passen op de robot."
 }
