@@ -16,8 +16,8 @@
   "block.robotics.deepslate_tin_ore": "Mineral de estaño de pizarra profunda",
   "block.robotics.tin_block": "Bloque de estaño",
   "block.robotics.bronze_block": "Bloque de bronce",
-  "block.robotics.smasher_block": "Smasher",
-  "block.robotics.code_editor": "Editor de codigo",
+  "block.robotics.smasher_block": "Aplastador",
+  "block.robotics.code_editor": "Editor de código",
 
   "entity.robotics.clockcopter": "Clockcopter",
   "entity.robotics.code_drone": "Juan",
@@ -31,17 +31,17 @@
 
   "item.robotics.program.tooltip": "PROGRAMA",
   "item.robotics.program.tooltip.summary": "¡Un_programa que contiene código_! Le permite _programar robots_.",
-  "item.robotics.program.tooltip.control1": "Click derecho en el editor de codigo",
+  "item.robotics.program.tooltip.control1": "Click derecho en el editor de código",
   "item.robotics.program.tooltip.action1": "Le permite _editar_ el _contenido_ del programa",
   "item.robotics.program.tooltip.control2": "Click derecho en el robot programable",
   "item.robotics.program.tooltip.action2": "Le permite _aplicar_ el _código_ del programa al _robot_",
 
-  "block.robotics.code_editor.tooltip": "EDITOR DE CODIGO",
+  "block.robotics.code_editor.tooltip": "EDITOR DE CÓDIGO",
   "block.robotics.code_editor.tooltip.summary": "¡Un bloque que te permite _editar_ el _contenido_ de un programa!",
   "block.robotics.code_editor.tooltip.condition1": "Cuando se hace clic derecho con el programa",
   "block.robotics.code_editor.tooltip.behaviour1": "Le permite _editar_ el _programa_",
 
-  "robotics.ponder.programming.header": "Programar usando un editor de codigo.",
+  "robotics.ponder.programming.header": "Programar usando un editor de código.",
   "robotics.ponder.programming.text_1": "Para cambiar el contenido de un programa, necesita un editor de código.",
   "robotics.ponder.programming.text_2": "¡Haz clic derecho en el editor de código con el programa para comenzar!",
   "robotics.ponder.programming.text_3": "Cuando haya terminado de codificar, haga clic derecho con el programa en un robot programable para aplicarle su código."
