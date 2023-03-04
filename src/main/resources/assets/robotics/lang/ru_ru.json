@@ -26,7 +26,7 @@
   
   "item.robotics.extend_o_boots.tooltip": "Удлинённые ботинки",
   "item.robotics.extend_o_boots.tooltip.summary": "Ваши _надеваемые Подмостки_! Позволяет вам создавать _удлинённые временные Подмостки_ под вами.",
-  "item.robotics.extend_o_boots.tooltip.control1": "Удерживайте Ctrl когда надето",
+  "item.robotics.extend_o_boots.tooltip.control1": "Удерживайте Ctrl когда обуто",
   "item.robotics.extend_o_boots.tooltip.action1": "Позволяет вам _активировать_ Удлинённые ботинки с помощью _прокрутки колесика мыши_",
 
   "item.robotics.program.tooltip": "Программа",
@@ -44,5 +44,5 @@
   "robotics.ponder.programming.header": "Программирование с помощью Редактора кода.",
   "robotics.ponder.programming.text_1": "Чтобы изменить содержимое Программы вам нужен Редактор кода.",
   "robotics.ponder.programming.text_2": "ПКМ Программой по Редактору кода чтобы начать!",
-  "robotics.ponder.programming.text_3": "Когда вы закончили программировать нажмите ПКМ Программой по Программируемому роботу чтобы применить е нему программу."
+  "robotics.ponder.programming.text_3": "Когда вы закончили программировать нажмите ПКМ Программой по Программируемому роботу чтобы применить к нему программу."
 }
