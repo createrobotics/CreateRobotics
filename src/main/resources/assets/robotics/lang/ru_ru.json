@@ -18,8 +18,31 @@
   "block.robotics.bronze_block": "Бронзовый блок",
   "block.robotics.smasher_block": "Сокрушитель",
   "block.robotics.code_editor": "Редактор кода",
+  
+  "entity.robotics.clockcopter": "Clockcopter",
+  "entity.robotics.code_drone": "Juan",
+  "entity.robotics.miner": "Miner",
+  "entity.robotics.extend_o_boots": "Extend-O-Boots",
+  
+  "item.robotics.extend_o_boots.tooltip": "Удлинённые ботинки",
+  "item.robotics.extend_o_boots.tooltip.summary": "Ваши _надеваемые Подмостки_! Позволяет вам создавать _удлинённые временные Подмостки_ под вами.",
+  "item.robotics.extend_o_boots.tooltip.control1": "Удерживайте Ctrl когда надето",
+  "item.robotics.extend_o_boots.tooltip.action1": "Позволяет вам _активировать_ Удлинённые ботинки с помощью _прокрутки колесика мыши_",
 
-  "description.robotics.extend_o_boots": "Ctrl + Прокрутка для активации",
+  "item.robotics.program.tooltip": "Программа",
+  "item.robotics.program.tooltip.summary": "_Программа хранит код_! Позволяет вам _программировать роботов_.",
+  "item.robotics.program.tooltip.control1": "ПКМ по Редактору кода",
+  "item.robotics.program.tooltip.action1": "Позволяет вам _изменять содержимое_ программы!",
+  "item.robotics.program.tooltip.control2": "ПКМ по Программируемому роботу",
+  "item.robotics.program.tooltip.action2": "Позволяет вам _применить код_ программы к _роботу_",
 
-  "item.robotics.code_drone.tooltip": "Test tooltip"
+  "block.robotics.code_editor.tooltip": "Редактор кода",
+  "block.robotics.code_editor.tooltip.summary": "Блок позволяющий _изменять содержимое_ программы!",
+  "block.robotics.code_editor.tooltip.condition1": "ПКМ Программой",
+  "block.robotics.code_editor.tooltip.behaviour1": "Позволяет вам _изменят_ программу!",
+
+  "robotics.ponder.programming.header": "Программирование с помощью Редактора кода.",
+  "robotics.ponder.programming.text_1": "Чтобы изменить содержимое Программы вам нужен Редактор кода.",
+  "robotics.ponder.programming.text_2": "ПКМ Программой по Редактору кода чтобы начать!",
+  "robotics.ponder.programming.text_3": "Когда вы закончили программировать нажмите ПКМ Программой по Программируемому роботу чтобы применить е нему программу."
 }
