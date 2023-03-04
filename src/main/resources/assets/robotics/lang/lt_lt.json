@@ -1,0 +1,49 @@
+{
+
+  "itemGroup.robotics": "Create Robotika",
+
+  "item.robotics.tin_ingot": "Alavo liejinys",
+  "item.robotics.tin_nugget": "Alavo gabaliukas",
+  "item.robotics.raw_tin": "Neapdirbtas Alavas",
+  "item.robotics.bronze_ingot": "Bronzos liejinys",
+  "item.robotics.bronze_nugget": "Bronzos gabaliukas",
+  "item.robotics.program": "Programa",
+  "item.robotics.clockcopter": "Clockcopter",
+  "item.robotics.miner": "Kasėjas",
+  "item.robotics.code_drone": "Koduoti Droną",
+  "item.robotics.extend_o_boots": "Extend-O-Boots",
+
+  "block.robotics.tin_ore": "Alavo rūda",
+  "block.robotics.deepslate_tin_ore": "Gilakmenio alavo rūda",
+  "block.robotics.tin_block": "Alavo blokas",
+  "block.robotics.bronze_block": "Bronzos blokas",
+  "block.robotics.smasher_block": "Smogikas",
+  "block.robotics.code_editor": "Kodo redaktorius",
+
+  "entity.robotics.clockcopter": "Clockcopter",
+  "entity.robotics.code_drone": "Juan",
+  "entity.robotics.miner": "Kasėjas",
+  "entity.robotics.extend_o_boots": "Extend-O-Boots",
+
+  "item.robotics.extend_o_boots.tooltip": "EXTEND-O-BOOTS",
+  "item.robotics.extend_o_boots.tooltip.summary": "Tavo _užsidedamas Pastolis_! Leidžia tau sukurti _išsiplečiantį laikiną pastolį_ po tavimi.",
+  "item.robotics.extend_o_boots.tooltip.control1": "Laikyk Ctrl kol užsidėjęs",
+  "item.robotics.extend_o_boots.tooltip.action1": "Leidžia tau _aktyvuoti_ ExtendOBoots su _scroll ratuku viršun ar žemyn._",
+
+  "item.robotics.program.tooltip": "PROGRAMA",
+  "item.robotics.program.tooltip.summary": " _Programa turi kodą_! Leidžia tau_programuoti robotus_.",
+  "item.robotics.program.tooltip.control1": "R-Paspaudimas ant Kodo Redaktoriaus",
+  "item.robotics.program.tooltip.action1": "Leidžia tau _redaguoti_ programos _turinį_",
+  "item.robotics.program.tooltip.control2": "R-Paspaudimas ant programuojamo roboto",
+  "item.robotics.program.tooltip.action2": "Leidžia tau _pritaikyti_programos _kodą_ _robotui_",
+
+  "block.robotics.code_editor.tooltip": "KODO REDAKTORIUS",
+  "block.robotics.code_editor.tooltip.summary": "Blokas kuris leidžia tau _redaguoti_programos _turinį_!",
+  "block.robotics.code_editor.tooltip.condition1": "Kai R-Paspaudi su Programa",
+  "block.robotics.code_editor.tooltip.behaviour1": "leidžia tau _redaguoti_ _programą_",
+
+  "robotics.ponder.programming.header": "Programuok naudodamasis Kodo redaktoriumi.",
+  "robotics.ponder.programming.text_1": "Kad pakeisti turinį programos you tau reikės kodo redaktoriaus.",
+  "robotics.ponder.programming.text_2": "Dešiniu klavišu paspausk ant kodo redaktoriaus su programa kad pradėtum!",
+  "robotics.ponder.programming.text_3": "Kai baigsi koduoti dešiniu klavišu paspausk su programa ant programuojamo roboto kad pritaikytum jam kodą."
+}

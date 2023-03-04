@@ -1,7 +1,11 @@
 package com.workert.robotics.helpers;
 
+import com.simibubi.create.Create;
 import com.simibubi.create.content.contraptions.components.deployer.DeployerFakePlayer;
 import com.simibubi.create.content.contraptions.components.deployer.DeployerHandler;
+import com.simibubi.create.content.logistics.IRedstoneLinkable;
+import com.simibubi.create.content.logistics.RedstoneLinkNetworkHandler;
+import com.simibubi.create.foundation.utility.Couple;
 import com.workert.robotics.Robotics;
 import com.workert.robotics.entities.AbstractRobotEntity;
 import net.minecraft.ChatFormatting;
@@ -30,6 +34,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CodeHelper {
 	/**
@@ -50,7 +56,7 @@ public class CodeHelper {
 	 * different Thread than the main Minecraft Thread!
 	 *
 	 * @param prefix   the prefix of the command, like <code>goTo</code> for
-	 *                 <code>robot.goTo(x, y, z)</code>. May only contain a-Z
+	 *                 <code>robot.goTo(x, y, z)</code>. May only contain a-Z and should start with a lowercase letter
 	 * @param function a {@link BiConsumer} with two arguments: the Robot Entity and an {@link ArrayList} with all
 	 *                 provided arguments to the command.
 	 */
@@ -64,7 +70,7 @@ public class CodeHelper {
 	 * (<code>Double</code>) please use the {@link CodeHelper#eval} function as the argument may contain variables.
 	 *
 	 * @param name  the name of the variable, like <code>xPos</code> for
-	 *              <code>$xPos</code>. May only contain a-Z
+	 *              <code>$xPos</code>. May only contain a-Z and should start with a lowercase letter
 	 * @param value a {@link Function} with the Robot Entity as argument.<br> Should return a String that will get
 	 *              replaced with the variable.
 	 */
@@ -73,8 +79,10 @@ public class CodeHelper {
 	}
 
 	private static String validateRegistryName(String name) {
-		name = name.replaceAll("[^a-zA-Z]", "").trim();
-		return String.valueOf(name.charAt(0)).toLowerCase() + name.substring(1);
+		if (name.matches(".*[^a-zA-Z].*"))
+			throw new IllegalArgumentException(
+					"RegistryNames may only contain a-Z and should start with a lowercase letter");
+		return String.valueOf(name.trim().charAt(0)).toLowerCase() + name.trim().substring(1);
 	}
 
 	public static void registerDefaultCommands() {
@@ -112,14 +120,16 @@ public class CodeHelper {
 			BlockPos pos = new BlockPos(CodeHelper.eval(arguments.get(0)), CodeHelper.eval(arguments.get(1)),
 					CodeHelper.eval(arguments.get(2)));
 			if (!pos.closerToCenterThan(robot.position(), 5)) return;
+			if (robot.getLevel().getExistingBlockEntity(pos) == null) throw new IllegalArgumentException(
+					"The block at the specified coordinates has no tile entity (is no container)!");
 			robot.getLevel().getExistingBlockEntity(pos).getCapability(ForgeCapabilities.ITEM_HANDLER)
 					.ifPresent(handler -> {
 						for (int slot = 0; slot < handler.getSlots(); slot++) {
 							while (!handler.getStackInSlot(slot)
 									.isEmpty() && (arguments.size() < 4 || CodeHelper.getItemById(arguments.get(3))
-									.equals(handler.getStackInSlot(slot).getItem())
+									.equals(handler.getStackInSlot(slot).getItem()))
 									&& robot.wantsToPickUp(
-									handler.extractItem(slot, 1, true)))) {
+									handler.extractItem(slot, 1, true))) {
 								robot.getInventory().addItem(handler.extractItem(slot, 1, false));
 							}
 						}
@@ -130,6 +140,8 @@ public class CodeHelper {
 			BlockPos pos = new BlockPos(CodeHelper.eval(arguments.get(0)), CodeHelper.eval(arguments.get(1)),
 					CodeHelper.eval(arguments.get(2)));
 			if (!pos.closerToCenterThan(robot.position(), 5)) return;
+			if (robot.getLevel().getExistingBlockEntity(pos) == null) throw new IllegalArgumentException(
+					"The block at the specified coordinates has no tile entity (is no container)!");
 			robot.getLevel().getExistingBlockEntity(pos).getCapability(ForgeCapabilities.ITEM_HANDLER)
 					.ifPresent(handler -> {
 						Item itemToPush = Items.AIR;
@@ -204,74 +216,170 @@ public class CodeHelper {
 				throw new RuntimeException(e);
 			}
 		});
+		CodeHelper.registerCommand("waitForRedstoneLink", (robot, arguments) -> {
+			if (arguments.size() < 1)
+				throw new IllegalArgumentException(
+						"Expected one or more arguments for command \"waitForRedstoneLink\"");
+
+
+			RedstoneLinkNetworkHandler.Frequency secondFrequency = RedstoneLinkNetworkHandler.Frequency.EMPTY;
+			if (arguments.size() > 1)
+				secondFrequency = RedstoneLinkNetworkHandler.Frequency.of(
+						CodeHelper.getItemById(arguments.get(1)).getDefaultInstance());
+
+			while (!Create.REDSTONE_LINK_NETWORK_HANDLER.hasAnyLoadedPower(
+					Couple.create(RedstoneLinkNetworkHandler.Frequency.of(
+							CodeHelper.getItemById(arguments.get(0)).getDefaultInstance()), secondFrequency))) {
+				try {
+					Thread.sleep(200);
+				} catch (InterruptedException e) {
+					throw new RuntimeException(e);
+
+				}
+			}
+		});
+		CodeHelper.registerCommand("setRedstoneLink", (robot, arguments) -> {
+			if (arguments.size() < 1)
+				throw new IllegalArgumentException(
+						"Expected one or more arguments for command \"setRedstoneLink\"");
+
+			RedstoneLinkNetworkHandler.Frequency secondFrequency = RedstoneLinkNetworkHandler.Frequency.EMPTY;
+			int signalStrength = 0;
+			if (arguments.size() > 1) {
+				try {
+					signalStrength = (int) CodeHelper.eval(arguments.get(1));
+				} catch (RuntimeException e) {
+					secondFrequency = RedstoneLinkNetworkHandler.Frequency.of(
+							CodeHelper.getItemById(arguments.get(1)).getDefaultInstance());
+					if (arguments.size() > 2)
+						signalStrength = (int) CodeHelper.eval(arguments.get(1));
+				}
+			}
+
+			RobotFrequencyEntry entry = robot.getRobotFrequencyEntry();
+			entry.frequency = Couple.create(RedstoneLinkNetworkHandler.Frequency.of(
+					CodeHelper.getItemById(arguments.get(0)).getDefaultInstance()), secondFrequency);
+			entry.signalStrength = signalStrength;
+
+			System.out.println(entry);
+			System.out.println(Create.REDSTONE_LINK_NETWORK_HANDLER.networksIn(robot.getLevel()).containsKey(entry));
+			Create.REDSTONE_LINK_NETWORK_HANDLER.addToNetwork(robot.getLevel(), entry);
+
+		});
 	}
 
 	public static void runCode(AbstractRobotEntity robot, String code) {
-		final String[] commandLine = new String[1];
 		if (code == null || code.isBlank()) return;
 
 		code = code.replace("\n", "").replace("\r", "");
-		code = code.replaceAll("/\\*.*?\\*/", "");
+		code = code.replaceAll("/\\*.*?\\*/", ""); // Comments in /* */
 
 		Robotics.LOGGER.debug("Starting to run code!");
 		Robotics.LOGGER.debug("Full code: \"" + code + "\"");
-		for (String command : code.split(";")) {
-			commandLine[0] = command;
 
-			if (commandLine[0].startsWith("//")) return;
+		runFormattedCodeSnippet(robot, code);
+	}
 
-			Robotics.LOGGER.debug("Running line:\"" + commandLine[0] + "\"");
+	private static void runFormattedCodeSnippet(AbstractRobotEntity robot, String code) {
+		Robotics.LOGGER.debug("Running: " + code);
 
-			if (commandLine[0] == null || commandLine[0].isBlank()) return;
-			commandLine[0] = commandLine[0].trim();
+		int charPos = 0;
+		while (charPos < code.length()) {
+			int nextSemicolon = code.indexOf(";", charPos);
+			if (nextSemicolon == -1)
+				nextSemicolon = code.length();
 
+			String command = code.substring(charPos, nextSemicolon).trim();
+			Robotics.LOGGER.debug("Command: \"" + command + "\"");
 
-			CodeHelper.internalVariableLookupMap.forEach((name, value) -> {
-				commandLine[0] = commandLine[0].replace("${" + name + "}", value.apply(robot));
-				Robotics.LOGGER.debug(
-						"Trying to replace public variable \"${" + name + "}\" with \"" + value.apply(robot) + "\"");
-			});
+			if (command.matches("^if\\s*\\(.*")) { // Matches "if (" with zero or more spaces between "if" and "("
+				Pattern pattern = Pattern.compile("\\)\\s*\\{"); // Matches ") {" with zero or more spaces
+				Matcher matcher = pattern.matcher(command);
+				String condition = command.substring(command.indexOf("("), matcher.start());
+				System.out.println(condition);
 
-			robot.privateVariableLookupMap.forEach((name, value) -> {
-				commandLine[0] = commandLine[0].replace("${" + name + "}", value.apply(robot));
-				Robotics.LOGGER.debug(
-						"Trying to replace private variable \"${" + name + "}\" with \"" + value.apply(robot) + "\"");
-			});
-
-			CodeHelper.publicVariableLookupMap.forEach((name, value) -> {
-				commandLine[0] = commandLine[0].replace("${" + name + "}", value.apply(robot));
-				Robotics.LOGGER.debug(
-						"Trying to replace public variable \"${" + name + "}\" with \"" + value.apply(robot) + "\"");
-			});
-
-			Robotics.LOGGER.debug("Reduced to:\"" + commandLine[0] + "\"");
-
-			if (commandLine[0].startsWith("robot.")) {
-				CodeHelper.commandMap.forEach((prefix, function) -> {
-					if (commandLine[0].startsWith("robot." + prefix)) try {
-						function.accept(robot, Arrays.asList(commandLine[0].substring(commandLine[0].indexOf("(") + 1,
-								commandLine[0].lastIndexOf(")")).split(",")));
-					} catch (Exception exception) {
-						CodeHelper.broadcastErrorToNearbyPlayers(robot,
-								"\"" + commandLine[0] + "\" encountered an error. Detail message:\n" + exception.getLocalizedMessage() + "\nPlease look at the logs to learn more.");
-						exception.printStackTrace();
+				String codeInsideCurlyBraces = getTextInsideCurlyBraces(
+						code.substring(charPos + command.indexOf("{") + 1));
+				runFormattedCodeSnippet(robot, codeInsideCurlyBraces);
+				nextSemicolon = charPos + command.indexOf("{") + codeInsideCurlyBraces.length() + 1;
+			} else if (command.startsWith("public ") || command.startsWith("private ")) {
+				Pattern pattern = Pattern.compile(
+						"^(?:public|private)\\s+(\\S+)\\s*=\\s*(\\S+)\n"); // Matches "public TEXT1 = TEXT2" or "private  TEXT1=TEXT2" and outputs TEXT1 and TEXT2 as group
+				Matcher matcher = pattern.matcher(command);
+				if (matcher.matches()) {
+					if (command.startsWith("public ")) {
+						publicVariableLookupMap.put(CodeHelper.validateRegistryName(matcher.group(1)),
+								robotFromFunction -> matcher.group(2));
+					} else if (command.startsWith("private ")) {
+						robot.privateVariableLookupMap.put(CodeHelper.validateRegistryName(matcher.group(1)),
+								robotFromFunction -> matcher.group(2));
 					}
-				});
-			} else if (commandLine[0].contains("=")) {
-				if (commandLine[0].startsWith("public ")) {
-					String[] list = commandLine[0].substring(7).split("=");
-					CodeHelper.internalVariableLookupMap.put(CodeHelper.validateRegistryName(list[0].trim()),
-							robotFromFunction -> list[1].trim());
-				} else if (commandLine[0].startsWith("private ")) {
-					String[] list = commandLine[0].substring(8).split("=");
-					robot.privateVariableLookupMap.put(CodeHelper.validateRegistryName(list[0].trim()),
-							robotFromFunction -> list[1].trim());
 				} else {
-					CodeHelper.broadcastErrorToNearbyPlayers(robot,
-							"The Variable Declaration expected a \"public\" or \"private\" declaration in front, got \"" + commandLine[0] + "\"");
+					runCommand(robot, command);
 				}
 			}
+
+			charPos = nextSemicolon + 1;
 		}
+
+		Robotics.LOGGER.debug("Finished running: " + code);
+	}
+
+	private static String getTextInsideCurlyBraces(String input) {
+		int openedCurlyBraces = 0;
+		int closeCurlyBraceSearchIndex = 0;
+		int closeCurlyBracePos = -1;
+
+		while (closeCurlyBracePos == -1) {
+			switch (input.charAt(closeCurlyBraceSearchIndex)) {
+				case '{' -> openedCurlyBraces++;
+				case '}' -> {
+					if (openedCurlyBraces == 0)
+						closeCurlyBracePos = closeCurlyBraceSearchIndex;
+					else
+						openedCurlyBraces++;
+				}
+			}
+			closeCurlyBraceSearchIndex++;
+		}
+
+		return input.substring(0, closeCurlyBraceSearchIndex - 1);
+	}
+
+	private static void runCommand(AbstractRobotEntity robot, String command) {
+		if (command.isEmpty())
+			return;
+
+		final String[] commandToRun = {command};
+
+		CodeHelper.internalVariableLookupMap.forEach((name, value) -> {
+			commandToRun[0] = commandToRun[0].replace("${" + name + "}", value.apply(robot));
+			Robotics.LOGGER.debug(
+					"Trying to replace public variable \"${" + name + "}\" with \"" + value.apply(robot) + "\"");
+		});
+
+		robot.privateVariableLookupMap.forEach((name, value) -> {
+			commandToRun[0] = commandToRun[0].replace("${" + name + "}", value.apply(robot));
+			Robotics.LOGGER.debug(
+					"Trying to replace private variable \"${" + name + "}\" with \"" + value.apply(robot) + "\"");
+		});
+
+		CodeHelper.publicVariableLookupMap.forEach((name, value) -> {
+			commandToRun[0] = commandToRun[0].replace("${" + name + "}", value.apply(robot));
+			Robotics.LOGGER.debug(
+					"Trying to replace public variable \"${" + name + "}\" with \"" + value.apply(robot) + "\"");
+		});
+
+		CodeHelper.commandMap.forEach((prefix, function) -> {
+			if (commandToRun[0].matches("^robot\\." + prefix + "\\s*\\(.*")) try {
+				function.accept(robot,
+						Arrays.asList(commandToRun[0].substring(commandToRun[0].indexOf("(") + 1).split(",")));
+			} catch (Exception exception) {
+				CodeHelper.broadcastErrorToNearbyPlayers(robot,
+						"Command \"" + commandToRun[0] + "\" encountered an error. Detail message:\n" + exception.getLocalizedMessage());
+				exception.printStackTrace();
+			}
+		});
 	}
 
 	public static Item getItemById(String id) {
@@ -338,10 +446,9 @@ public class CodeHelper {
 		int messageDistance = 256;
 		for (Player player : robot.getLevel().getEntitiesOfClass(Player.class,
 				new AABB(robot.blockPosition().offset(-messageDistance, -messageDistance, -messageDistance),
-						robot.blockPosition().offset(messageDistance, messageDistance, messageDistance)))) {
+						robot.blockPosition().offset(messageDistance, messageDistance, messageDistance))))
 			player.displayClientMessage(Component.literal("<!> ").withStyle(ChatFormatting.YELLOW)
 					.append(Component.literal(message).withStyle(Style.EMPTY)), false);
-		}
 	}
 
 	public static double eval(final String str) {
@@ -423,5 +530,47 @@ public class CodeHelper {
 				return x;
 			}
 		}.parse();
+	}
+
+	public static class RobotFrequencyEntry implements IRedstoneLinkable {
+		private final AbstractRobotEntity robot;
+		private Couple<RedstoneLinkNetworkHandler.Frequency> frequency;
+		private int signalStrength;
+
+		public RobotFrequencyEntry(AbstractRobotEntity robot, Couple<RedstoneLinkNetworkHandler.Frequency> frequency, int signalStrength) {
+			this.robot = robot;
+			this.frequency = frequency;
+			this.signalStrength = signalStrength;
+		}
+
+		@Override
+		public int getTransmittedStrength() {
+			return this.signalStrength;
+		}
+
+		@Override
+		public void setReceivedStrength(int power) {
+		}
+
+		@Override
+		public boolean isListening() {
+			return false;
+		}
+
+		@Override
+		public boolean isAlive() {
+			return true;
+		}
+
+
+		@Override
+		public Couple<RedstoneLinkNetworkHandler.Frequency> getNetworkKey() {
+			return this.frequency;
+		}
+
+		@Override
+		public BlockPos getLocation() {
+			return this.robot.blockPosition();
+		}
 	}
 }

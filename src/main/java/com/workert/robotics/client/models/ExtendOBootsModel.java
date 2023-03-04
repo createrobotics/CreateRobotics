@@ -13,52 +13,40 @@ import net.minecraft.resources.ResourceLocation;
 public class ExtendOBootsModel<T extends ExtendOBoots> extends EntityModel<T> {
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(
 			new ResourceLocation("modid", "extend_o_boots"), "extend_o_boots");
-	private final ModelPart post0;
-	private final ModelPart post1;
+	private final ModelPart posts;
+	private final ModelPart base;
 
 	public ExtendOBootsModel(ModelPart root) {
-		this.post0 = root.getChild("post0");
-		this.post1 = root.getChild("post1");
+		this.posts = root.getChild("posts");
+		this.base = root.getChild("base");
 	}
 
 	public static LayerDefinition createBodyLayer() {
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
 
-		PartDefinition post0 = partdefinition.addOrReplaceChild("post0", CubeListBuilder.create(),
+		PartDefinition posts = partdefinition.addOrReplaceChild("posts", CubeListBuilder.create().texOffs(0, -16)
+						.addBox(-8.0F, -80.0F, -8.0F, 0.0F, 80.0F, 16.0F, new CubeDeformation(0.0F))
+						.texOffs(0, -16).addBox(8.0F, -80.0F, -8.0F, 0.0F, 80.0F, 16.0F, new CubeDeformation(0.0F))
+						.texOffs(0, 0).addBox(-8.0F, -80.0F, -8.0F, 16.0F, 80.0F, 0.0F, new CubeDeformation(0.0F))
+						.texOffs(0, 0).addBox(-8.0F, -80.0F, 8.0F, 16.0F, 80.0F, 0.0F, new CubeDeformation(0.0F)),
 				PartPose.offset(0.0F, 24.0F, 0.0F));
 
-		PartDefinition cube_r1 = post0.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(0, -16)
-						.addBox(0.0F, -80.0F, -8.0F, 0.0F, 80.0F, 16.0F, new CubeDeformation(0.0F)),
-				PartPose.offsetAndRotation(-3.0F, 0.0F, 0.0F, 0.0F, -0.7854F, 0.0F));
-
-		PartDefinition cube_r2 = post0.addOrReplaceChild("cube_r2", CubeListBuilder.create().texOffs(0, -16)
-						.addBox(0.0F, -80.0F, -8.0F, 0.0F, 80.0F, 16.0F, new CubeDeformation(0.0F)),
-				PartPose.offsetAndRotation(-3.0F, 0.0F, 0.0F, 0.0F, 0.7854F, 0.0F));
-
-		PartDefinition post1 = partdefinition.addOrReplaceChild("post1", CubeListBuilder.create(),
+		PartDefinition base = partdefinition.addOrReplaceChild("base", CubeListBuilder.create().texOffs(16, 0)
+						.addBox(-8.0F, 0.0F, -8.0F, 16.0F, 0.0F, 16.0F, new CubeDeformation(0.0F)),
 				PartPose.offset(0.0F, 24.0F, 0.0F));
 
-		PartDefinition cube_r3 = post1.addOrReplaceChild("cube_r3", CubeListBuilder.create().texOffs(0, -16)
-						.addBox(0.0F, -80.0F, -8.0F, 0.0F, 80.0F, 16.0F, new CubeDeformation(0.0F)),
-				PartPose.offsetAndRotation(3.0F, 0.0F, 0.0F, 0.0F, 0.7854F, 0.0F));
-
-		PartDefinition cube_r4 = post1.addOrReplaceChild("cube_r4", CubeListBuilder.create().texOffs(0, -16)
-						.addBox(0.0F, -80.0F, -8.0F, 0.0F, 80.0F, 16.0F, new CubeDeformation(0.0F)),
-				PartPose.offsetAndRotation(3.0F, 0.0F, 0.0F, 0.0F, -0.7854F, 0.0F));
-
-		return LayerDefinition.create(meshdefinition, 256, 256);
+		return LayerDefinition.create(meshdefinition, 128, 128);
 	}
 
 	@Override
-	public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw,
-						  float headPitch) {
+	public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+		this.base.y = -(entity.getHeight() * 16) + 24;
 	}
 
 	@Override
-	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay,
-							   float red, float green, float blue, float alpha) {
-		this.post0.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		this.post1.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+		this.posts.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+		this.base.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 }

@@ -1,45 +1,42 @@
 package com.workert.robotics.lists;
 
+import com.tterrag.registrate.util.entry.EntityEntry;
 import com.workert.robotics.Robotics;
+import com.workert.robotics.client.renderers.ClockcopterRenderer;
+import com.workert.robotics.client.renderers.CodeDroneRenderer;
+import com.workert.robotics.client.renderers.ExtendOBootsRenderer;
+import com.workert.robotics.client.renderers.MinerRenderer;
 import com.workert.robotics.entities.Clockcopter;
 import com.workert.robotics.entities.CodeDrone;
 import com.workert.robotics.entities.ExtendOBoots;
 import com.workert.robotics.entities.Miner;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobCategory;
-import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 
 public class EntityList {
-
-	public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(
-			ForgeRegistries.ENTITY_TYPES, Robotics.MOD_ID);
-
-	public static final RegistryObject<EntityType<Clockcopter>> CLOCKCOPTER = ENTITY_TYPES.register("clockcopter",
-			() -> EntityType.Builder.of(Clockcopter::new, MobCategory.MISC).sized(0.9f, 1f)
-					.build(new ResourceLocation(Robotics.MOD_ID, "clockcopter").toString()));
-
-	public static final RegistryObject<EntityType<Miner>> MINER = ENTITY_TYPES.register("miner",
-			() -> EntityType.Builder.of(Miner::new, MobCategory.MISC).sized(1.2f, 1.8f)
-					.build(new ResourceLocation(Robotics.MOD_ID, "miner").toString()));
-
-	public static final RegistryObject<EntityType<CodeDrone>> CODE_DRONE = ENTITY_TYPES.register("code_drone",
-			() -> EntityType.Builder.of(CodeDrone::new, MobCategory.MISC).sized(1f, 0.4f)
-					.build(new ResourceLocation(Robotics.MOD_ID, "code_drone").toString()));
-
-	public static final RegistryObject<EntityType<ExtendOBoots>> EXTEND_O_BOOTS = ENTITY_TYPES.register(
-			"extend_o_boots",
-			() -> EntityType.Builder.of(ExtendOBoots::new, MobCategory.MISC).sized(0.2f, 0.2f).noSummon()
-					.clientTrackingRange(64).build(new ResourceLocation(Robotics.MOD_ID, "extend_o_boots").toString()));
-
-	public static void addEntityAttributes(EntityAttributeCreationEvent event) {
-		event.put(EntityList.CLOCKCOPTER.get(), Clockcopter.createAttributes());
-		event.put(EntityList.MINER.get(), Miner.createAttributes());
-		event.put(EntityList.CODE_DRONE.get(), CodeDrone.createAttributes());
-		event.put(EntityList.EXTEND_O_BOOTS.get(), ExtendOBoots.createAttributes());
+	public static void register() {
 	}
+
+	public static final EntityEntry<Clockcopter> CLOCKCOPTER = Robotics.REGISTRATE.entity("clockcopter",
+					Clockcopter::new, MobCategory.MISC).properties(properties -> properties.sized(0.9f, 1f))
+			.attributes(() -> Mob.createMobAttributes().add(Attributes.MOVEMENT_SPEED, 0.2F)
+					.add(Attributes.MAX_HEALTH, 1.0D)
+					.add(Attributes.FLYING_SPEED, 0.8F)).renderer(() -> ClockcopterRenderer::new).register();
+
+	public static final EntityEntry<Miner> MINER = Robotics.REGISTRATE.entity("miner",
+					Miner::new, MobCategory.MISC).properties(properties -> properties.sized(1.2f, 1.8f)).attributes(
+					() -> Mob.createMobAttributes().add(Attributes.MOVEMENT_SPEED, 0.2F).add(Attributes.MAX_HEALTH, 1.0D))
+			.renderer(() -> MinerRenderer::new).register();
+
+	public static final EntityEntry<CodeDrone> CODE_DRONE = Robotics.REGISTRATE.entity("code_drone",
+			CodeDrone::new, MobCategory.MISC).properties(properties -> properties.sized(1f, 0.4f)).attributes(
+			() -> Mob.createMobAttributes().add(Attributes.MOVEMENT_SPEED, 0.2F).add(Attributes.MAX_HEALTH, 1.0D)
+					.add(Attributes.FLYING_SPEED, 0.8F)).renderer(() -> CodeDroneRenderer::new).register();
+
+	public static final EntityEntry<ExtendOBoots> EXTEND_O_BOOTS = Robotics.REGISTRATE.entity("extend_o_boots",
+					ExtendOBoots::new, MobCategory.MISC).properties(properties -> properties.sized(1f, 0f)).attributes(
+					() -> Mob.createMobAttributes().add(Attributes.MOVEMENT_SPEED, 0F).add(Attributes.MAX_HEALTH, 1.0D))
+			.renderer(() -> ExtendOBootsRenderer::new).register();
 
 }

@@ -98,7 +98,7 @@ public class SmasherBlock extends BaseEntityBlock {
 	@Nullable
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
-		return new SmasherBlockEntity(pPos, pState);
+		return new SmasherBlockEntity(BlockEntityList.SMASHER_BLOCK_ENTITY.get(), pPos, pState);
 	}
 
 	@Nullable

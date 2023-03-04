@@ -1,5 +1,6 @@
 {
   "itemGroup.robotics": "Create Робототехника",
+
   "item.robotics.tin_ingot": "Оловянный слиток",
   "item.robotics.tin_nugget": "Кусочек олова",
   "item.robotics.raw_tin": "Блок рудного олова",
@@ -10,11 +11,15 @@
   "item.robotics.miner": "Робот-шахтер",
   "item.robotics.code_drone": "Программируемый дрон",
   "item.robotics.extend_o_boots": "Удлинённые ботинки",
+
   "block.robotics.tin_ore": "Оловянная руда",
   "block.robotics.deepslate_tin_ore": "Оловоносный глубинный сланец",
   "block.robotics.tin_block": "Оловянный блок",
   "block.robotics.bronze_block": "Бронзовый блок",
   "block.robotics.smasher_block": "Сокрушитель",
   "block.robotics.code_editor": "Редактор кода",
-  "description.robotics.extend_o_boots": "Ctrl + Прокрутка для активации"
+
+  "description.robotics.extend_o_boots": "Ctrl + Прокрутка для активации",
+
+  "item.robotics.code_drone.tooltip": "Test tooltip"
 }

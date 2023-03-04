@@ -12,7 +12,6 @@ import com.workert.robotics.lists.PacketList;
 import com.workert.robotics.packets.ReturnEditedCodePacket;
 import net.minecraft.Util;
 import net.minecraft.client.gui.GuiComponent;
-import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import org.apache.commons.io.IOUtils;
 
@@ -23,7 +22,7 @@ import java.io.IOException;
 
 public class CodeEditorScreen extends AbstractSimiScreen {
 
-	private final String DEFAULT_TEXT = "\n\n\n/*\nThis is a comment showing some basic commands. It is meant to allow certain text editors to autocomplete them.\nFor more information visit the Programming Mechanic page of the Create Robotics Wiki:\nhttps://github.com/Worker20/CreateRobotics/wiki/Programming-Mechanic\n\nDirection.UP\nDirection.DOWN\nDirection.NORTH\nDirection.EAST\nDirection.SOUTH\nDirection.WEST\n{variables}\n{commands}\n{items}\n*/";
+	private final String DEFAULT_TEXT = "\n\n\n/*\nThis is a comment showing some basic commands. It is meant to allow certain text editors to autocomplete them.\nFor more information visit the Programming Mechanic page of the Create Robotics Wiki:\nhttps://github.com/Worker20/CreateRobotics/wiki/Programming-Mechanic\n\nDirection.UP\nDirection.DOWN\nDirection.NORTH\nDirection.EAST\nDirection.SOUTH\nDirection.WEST\n{variables}\n{commands}\n*/";
 
 	protected AllGuiTextures background;
 	private IconButton confirmButton;
@@ -50,15 +49,8 @@ public class CodeEditorScreen extends AbstractSimiScreen {
 				CodeHelper.commandMap.forEach(
 						(command, biConsumer) -> {
 							commands[0] = commands[0].concat("\nrobot." + command);
-							System.out.println(command);
 						});
 				defaultText = defaultText.replace("{commands}", commands[0]);
-				System.out.println(commands[0]);
-
-				final String[] items = {""};
-				Registry.ITEM.forEach(
-						consumer -> items[0] = items[0].concat("\n" + Registry.ITEM.getKey(consumer)));
-				defaultText = defaultText.replace("{items}", items[0]);
 
 				writer.write(defaultText);
 			}
@@ -79,9 +71,7 @@ public class CodeEditorScreen extends AbstractSimiScreen {
 		int y = this.guiTop;
 
 		this.editButton = new IconButton(x + this.background.width - 63, y + this.background.height - 24,
-				AllIcons.I_CONFIG_OPEN).withCallback((mouseX, mouseY) -> {
-			Util.getPlatform().openFile(this.editFile);
-		});
+				AllIcons.I_CONFIG_OPEN).withCallback((mouseX, mouseY) -> Util.getPlatform().openFile(this.editFile));
 		this.addRenderableWidget(this.editButton);
 
 		this.confirmButton = new IconButton(x + this.background.width - 33, y + this.background.height - 24,
@@ -96,7 +86,7 @@ public class CodeEditorScreen extends AbstractSimiScreen {
 				}
 				this.onClose();
 			} catch (Exception e) {
-				e.fillInStackTrace();
+				e.printStackTrace();
 			}
 		});
 		this.addRenderableWidget(this.confirmButton);
@@ -140,5 +130,10 @@ public class CodeEditorScreen extends AbstractSimiScreen {
 	public void onClose() {
 		this.editFile.delete();
 		super.onClose();
+	}
+
+	@Override
+	public boolean shouldCloseOnEsc() {
+		return false;
 	}
 }

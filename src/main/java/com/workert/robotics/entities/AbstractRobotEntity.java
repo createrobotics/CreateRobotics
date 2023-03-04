@@ -2,10 +2,15 @@ package com.workert.robotics.entities;
 
 import com.simibubi.create.AllItems;
 import com.simibubi.create.content.curiosities.armor.BackTankUtil;
+import com.simibubi.create.content.logistics.RedstoneLinkNetworkHandler;
+import com.simibubi.create.foundation.utility.Couple;
 import com.workert.robotics.helpers.CodeHelper;
 import com.workert.robotics.lists.ItemList;
+import net.minecraft.commands.CommandSource;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.*;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -13,20 +18,20 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.SpawnGroupData;
-import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.npc.InventoryCarrier;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ChestMenu;
-import net.minecraft.world.inventory.MenuConstructor;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.WrittenBookItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec2;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
@@ -39,6 +44,7 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 
 	public HashMap<String, Function<AbstractRobotEntity, String>> privateVariableLookupMap = new HashMap<>();
 	public String code = "";
+	private CodeHelper.RobotFrequencyEntry robotFrequencyEntry = null;
 
 	public AbstractRobotEntity(EntityType<? extends PathfinderMob> entity, Level world) {
 		super(entity, world);
@@ -52,13 +58,11 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 
 	@Override
 	public boolean hurt(DamageSource pSource, float pAmount) {
-		if (pSource == DamageSource.GENERIC || pSource == DamageSource.OUT_OF_WORLD)
+		if (pSource == DamageSource.OUT_OF_WORLD)
 			return super.hurt(pSource, pAmount);
 		this.consumeAir((int) pAmount * 2);
 		return false;
 	}
-
-	public static AttributeSupplier createAttributes;
 
 	public abstract boolean hasInventory();
 
@@ -104,6 +108,15 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 
 	public abstract boolean isProgrammable();
 
+	public CodeHelper.RobotFrequencyEntry getRobotFrequencyEntry() {
+		if (!this.isProgrammable())
+			return null;
+		if (this.robotFrequencyEntry == null)
+			this.robotFrequencyEntry = new CodeHelper.RobotFrequencyEntry(this, Couple.create(
+					RedstoneLinkNetworkHandler.Frequency.EMPTY, RedstoneLinkNetworkHandler.Frequency.EMPTY), 0);
+		return this.robotFrequencyEntry;
+	}
+
 	@Override
 	protected InteractionResult mobInteract(Player pPlayer, InteractionHand pHand) {
 		if (pPlayer.getItemInHand(pHand)
@@ -111,7 +124,8 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 			ItemStack stack = new ItemStack(this.getRobotItem());
 			CompoundTag saveTag = new CompoundTag();
 			this.save(saveTag);
-			stack.getOrCreateTag().put("robot", saveTag);
+			stack.getOrCreateTag().put("savedRobot", saveTag);
+			stack.setHoverName(this.getCustomName());
 			pPlayer.getInventory().add(stack);
 			this.discard();
 		} else if (this.isProgrammable() && pPlayer.getItemInHand(pHand)
@@ -124,16 +138,27 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 			if (!this.level.isClientSide)
 				this.code = pPlayer.getItemInHand(pHand).getOrCreateTag().getString("code");
 			return InteractionResult.SUCCESS;
+		} else if (this.isProgrammable() && (pPlayer.getItemInHand(pHand)
+				.is(Items.WRITTEN_BOOK) || pPlayer.getItemInHand(pHand)
+				.is(Items.WRITABLE_BOOK)) && !pPlayer.isCrouching()) {
+			if (this.level.isClientSide)
+				return InteractionResult.SUCCESS;
+			WrittenBookItem.resolveBookComponents(pPlayer.getItemInHand(pHand),
+					new CommandSourceStack(
+							CommandSource.NULL, pPlayer.position(), Vec2.ZERO, (ServerLevel) this.level, 2,
+							pPlayer.getName().getString(), pPlayer.getDisplayName(), this.level.getServer(), pPlayer),
+					pPlayer);
+			CompoundTag compoundtag = pPlayer.getItemInHand(pHand).getOrCreateTag();
+			this.code = "";
+			compoundtag.getList("pages", 8).forEach(page -> {
+				this.code = this.code.concat(page.getAsString());
+			});
+			this.code = this.code.replace("{\"text\":\"", "").replace("\"}", "\n").replace("\\n", "\n").trim();
+			return InteractionResult.SUCCESS;
 		} else if (this.hasInventory() && !pPlayer.isCrouching()) {
-			pPlayer.openMenu(new SimpleMenuProvider(new MenuConstructor() {
-
-				@Override
-				public AbstractContainerMenu createMenu(int id, Inventory playerInventory, Player player) {
-					return new ChestMenu(MenuType.GENERIC_3x3, id, playerInventory, AbstractRobotEntity.this.inventory,
-							1);
-				}
-			}, this.getDisplayName()));
-
+			pPlayer.openMenu(new SimpleMenuProvider(
+					(id, playerInventory, player) -> new ChestMenu(MenuType.GENERIC_3x3, id, playerInventory,
+							AbstractRobotEntity.this.inventory, 1), this.getDisplayName()));
 			return InteractionResult.SUCCESS;
 		}
 		return super.mobInteract(pPlayer, pHand);
@@ -152,6 +177,12 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 				itemstack.setCount(itemstack1.getCount());
 			}
 		}
+	}
+
+	@Nullable
+	@Override
+	public ItemStack getPickResult() {
+		return this.getRobotItem().getDefaultInstance();
 	}
 
 	@Override
@@ -198,4 +229,13 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 		return false;
 	}
 
+	@Override
+	public boolean displayFireAnimation() {
+		return false;
+	}
+
+	@Override
+	public void die(DamageSource pDamageSource) {
+		super.die(pDamageSource);
+	}
 }

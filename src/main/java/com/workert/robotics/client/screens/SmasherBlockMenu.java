@@ -1,5 +1,6 @@
 package com.workert.robotics.client.screens;
 
+import com.workert.robotics.Robotics;
 import com.workert.robotics.blocks.blockentities.SmasherBlockEntity;
 import com.workert.robotics.client.screens.slots.ModResultSlot;
 import com.workert.robotics.lists.BlockList;
@@ -25,7 +26,7 @@ public class SmasherBlockMenu extends AbstractContainerMenu {
 	}
 
 	public SmasherBlockMenu(int pContainerId, Inventory inv, BlockEntity entity, ContainerData data) {
-		super(ModMenuTypes.SMASHER_BLOCK_MENU.get(), pContainerId);
+		super(MenuList.SMASHER_BLOCK_MENU.get(), pContainerId);
 		AbstractContainerMenu.checkContainerSize(inv, 3);
 		this.blockEntity = ((SmasherBlockEntity) entity);
 		this.level = inv.player.level;
@@ -93,7 +94,7 @@ public class SmasherBlockMenu extends AbstractContainerMenu {
 				return ItemStack.EMPTY;
 			}
 		} else {
-			System.out.println("Invalid slotIndex:" + index);
+			Robotics.LOGGER.warn("Invalid slotIndex:" + index);
 			return ItemStack.EMPTY;
 		}
 		// If stack size == 0 (the entire stack was moved) set slot contents to null
@@ -109,7 +110,7 @@ public class SmasherBlockMenu extends AbstractContainerMenu {
 	@Override
 	public boolean stillValid(Player pPlayer) {
 		return AbstractContainerMenu.stillValid(ContainerLevelAccess.create(this.level, this.blockEntity.getBlockPos()),
-				pPlayer, BlockList.SMASHER_BLOCK.get());
+				pPlayer, BlockList.SMASHER.get());
 	}
 
 	private void addPlayerInventory(Inventory playerInventory) {

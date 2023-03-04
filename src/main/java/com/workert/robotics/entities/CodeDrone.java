@@ -7,10 +7,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.FlyingMoveControl;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
@@ -18,8 +15,15 @@ import net.minecraft.world.entity.animal.FlyingAnimal;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.world.ForgeChunkManager;
+import software.bernie.geckolib3.core.IAnimatable;
+import software.bernie.geckolib3.core.PlayState;
+import software.bernie.geckolib3.core.builder.AnimationBuilder;
+import software.bernie.geckolib3.core.controller.AnimationController;
+import software.bernie.geckolib3.core.manager.AnimationData;
+import software.bernie.geckolib3.core.manager.AnimationFactory;
+import software.bernie.geckolib3.util.GeckoLibUtil;
 
-public class CodeDrone extends AbstractRobotEntity implements FlyingAnimal {
+public class CodeDrone extends AbstractRobotEntity implements FlyingAnimal, IAnimatable {
 	private final SimpleContainer inventory = new SimpleContainer(9);
 
 	public int last_chunk_x;
@@ -28,6 +32,7 @@ public class CodeDrone extends AbstractRobotEntity implements FlyingAnimal {
 	public CodeDrone(EntityType<? extends PathfinderMob> entity, Level world) {
 		super(entity, world);
 		this.moveControl = new FlyingMoveControl(this, 128, true);
+		this.setNoGravity(true);
 		this.last_chunk_x = this.chunkPosition().x;
 		this.last_chunk_z = this.chunkPosition().z;
 	}
@@ -65,11 +70,13 @@ public class CodeDrone extends AbstractRobotEntity implements FlyingAnimal {
 
 	@Override
 	public void remove(RemovalReason pReason) {
-		for (int i = -1; i <= 1; i++) {
-			for (int j = -1; j <= 1; j++) {
-				ForgeChunkManager.forceChunk((ServerLevel) this.level, Robotics.MOD_ID, this, this.last_chunk_x + i,
-						this.last_chunk_z + j,
-						false, true);
+		if (!this.level.isClientSide()) {
+			for (int i = -1; i <= 1; i++) {
+				for (int j = -1; j <= 1; j++) {
+					ForgeChunkManager.forceChunk((ServerLevel) this.level, Robotics.MOD_ID, this, this.last_chunk_x + i,
+							this.last_chunk_z + j,
+							false, true);
+				}
 			}
 		}
 		super.remove(pReason);
@@ -78,11 +85,6 @@ public class CodeDrone extends AbstractRobotEntity implements FlyingAnimal {
 	@Override
 	public boolean isFlying() {
 		return !this.isOnGround();
-	}
-
-	public static AttributeSupplier createAttributes() {
-		return Mob.createMobAttributes().add(Attributes.MOVEMENT_SPEED, 0.2F).add(Attributes.MAX_HEALTH, 1.0D)
-				.add(Attributes.FLYING_SPEED, 0.8F).build();
 	}
 
 	@Override
@@ -114,4 +116,16 @@ public class CodeDrone extends AbstractRobotEntity implements FlyingAnimal {
 		return true;
 	}
 
+	@Override
+	public void registerControllers(AnimationData data) {
+		data.addAnimationController(new AnimationController(this, "controller", 0, event -> {
+			event.getController().setAnimation(new AnimationBuilder().loop("animation.code_drone.idle"));
+			return PlayState.CONTINUE;
+		}));
+	}
+
+	@Override
+	public AnimationFactory getFactory() {
+		return GeckoLibUtil.createFactory(this);
+	}
 }

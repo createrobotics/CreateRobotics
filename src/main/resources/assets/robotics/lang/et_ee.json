@@ -1,0 +1,48 @@
+{
+  "itemGroup.robotics": "Create Robotics",
+
+  "item.robotics.tin_ingot": "Tina kang",
+  "item.robotics.tin_nugget": "Tina tükk",
+  "item.robotics.raw_tin": "Toortina",
+  "item.robotics.bronze_ingot": "Pronks kang",
+  "item.robotics.bronze_nugget": "Pronksi tükk",
+  "item.robotics.program": "Programm",
+  "item.robotics.clockcopter": "Kellakopter",
+  "item.robotics.miner": "Kaevur",
+  "item.robotics.code_drone": "Koodi troon",
+  "item.robotics.extend_o_boots": "Pikendussaapad",
+
+  "block.robotics.tin_ore": "Tina maak",
+  "block.robotics.deepslate_tin_ore": "Sügavkildi tina maak",
+  "block.robotics.tin_block": "Tina plokk",
+  "block.robotics.bronze_block": "Pronks plokk",
+  "block.robotics.smasher_block": "Purustaja",
+  "block.robotics.code_editor": "Koodi muutja",
+
+  "entity.robotics.clockcopter": "Kellakopter",
+  "entity.robotics.code_drone": "Juan",
+  "entity.robotics.miner": "Kaevur",
+  "entity.robotics.extend_o_boots": "Extend-O-Boots",
+
+  "item.robotics.extend_o_boots.tooltip": "EXTEND-O-BOOTS",
+  "item.robotics.extend_o_boots.tooltip.summary": "Teie _kaasaskantavad tellingud_! Laseb teil luua _pikendatavaid ajutisi tellinguid_ teie alla.",
+  "item.robotics.extend_o_boots.tooltip.control1": "Hoia Ctrl kasutamise ajal",
+  "item.robotics.extend_o_boots.tooltip.action1": "Laseb teil _aktiveerida_ Extend-O-Boots  _rullides üles või alla_",
+
+  "item.robotics.program.tooltip": "PROGRAMM",
+  "item.robotics.program.tooltip.summary": "_Programm sisaldab koodi_! Lubab teil  _programmeerida roboteid_.",
+  "item.robotics.program.tooltip.control1": "R-Kliki koodi muutmiseks",
+  "item.robotics.program.tooltip.action1": "Lubab teil _muuta_ programmi _sisu_",
+  "item.robotics.program.tooltip.control2": "R-kliki programmeeritava roboti peale",
+  "item.robotics.program.tooltip.action2": "Lubab teil _lisada_ programmi _kood_ _robotile_",
+
+  "block.robotics.code_editor.tooltip": "KOODI MUUTJA",
+  "block.robotics.code_editor.tooltip.summary": "Plokk mis lubab teil _muuta_ programmi _sisu_!",
+  "block.robotics.code_editor.tooltip.condition1": "Kui R-klikid Programmiga",
+  "block.robotics.code_editor.tooltip.behaviour1": "Lubab teil _muuta_ _programmi_",
+
+  "robotics.ponder.programming.header": "Programmeerimine kasutades Koodi Muutjat.",
+  "robotics.ponder.programming.text_1": "Et muuta Programmi sisu te vajate koodi muutjat.",
+  "robotics.ponder.programming.text_2": "Parem kliki the koodi muutjat koos programmiga, et alustada!",
+  "robotics.ponder.programming.text_3": "Kui te olete lõpetanud koodimise, parem kliki koodiga programmeeritava roboti peale, et lisada oma kood sellele."
+}

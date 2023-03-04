@@ -1,0 +1,48 @@
+{
+  "itemGroup.robotics": "Create Robotics",
+
+  "item.robotics.tin_ingot": "Tina harkko",
+  "item.robotics.tin_nugget": "Tina hippu",
+  "item.robotics.raw_tin": "Raaka tina",
+  "item.robotics.bronze_ingot": "Pronssi harkko",
+  "item.robotics.bronze_nugget": "Pronssi hippu",
+  "item.robotics.program": "Ohjelma",
+  "item.robotics.clockcopter": "Kellokopteri",
+  "item.robotics.miner": "Kaivaja",
+  "item.robotics.code_drone": "Koodi lennokki",
+  "item.robotics.extend_o_boots": "Pidennys saappaat",
+
+  "block.robotics.tin_ore": "Tina malmi",
+  "block.robotics.deepslate_tin_ore": "Pohjaliusketinamalmi",
+  "block.robotics.tin_block": "Tina palikka",
+  "block.robotics.bronze_block": "Pronssi palikka",
+  "block.robotics.smasher_block": "Särkijä",
+  "block.robotics.code_editor": "Koodi muokkaaja",
+
+  "entity.robotics.clockcopter": "Kellokopteri",
+  "entity.robotics.code_drone": "Juan",
+  "entity.robotics.miner": "Kaivaja",
+  "entity.robotics.extend_o_boots": "Pidennys saappaat",
+
+  "item.robotics.extend_o_boots.tooltip": "Pidennys saappaat",
+  "item.robotics.extend_o_boots.tooltip.summary": "Sinun _kannettava rakennusteline_! Antaa sinun tehdä laajennettavia väliaikaisija rakennus telineitä allesi",
+  "item.robotics.extend_o_boots.tooltip.control1": "pidä CTRl pohjassa kun puet",
+  "item.robotics.extend_o_boots.tooltip.action1": "Antaa sinun _aktivoida_ Pidennys saappaat  _rullaamalla hiirtäsi ylös tai alas_",
+
+  "item.robotics.program.tooltip": "OHJELMA",
+  "item.robotics.program.tooltip.summary": " _Ohjelma joka sisältää koodia_! Tämän avulla voit _ohjelmoida robotteja_.",
+  "item.robotics.program.tooltip.control1": "Paina R koodin muokkauksessa",
+  "item.robotics.program.tooltip.action1": "Antaa sinun _muokata_ ohjelman _sisältöä_",
+  "item.robotics.program.tooltip.control2": "R paina ohjelmoitavaa robottia",
+  "item.robotics.program.tooltip.action2": "Antaa sinun _käyttää_ ohjelman _koodia robottiin_",
+
+  "block.robotics.code_editor.tooltip": "Koodin muokkaus",
+  "block.robotics.code_editor.tooltip.summary": "Palikka jonka avulla voit _muokata_ ohjelman _sisältöä_!",
+  "block.robotics.code_editor.tooltip.condition1": "Kun R painettu ohjelman kanssa",
+  "block.robotics.code_editor.tooltip.behaviour1": "Antaa sinun _muokata ohjelmaa_",
+
+  "robotics.ponder.programming.header": "Ohjelmoi käyttäen koodin muokkausta ",
+  "robotics.ponder.programming.text_1": "Vaihtaaksesi ohjelman sisältöä tarvitset koodin muokkaajan",
+  "robotics.ponder.programming.text_2": "Napsauta hiiren kakkospainikkeella ohjelman kanssa aloittaaksesi.!",
+  "robotics.ponder.programming.text_3": "Kun olet koodannut valmiiksi paina hiiren kakkospainiketta ohjelmalla koodattavaan robottiin laittaaksesi koodia siihen."
+}

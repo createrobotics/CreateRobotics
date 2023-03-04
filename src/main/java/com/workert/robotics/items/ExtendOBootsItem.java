@@ -1,6 +1,7 @@
 package com.workert.robotics.items;
 
 import com.google.common.collect.Maps;
+import com.simibubi.create.foundation.utility.animation.LerpedFloat;
 import com.workert.robotics.client.KeybindList;
 import com.workert.robotics.entities.ExtendOBoots;
 import com.workert.robotics.lists.EntityList;
@@ -10,7 +11,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.client.event.InputEvent;
@@ -23,12 +23,14 @@ import java.util.Map;
 public class ExtendOBootsItem extends ArmorItem {
 	public static final float MAX_HEIGHT = 5;
 	private static final Map<ItemStack, ExtendOBoots> ENTITIES = Maps.newIdentityHashMap();
+
+	private static final Map<ItemStack, LerpedFloat> HEIGHT = Maps.newIdentityHashMap();
 	private Player player;
 
 	private boolean clientSentOff;
 
-	public ExtendOBootsItem(ArmorMaterial pMaterial, EquipmentSlot pSlot, Properties pProperties) {
-		super(pMaterial, pSlot, pProperties);
+	public ExtendOBootsItem(Properties pProperties) {
+		super(ArmorMaterialList.EXTEND_O_BOOTS, EquipmentSlot.FEET, pProperties);
 		MinecraftForge.EVENT_BUS.register(this);
 	}
 
@@ -44,21 +46,31 @@ public class ExtendOBootsItem extends ArmorItem {
 		}
 		this.player = player;
 		if (stack.getOrCreateTag().getFloat("currentHeight") > 0) {
+			if (this.HEIGHT.get(stack) == null)
+				this.HEIGHT.put(stack, LerpedFloat.linear());
+			if (stack.getOrCreateTag().getFloat("currentHeight") > this.HEIGHT.get(stack).getValue())
+				this.HEIGHT.get(stack)
+						.chase(stack.getOrCreateTag().getFloat("currentHeight"), 0.2, LerpedFloat.Chaser.LINEAR);
+			else
+				this.HEIGHT.get(stack)
+						.chase(stack.getOrCreateTag().getFloat("currentHeight"), 0.55, LerpedFloat.Chaser.EXP);
+			this.HEIGHT.get(stack)
+					.tickChaser();
+
 			ExtendOBoots extendOBoots = this.ENTITIES.get(stack);
-			if (extendOBoots == null) {
+			if (extendOBoots == null || extendOBoots.isRemoved()) {
 				extendOBoots = new ExtendOBoots(EntityList.EXTEND_O_BOOTS.get(), this.player.getLevel());
 				extendOBoots.setPos(this.player.position());
-				extendOBoots.setYRot(this.player.getYRot());
 				this.player.getLevel().addFreshEntity(extendOBoots);
 				this.ENTITIES.put(stack, extendOBoots);
 			}
-			player.teleportTo(player.getX(), extendOBoots.getY() + stack.getOrCreateTag().getFloat("currentHeight"),
+			player.teleportTo(player.getX(), extendOBoots.getY() + this.HEIGHT.get(stack).getValue(),
 					player.getZ());
 			this.player.setYRot(extendOBoots.getYRot());
 			if (this.player.position().distanceTo(extendOBoots.position()
-					.with(Direction.Axis.Y, extendOBoots.getY() + stack.getOrCreateTag().getFloat("currentHeight"))) >
+					.with(Direction.Axis.Y, extendOBoots.getY() + this.HEIGHT.get(stack).getValue())) >
 					0.1) stack.getOrCreateTag().putFloat("currentHeight", 0);
-			extendOBoots.getEntityData().set(ExtendOBoots.HEIGHT, stack.getOrCreateTag().getFloat("currentHeight"));
+			extendOBoots.setHeight(stack.getOrCreateTag().getFloat("currentHeight"));
 		} else if (this.ENTITIES.get(stack) != null) {
 			this.ENTITIES.get(stack).discard();
 			this.ENTITIES.put(stack, null);

@@ -1,16 +1,16 @@
 buildscript {
-    repositories {
-        mavenCentral()
-        maven { url = 'https://maven.minecraftforge.net' }
-        maven { url = 'https://maven.parchmentmc.org' }
-        maven { url = 'https://files.minecraftforge.net/maven' }
-        maven { url = 'https://repo.spongepowered.org/maven' }
-    }
-    dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: forgegradle_version, changing: true
-        classpath "org.spongepowered:mixingradle:${mixingradle_version}"
-        classpath 'org.parchmentmc:librarian:1.+'
-    }
+	repositories {
+		mavenCentral()
+		maven { url = 'https://maven.minecraftforge.net' }
+		maven { url = 'https://maven.parchmentmc.org' }
+		maven { url = 'https://files.minecraftforge.net/maven' }
+		maven { url = 'https://repo.spongepowered.org/maven' }
+	}
+	dependencies {
+		classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: forgegradle_version, changing: true
+		classpath "org.spongepowered:mixingradle:${mixingradle_version}"
+		classpath 'org.parchmentmc:librarian:1.+'
+	}
 }
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
@@ -20,20 +20,20 @@ apply plugin: 'org.parchmentmc.librarian.forgegradle'
 apply plugin: 'org.spongepowered.mixin'
 
 def getGitHash = { ->
-    def stdout = new ByteArrayOutputStream()
-    exec {
-        commandLine 'git', 'rev-parse', '--short', 'HEAD'
-        standardOutput = stdout
-    }
-    return stdout.toString().trim()
+	def stdout = new ByteArrayOutputStream()
+	exec {
+		commandLine 'git', 'rev-parse', '--short', 'HEAD'
+		standardOutput = stdout
+	}
+	return stdout.toString().trim()
 }
 
 version = "${mc_version}-${mod_version}"
 if (System.getenv("DEV") == "true") {
-    version = "${mc_version}-${mod_version}-dev-${getGitHash()}"
+	version = "${mc_version}-${mod_version}-dev-${getGitHash()}"
 }
 if (System.getenv("CI") == "true") {
-    version = "${mc_version}-nightly-${getGitHash()}"
+	version = "${mc_version}-nightly-${getGitHash()}"
 }
 
 group = 'com.workert.robotics'
@@ -43,123 +43,126 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
 minecraft {
-    mappings channel: 'parchment', version: "${parchment_version}-${mc_version}"
+	mappings channel: 'parchment', version: "${parchment_version}-${mc_version}"
 
-    // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+	// accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
-    runs {
-        client {
-            workingDirectory project.file('run')
+	runs {
+		client {
+			workingDirectory project.file('run')
 
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            property 'forge.enabledGameTestNamespaces', 'robotics'
+			property 'forge.logging.markers', 'REGISTRIES'
+			property 'forge.logging.console.level', 'debug'
+			property 'forge.enabledGameTestNamespaces', 'robotics'
 
-            mods {
-                robotics {
-                    source sourceSets.main
-                }
-            }
-        }
+			mods {
+				robotics {
+					source sourceSets.main
+				}
+			}
+		}
 
-        server {
-            workingDirectory project.file('runServer')
+		server {
+			workingDirectory project.file('runServer')
 
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            property 'forge.enabledGameTestNamespaces', 'robotics'
+			property 'forge.logging.markers', 'REGISTRIES'
+			property 'forge.logging.console.level', 'debug'
+			property 'forge.enabledGameTestNamespaces', 'robotics'
 
-            mods {
-                robotics {
-                    source sourceSets.main
-                }
-            }
-        }
+			mods {
+				robotics {
+					source sourceSets.main
+				}
+			}
+		}
 
-        gameTestServer {
-            workingDirectory project.file('run')
+		gameTestServer {
+			workingDirectory project.file('run')
 
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            property 'forge.enabledGameTestNamespaces', 'robotics'
+			property 'forge.logging.markers', 'REGISTRIES'
+			property 'forge.logging.console.level', 'debug'
+			property 'forge.enabledGameTestNamespaces', 'robotics'
 
-            mods {
-                robotics {
-                    source sourceSets.main
-                }
-            }
-        }
+			mods {
+				robotics {
+					source sourceSets.main
+				}
+			}
+		}
 
-        data {
-            workingDirectory project.file('run')
+		data {
+			workingDirectory project.file('run')
 
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
+			property 'forge.logging.markers', 'REGISTRIES'
+			property 'forge.logging.console.level', 'debug'
 
-            args '--mod', 'robotics', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+			args '--mod', 'robotics', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
 
-            mods {
-                robotics {
-                    source sourceSets.main
-                }
-            }
-        }
-    }
+			mods {
+				robotics {
+					source sourceSets.main
+				}
+			}
+		}
+	}
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
-    maven {
-        name 'Progwm16 maven'
-        url 'https://dvs1.progwml6.com/files/maven'
-    }
-    maven {
-        name 'tterrag maven'
-        url 'https://maven.tterrag.com'
-    }
-    maven {
-        name 'theillusivec4 maven'
-        url 'https://maven.theillusivec4.top'
-    }
-    maven {
-        url 'https://www.cursemaven.com'
-        content {
-            includeGroup "curse.maven"
-        }
-    }
+	maven {
+		name 'Progwm16 maven'
+		url 'https://dvs1.progwml6.com/files/maven'
+	}
+	maven {
+		name 'tterrag maven'
+		url 'https://maven.tterrag.com'
+	}
+	maven {
+		name 'theillusivec4 maven'
+		url 'https://maven.theillusivec4.top'
+	}
+	maven {
+		url 'https://www.cursemaven.com'
+		content {
+			includeGroup "curse.maven"
+		}
+	}
+	maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
 }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
+	minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
 
-    implementation fg.deobf("com.simibubi.create:create-${mc_version}:${create_version}:slim") { transitive = false }
-    implementation fg.deobf("com.jozufozu.flywheel:flywheel-forge-${mc_version}:${flywheel_version}")
-    implementation fg.deobf("com.tterrag.registrate:Registrate:${registrate_version}")
+	implementation fg.deobf("com.simibubi.create:create-${mc_version}:${create_version}:slim") { transitive = false }
+	implementation fg.deobf("com.jozufozu.flywheel:flywheel-forge-${mc_version}:${flywheel_version}")
+	implementation fg.deobf("com.tterrag.registrate:Registrate:${registrate_version}")
 
-    if (System.getProperty('idea.sync.active') != 'true') {
-        annotationProcessor "org.spongepowered:mixin:${mixin_version}:processor"
-    }
+	implementation fg.deobf('software.bernie.geckolib:geckolib-forge-1.19:3.1.39')
+
+	if (System.getProperty('idea.sync.active') != 'true') {
+		annotationProcessor "org.spongepowered:mixin:${mixin_version}:processor"
+	}
 }
 
 mixin {
-    add sourceSets.main, 'robotics.refmap.json'
-    config 'mixins.robotics.json'
+	add sourceSets.main, 'robotics.refmap.json'
+	config 'mixins.robotics.json'
 }
 
 // Example for how to get properties into the manifest for reading at runtime.
 jar {
-    manifest {
-        attributes([
-                "Specification-Title"     : "robotics",
-                "Specification-Vendor"    : "workert",
-                "Specification-Version"   : "1", // We are version 1 of ourselves
-                "Implementation-Title"    : project.name,
-                "Implementation-Version"  : project.jar.archiveVersion,
-                "Implementation-Vendor"   : "workert",
-                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
-        ])
-    }
+	manifest {
+		attributes([
+				"Specification-Title"     : "robotics",
+				"Specification-Vendor"    : "workert",
+				"Specification-Version"   : "1", // We are version 1 of ourselves
+				"Implementation-Title"    : project.name,
+				"Implementation-Version"  : project.jar.archiveVersion,
+				"Implementation-Vendor"   : "workert",
+				"Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+		])
+	}
 }
 
 // Example configuration to allow publishing using the maven-publish plugin
@@ -169,29 +172,29 @@ jar.finalizedBy('reobfJar')
 // publish.dependsOn('reobfJar')
 
 publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            groupId = group
-            artifactId = archivesBaseName
-            version = version
-            artifact jar
-        }
-    }
-    repositories {
-        maven {
-            url "file://${project.projectDir}/mcmodsrepo"
-        }
-        maven {
-            name = "GitHubPackages"
-            url = "https://maven.pkg.github.com/worker20/createrobotics"
-            credentials {
-                username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
-                password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
-            }
-        }
-    }
+	publications {
+		mavenJava(MavenPublication) {
+			groupId = group
+			artifactId = archivesBaseName
+			version = version
+			artifact jar
+		}
+	}
+	repositories {
+		maven {
+			url "file://${project.projectDir}/mcmodsrepo"
+		}
+		maven {
+			name = "GitHubPackages"
+			url = "https://maven.pkg.github.com/worker20/createrobotics"
+			credentials {
+				username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
+				password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
+			}
+		}
+	}
 }
 
 tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8'
+	options.encoding = 'UTF-8'
 }

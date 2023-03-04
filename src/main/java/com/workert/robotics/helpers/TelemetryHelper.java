@@ -28,9 +28,9 @@ public class TelemetryHelper {
 			return;
 		}
 
-		CompletableFuture.runAsync(() -> {
-			TelemetryHelper.setHeadless(false);
+		TelemetryHelper.setHeadless(false);
 
+		CompletableFuture.runAsync(() -> {
 			try {
 				UIManager.setLookAndFeel(new NimbusLookAndFeel());
 			} catch (UnsupportedLookAndFeelException e) {
@@ -56,7 +56,6 @@ public class TelemetryHelper {
 			sendButton.setAction(new AbstractAction() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-
 					Robotics.LOGGER.info("Sending Crash Report File");
 					String decodedEndpoint = new String(
 							Base64.getDecoder().decode(Base64.getDecoder().decode(TelemetryHelper.CRASH_ENDPOINT)),
@@ -121,8 +120,6 @@ public class TelemetryHelper {
 			frame.requestFocus();
 			frame.setVisible(true);
 
-			TelemetryHelper.setHeadless(true);
-
 			Executors.newSingleThreadScheduledExecutor()
 					.schedule(() -> TelemetryHelper.closedCrashGui = true, 15, TimeUnit.SECONDS);
 		});
@@ -140,9 +137,10 @@ public class TelemetryHelper {
 
 	private static void setHeadless(boolean headless) {
 		System.setProperty("java.awt.headless", Boolean.toString(headless));
+		
 		if (GraphicsEnvironment.isHeadless() != headless) {
 			Robotics.LOGGER.error("Couldn't change Java Headless Mode to " + headless);
-			System.exit(42);
+			System.exit(-42);
 		}
 	}
 }
