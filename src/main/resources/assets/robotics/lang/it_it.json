@@ -1,0 +1,48 @@
+{
+  "itemGroup.robotics": "Create Robotics",
+
+  "item.robotics.tin_ingot": "Lingotto di stagno",
+  "item.robotics.tin_nugget": "Pepita di stagno",
+  "item.robotics.raw_tin": "Stagno grezzo",
+  "item.robotics.bronze_ingot": "Lingotto di bronzo",
+  "item.robotics.bronze_nugget": "Pepita di bronzo",
+  "item.robotics.program": "Programma",
+  "item.robotics.clockcopter": "Clockcopter",
+  "item.robotics.miner": "Minatore",
+  "item.robotics.code_drone": "Codice del drone",
+  "item.robotics.extend_o_boots": "extend_o_boots",
+
+  "block.robotics.tin_ore": "Minerale di stagno",
+  "block.robotics.deepslate_tin_ore": "Minerale di stagno in ardesia profonda",
+  "block.robotics.tin_block": "Blocco di stagno",
+  "block.robotics.bronze_block": "Blocco di bronzo",
+  "block.robotics.smasher_block": "Frantumatore",
+  "block.robotics.code_editor": "Editor del codice",
+
+  "entity.robotics.clockcopter": "Clockcopter",
+  "entity.robotics.code_drone": "Juan",
+  "entity.robotics.miner": "Minatore",
+  "entity.robotics.extend_o_boots": "extend_o_boots",
+
+  "item.robotics.extend_o_boots.tooltip": "EXTEND-O-BOOTS",
+  "item.robotics.extend_o_boots.tooltip.summary": "La tua _impalcatura equipaggiabile_! Ti permette di creare un' _impalcatura temporanea estendibile_ sotto di te.",
+  "item.robotics.extend_o_boots.tooltip.control1": "Premi Ctrl indossando",
+  "item.robotics.extend_o_boots.tooltip.action1": "Ti permette di _attivare_ gli ExtendOBoots _muovendo la rotella di scorrimento del mouse su o giù_",
+
+  "item.robotics.program.tooltip": "PROGRAMMA",
+  "item.robotics.program.tooltip.summary": "Un _programma contenente codice_! Ti permette di _programmare robot_.",
+  "item.robotics.program.tooltip.control1": "Clicca il tasto destro sull'Editor del codice",
+  "item.robotics.program.tooltip.action1": "Ti permette di _modificare_ i _contenuti_ del programma",
+  "item.robotics.program.tooltip.control2": "Clicca il tasto destro su un robot programmabile",
+  "item.robotics.program.tooltip.action2": "Ti permette di _applicare_ il _codice_ del programma al _robot_",
+
+  "block.robotics.code_editor.tooltip": "EDITOR DEL CODICE",
+  "block.robotics.code_editor.tooltip.summary": "Un blocco che ti permette di _modificare_ i _contenuti_ di un programma!",
+  "block.robotics.code_editor.tooltip.condition1": "Quando cliccato con tasto destro con un programma",
+  "block.robotics.code_editor.tooltip.behaviour1": "Ti permette di _modificare_ il _programma_",
+
+  "robotics.ponder.programming.header": "Programmando usando un Editor del codice.",
+  "robotics.ponder.programming.text_1": "Per cambiare i contenuti di un programma devi usare un Editor del codice.",
+  "robotics.ponder.programming.text_2": "Clicca col tasto destro l'Editor del codice con il programma per cominciare!",
+  "robotics.ponder.programming.text_3": "Quando hai finito di programmare clicca col tasto destro con il programma su un robot programmabile per applicarci il tuo codice."
+}
