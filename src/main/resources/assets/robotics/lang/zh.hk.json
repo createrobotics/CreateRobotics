@@ -1,0 +1,48 @@
+{
+  "itemGroup.robotics": "Create Robotics",
+
+  "item.robotics.tin_ingot": "錫錠",
+  "item.robotics.tin_nugget": "錫粒",
+  "item.robotics.raw_tin": "粗錫",
+  "item.robotics.bronze_ingot": "青銅錠",
+  "item.robotics.bronze_nugget": "青銅粒",
+  "item.robotics.program": "程式",
+  "item.robotics.clockcopter": "Clockcopter",
+  "item.robotics.miner": "Miner",
+  "item.robotics.code_drone": "Code Drone",
+  "item.robotics.extend_o_boots": "Extend-O-Boots",
+
+  "block.robotics.tin_ore": "錫礦石",
+  "block.robotics.deepslate_tin_ore": "生層錫礦石",
+  "block.robotics.tin_block": "錫塊",
+  "block.robotics.bronze_block": "青銅塊",
+  "block.robotics.smasher_block": "破碎機",
+  "block.robotics.code_editor": "編程改變器",
+
+  "entity.robotics.clockcopter": "Clockcopter",
+  "entity.robotics.code_drone": "Juan",
+  "entity.robotics.miner": "Miner",
+  "entity.robotics.extend_o_boots": "Extend-O-Boots",
+
+  "item.robotics.extend_o_boots.tooltip": "EXTEND-O-BOOTS",
+  "item.robotics.extend_o_boots.tooltip.summary": "你個人的_腳手架_! 可以給你建一個_臨時的可擴展的_腳手架",
+  "item.robotics.extend_o_boots.tooltip.control1": "當你使用的時候、請按住ctrl。",
+  "item.robotics.extend_o_boots.tooltip.action1": "可以通用_上下滾動來啟用_《Extend Boots》",
+
+  "item.robotics.program.tooltip": "程式",
+  "item.robotics.program.tooltip.summary": "有代碼的程序、_可以編程_",
+  "item.robotics.program.tooltip.control1": "在編程改變器右鍵點擊",
+  "item.robotics.program.tooltip.action1": "可以_改變代碼_",
+  "item.robotics.program.tooltip.control2": "右鍵點擊可編程的機器人",
+  "item.robotics.program.tooltip.action2": "可以把_新改變的代碼應用上機器人_",
+
+  "block.robotics.code_editor.tooltip": "編程改變器",
+  "block.robotics.code_editor.tooltip.summary": "可以_改變代碼_的一塊",
+  "block.robotics.code_editor.tooltip.condition1": "如果用程式右鍵點擊",
+  "block.robotics.code_editor.tooltip.behaviour1": "可以_改變代碼_",
+
+  "robotics.ponder.programming.header": "使用代碼編輯器編程",
+  "robotics.ponder.programming.text_1": "如果要改變程序的內容、必須得用一個_代碼編輯器_",
+  "robotics.ponder.programming.text_2": "使用程式右鍵點擊就可以開始",
+  "robotics.ponder.programming.text_3": "如果你完成編程、右鍵點擊上一個可編程的機器人將你的代碼應用於它"
+}
