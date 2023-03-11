@@ -24,7 +24,7 @@
   "entity.robotics.miner": "Górnik",
   "entity.robotics.extend_o_boots": "Buty Na Sprężynach",
 
-  "item.robotics.extend_o_boots.tooltip": "Buty Na Sprężynach",
+  "item.robotics.extend_o_boots.tooltip": "BUTY NA SPRĘŻYNACH",
   "item.robotics.extend_o_boots.tooltip.summary": "Twoje _wyposażone rusztowanie_! Umożliwia utworzenie pod tobą _rozsuwanego tymczasowego rusztowania_.",
   "item.robotics.extend_o_boots.tooltip.control1": "Przytrzymaj Ctrl podczas noszenia",
   "item.robotics.extend_o_boots.tooltip.action1": "Pozwala _aktywować_ ExtendOBoots poprzez _przewijanie w górę lub w dół_",
