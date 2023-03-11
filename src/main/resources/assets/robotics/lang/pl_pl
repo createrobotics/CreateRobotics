@@ -1,0 +1,47 @@
+{
+  "itemGroup.robotics": "Create Robotics",
+
+  "item.robotics.tin_ingot": "Sztabka cyny",
+  "item.robotics.tin_nugget": "Samorodek cyny",
+  "item.robotics.raw_tin": "Surowa cyna",
+  "item.robotics.bronze_ingot": "Sztabka brązu",
+  "item.robotics.bronze_nugget": "Samorodek brązu",
+  "item.robotics.program": "Program",
+  "item.robotics.clockcopter": "Zegarkopter",
+  "item.robotics.miner": "Górnik",
+  "item.robotics.code_drone": "Kodowy dron",
+  "item.robotics.extend_o_boots": "Rozszerzyć-O-Buty",
+
+  "block.robotics.tin_ore": "Ruda cyny",
+  "block.robotics.deepslate_tin_ore": "Głębokie łupy ruda cyny",
+  "block.robotics.tin_block": "Blok cyny",
+  "block.robotics.bronze_block": "Blok brązu",
+  "block.robotics.smasher_block": "łamacz",
+  "block.robotics.code_editor": "Edytor kodu",
+
+  "entity.robotics.clockcopter": "Zegarkopter",
+  "entity.robotics.code_drone": "Juan",
+  "entity.robotics.miner": "Górnik",
+  "entity.robotics.extend_o_boots": "Rozszerzyć-O-Buty",
+
+  "item.robotics.extend_o_boots.tooltip": "ROZSZERZYĆ-O-BUTY",
+  "item.robotics.extend_o_boots.tooltip.summary": "Twoje _wyposażone rusztowanie_! Umożliwia utworzenie pod tobą _rozsuwanego tymczasowego rusztowania_.",
+  "item.robotics.extend_o_boots.tooltip.control1": "Przytrzymaj Ctrl podczas noszenia",
+  "item.robotics.extend_o_boots.tooltip.action1": "Pozwala _aktywować_ ExtendOBoots poprzez _przewijanie w górę lub w dół_",
+
+  "item.robotics.program.tooltip": "PROGRAM",
+  "item.robotics.program.tooltip.summary": "_Program zawierający kod_! Umożliwia _programowanie robotów_.",
+  "item.robotics.program.tooltip.control1": "R-Click w edytorze kodu",
+  "item.robotics.program.tooltip.action1": "Umożliwia _edycję_ _zawartości_ programu",
+  "item.robotics.program.tooltip.control2": "R-Click w programowalnym robocie",
+  "item.robotics.program.tooltip.action2": "Umożliwia _zastosowanie_ _kodu_ programu do _robota_",
+
+  "block.robotics.code_editor.tooltip": "EDYTOR KODU",
+  "block.robotics.code_editor.tooltip.summary": "Blok, który pozwala _edytować_ zawartość_ programu!",
+  "block.robotics.code_editor.tooltip.condition1": "Kiedy R-Clicked z programem",
+  "block.robotics.code_editor.tooltip.behaviour1": "Umożliwia _edycję_ _programu_",
+
+  "robotics.ponder.programming.header": "Programowanie za pomocą edytora kodu.",
+  "robotics.ponder.programming.text_1": "Aby zmienić zawartość programu, potrzebujesz edytora kodu.",
+  "robotics.ponder.programming.text_2": "Kliknij prawym przyciskiem myszy edytor kodu z programem, aby rozpocząć!",
+  "robotics.ponder.programming.text_3": "Kiedy skończysz kodować, kliknij prawym przyciskiem myszy program na programowalnym robocie, aby zastosować do niego swój kod."
