@@ -75,23 +75,10 @@ public class CodeEditorScreen extends AbstractSimiScreen {
 		this.addRenderableWidget(this.editButton);
 
 		this.confirmButton = new IconButton(x + this.background.width - 33, y + this.background.height - 24,
-				AllIcons.I_CONFIRM).withCallback((mouseX, mouseY) -> {
-			try {
-				FileInputStream inputStream = new FileInputStream(this.editFile);
-				try {
-					String fileCode = IOUtils.toString(inputStream);
-					PacketList.CHANNEL.sendToServer(new ReturnEditedCodePacket(fileCode));
-				} finally {
-					inputStream.close();
-				}
-				this.onClose();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		});
+				AllIcons.I_CONFIRM).withCallback((mouseX, mouseY) -> this.onClose());
 		this.addRenderableWidget(this.confirmButton);
 
-		this.minecraft.keyboardHandler.setSendRepeatsToGui(true);
+		this.minecraft.keyboardHandler.setSendRepeatsToGui(false);
 	}
 
 	@Override
@@ -128,6 +115,18 @@ public class CodeEditorScreen extends AbstractSimiScreen {
 
 	@Override
 	public void onClose() {
+		try {
+			FileInputStream inputStream = new FileInputStream(this.editFile);
+			try {
+				String fileCode = IOUtils.toString(inputStream);
+				PacketList.CHANNEL.sendToServer(new ReturnEditedCodePacket(fileCode));
+			} finally {
+				inputStream.close();
+			}
+			this.onClose();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		this.editFile.delete();
 		super.onClose();
 	}
@@ -136,4 +135,6 @@ public class CodeEditorScreen extends AbstractSimiScreen {
 	public boolean shouldCloseOnEsc() {
 		return false;
 	}
+
+
 }
