@@ -1,0 +1,146 @@
+--- Documentation of Create Robotics' Scripting Language optimized for GPT-Models ---
+The "`" and "```" in the Documentation are to show that a piece of text is ```CODE```.
+
+Let's say we have command called `testCommand` that takes one parameter from type number:
+```robot.testCommand(5);```
+Don't forget `;`!
+Example with multiple arguments:
+```robot.testCommand2(5, 2 + 2 * 3, minecraft:diamond_block);```
+
+Second argument has math. Supported math equations:
+Addition: `9 + 9`
+Subtraction: `9 - 9`
+Multiplication: `9 * 9`
+Division: `9 / 9`
+Power: `9 ^ 9`
+Square root: `sqrt(9)`
+Sine, Cosine and Tangent: `sin(9)`, `cos(9)` and `tan(9)`
+Parentheses: `5 * (1 + 3)`
+
+You can define variables.
+There are three types of variables: `internal`, `private` and `public`.
+Note that when there are internal, private and public variables with same name it will first try to get internal, if it doesn't exist private and if that also doesn't exist public.
+`internal` variables are default variables you can't edit or overwrite.
+`private` variables are variables private to only Robot executing it.
+`public` variables are shared between all robots. Editing one affects all robots using it.
+
+Example of defining variable:
+```private myVar = 8;```
+Example of getting and defining variable:
+```private myVar = ${myVar} + 3;```
+
+Variables work like copy paste. If you have a variable called `testVar` and it has saved `testVarContents` when in code there is `${testVar}` it just gets replaced with `testVarContens`.
+Example:
+```
+private testVar = testVarContents;
+robot.goTo(${testVarContents});
+```
+is the same as
+```
+robot.goTo(testVarContents);
+```
+
+*Default parameter types:*
+`optional[something]`: an optional parameter. Can be of type something or empty. This one is bit more advanced so here's an example:
+Let's say that robot.testCommand3 takes number and an optional[number]. That means that you can use `robot.testCommand3` in two different ways:
+```robot.testCommand3(5);
+robot.testCommand3(5, 8);```
+`number`: floating-point number with max 15 digits after ., equivalent to data-type double used in many programming languages.
+`item`: text representing registry value of minecraft item like minecraft:diamond or robotics:tin_ore
+`direction`: text representing direction. Can be Direction.UP, Direction.DOWN and all compass directions like Direction.NORTH. Equivalent to an enum used in many programming languages.
+
+*Default Commands:*
+`robot.goTo`
+Description:
+Makes Robot pathfind to given coordinates
+Parameters:
+`number` x Position to go to
+`number` y Position to go to
+`number` z Position to go to
+
+`robot.getItems`
+Description:
+Makes Robot get items from container at given coordinates.
+Robot needs to be in 4 block radius of container to access it.
+Parameters:
+`number` x Position of container
+`number` y Position of container
+`number` z Position of container
+`optional[item]` item to take out of container
+
+`robot.pushItems`
+Description:
+Makes Robot push items into container at given coordinates.
+Robot needs to be in 4 block radius of container to access it.
+Parameters:
+`number` x Position of container
+`number` y Position of container
+`number` z Position of container
+`optional[item]` item to put into container
+
+`robot.punch`
+Description:
+Makes Robot punch on block or entity at specific coordinates.
+Robot needs to be in 4 block radius of position to punch it.
+Parameters:
+`number` x Position of position to punch
+`number` y Position of position to punch
+`number` z Position of position to punch
+`optional[direction]` direction to punch to
+`optional[item]` item to punch with
+
+`robot.use`
+Description:
+Makes Robot right click on block or entity at specific coordinates.
+Robot needs to be in 4 block radius of position to right click it.
+Parameters:
+`number` x Position of position to right click
+number` y Position of position to right click
+number` z Position of position to right click
+`optional[direction]` direction to right click to
+`optional[item]` item to right click with
+
+`robot.wait`
+Description:
+Makes Robot wait for specific amount of time
+Parameters:
+`number` time to wait in milliseconds
+
+`robot.waitForRedstoneLink`
+Description:
+Makes Robot wait until it gets redstone link signal
+Parameters:
+`item` first frequency of redstone link signal
+`optional[item]` second frequency of redstone link signal
+
+*Default Variables:*
+`xPos`
+Description:
+Returns x position of Robot as number
+`yPos`
+Description:
+Returns y position of Robot as number
+`zPos`
+Description:
+Returns z position of Robot as number
+
+*Examples:*
+"Make robot transfer items from one to another chest"
+```
+/* We first define chestPos variables */
+private chestPosOne = 16, 59, -89;
+private chestPosTwo = 20, 60, -72;
+private waitTime = 100; /* optional */
+
+/* Then we let Robot go to first chest and take items out */
+robot.goTo(${chestPosOne});
+robot.getItems(${chestPosOne}); /* We have no last argument because we want Robot to take everything */
+
+/* Then we can optionally wait some time */
+robot.wait(${waitTime});
+
+/* Then we let Robot go to second chest and put all items it has in */
+robot.goTo(${chestPosTwo});
+robot.pushItems(${chestPosTwo});
+```
+--- End of Documentation for GPT-Models ---
