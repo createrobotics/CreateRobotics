@@ -314,9 +314,9 @@ public class CodeHelper {
 						robot.privateVariableLookupMap.put(CodeHelper.validateRegistryName(matcher.group(1)),
 								robotFromFunction -> matcher.group(2));
 					}
-				} else {
-					runCommand(robot, command);
 				}
+			} else {
+				runCommand(robot, command);
 			}
 
 			charPos = nextSemicolon + 1;
