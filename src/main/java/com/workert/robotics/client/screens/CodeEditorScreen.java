@@ -123,7 +123,7 @@ public class CodeEditorScreen extends AbstractSimiScreen {
 			} finally {
 				inputStream.close();
 			}
-			this.onClose();
+			super.onClose();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
