@@ -314,6 +314,9 @@ public class CodeHelper {
 						robot.privateVariableLookupMap.put(CodeHelper.validateRegistryName(matcher.group(1)),
 								robotFromFunction -> matcher.group(2));
 					}
+				} else {
+					CodeHelper.broadcastErrorToNearbyPlayers(robot,
+							"Command \"" + command + "\" encountered an error assigning the variable.");
 				}
 			} else {
 				runCommand(robot, command);
