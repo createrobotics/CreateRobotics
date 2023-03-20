@@ -353,7 +353,7 @@ public class CodeHelper {
 		if (command.isEmpty() || !command.endsWith(")"))
 			return;
 
-		command = command.substring(0, command.length() - 1); // Remove the ")" at the end
+		command = command.substring(0, command.length() - 2); // Remove the ")" at the end
 
 		final String[] commandToRun = {command};
 
