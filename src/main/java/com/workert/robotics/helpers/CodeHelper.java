@@ -375,6 +375,14 @@ public class CodeHelper {
 					"Trying to replace public variable \"${" + name + "}\" with \"" + value.apply(robot) + "\"");
 		});
 
+		Pattern pattern = Pattern.compile(".*(\\$\\{.*}).*"); // Matches "${}" with anything inside
+		Matcher matcher = pattern.matcher(command);
+		while (matcher.matches()) {
+			CodeHelper.broadcastErrorToNearbyPlayers(robot,
+					"Command \"" + commandToRun[0] + "\" could not find the variable \"" + matcher.group() + "\", ignoring it");
+			commandToRun[0] = command.replaceFirst("\\$\\{.*}", "");
+		}
+
 		CodeHelper.commandMap.forEach((prefix, function) -> {
 			if (commandToRun[0].matches("^robot\\." + prefix + "\\s*\\(.*")) try {
 				function.accept(robot,
