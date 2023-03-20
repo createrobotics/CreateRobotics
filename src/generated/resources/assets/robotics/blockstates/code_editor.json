@@ -1,0 +1,7 @@
+{
+  "variants": {
+	"": {
+	  "model": "robotics:block/code_editor"
+	}
+  }
+}
