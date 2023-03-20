@@ -304,7 +304,7 @@ public class CodeHelper {
 				nextSemicolon = charPos + command.indexOf("{") + codeInsideCurlyBraces.length() + 1;
 			} else if (command.startsWith("public ") || command.startsWith("private ")) {
 				Pattern pattern = Pattern.compile(
-						"^(?:public|private)\\s+(\\S+)\\s*=\\s*(\\S+)\n"); // Matches "public TEXT1 = TEXT2" or "private  TEXT1=TEXT2" and outputs TEXT1 and TEXT2 as group
+						"^(?:public|private)\\s+(\\S+)\\s*=\\s*(\\S+)"); // Matches "public TEXT1 = TEXT2" or "private  TEXT1=TEXT2" and outputs TEXT1 and TEXT2 as group
 				Matcher matcher = pattern.matcher(command);
 				if (matcher.matches()) {
 					if (command.startsWith("public ")) {
@@ -350,8 +350,10 @@ public class CodeHelper {
 	}
 
 	private static void runCommand(AbstractRobotEntity robot, String command) {
-		if (command.isEmpty())
+		if (command.isEmpty() || !command.endsWith(")"))
 			return;
+
+		command.substring(0, command.length() - 1); // Remove the ")" at the end
 
 		final String[] commandToRun = {command};
 
