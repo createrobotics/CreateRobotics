@@ -353,7 +353,7 @@ public class CodeHelper {
 		if (command.isEmpty() || !command.endsWith(")"))
 			return;
 
-		command.substring(0, command.length() - 1); // Remove the ")" at the end
+		command = command.substring(0, command.length() - 1); // Remove the ")" at the end
 
 		final String[] commandToRun = {command};
 
@@ -376,11 +376,11 @@ public class CodeHelper {
 		});
 
 		Pattern pattern = Pattern.compile(".*(\\$\\{.*}).*"); // Matches "${}" with anything inside
-		Matcher matcher = pattern.matcher(command);
+		Matcher matcher = pattern.matcher(commandToRun[0]);
 		while (matcher.matches()) {
 			CodeHelper.broadcastErrorToNearbyPlayers(robot,
 					"Command \"" + commandToRun[0] + "\" could not find the variable \"" + matcher.group() + "\", ignoring it");
-			commandToRun[0] = command.replaceFirst("\\$\\{.*}", "");
+			commandToRun[0] = commandToRun[0].replaceFirst("\\$\\{.*}", "");
 		}
 
 		CodeHelper.commandMap.forEach((prefix, function) -> {
