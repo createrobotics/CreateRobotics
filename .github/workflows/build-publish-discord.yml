@@ -19,6 +19,13 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Send building message to discord
+        if: github.event_name == 'push'
+        uses: realRobotix/action-discord-notifier@release-master
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          message-title: Building mod from branch ${{ steps.get_branch.outputs.branch }}
+
       - name: Get branch name
         id: get_branch
         run: echo "branch=${GITHUB_REF#refs/heads/}" >> $GITHUB_OUTPUT
@@ -58,13 +65,6 @@ jobs:
       #     arguments: publishMavenJavaPublicationToGitHubPackagesRepository
       #   env:
       #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Send building message to discord
-        if: github.event_name == 'push'
-        uses: realRobotix/action-discord-notifier@release-master
-        with:
-          webhook: ${{ secrets.DISCORD_WEBHOOK }}
-          message-title: Building mod from branch ${{ steps.get_branch.outputs.branch }}
 
       - name: Send built file to discord
         if: github.event_name == 'push'
