@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:block/cube_all",
   "textures": {
-	"all": "robotics:block/bronze_block"
+    "all": "robotics:block/bronze_block"
   }
 }

@@ -17,7 +17,6 @@ public class ItemList {
 	}
 
 	static {
-		Robotics.REGISTRATE.creativeModeTab(() -> ItemList.ROBOTICS_TAB);
 		Robotics.REGISTRATE.startSection(AllSections.MATERIALS);
 	}
 

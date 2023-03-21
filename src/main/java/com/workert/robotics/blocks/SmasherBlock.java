@@ -16,7 +16,6 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.BooleanOp;
@@ -29,7 +28,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.stream.Stream;
 
 public class SmasherBlock extends BaseEntityBlock {
-	public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+	public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
 
 	private static final VoxelShape SHAPE = Stream.of(Block.box(0, 0, 0, 16, 5, 16), Block.box(0, 5, 0.5, 16, 16, 16))
 			.reduce((voxelShape, voxelShape2) -> Shapes.join(voxelShape, voxelShape2, BooleanOp.OR)).get();
@@ -43,16 +42,14 @@ public class SmasherBlock extends BaseEntityBlock {
 		return SHAPE;
 	}
 
-	/* FACING */
-
 	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext pContext) {
 		return this.defaultBlockState().setValue(FACING, pContext.getHorizontalDirection().getOpposite());
 	}
 
 	@Override
-	public BlockState rotate(BlockState pState, Rotation pRotation) {
-		return pState.setValue(FACING, pRotation.rotate(pState.getValue(FACING)));
+	public BlockState rotate(BlockState pState, Rotation pRot) {
+		return pState.setValue(FACING, pRot.rotate(pState.getValue(FACING)));
 	}
 
 	@Override

@@ -24,7 +24,6 @@ public class BlockList {
 	}
 
 	static {
-		Robotics.REGISTRATE.creativeModeTab(() -> ItemList.ROBOTICS_TAB);
 		Robotics.REGISTRATE.startSection(AllSections.SCHEMATICS);
 	}
 
@@ -73,11 +72,15 @@ public class BlockList {
 			.transform(tagBlockAndItem("storage_blocks/bronze")).tag(Tags.Items.STORAGE_BLOCKS).build().register();
 
 	public static final BlockEntry<SmasherBlock> SMASHER = Robotics.REGISTRATE.block(
-			"smasher", SmasherBlock::new).lang("Smasher").properties(properties ->
-			properties.of(Material.METAL).sound(SoundType.METAL).strength(9f)
-					.requiresCorrectToolForDrops()).simpleItem().register();
+					"smasher", SmasherBlock::new).lang("Smasher")
+			.blockstate((dataGenContext, provider) -> provider.horizontalBlock(dataGenContext.get(), provider.models()
+					.getExistingFile(provider.modLoc("block/smasher")))).properties(properties ->
+					properties.of(Material.METAL).sound(SoundType.METAL).strength(9f)
+							.requiresCorrectToolForDrops()).simpleItem().register();
 
 	public static final BlockEntry<CodeEditor> CODE_EDITOR = Robotics.REGISTRATE.block(
-			"code_editor", CodeEditor::new).lang("Code Editor").properties(properties ->
-			properties.of(Material.WOOD).sound(SoundType.WOOD).noOcclusion()).simpleItem().register();
+					"code_editor", CodeEditor::new).lang("Code Editor")
+			.blockstate((dataGenContext, provider) -> provider.horizontalBlock(dataGenContext.get(), provider.models()
+					.getExistingFile(provider.modLoc("block/code_editor")))).properties(properties ->
+					properties.of(Material.WOOD).sound(SoundType.WOOD).noOcclusion()).simpleItem().register();
 }

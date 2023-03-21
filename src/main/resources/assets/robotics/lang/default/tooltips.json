@@ -1,29 +1,4 @@
 {
-  "itemGroup.robotics": "Create Robotics",
-
-  "item.robotics.tin_ingot": "Tin ingot",
-  "item.robotics.tin_nugget": "Tin nugget",
-  "item.robotics.raw_tin": "Raw tin",
-  "item.robotics.bronze_ingot": "Bronze ingot",
-  "item.robotics.bronze_nugget": "Bronze nugget",
-  "item.robotics.program": "Program",
-  "item.robotics.clockcopter": "Clockcopter",
-  "item.robotics.miner": "Miner",
-  "item.robotics.code_drone": "Code Drone",
-  "item.robotics.extend_o_boots": "Extend-O-Boots",
-
-  "block.robotics.tin_ore": "Tin ore",
-  "block.robotics.deepslate_tin_ore": "Deepslate tin ore",
-  "block.robotics.tin_block": "Tin block",
-  "block.robotics.bronze_block": "Bronze block",
-  "block.robotics.smasher_block": "Smasher",
-  "block.robotics.code_editor": "Code Editor",
-
-  "entity.robotics.clockcopter": "Clockcopter",
-  "entity.robotics.code_drone": "Juan",
-  "entity.robotics.miner": "Miner",
-  "entity.robotics.extend_o_boots": "Extend-O-Boots",
-
   "item.robotics.extend_o_boots.tooltip": "EXTEND-O-BOOTS",
   "item.robotics.extend_o_boots.tooltip.summary": "Your _equipable Scaffolding_! Allows you to create an _extendable temporary scaffolding_ under you.",
   "item.robotics.extend_o_boots.tooltip.control1": "Hold Ctrl while wearing",

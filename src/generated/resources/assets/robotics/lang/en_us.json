@@ -1,0 +1,77 @@
+{
+
+  "_": "->------------------------]  Game Elements  [------------------------<-",
+
+  "block.robotics.bronze_block": "Bronze block",
+  "block.robotics.code_editor": "Code Editor",
+  "block.robotics.deepslate_tin_ore": "Deepslate tin ore",
+  "block.robotics.smasher": "Smasher",
+  "block.robotics.tin_block": "Tin block",
+  "block.robotics.tin_ore": "Tin ore",
+
+  "entity.robotics.clockcopter": "Clockcopter",
+  "entity.robotics.code_drone": "Code Drone",
+  "entity.robotics.extend_o_boots": "Extend O Boots",
+  "entity.robotics.miner": "Miner",
+
+  "item.robotics.bronze_ingot": "Bronze ingot",
+  "item.robotics.bronze_nugget": "Bronze nugget",
+  "item.robotics.clockcopter": "Clockcopter",
+  "item.robotics.code_drone": "Code Drone",
+  "item.robotics.extend_o_boots": "Extend-O-Boots",
+  "item.robotics.program": "Program",
+  "item.robotics.raw_tin": "Raw tin",
+  "item.robotics.tin_ingot": "Tin ingot",
+  "item.robotics.tin_nugget": "Tin nugget",
+
+  "itemGroup.robotics": "Create Robotics",
+
+  "item.robotics.extend_o_boots.tooltip": "EXTEND-O-BOOTS",
+  "item.robotics.extend_o_boots.tooltip.summary": "Your _equipable Scaffolding_! Allows you to create an _extendable temporary scaffolding_ under you.",
+  "item.robotics.extend_o_boots.tooltip.control1": "Hold Ctrl while wearing",
+  "item.robotics.extend_o_boots.tooltip.action1": "Allows you to _activate_ the ExtendOBoots through _scrolling up or down_",
+
+  "item.robotics.program.tooltip": "PROGRAM",
+  "item.robotics.program.tooltip.summary": "A _program containing code_! Allows you to _program robots_.",
+  "item.robotics.program.tooltip.control1": "R-Click at Code Editor",
+  "item.robotics.program.tooltip.action1": "Allows you to _edit_ the program's _contents_",
+  "item.robotics.program.tooltip.control2": "R-Click at programmable robot",
+  "item.robotics.program.tooltip.action2": "Allows you to _apply_ the program's _code_ to the _robot_",
+
+  "block.robotics.code_editor.tooltip": "CODE EDITOR",
+  "block.robotics.code_editor.tooltip.summary": "A block that allows you to _edit_ a program's _contents_!",
+  "block.robotics.code_editor.tooltip.condition1": "When R-Clicked with Program",
+  "block.robotics.code_editor.tooltip.behaviour1": "Allows you to _edit_ the _program_",
+
+  "robotics.ponder.programming.header": "Programming using a Code Editor.",
+  "robotics.ponder.programming.text_1": "To change the contents of a Program you need a code editor.",
+  "robotics.ponder.programming.text_2": "Right click the code editor with the program to get started!",
+  "robotics.ponder.programming.text_3": "When you're finished coding right click with the program on a programmable robot to apply your code to it.",
+
+  "_": "->------------------------]  Item Descriptions  [------------------------<-",
+
+  "item.robotics.extend_o_boots.tooltip": "EXTEND-O-BOOTS",
+  "item.robotics.extend_o_boots.tooltip.summary": "Your _equipable Scaffolding_! Allows you to create an _extendable temporary scaffolding_ under you.",
+  "item.robotics.extend_o_boots.tooltip.control1": "Hold Ctrl while wearing",
+  "item.robotics.extend_o_boots.tooltip.action1": "Allows you to _activate_ the ExtendOBoots through _scrolling up or down_",
+
+  "item.robotics.program.tooltip": "PROGRAM",
+  "item.robotics.program.tooltip.summary": "A _program containing code_! Allows you to _program robots_.",
+  "item.robotics.program.tooltip.control1": "R-Click at Code Editor",
+  "item.robotics.program.tooltip.action1": "Allows you to _edit_ the program's _contents_",
+  "item.robotics.program.tooltip.control2": "R-Click at programmable robot",
+  "item.robotics.program.tooltip.action2": "Allows you to _apply_ the program's _code_ to the _robot_",
+
+  "block.robotics.code_editor.tooltip": "CODE EDITOR",
+  "block.robotics.code_editor.tooltip.summary": "A block that allows you to _edit_ a program's _contents_!",
+  "block.robotics.code_editor.tooltip.condition1": "When R-Clicked with Program",
+  "block.robotics.code_editor.tooltip.behaviour1": "Allows you to _edit_ the _program_",
+
+  "robotics.ponder.programming.header": "Programming using a Code Editor.",
+  "robotics.ponder.programming.text_1": "To change the contents of a Program you need a code editor.",
+  "robotics.ponder.programming.text_2": "Right click the code editor with the program to get started!",
+  "robotics.ponder.programming.text_3": "When you're finished coding right click with the program on a programmable robot to apply your code to it.",
+
+  "_": "Thank you for translating Create Robotics!"
+
+}

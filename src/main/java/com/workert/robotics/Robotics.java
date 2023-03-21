@@ -2,8 +2,11 @@ package com.workert.robotics;
 
 import com.mojang.logging.LogUtils;
 import com.simibubi.create.foundation.data.CreateRegistrate;
+import com.simibubi.create.foundation.data.LangMerger;
+import com.simibubi.create.foundation.ponder.PonderLocalization;
 import com.workert.robotics.client.ClientHandler;
 import com.workert.robotics.client.KeybindList;
+import com.workert.robotics.client.LangPartials;
 import com.workert.robotics.client.screens.MenuList;
 import com.workert.robotics.client.screens.SmasherBlockScreen;
 import com.workert.robotics.helpers.CodeHelper;
@@ -11,8 +14,8 @@ import com.workert.robotics.lists.*;
 import com.workert.robotics.world.feature.ModConfiguredFeatures;
 import com.workert.robotics.world.feature.ModPlacedFeatures;
 import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.data.DataGenerator;
+import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -34,11 +37,14 @@ public class Robotics {
 		this.modEventBus.addListener(ClientHandler::registerLayerDefinition);
 
 		REGISTRATE.registerEventListeners(this.modEventBus);
+		this.modEventBus.addListener(Robotics::gatherData);
 
+		Robotics.REGISTRATE.creativeModeTab(() -> ItemList.ROBOTICS_TAB, "Create Robotics");
 		BlockList.register();
 		EntityList.register();
 		ItemList.register();
 		BlockEntityList.register();
+
 		MenuList.register(this.modEventBus);
 		RecipeList.register(this.modEventBus);
 
@@ -54,10 +60,15 @@ public class Robotics {
 		ClientHandler.init();
 		KeybindList.init();
 
-		// TODO Set the render types in block model's JSON
-		ItemBlockRenderTypes.setRenderLayer(BlockList.SMASHER.get(), RenderType.translucent());
-		ItemBlockRenderTypes.setRenderLayer(BlockList.CODE_EDITOR.get(), RenderType.translucent());
-
 		MenuScreens.register(MenuList.SMASHER_BLOCK_MENU.get(), SmasherBlockScreen::new);
+	}
+
+	public static void gatherData(GatherDataEvent event) {
+		DataGenerator dataGenerator = event.getGenerator();
+		if (event.includeClient()) {
+			PonderLocalization.provideRegistrateLang(Robotics.REGISTRATE);
+			dataGenerator.addProvider(true,
+					new LangMerger(dataGenerator, Robotics.MOD_ID, "Create Robotics", LangPartials.values()));
+		}
 	}
 }

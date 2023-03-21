@@ -1,7 +1,19 @@
 {
   "variants": {
-	"": {
+	"facing=east": {
+	  "model": "robotics:block/smasher",
+	  "y": 90
+	},
+	"facing=north": {
 	  "model": "robotics:block/smasher"
+	},
+	"facing=south": {
+	  "model": "robotics:block/smasher",
+	  "y": 180
+	},
+	"facing=west": {
+	  "model": "robotics:block/smasher",
+	  "y": 270
 	}
   }
 }
