@@ -1,0 +1,79 @@
+ -- THIS IS THE DEFAULT ENGLISH TRANSLATION FILE WITH HINTS AND HELP FOR TRANSLATION. IT IS NOT A VALID JSON FILE AND NOT USED IN-GAME! -- 
+
+{
+
+  "_": "->------------------------]  Game Elements  [------------------------<-",			 <-- Leave untranslated
+
+  "block.robotics.bronze_block": "Bronze block",
+  "block.robotics.code_editor": "Code Editor",
+  "block.robotics.deepslate_tin_ore": "Deepslate tin ore",														 <-- Use the minecraft ore naming format
+  "block.robotics.smasher": "Smasher",																								 <-- Hint: A block used to smash ores and more into smaller pieces
+  "block.robotics.tin_block": "Tin block",																						 <-- Use the minecraft block naming format
+  "block.robotics.tin_ore": "Tin ore",																								 <-- Use the minecraft ore naming format
+
+  "entity.robotics.clockcopter": "Clockcopter",																				 <-- Leave untranslated
+  "entity.robotics.code_drone": "Juan",																								 <-- Leave untranslated
+  "entity.robotics.extend_o_boots": "Extend-O-Boots",
+  "entity.robotics.miner": "Miner",
+
+  "item.robotics.bronze_ingot": "Bronze ingot",
+  "item.robotics.bronze_nugget": "Bronze nugget",
+  "item.robotics.clockcopter": "Clockcopter",																					 <-- Leave untranslated
+  "item.robotics.code_drone": "Juan",																									 <-- Leave untranslated
+  "item.robotics.extend_o_boots": "Extend-O-Boots",
+  "item.robotics.program": "Program",																									 <-- Hint: A coding program that you can apply to a robot
+  "item.robotics.raw_tin": "Raw tin",																									 <-- Use the minecraft ore naming format
+  "item.robotics.tin_ingot": "Tin ingot",																							 <-- Use the minecraft ore naming format
+  "item.robotics.tin_nugget": "Tin nugget",																						 <-- Use the minecraft ore naming format
+
+  "itemGroup.robotics": "Create Robotics",																						 <-- Leave untranslated
+
+  "item.robotics.extend_o_boots.tooltip": "EXTEND-O-BOOTS",														 <-- Translate but leave in CAPS
+  "item.robotics.extend_o_boots.tooltip.summary": "Your _equipable Scaffolding_! Allows you to create an _extendable temporary scaffolding_ under you.",
+  "item.robotics.extend_o_boots.tooltip.control1": "Hold Ctrl while wearing",
+  "item.robotics.extend_o_boots.tooltip.action1": "Allows you to _activate_ the ExtendOBoots through _scrolling up or down_",
+
+  "item.robotics.program.tooltip": "PROGRAM",																					 <-- Translate but leave in CAPS
+  "item.robotics.program.tooltip.summary": "A _program containing code_! Allows you to _program robots_.",
+  "item.robotics.program.tooltip.control1": "R-Click at Code Editor",
+  "item.robotics.program.tooltip.action1": "Allows you to _edit_ the program's _contents_",
+  "item.robotics.program.tooltip.control2": "R-Click at programmable robot",
+  "item.robotics.program.tooltip.action2": "Allows you to _apply_ the program's _code_ to the _robot_",
+
+  "block.robotics.code_editor.tooltip": "CODE EDITOR",																 <-- Translate but leave in CAPS
+  "block.robotics.code_editor.tooltip.summary": "A block that allows you to _edit_ a program's _contents_!",
+  "block.robotics.code_editor.tooltip.condition1": "When R-Clicked with Program",
+  "block.robotics.code_editor.tooltip.behaviour1": "Allows you to _edit_ the _program_",
+
+  "robotics.ponder.programming.header": "Programming using a Code Editor.",
+  "robotics.ponder.programming.text_1": "To change the contents of a Program you need a code editor.",
+  "robotics.ponder.programming.text_2": "Right click the code editor with the program to get started!",
+  "robotics.ponder.programming.text_3": "When you're finished coding right click with the program on a programmable robot to apply your code to it.",
+
+  "_": "->------------------------]  Item Descriptions  [------------------------<-",	 <-- Leave untranslated
+
+  "item.robotics.extend_o_boots.tooltip": "EXTEND-O-BOOTS",														 <-- Translate but leave in CAPS
+  "item.robotics.extend_o_boots.tooltip.summary": "Your _equipable Scaffolding_! Allows you to create an _extendable temporary scaffolding_ under you.",
+  "item.robotics.extend_o_boots.tooltip.control1": "Hold Ctrl while wearing",
+  "item.robotics.extend_o_boots.tooltip.action1": "Allows you to _activate_ the ExtendOBoots through _scrolling up or down_",
+
+  "item.robotics.program.tooltip": "PROGRAM",																					 <-- Translate but leave in CAPS
+  "item.robotics.program.tooltip.summary": "A _program containing code_! Allows you to _program robots_.",
+  "item.robotics.program.tooltip.control1": "R-Click at Code Editor",
+  "item.robotics.program.tooltip.action1": "Allows you to _edit_ the program's _contents_",
+  "item.robotics.program.tooltip.control2": "R-Click at programmable robot",
+  "item.robotics.program.tooltip.action2": "Allows you to _apply_ the program's _code_ to the _robot_",
+
+  "block.robotics.code_editor.tooltip": "CODE EDITOR",																 <-- Translate but leave in CAPS
+  "block.robotics.code_editor.tooltip.summary": "A block that allows you to _edit_ a program's _contents_!",
+  "block.robotics.code_editor.tooltip.condition1": "When R-Clicked with Program",
+  "block.robotics.code_editor.tooltip.behaviour1": "Allows you to _edit_ the _program_",
+
+  "robotics.ponder.programming.header": "Programming using a Code Editor.",
+  "robotics.ponder.programming.text_1": "To change the contents of a Program you need a code editor.",
+  "robotics.ponder.programming.text_2": "Right click the code editor with the program to get started!",
+  "robotics.ponder.programming.text_3": "When you're finished coding right click with the program on a programmable robot to apply your code to it.",
+
+  "_": "Thank you for translating Create Robotics!"																		 <-- Finished :D
+
+}
