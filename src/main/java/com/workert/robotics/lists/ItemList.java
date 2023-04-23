@@ -52,7 +52,7 @@ public class ItemList {
 			BaseRobotItem::new).onRegister(item -> item.setEntity(() -> EntityList.MINER.get())).register();*/
 
 	public static final ItemEntry<BaseRobotItem> CODE_DRONE = Robotics.REGISTRATE.item("code_drone",
-					BaseRobotItem::new).lang("Code Drone").onRegister(item -> item.setEntity(EntityList.CODE_DRONE))
+					BaseRobotItem::new).lang("Juan").onRegister(item -> item.setEntity(EntityList.CODE_DRONE))
 			.register();
 
 	public static final ItemEntry<ExtendOBootsItem> EXTEND_O_BOOTS = Robotics.REGISTRATE.item("extend_o_boots",
