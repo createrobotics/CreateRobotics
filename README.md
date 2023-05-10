@@ -13,7 +13,7 @@ players can program the robots with {Placeholder name}, designed to be user-frie
 
 This allows the player to do many things with the robots, whether automating moving items from A to B, building a quarry, or simply using them to automate a mob grinder. 
 
-The mod adds almost infinite ways to automate with the robots." 
+The mod adds almost infinite ways to automate with the robots!
 
 
 For help with RoboScript you can look <a href="https://github.com/Worker20/CreateRobotics/wiki/Programming-Mechanic">here</a>.
