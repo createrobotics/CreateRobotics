@@ -9,7 +9,7 @@
 
 **Create Robotics** is a create addon that adds robotics and their automation to Minecraft. 
 
-players can program the robots with {Placeholder name}, designed to be user-friendly, Simple, But still powerful. 
+Players can program the robots with our own scripting-language called RoboScript, designed to be user-friendly, simple, but still powerful.
 
 This allows the player to do many things with the robots, whether automating moving items from A to B, building a quarry, or simply using them to automate a mob grinder. 
 
