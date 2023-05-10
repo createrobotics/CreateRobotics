@@ -16,5 +16,5 @@ This allows the player to do many things with the robots, whether automating mov
 The mod adds almost infinite ways to automate with the robots." 
 
 
-The syntax for {Placeholder name} can be found <a href="https://github.com/Worker20/CreateRobotics/wiki/Programming-Mechanic">here.</a>
+For help with RoboScript you can look <a href="https://github.com/Worker20/CreateRobotics/wiki/Programming-Mechanic">here</a>.
 
