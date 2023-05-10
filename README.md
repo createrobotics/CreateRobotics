@@ -7,6 +7,14 @@
 
 <a href="https://discord.gg/PbBt4PQhpe"><img src="https://discordapp.com/api/guilds/865321790347018241/widget.png?style=banner3" alt="Discord Banner" align="right"/></a>
 
-**Create Robotics** is a mod about Robots and Robotics Automation in Minecraft using the Create mod.
+**Create Robotics** is a create addon that adds robotics and their automation to Minecraft. 
 
-Robots will have many use cases, some will help you at specific tasks, some will automate your factory and some will fight your enemies.
+Players can program the robots with our own scripting-language called RoboScript, designed to be user-friendly, simple, but still powerful.
+
+This allows the player to do many things with the robots, whether automating moving items from A to B, building a quarry, or simply using them to automate a mob grinder. 
+
+The mod adds almost infinite ways to automate with the robots!
+
+
+For help with RoboScript you can look <a href="https://github.com/Worker20/CreateRobotics/wiki/Programming-Mechanic">here</a>.
+
