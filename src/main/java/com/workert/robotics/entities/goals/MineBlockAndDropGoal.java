@@ -26,8 +26,7 @@ public class MineBlockAndDropGoal extends MoveToBlockGoal {
 	private int ticksSinceReachedGoal;
 	private final List<BlockPos> posBlackList = new ArrayList<>();
 
-	public MineBlockAndDropGoal(PathfinderMob pMob, List<Block> blocksToRemove, double pSpeedModifier, int pSearchRange,
-								int pVerticalSearchRange) {
+	public MineBlockAndDropGoal(PathfinderMob pMob, List<Block> blocksToRemove, double pSpeedModifier, int pSearchRange, int pVerticalSearchRange) {
 		super(pMob, pSpeedModifier, pSearchRange, pVerticalSearchRange);
 		this.blocksToRemove = blocksToRemove;
 		this.mob = pMob;
@@ -52,8 +51,8 @@ public class MineBlockAndDropGoal extends MoveToBlockGoal {
 		Level level = this.mob.level;
 		RandomSource random = this.mob.getRandom();
 
-		if (this.blockPos != null && this.isValidTarget(level, this.blockPos) &&
-				this.blockPos.closerToCenterThan(this.mob.position(), this.acceptedDistance())) {
+		if (this.blockPos != null && this.isValidTarget(level, this.blockPos) && this.blockPos.closerToCenterThan(
+				this.mob.position(), this.acceptedDistance())) {
 
 			this.mob.getLookControl()
 					.setLookAt(this.blockPos.getX() + 0.5, this.blockPos.getY() + 0.5, this.blockPos.getZ() + 0.5);
@@ -80,9 +79,9 @@ public class MineBlockAndDropGoal extends MoveToBlockGoal {
 			++this.ticksSinceReachedGoal;
 		}
 
-		if (this.blockPos != null && this.mob.getNavigation().isDone() &&
-				!this.blockPos.closerToCenterThan(this.mob.position(), this.acceptedDistance()) &&
-				this.isValidTarget(level, this.blockPos)) this.posBlackList.add(this.blockPos);
+		if (this.blockPos != null && this.mob.getNavigation().isDone() && !this.blockPos.closerToCenterThan(
+				this.mob.position(), this.acceptedDistance()) && this.isValidTarget(level, this.blockPos))
+			this.posBlackList.add(this.blockPos);
 	}
 
 	@Override

@@ -33,8 +33,7 @@ public class ExtendOBoots extends LivingEntity {
 	public void tick() {
 		super.tick();
 		Player nearestPlayer = this.level.getNearestPlayer(this, ExtendOBootsItem.MAX_HEIGHT + 1);
-		if (nearestPlayer == null)
-			this.discard();
+		if (nearestPlayer == null) this.discard();
 		else {
 			if (nearestPlayer.position()
 					.distanceTo(this.position().with(Direction.Axis.Y, nearestPlayer.position().y)) > 0.2)

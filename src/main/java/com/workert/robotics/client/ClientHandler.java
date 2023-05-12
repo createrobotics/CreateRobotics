@@ -36,24 +36,19 @@ public class ClientHandler {
 
 	@SubscribeEvent
 	public static void addToItemTooltip(ItemTooltipEvent event) {
-		if (!AllConfigs.CLIENT.tooltips.get())
-			return;
-		if (event.getEntity() == null)
-			return;
+		if (!AllConfigs.CLIENT.tooltips.get()) return;
+		if (event.getEntity() == null) return;
 
 		ItemStack stack = event.getItemStack();
-		String translationKey = stack.getItem()
-				.getDescriptionId(stack);
+		String translationKey = stack.getItem().getDescriptionId(stack);
 
 		if (translationKey.startsWith("item." + Robotics.MOD_ID) || translationKey.startsWith(
-				"block." + Robotics.MOD_ID))
-			if (TooltipHelper.hasTooltip(stack, event.getEntity())) {
-				List<Component> itemTooltip = event.getToolTip();
-				List<Component> toolTip = new ArrayList<>();
-				toolTip.add(itemTooltip.remove(0));
-				TooltipHelper.getTooltip(stack)
-						.addInformation(toolTip);
-				itemTooltip.addAll(0, toolTip);
-			}
+				"block." + Robotics.MOD_ID)) if (TooltipHelper.hasTooltip(stack, event.getEntity())) {
+			List<Component> itemTooltip = event.getToolTip();
+			List<Component> toolTip = new ArrayList<>();
+			toolTip.add(itemTooltip.remove(0));
+			TooltipHelper.getTooltip(stack).addInformation(toolTip);
+			itemTooltip.addAll(0, toolTip);
+		}
 	}
 }

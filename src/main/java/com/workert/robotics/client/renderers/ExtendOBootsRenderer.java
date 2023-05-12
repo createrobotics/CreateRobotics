@@ -16,8 +16,7 @@ public class ExtendOBootsRenderer extends LivingEntityRenderer<ExtendOBoots, Ext
 	}
 
 	@Override
-	public void render(ExtendOBoots pEntity, float pEntityYaw, float pPartialTicks, PoseStack pPoseStack,
-					   MultiBufferSource pBuffer, int pPackedLight) {
+	public void render(ExtendOBoots pEntity, float pEntityYaw, float pPartialTicks, PoseStack pPoseStack, MultiBufferSource pBuffer, int pPackedLight) {
 		super.render(pEntity, pEntityYaw, pPartialTicks, pPoseStack, pBuffer, pPackedLight);
 	}
 

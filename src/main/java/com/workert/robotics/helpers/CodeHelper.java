@@ -79,9 +79,8 @@ public class CodeHelper {
 	}
 
 	private static String validateRegistryName(String name) {
-		if (name.matches(".*[^a-zA-Z].*"))
-			throw new IllegalArgumentException(
-					"RegistryNames may only contain a-Z and should start with a lowercase letter");
+		if (name.matches(".*[^a-zA-Z].*")) throw new IllegalArgumentException(
+				"RegistryNames may only contain a-Z and should start with a lowercase letter");
 		return String.valueOf(name.trim().charAt(0)).toLowerCase() + name.trim().substring(1);
 	}
 
@@ -127,8 +126,7 @@ public class CodeHelper {
 						for (int slot = 0; slot < handler.getSlots(); slot++) {
 							while (!handler.getStackInSlot(slot)
 									.isEmpty() && (arguments.size() < 4 || CodeHelper.getItemById(arguments.get(3))
-									.equals(handler.getStackInSlot(slot).getItem()))
-									&& robot.wantsToPickUp(
+									.equals(handler.getStackInSlot(slot).getItem())) && robot.wantsToPickUp(
 									handler.extractItem(slot, 1, true))) {
 								robot.getInventory().addItem(handler.extractItem(slot, 1, false));
 							}
@@ -173,8 +171,7 @@ public class CodeHelper {
 			if (arguments.size() > 3) {
 				if (arguments.get(3).trim().startsWith("Direction")) {
 					direction = Direction.valueOf(arguments.get(3).trim().replace("Direction.", ""));
-					if (arguments.size() > 4)
-						item = CodeHelper.getItemById(arguments.get(4));
+					if (arguments.size() > 4) item = CodeHelper.getItemById(arguments.get(4));
 				} else item = CodeHelper.getItemById(arguments.get(3));
 			}
 
@@ -196,8 +193,7 @@ public class CodeHelper {
 			if (arguments.size() > 3) {
 				if (arguments.get(3).trim().startsWith("Direction")) {
 					direction = Direction.valueOf(arguments.get(3).trim().replace("Direction.", ""));
-					if (arguments.size() > 4)
-						item = CodeHelper.getItemById(arguments.get(4));
+					if (arguments.size() > 4) item = CodeHelper.getItemById(arguments.get(4));
 				} else item = CodeHelper.getItemById(arguments.get(3));
 			}
 
@@ -208,8 +204,7 @@ public class CodeHelper {
 			}
 		});
 		CodeHelper.registerCommand("wait", (robot, arguments) -> {
-			if (arguments.size() < 1)
-				throw new IllegalArgumentException("Expected one argument for command \"wait\"");
+			if (arguments.size() < 1) throw new IllegalArgumentException("Expected one argument for command \"wait\"");
 			try {
 				Thread.sleep((long) CodeHelper.eval(arguments.get(0)));
 			} catch (InterruptedException e) {
@@ -217,18 +212,16 @@ public class CodeHelper {
 			}
 		});
 		CodeHelper.registerCommand("waitForRedstoneLink", (robot, arguments) -> {
-			if (arguments.size() < 1)
-				throw new IllegalArgumentException(
-						"Expected one or more arguments for command \"waitForRedstoneLink\"");
+			if (arguments.size() < 1) throw new IllegalArgumentException(
+					"Expected one or more arguments for command \"waitForRedstoneLink\"");
 
 
 			RedstoneLinkNetworkHandler.Frequency secondFrequency = RedstoneLinkNetworkHandler.Frequency.EMPTY;
-			if (arguments.size() > 1)
-				secondFrequency = RedstoneLinkNetworkHandler.Frequency.of(
-						CodeHelper.getItemById(arguments.get(1)).getDefaultInstance());
+			if (arguments.size() > 1) secondFrequency = RedstoneLinkNetworkHandler.Frequency.of(
+					CodeHelper.getItemById(arguments.get(1)).getDefaultInstance());
 
-			while (!Create.REDSTONE_LINK_NETWORK_HANDLER.hasAnyLoadedPower(
-					Couple.create(RedstoneLinkNetworkHandler.Frequency.of(
+			while (!Create.REDSTONE_LINK_NETWORK_HANDLER.hasAnyLoadedPower(Couple.create(
+					RedstoneLinkNetworkHandler.Frequency.of(
 							CodeHelper.getItemById(arguments.get(0)).getDefaultInstance()), secondFrequency))) {
 				try {
 					Thread.sleep(200);
@@ -240,8 +233,7 @@ public class CodeHelper {
 		});
 		CodeHelper.registerCommand("setRedstoneLink", (robot, arguments) -> {
 			if (arguments.size() < 1)
-				throw new IllegalArgumentException(
-						"Expected one or more arguments for command \"setRedstoneLink\"");
+				throw new IllegalArgumentException("Expected one or more arguments for command \"setRedstoneLink\"");
 
 			RedstoneLinkNetworkHandler.Frequency secondFrequency = RedstoneLinkNetworkHandler.Frequency.EMPTY;
 			int signalStrength = 0;
@@ -251,8 +243,7 @@ public class CodeHelper {
 				} catch (RuntimeException e) {
 					secondFrequency = RedstoneLinkNetworkHandler.Frequency.of(
 							CodeHelper.getItemById(arguments.get(1)).getDefaultInstance());
-					if (arguments.size() > 2)
-						signalStrength = (int) CodeHelper.eval(arguments.get(1));
+					if (arguments.size() > 2) signalStrength = (int) CodeHelper.eval(arguments.get(1));
 				}
 			}
 
@@ -286,8 +277,7 @@ public class CodeHelper {
 		int charPos = 0;
 		while (charPos < code.length()) {
 			int nextSemicolon = code.indexOf(";", charPos);
-			if (nextSemicolon == -1)
-				nextSemicolon = code.length();
+			if (nextSemicolon == -1) nextSemicolon = code.length();
 
 			String command = code.substring(charPos, nextSemicolon).trim();
 			Robotics.LOGGER.debug("Command: \"" + command + "\"");
@@ -337,10 +327,8 @@ public class CodeHelper {
 			switch (input.charAt(closeCurlyBraceSearchIndex)) {
 				case '{' -> openedCurlyBraces++;
 				case '}' -> {
-					if (openedCurlyBraces == 0)
-						closeCurlyBracePos = closeCurlyBraceSearchIndex;
-					else
-						openedCurlyBraces++;
+					if (openedCurlyBraces == 0) closeCurlyBracePos = closeCurlyBraceSearchIndex;
+					else openedCurlyBraces++;
 				}
 			}
 			closeCurlyBraceSearchIndex++;
@@ -350,8 +338,7 @@ public class CodeHelper {
 	}
 
 	private static void runCommand(AbstractRobotEntity robot, String command) {
-		if (command.isEmpty() || !command.endsWith(")"))
-			return;
+		if (command.isEmpty() || !command.endsWith(")")) return;
 
 		command = command.substring(0, command.length() - 2); // Remove the ")" at the end
 
@@ -396,18 +383,14 @@ public class CodeHelper {
 	}
 
 	public static Item getItemById(String id) {
-		Item item = Registry.ITEM.get(new ResourceLocation(id.trim().split(":")[0],
-				id.trim().split(":")[1]));
+		Item item = Registry.ITEM.get(new ResourceLocation(id.trim().split(":")[0], id.trim().split(":")[1]));
 
-		if (item.equals(Items.AIR))
-			throw new IllegalArgumentException("Unknown item: \"" + id.trim() + "\"");
+		if (item.equals(Items.AIR)) throw new IllegalArgumentException("Unknown item: \"" + id.trim() + "\"");
 
 		return item;
 	}
 
-	public static void click(AbstractRobotEntity robot, BlockPos posToClick, Direction direction, boolean use, @Nullable Item itemToClickWith)
-			throws ClassNotFoundException, NoSuchMethodException, InterruptedException,
-			InvocationTargetException, IllegalAccessException {
+	public static void click(AbstractRobotEntity robot, BlockPos posToClick, Direction direction, boolean use, @Nullable Item itemToClickWith) throws ClassNotFoundException, NoSuchMethodException, InterruptedException, InvocationTargetException, IllegalAccessException {
 		DeployerFakePlayer fakePlayer = new DeployerFakePlayer((ServerLevel) robot.getLevel());
 
 		if (itemToClickWith != null) {
@@ -415,10 +398,8 @@ public class CodeHelper {
 			for (int slot = 0; slot < robot.getInventory().getContainerSize(); slot++) {
 				if (robot.getInventory().getItem(slot).is(itemToClickWith)) {
 					ItemStack stackToAddToPlayer = robot.getInventory().removeItem(slot, 1);
-					if (stackToAddToPlayer.isEmpty())
-						break;
-					stackToAddToPlayer.setCount(
-							fakePlayer.getItemInHand(InteractionHand.MAIN_HAND).getCount() + 1);
+					if (stackToAddToPlayer.isEmpty()) break;
+					stackToAddToPlayer.setCount(fakePlayer.getItemInHand(InteractionHand.MAIN_HAND).getCount() + 1);
 					fakePlayer.setItemInHand(InteractionHand.MAIN_HAND, stackToAddToPlayer);
 
 				}
@@ -433,14 +414,14 @@ public class CodeHelper {
 		fakePlayer.setXRot(direction == Direction.UP ? -90 : direction == Direction.DOWN ? 90 : 0);
 		fakePlayer.setYRot(direction.toYRot());
 
-		Method method = DeployerHandler.class.getDeclaredMethod("activate", DeployerFakePlayer.class,
-				Vec3.class, BlockPos.class, Vec3.class, Class.forName(
-						"com.simibubi.create.content.contraptions.components.deployer.DeployerTileEntity$Mode"));
+		Method method = DeployerHandler.class.getDeclaredMethod("activate", DeployerFakePlayer.class, Vec3.class,
+				BlockPos.class, Vec3.class,
+				Class.forName("com.simibubi.create.content.contraptions.components.deployer.DeployerTileEntity$Mode"));
 		method.setAccessible(true);
 
 		method.invoke(DeployerHandler.class, fakePlayer, robot.position(), posToClick,
-				Vec3.atLowerCornerOf(direction.getNormal()), Class.forName(
-								"com.simibubi.create.content.contraptions.components.deployer.DeployerTileEntity$Mode")
+				Vec3.atLowerCornerOf(direction.getNormal()),
+				Class.forName("com.simibubi.create.content.contraptions.components.deployer.DeployerTileEntity$Mode")
 						.getEnumConstants()[use ? 0 : 1]);
 
 		fakePlayer.getInventory().items.forEach(itemStack -> {
@@ -459,9 +440,10 @@ public class CodeHelper {
 		int messageDistance = 256;
 		for (Player player : robot.getLevel().getEntitiesOfClass(Player.class,
 				new AABB(robot.blockPosition().offset(-messageDistance, -messageDistance, -messageDistance),
-						robot.blockPosition().offset(messageDistance, messageDistance, messageDistance))))
+						robot.blockPosition().offset(messageDistance, messageDistance, messageDistance)))) {
 			player.displayClientMessage(Component.literal("<!> ").withStyle(ChatFormatting.YELLOW)
 					.append(Component.literal(message).withStyle(Style.EMPTY)), false);
+		}
 	}
 
 	public static double eval(final String str) {
@@ -473,7 +455,9 @@ public class CodeHelper {
 			}
 
 			boolean eat(int charToEat) {
-				while (this.ch == ' ') this.nextChar();
+				while (this.ch == ' ') {
+					this.nextChar();
+				}
 				if (this.ch == charToEat) {
 					this.nextChar();
 					return true;
@@ -516,10 +500,14 @@ public class CodeHelper {
 					x = this.parseExpression();
 					if (!this.eat(')')) throw new RuntimeException("Missing ')'");
 				} else if ((this.ch >= '0' && this.ch <= '9') || this.ch == '.') { // numbers
-					while ((this.ch >= '0' && this.ch <= '9') || this.ch == '.') this.nextChar();
+					while ((this.ch >= '0' && this.ch <= '9') || this.ch == '.') {
+						this.nextChar();
+					}
 					x = Double.parseDouble(str.substring(startPos, this.pos));
 				} else if (this.ch >= 'a' && this.ch <= 'z') { // functions
-					while (this.ch >= 'a' && this.ch <= 'z') this.nextChar();
+					while (this.ch >= 'a' && this.ch <= 'z') {
+						this.nextChar();
+					}
 					String func = str.substring(startPos, this.pos);
 					if (this.eat('(')) {
 						x = this.parseExpression();

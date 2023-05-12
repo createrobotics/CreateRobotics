@@ -34,8 +34,7 @@ public class ChangeExtendOBootsHeightPacket extends SimplePacketBase {
 			if (context.get().getSender().getItemBySlot(EquipmentSlot.FEET).getOrCreateTag()
 					.getDouble("currentHeight") == 0 && !context.get().getSender().isOnGround()) return;
 			if (this.value > 0 && !context.get().getSender().getLevel()
-					.isEmptyBlock(context.get().getSender().blockPosition().above().above()))
-				return;
+					.isEmptyBlock(context.get().getSender().blockPosition().above().above())) return;
 			context.get().getSender().getItemBySlot(EquipmentSlot.FEET).getOrCreateTag().putDouble("currentHeight",
 					Mth.clamp(context.get().getSender().getItemBySlot(EquipmentSlot.FEET).getOrCreateTag()
 							.getDouble("currentHeight") + this.value, 0, ExtendOBootsItem.MAX_HEIGHT));

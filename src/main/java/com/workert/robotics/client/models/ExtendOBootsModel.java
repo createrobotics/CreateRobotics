@@ -26,10 +26,10 @@ public class ExtendOBootsModel<T extends ExtendOBoots> extends EntityModel<T> {
 		PartDefinition partdefinition = meshdefinition.getRoot();
 
 		PartDefinition posts = partdefinition.addOrReplaceChild("posts", CubeListBuilder.create().texOffs(0, -16)
-						.addBox(-8.0F, -80.0F, -8.0F, 0.0F, 80.0F, 16.0F, new CubeDeformation(0.0F))
-						.texOffs(0, -16).addBox(8.0F, -80.0F, -8.0F, 0.0F, 80.0F, 16.0F, new CubeDeformation(0.0F))
-						.texOffs(0, 0).addBox(-8.0F, -80.0F, -8.0F, 16.0F, 80.0F, 0.0F, new CubeDeformation(0.0F))
-						.texOffs(0, 0).addBox(-8.0F, -80.0F, 8.0F, 16.0F, 80.0F, 0.0F, new CubeDeformation(0.0F)),
+						.addBox(-8.0F, -80.0F, -8.0F, 0.0F, 80.0F, 16.0F, new CubeDeformation(0.0F)).texOffs(0, -16)
+						.addBox(8.0F, -80.0F, -8.0F, 0.0F, 80.0F, 16.0F, new CubeDeformation(0.0F)).texOffs(0, 0)
+						.addBox(-8.0F, -80.0F, -8.0F, 16.0F, 80.0F, 0.0F, new CubeDeformation(0.0F)).texOffs(0, 0)
+						.addBox(-8.0F, -80.0F, 8.0F, 16.0F, 80.0F, 0.0F, new CubeDeformation(0.0F)),
 				PartPose.offset(0.0F, 24.0F, 0.0F));
 
 		PartDefinition base = partdefinition.addOrReplaceChild("base", CubeListBuilder.create().texOffs(16, 0)

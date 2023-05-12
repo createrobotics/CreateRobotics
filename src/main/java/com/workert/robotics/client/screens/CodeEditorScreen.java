@@ -46,10 +46,9 @@ public class CodeEditorScreen extends AbstractSimiScreen {
 				defaultText = defaultText.replace("{variables}", variables[0]);
 
 				final String[] commands = {""};
-				CodeHelper.commandMap.forEach(
-						(command, biConsumer) -> {
-							commands[0] = commands[0].concat("\nrobot." + command);
-						});
+				CodeHelper.commandMap.forEach((command, biConsumer) -> {
+					commands[0] = commands[0].concat("\nrobot." + command);
+				});
 				defaultText = defaultText.replace("{commands}", commands[0]);
 
 				writer.write(defaultText);

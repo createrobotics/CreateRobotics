@@ -11,7 +11,8 @@ import net.minecraftforge.fml.common.Mod;
 import java.util.ArrayList;
 import java.util.List;
 
-@Mod.EventBusSubscriber(value = Dist.CLIENT, modid = Robotics.MOD_ID) public class KeybindList {
+@Mod.EventBusSubscriber(value = Dist.CLIENT, modid = Robotics.MOD_ID)
+public class KeybindList {
 	public static List<KeyMapping> keyMappings = new ArrayList<>();
 	public static KeyMapping changeExtendOBootsHeight;
 

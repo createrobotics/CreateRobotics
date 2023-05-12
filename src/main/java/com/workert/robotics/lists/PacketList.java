@@ -30,16 +30,16 @@ public enum PacketList {
 
 	private final PacketList.LoadedPacket<?> packet;
 
-	<T extends SimplePacketBase> PacketList(Class<T> type, Function<FriendlyByteBuf, T> factory,
-											NetworkDirection direction) {
+	<T extends SimplePacketBase> PacketList(Class<T> type, Function<FriendlyByteBuf, T> factory, NetworkDirection direction) {
 		this.packet = new PacketList.LoadedPacket<>(type, factory, direction);
 	}
 
 	public static void registerPackets() {
 		CHANNEL = NetworkRegistry.newSimpleChannel(new ResourceLocation(Robotics.MOD_ID, "main"),
 				() -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals, PROTOCOL_VERSION::equals);
-		for (PacketList packet : values())
+		for (PacketList packet : values()) {
 			packet.packet.register();
+		}
 	}
 
 	private static class LoadedPacket<T extends SimplePacketBase> {

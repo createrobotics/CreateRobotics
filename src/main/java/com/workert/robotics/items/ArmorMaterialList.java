@@ -13,10 +13,10 @@ import net.minecraft.world.item.crafting.Ingredient;
 import java.util.function.Supplier;
 
 public enum ArmorMaterialList implements ArmorMaterial {
-	EXTEND_O_BOOTS("scaffolding", 4, new int[]{1, 2, 2, 1}, 0, SoundEvents.SCAFFOLDING_PLACE, 0.0F, 0.0F,
+	EXTEND_O_BOOTS("scaffolding", 4, new int[] {1, 2, 2, 1}, 0, SoundEvents.SCAFFOLDING_PLACE, 0.0F, 0.0F,
 			() -> Ingredient.of(Items.SCAFFOLDING));
 
-	private static final int[] HEALTH_PER_SLOT = new int[]{13, 15, 16, 11};
+	private static final int[] HEALTH_PER_SLOT = new int[] {13, 15, 16, 11};
 	private final String name;
 	private final int durabilityMultiplier;
 	private final int[] slotProtections;
@@ -26,8 +26,7 @@ public enum ArmorMaterialList implements ArmorMaterial {
 	private final float knockbackResistance;
 	private final LazyLoadedValue<Ingredient> repairIngredient;
 
-	ArmorMaterialList(String name, int durabilityMultiplier, int[] slotProtections, int enchantability,
-					  SoundEvent sound, float toughness, float knockbackResistance, Supplier<Ingredient> repairIngredient) {
+	ArmorMaterialList(String name, int durabilityMultiplier, int[] slotProtections, int enchantability, SoundEvent sound, float toughness, float knockbackResistance, Supplier<Ingredient> repairIngredient) {
 		this.name = name;
 		this.durabilityMultiplier = durabilityMultiplier;
 		this.slotProtections = slotProtections;

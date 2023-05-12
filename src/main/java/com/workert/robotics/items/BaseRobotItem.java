@@ -58,12 +58,10 @@ public class BaseRobotItem extends Item {
 
 			EntityType<?> entitytype = this.getType(itemstack.getTag());
 			Entity entity = entitytype.spawn((ServerLevel) level, itemstack, pContext.getPlayer(), blockpos1,
-					MobSpawnType.TRIGGERED, true,
-					!Objects.equals(blockpos, blockpos1) && direction == Direction.UP);
+					MobSpawnType.TRIGGERED, true, !Objects.equals(blockpos, blockpos1) && direction == Direction.UP);
 			if (entity != null) {
 				CompoundTag savedCompound = itemstack.getOrCreateTag().getCompound("savedRobot");
-				if (!savedCompound.isEmpty())
-					entity.load(savedCompound);
+				if (!savedCompound.isEmpty()) entity.load(savedCompound);
 
 				entity.teleportTo(blockpos1.getX() + 0.5, blockpos1.getY(), blockpos1.getZ() + 0.5);
 
@@ -97,8 +95,7 @@ public class BaseRobotItem extends Item {
 					return InteractionResultHolder.pass(itemstack);
 				} else {
 					CompoundTag savedCompound = itemstack.getOrCreateTag().getCompound("savedRobot");
-					if (!savedCompound.isEmpty())
-						entity.load(savedCompound);
+					if (!savedCompound.isEmpty()) entity.load(savedCompound);
 
 					entity.teleportTo(blockpos.getX() + 0.5, blockpos.getY(), blockpos.getZ() + 0.5);
 

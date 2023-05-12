@@ -18,8 +18,7 @@ public class RobotFollowPlayerOwnerGoal extends Goal {
 	private Player owner;
 	private int timeToRecalcPath;
 
-	public RobotFollowPlayerOwnerGoal(OwnableEntity robot, double pSpeedModifier, float pStartDistance,
-									  float pStopDistance) {
+	public RobotFollowPlayerOwnerGoal(OwnableEntity robot, double pSpeedModifier, float pStartDistance, float pStopDistance) {
 		this.robot = (PathfinderMob) robot;
 		this.speedModifier = pSpeedModifier;
 		this.navigation = ((PathfinderMob) robot).getNavigation();
@@ -31,8 +30,8 @@ public class RobotFollowPlayerOwnerGoal extends Goal {
 	@Override
 	public boolean canUse() {
 		Player livingentity = (Player) ((OwnableEntity) this.robot).getOwner();
-		if (((livingentity == null) || livingentity.isSpectator()) ||
-				(this.robot.distanceToSqr(livingentity) < this.startDistance * this.startDistance)) {
+		if (((livingentity == null) || livingentity.isSpectator()) || (this.robot.distanceToSqr(
+				livingentity) < this.startDistance * this.startDistance)) {
 			return false;
 		} else {
 			this.owner = livingentity;

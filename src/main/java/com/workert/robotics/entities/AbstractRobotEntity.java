@@ -58,8 +58,7 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 
 	@Override
 	public boolean hurt(DamageSource pSource, float pAmount) {
-		if (pSource == DamageSource.OUT_OF_WORLD)
-			return super.hurt(pSource, pAmount);
+		if (pSource == DamageSource.OUT_OF_WORLD) return super.hurt(pSource, pAmount);
 		this.consumeAir((int) pAmount * 2);
 		return false;
 	}
@@ -109,18 +108,16 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 	public abstract boolean isProgrammable();
 
 	public CodeHelper.RobotFrequencyEntry getRobotFrequencyEntry() {
-		if (!this.isProgrammable())
-			return null;
-		if (this.robotFrequencyEntry == null)
-			this.robotFrequencyEntry = new CodeHelper.RobotFrequencyEntry(this, Couple.create(
-					RedstoneLinkNetworkHandler.Frequency.EMPTY, RedstoneLinkNetworkHandler.Frequency.EMPTY), 0);
+		if (!this.isProgrammable()) return null;
+		if (this.robotFrequencyEntry == null) this.robotFrequencyEntry = new CodeHelper.RobotFrequencyEntry(this,
+				Couple.create(RedstoneLinkNetworkHandler.Frequency.EMPTY, RedstoneLinkNetworkHandler.Frequency.EMPTY),
+				0);
 		return this.robotFrequencyEntry;
 	}
 
 	@Override
 	protected InteractionResult mobInteract(Player pPlayer, InteractionHand pHand) {
-		if (pPlayer.getItemInHand(pHand)
-				.is(AllItems.WRENCH.get().asItem()) && pPlayer.isCrouching()) {
+		if (pPlayer.getItemInHand(pHand).is(AllItems.WRENCH.get().asItem()) && pPlayer.isCrouching()) {
 			ItemStack stack = new ItemStack(this.getRobotItem());
 			CompoundTag saveTag = new CompoundTag();
 			this.save(saveTag);
@@ -130,24 +127,20 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 			this.discard();
 		} else if (this.isProgrammable() && pPlayer.getItemInHand(pHand)
 				.is(AllItems.WRENCH.get().asItem()) && !pPlayer.isCrouching()) {
-			if (!this.level.isClientSide)
-				CompletableFuture.runAsync(() -> CodeHelper.runCode(this, this.code));
+			if (!this.level.isClientSide) CompletableFuture.runAsync(() -> CodeHelper.runCode(this, this.code));
 			return InteractionResult.SUCCESS;
 		} else if (this.isProgrammable() && pPlayer.getItemInHand(pHand)
 				.is(ItemList.PROGRAM.get()) && !pPlayer.isCrouching()) {
-			if (!this.level.isClientSide)
-				this.code = pPlayer.getItemInHand(pHand).getOrCreateTag().getString("code");
+			if (!this.level.isClientSide) this.code = pPlayer.getItemInHand(pHand).getOrCreateTag().getString("code");
 			return InteractionResult.SUCCESS;
 		} else if (this.isProgrammable() && (pPlayer.getItemInHand(pHand)
 				.is(Items.WRITTEN_BOOK) || pPlayer.getItemInHand(pHand)
 				.is(Items.WRITABLE_BOOK)) && !pPlayer.isCrouching()) {
-			if (this.level.isClientSide)
-				return InteractionResult.SUCCESS;
+			if (this.level.isClientSide) return InteractionResult.SUCCESS;
 			WrittenBookItem.resolveBookComponents(pPlayer.getItemInHand(pHand),
-					new CommandSourceStack(
-							CommandSource.NULL, pPlayer.position(), Vec2.ZERO, (ServerLevel) this.level, 2,
-							pPlayer.getName().getString(), pPlayer.getDisplayName(), this.level.getServer(), pPlayer),
-					pPlayer);
+					new CommandSourceStack(CommandSource.NULL, pPlayer.position(), Vec2.ZERO, (ServerLevel) this.level,
+							2, pPlayer.getName().getString(), pPlayer.getDisplayName(), this.level.getServer(),
+							pPlayer), pPlayer);
 			CompoundTag compoundtag = pPlayer.getItemInHand(pHand).getOrCreateTag();
 			this.code = "";
 			compoundtag.getList("pages", 8).forEach(page -> {

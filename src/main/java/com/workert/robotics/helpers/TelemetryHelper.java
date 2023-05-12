@@ -137,7 +137,7 @@ public class TelemetryHelper {
 
 	private static void setHeadless(boolean headless) {
 		System.setProperty("java.awt.headless", Boolean.toString(headless));
-		
+
 		if (GraphicsEnvironment.isHeadless() != headless) {
 			Robotics.LOGGER.error("Couldn't change Java Headless Mode to " + headless);
 			System.exit(-42);

@@ -17,8 +17,7 @@ public class MenuList {
 	public static final RegistryObject<MenuType<SmasherBlockMenu>> SMASHER_BLOCK_MENU = registerMenuType(
 			SmasherBlockMenu::new, "smasher_block_menu");
 
-	private static <T extends AbstractContainerMenu> RegistryObject<MenuType<T>> registerMenuType(
-			IContainerFactory<T> factory, String name) {
+	private static <T extends AbstractContainerMenu> RegistryObject<MenuType<T>> registerMenuType(IContainerFactory<T> factory, String name) {
 		return MENUS.register(name, () -> IForgeMenuType.create(factory));
 	}
 

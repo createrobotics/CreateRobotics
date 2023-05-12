@@ -34,8 +34,7 @@ public class CodeEditor extends HorizontalDirectionalBlock {
 	}
 
 	@Override
-	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
-								 BlockHitResult ray) {
+	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult ray) {
 		if (!world.isClientSide() && player.getItemInHand(hand).is(ItemList.PROGRAM.get())) {
 			PacketList.CHANNEL.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) player),
 					new EditCodePacket(player.getItemInHand(hand).getOrCreateTag().getString("code")));

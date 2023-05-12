@@ -22,8 +22,7 @@ public class PonderList {
 
 		scene.idle(10);
 
-		scene.overlay.showText(80)
-				.independent(60).attachKeyFrame().placeNearTarget()
+		scene.overlay.showText(80).independent(60).attachKeyFrame().placeNearTarget()
 				.text("To change the contents of a Program you need a code editor.");
 
 		scene.idle(30);
@@ -32,8 +31,7 @@ public class PonderList {
 
 		scene.idle(70);
 
-		scene.overlay.showText(80)
-				.pointAt(util.vector.topOf(codeEditorPos)).placeNearTarget()
+		scene.overlay.showText(80).pointAt(util.vector.topOf(codeEditorPos)).placeNearTarget()
 				.text("Right click the code editor with the program to get started!");
 
 		scene.idle(20);
@@ -61,9 +59,8 @@ public class PonderList {
 
 		scene.idle(20);
 
-		scene.overlay.showControls(
-				new InputWindowElement(dronePos.add(0, 0.5, 0), Pointing.DOWN).rightClick()
-						.withItem(ItemList.PROGRAM.asStack()), 40);
+		scene.overlay.showControls(new InputWindowElement(dronePos.add(0, 0.5, 0), Pointing.DOWN).rightClick()
+				.withItem(ItemList.PROGRAM.asStack()), 40);
 
 		scene.idle(100);
 	}

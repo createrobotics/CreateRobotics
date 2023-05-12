@@ -57,11 +57,9 @@ public class CodeDrone extends AbstractRobotEntity implements FlyingAnimal, IAni
 			for (int i = -1; i <= 1; i++) {
 				for (int j = -1; j <= 1; j++) {
 					ForgeChunkManager.forceChunk((ServerLevel) this.level, Robotics.MOD_ID, this, this.last_chunk_x + i,
-							this.last_chunk_z + j,
-							false, true);
+							this.last_chunk_z + j, false, true);
 					ForgeChunkManager.forceChunk((ServerLevel) this.level, Robotics.MOD_ID, this,
-							this.chunkPosition().x + i, this.chunkPosition().z + j,
-							false, true);
+							this.chunkPosition().x + i, this.chunkPosition().z + j, false, true);
 				}
 			}
 		}
@@ -74,8 +72,7 @@ public class CodeDrone extends AbstractRobotEntity implements FlyingAnimal, IAni
 			for (int i = -1; i <= 1; i++) {
 				for (int j = -1; j <= 1; j++) {
 					ForgeChunkManager.forceChunk((ServerLevel) this.level, Robotics.MOD_ID, this, this.last_chunk_x + i,
-							this.last_chunk_z + j,
-							false, true);
+							this.last_chunk_z + j, false, true);
 				}
 			}
 		}
