@@ -6,11 +6,9 @@ import com.simibubi.create.content.logistics.RedstoneLinkNetworkHandler;
 import com.simibubi.create.foundation.utility.Couple;
 import com.workert.robotics.helpers.CodeHelper;
 import com.workert.robotics.lists.ItemList;
-import net.minecraft.commands.CommandSource;
-import net.minecraft.commands.CommandSourceStack;
+import com.workert.robotics.roboscript.RoboScript;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.*;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -25,30 +23,30 @@ import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.WrittenBookItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec2;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Function;
 
 public abstract class AbstractRobotEntity extends PathfinderMob implements InventoryCarrier {
+	private static final int maxAir = BackTankUtil.maxAirWithoutEnchants() * 10;
 	private int air;
 
 	private final SimpleContainer inventory = new SimpleContainer(9);
 
-	public HashMap<String, Function<AbstractRobotEntity, String>> privateVariableLookupMap = new HashMap<>();
+	private RoboScript roboScript = null;
 	public String code = "";
 	private CodeHelper.RobotFrequencyEntry robotFrequencyEntry = null;
 
 	public AbstractRobotEntity(EntityType<? extends PathfinderMob> entity, Level world) {
 		super(entity, world);
-		this.air = BackTankUtil.maxAirWithoutEnchants() * 10;
+		this.air = maxAir;
+		if (this.isProgrammable()) {
+			this.roboScript = new RoboScript();
+			this.fillInDefaultRoboScriptFunctions(this.roboScript);
+		}
 	}
 
 	@Override
@@ -96,10 +94,12 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 	@Override
 	public void tick() {
 		if (this.isPathFinding()) this.consumeAir(1);
-		/*if (this.air <= 0) {
+		if (this.air <= 0) {
+			if (this.air < 0) this.air = 0;
+			this.doWaterSplashEffect();
 			this.navigation.stop();
 			this.lookControl.setLookAt(this);
-		}*/
+		}
 		super.tick();
 	}
 
@@ -107,12 +107,12 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 
 	public abstract boolean isProgrammable();
 
-	public CodeHelper.RobotFrequencyEntry getRobotFrequencyEntry() {
-		if (!this.isProgrammable()) return null;
-		if (this.robotFrequencyEntry == null) this.robotFrequencyEntry = new CodeHelper.RobotFrequencyEntry(this,
-				Couple.create(RedstoneLinkNetworkHandler.Frequency.EMPTY, RedstoneLinkNetworkHandler.Frequency.EMPTY),
-				0);
-		return this.robotFrequencyEntry;
+	public void fillInDefaultRoboScriptFunctions(RoboScript roboScript) {
+		roboScript.defineFunction("getXPos", 0, (interpreter, arguments) -> AbstractRobotEntity.this.getX());
+		roboScript.defineFunction("getYPos", 0, (interpreter, arguments) -> AbstractRobotEntity.this.getY());
+		roboScript.defineFunction("getZPos", 0, (interpreter, arguments) -> AbstractRobotEntity.this.getZ());
+		roboScript.defineFunction("getAir", 0, (interpreter, arguments) -> AbstractRobotEntity.this.air);
+		roboScript.defineFunction("getMaxAir", 0, (interpreter, arguments) -> AbstractRobotEntity.maxAir);
 	}
 
 	@Override
@@ -127,13 +127,13 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 			this.discard();
 		} else if (this.isProgrammable() && pPlayer.getItemInHand(pHand)
 				.is(AllItems.WRENCH.get().asItem()) && !pPlayer.isCrouching()) {
-			if (!this.level.isClientSide) CompletableFuture.runAsync(() -> CodeHelper.runCode(this, this.code));
+			if (!this.level.isClientSide) CompletableFuture.runAsync(() -> this.roboScript.run(this.code));
 			return InteractionResult.SUCCESS;
 		} else if (this.isProgrammable() && pPlayer.getItemInHand(pHand)
 				.is(ItemList.PROGRAM.get()) && !pPlayer.isCrouching()) {
 			if (!this.level.isClientSide) this.code = pPlayer.getItemInHand(pHand).getOrCreateTag().getString("code");
 			return InteractionResult.SUCCESS;
-		} else if (this.isProgrammable() && (pPlayer.getItemInHand(pHand)
+		}/* else if (this.isProgrammable() && (pPlayer.getItemInHand(pHand)
 				.is(Items.WRITTEN_BOOK) || pPlayer.getItemInHand(pHand)
 				.is(Items.WRITABLE_BOOK)) && !pPlayer.isCrouching()) {
 			if (this.level.isClientSide) return InteractionResult.SUCCESS;
@@ -148,13 +148,21 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 			});
 			this.code = this.code.replace("{\"text\":\"", "").replace("\"}", "\n").replace("\\n", "\n").trim();
 			return InteractionResult.SUCCESS;
-		} else if (this.hasInventory() && !pPlayer.isCrouching()) {
+		}*/ else if (this.hasInventory() && !pPlayer.isCrouching()) {
 			pPlayer.openMenu(new SimpleMenuProvider(
 					(id, playerInventory, player) -> new ChestMenu(MenuType.GENERIC_3x3, id, playerInventory,
 							AbstractRobotEntity.this.inventory, 1), this.getDisplayName()));
 			return InteractionResult.SUCCESS;
 		}
 		return super.mobInteract(pPlayer, pHand);
+	}
+
+	public CodeHelper.RobotFrequencyEntry getRobotFrequencyEntry() {
+		if (!this.isProgrammable()) return null;
+		if (this.robotFrequencyEntry == null) this.robotFrequencyEntry = new CodeHelper.RobotFrequencyEntry(this,
+				Couple.create(RedstoneLinkNetworkHandler.Frequency.EMPTY, RedstoneLinkNetworkHandler.Frequency.EMPTY),
+				0);
+		return this.robotFrequencyEntry;
 	}
 
 	@Override

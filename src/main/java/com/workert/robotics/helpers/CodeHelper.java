@@ -90,7 +90,6 @@ public class CodeHelper {
 		CodeHelper.registerInternalVariableLookup("zPos", robot -> Double.toString(robot.getZ()));
 
 		CodeHelper.registerCommand("goTo", (robot, arguments) -> {
-
 			robot.getNavigation().moveTo(CodeHelper.eval(arguments.get(0)), CodeHelper.eval(arguments.get(1)),
 					CodeHelper.eval(arguments.get(2)), 1);
 			int tryTimer = 0;
