@@ -300,8 +300,8 @@ public class CodeHelper {
 						publicVariableLookupMap.put(CodeHelper.validateRegistryName(matcher.group(1)),
 								robotFromFunction -> matcher.group(2));
 					} else if (command.startsWith("private ")) {
-						robot.privateVariableLookupMap.put(CodeHelper.validateRegistryName(matcher.group(1)),
-								robotFromFunction -> matcher.group(2));
+						/*robot.privateVariableLookupMap.put(CodeHelper.validateRegistryName(matcher.group(1)),
+								robotFromFunction -> matcher.group(2));*/
 					}
 				} else {
 					CodeHelper.broadcastErrorToNearbyPlayers(robot,
@@ -349,11 +349,11 @@ public class CodeHelper {
 					"Trying to replace public variable \"${" + name + "}\" with \"" + value.apply(robot) + "\"");
 		});
 
-		robot.privateVariableLookupMap.forEach((name, value) -> {
+		/*robot.privateVariableLookupMap.forEach((name, value) -> {
 			commandToRun[0] = commandToRun[0].replace("${" + name + "}", value.apply(robot));
 			Robotics.LOGGER.debug(
 					"Trying to replace private variable \"${" + name + "}\" with \"" + value.apply(robot) + "\"");
-		});
+		});*/
 
 		CodeHelper.publicVariableLookupMap.forEach((name, value) -> {
 			commandToRun[0] = commandToRun[0].replace("${" + name + "}", value.apply(robot));
