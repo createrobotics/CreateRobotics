@@ -3,7 +3,6 @@ package com.workert.robotics.lists;
 import com.simibubi.create.foundation.networking.SimplePacketBase;
 import com.workert.robotics.Robotics;
 import com.workert.robotics.packets.ChangeExtendOBootsHeightPacket;
-import com.workert.robotics.packets.EditCodePacket;
 import com.workert.robotics.packets.ReturnEditedCodePacket;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -17,9 +16,6 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public enum PacketList {
-	// Packets to Client
-	EDIT_CODE(EditCodePacket.class, EditCodePacket::new, NetworkDirection.PLAY_TO_CLIENT),
-
 	// Packets to Server
 	CHANGE_EXTEND_O_BOOTS_HEIGHT(ChangeExtendOBootsHeightPacket.class, ChangeExtendOBootsHeightPacket::new,
 			NetworkDirection.PLAY_TO_SERVER),

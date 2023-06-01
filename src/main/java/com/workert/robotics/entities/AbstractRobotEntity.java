@@ -3,12 +3,17 @@ package com.workert.robotics.entities;
 import com.simibubi.create.AllItems;
 import com.simibubi.create.content.curiosities.armor.BackTankUtil;
 import com.simibubi.create.content.logistics.RedstoneLinkNetworkHandler;
+import com.simibubi.create.foundation.gui.ScreenOpener;
 import com.simibubi.create.foundation.utility.Couple;
+import com.workert.robotics.client.screens.ConsoleScreen;
 import com.workert.robotics.helpers.CodeHelper;
 import com.workert.robotics.lists.ItemList;
 import com.workert.robotics.roboscript.RoboScript;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.*;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -26,6 +31,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.DistExecutor;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
@@ -38,13 +45,22 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 
 	private RoboScript roboScript = null;
 	public String code = "";
+	private static final EntityDataAccessor<String> DATA_CONSOLE_OUTPUT_ID = SynchedEntityData.defineId(
+			AbstractRobotEntity.class, EntityDataSerializers.STRING);
+
 	private CodeHelper.RobotFrequencyEntry robotFrequencyEntry = null;
 
 	public AbstractRobotEntity(EntityType<? extends PathfinderMob> entity, Level world) {
 		super(entity, world);
 		this.air = maxAir;
 		if (this.isProgrammable()) {
-			this.roboScript = new RoboScript();
+			this.roboScript = new RoboScript() {
+				@Override
+				public void handleReportMessage(String message) {
+					AbstractRobotEntity.this.setConsoleOutput(
+							AbstractRobotEntity.this.getConsoleOutput().concat(message + "\n"));
+				}
+			};
 			this.fillInDefaultRoboScriptFunctions(this.roboScript);
 		}
 	}
@@ -68,6 +84,7 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 		pCompound.putInt("Air", this.air);
 		if (this.hasInventory()) pCompound.put("Inventory", this.inventory.createTag());
 		pCompound.putString("Code", this.code);
+		pCompound.putString("ConsoleOutput", this.getConsoleOutput());
 		super.addAdditionalSaveData(pCompound);
 	}
 
@@ -77,14 +94,31 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 			this.air = pCompound.getInt("Air");
 			if (this.hasInventory()) this.inventory.fromTag(pCompound.getList("Inventory", 10));
 			this.code = pCompound.getString("Code");
+			this.setConsoleOutput(pCompound.getString("ConsoleOutput"));
 			super.readAdditionalSaveData(pCompound);
 		} catch (NullPointerException exception) {
 			exception.printStackTrace();
 		}
 	}
 
+	@Override
+	protected void defineSynchedData() {
+		super.defineSynchedData();
+		this.entityData.define(DATA_CONSOLE_OUTPUT_ID, "");
+	}
+
 	public int getAir() {
 		return this.air;
+	}
+
+	public String getConsoleOutput() {
+		return this.entityData.get(this.DATA_CONSOLE_OUTPUT_ID);
+	}
+
+	public void setConsoleOutput(String consoleOutput) {
+		if (this.getConsoleOutput().length() > 4096)
+			this.setConsoleOutput(this.getConsoleOutput().substring(this.getConsoleOutput().length() - 4096));
+		else this.entityData.set(this.DATA_CONSOLE_OUTPUT_ID, consoleOutput);
 	}
 
 	public void consumeAir(int amount) {
@@ -113,6 +147,11 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 		roboScript.defineFunction("getZPos", 0, (interpreter, arguments) -> AbstractRobotEntity.this.getZ());
 		roboScript.defineFunction("getAir", 0, (interpreter, arguments) -> AbstractRobotEntity.this.air);
 		roboScript.defineFunction("getMaxAir", 0, (interpreter, arguments) -> AbstractRobotEntity.maxAir);
+		roboScript.defineFunction("print", 1, (interpreter, arguments) -> {
+			AbstractRobotEntity.this.setConsoleOutput(
+					AbstractRobotEntity.this.getConsoleOutput().concat(arguments.get(0).toString() + "\n"));
+			return null;
+		});
 	}
 
 	@Override
@@ -129,6 +168,8 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 				.is(AllItems.WRENCH.get().asItem()) && !pPlayer.isCrouching()) {
 			if (!this.level.isClientSide) CompletableFuture.runAsync(() -> this.roboScript.run(this.code));
 			return InteractionResult.SUCCESS;
+		} else if (this.isProgrammable() && pPlayer.isCrouching()) {
+			DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> ScreenOpener.open(new ConsoleScreen(this)));
 		} else if (this.isProgrammable() && pPlayer.getItemInHand(pHand)
 				.is(ItemList.PROGRAM.get()) && !pPlayer.isCrouching()) {
 			if (!this.level.isClientSide) this.code = pPlayer.getItemInHand(pHand).getOrCreateTag().getString("code");

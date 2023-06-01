@@ -1,10 +1,9 @@
 package com.workert.robotics.blocks;
 
+import com.simibubi.create.foundation.gui.ScreenOpener;
+import com.workert.robotics.client.screens.CodeEditorScreen;
 import com.workert.robotics.lists.ItemList;
-import com.workert.robotics.lists.PacketList;
-import com.workert.robotics.packets.EditCodePacket;
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -15,7 +14,8 @@ import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.network.PacketDistributor;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.DistExecutor;
 
 public class CodeEditor extends HorizontalDirectionalBlock {
 
@@ -36,8 +36,8 @@ public class CodeEditor extends HorizontalDirectionalBlock {
 	@Override
 	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult ray) {
 		if (!world.isClientSide() && player.getItemInHand(hand).is(ItemList.PROGRAM.get())) {
-			PacketList.CHANNEL.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) player),
-					new EditCodePacket(player.getItemInHand(hand).getOrCreateTag().getString("code")));
+			DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> ScreenOpener.open(
+					new CodeEditorScreen(player.getItemInHand(hand).getOrCreateTag().getString("code"))));
 			return InteractionResult.SUCCESS;
 		}
 		return InteractionResult.PASS;

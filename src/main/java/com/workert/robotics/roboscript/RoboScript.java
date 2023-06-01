@@ -3,7 +3,7 @@ package com.workert.robotics.roboscript;
 import java.util.List;
 import java.util.function.BiFunction;
 
-public class RoboScript {
+public abstract class RoboScript {
 	private final Interpreter interpreter = new Interpreter(this);
 
 	private boolean hadError = false;
@@ -73,7 +73,9 @@ public class RoboScript {
 	}
 
 	private void report(int line, String where, String message) {
-		System.err.println("[line " + line + "] Error" + where + ": " + message);
+		this.handleReportMessage("[line " + line + "] Error" + where + ": " + message);
 		this.hadError = true;
 	}
+
+	public abstract void handleReportMessage(String message);
 }
