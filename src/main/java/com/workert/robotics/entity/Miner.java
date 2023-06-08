@@ -1,4 +1,4 @@
-package com.workert.robotics.entities;
+package com.workert.robotics.entity;
 
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.SimpleContainer;

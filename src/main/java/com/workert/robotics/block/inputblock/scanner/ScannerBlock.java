@@ -1,11 +1,10 @@
-package com.workert.robotics.blocks.computing;
+package com.workert.robotics.block.inputblock.scanner;
 
 import com.simibubi.create.AllItems;
 import com.simibubi.create.AllShapes;
 import com.simibubi.create.content.contraptions.base.HorizontalKineticBlock;
 import com.simibubi.create.foundation.block.ITE;
 import com.simibubi.create.foundation.gui.ScreenOpener;
-import com.workert.robotics.blocks.computing.blockentities.ScannerBlockEntity;
 import com.workert.robotics.client.screens.InputSignalScreen;
 import com.workert.robotics.lists.BlockEntityList;
 import net.minecraft.client.player.LocalPlayer;

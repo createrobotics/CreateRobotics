@@ -2,11 +2,11 @@ package com.workert.robotics.lists;
 
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import com.workert.robotics.Robotics;
-import com.workert.robotics.blocks.blockentities.SmasherBlockEntity;
-import com.workert.robotics.blocks.computing.blockentities.ComputerBlockEntity;
-import com.workert.robotics.blocks.computing.blockentities.RedstoneDetectorBlockEntity;
-import com.workert.robotics.blocks.computing.blockentities.ScannerBlockEntity;
-import com.workert.robotics.blocks.computing.blockentities.ScannerInstance;
+import com.workert.robotics.block.smasher.SmasherBlockEntity;
+import com.workert.robotics.block.computer.ComputerBlockEntity;
+import com.workert.robotics.block.inputblock.redstonedetector.RedstoneDetectorBlockEntity;
+import com.workert.robotics.block.inputblock.scanner.ScannerBlockEntity;
+import com.workert.robotics.block.inputblock.scanner.ScannerInstance;
 
 public class BlockEntityList {
 	public static void register() {

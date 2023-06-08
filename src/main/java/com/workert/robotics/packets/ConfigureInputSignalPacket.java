@@ -2,7 +2,7 @@ package com.workert.robotics.packets;
 
 import com.simibubi.create.foundation.networking.TileEntityConfigurationPacket;
 import com.simibubi.create.foundation.tileEntity.SyncedTileEntity;
-import com.workert.robotics.blocks.computing.blockentities.IInputBlockEntity;
+import com.workert.robotics.block.inputblock.IInputBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;

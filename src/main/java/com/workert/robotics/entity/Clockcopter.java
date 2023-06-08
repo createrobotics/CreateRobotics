@@ -1,6 +1,6 @@
-package com.workert.robotics.entities;
+package com.workert.robotics.entity;
 
-import com.workert.robotics.entities.goals.MineBlockAndDropGoal;
+import com.workert.robotics.entity.goals.MineBlockAndDropGoal;
 import com.workert.robotics.lists.ItemList;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;

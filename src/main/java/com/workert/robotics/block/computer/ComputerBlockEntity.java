@@ -1,4 +1,4 @@
-package com.workert.robotics.blocks.computing.blockentities;
+package com.workert.robotics.block.computer;
 
 import com.simibubi.create.AllItems;
 import com.simibubi.create.content.contraptions.base.KineticTileEntity;

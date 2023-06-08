@@ -1,4 +1,4 @@
-package com.workert.robotics.entities;
+package com.workert.robotics.entity;
 
 import com.workert.robotics.Robotics;
 import com.workert.robotics.lists.ItemList;

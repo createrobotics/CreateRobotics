@@ -1,4 +1,4 @@
-package com.workert.robotics.items;
+package com.workert.robotics.item;
 
 import com.workert.robotics.Robotics;
 import net.minecraft.resources.ResourceLocation;

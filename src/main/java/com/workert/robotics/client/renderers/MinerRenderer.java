@@ -2,7 +2,7 @@ package com.workert.robotics.client.renderers;
 
 import com.workert.robotics.Robotics;
 import com.workert.robotics.client.models.MinerModel;
-import com.workert.robotics.entities.Miner;
+import com.workert.robotics.entity.Miner;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;

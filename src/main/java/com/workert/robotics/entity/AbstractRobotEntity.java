@@ -1,4 +1,4 @@
-package com.workert.robotics.entities;
+package com.workert.robotics.entity;
 
 import com.simibubi.create.AllItems;
 import com.simibubi.create.content.curiosities.armor.BackTankUtil;

@@ -1,7 +1,7 @@
 package com.workert.robotics.packets;
 
 import com.simibubi.create.foundation.networking.SimplePacketBase;
-import com.workert.robotics.items.ExtendOBootsItem;
+import com.workert.robotics.item.ExtendOBootsItem;
 import com.workert.robotics.lists.ItemList;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.Mth;

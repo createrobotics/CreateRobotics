@@ -1,4 +1,4 @@
-package com.workert.robotics.blocks.blockentities;
+package com.workert.robotics.block.smasher;
 
 import com.workert.robotics.client.screens.SmasherBlockMenu;
 import com.workert.robotics.recipes.SmasherBlockRecipe;

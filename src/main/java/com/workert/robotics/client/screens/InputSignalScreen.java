@@ -11,7 +11,7 @@ import com.simibubi.create.foundation.gui.widget.IconButton;
 import com.simibubi.create.foundation.networking.AllPackets;
 import com.simibubi.create.foundation.utility.Components;
 import com.simibubi.create.foundation.utility.Lang;
-import com.workert.robotics.blocks.computing.blockentities.IInputBlockEntity;
+import com.workert.robotics.block.inputblock.IInputBlockEntity;
 import com.workert.robotics.packets.ConfigureInputSignalPacket;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.core.BlockPos;

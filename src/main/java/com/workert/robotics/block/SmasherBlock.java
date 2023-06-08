@@ -1,6 +1,6 @@
-package com.workert.robotics.blocks;
+package com.workert.robotics.block;
 
-import com.workert.robotics.blocks.blockentities.SmasherBlockEntity;
+import com.workert.robotics.block.smasher.SmasherBlockEntity;
 import com.workert.robotics.lists.BlockEntityList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;

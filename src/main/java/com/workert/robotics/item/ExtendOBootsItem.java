@@ -1,9 +1,9 @@
-package com.workert.robotics.items;
+package com.workert.robotics.item;
 
 import com.google.common.collect.Maps;
 import com.simibubi.create.foundation.utility.animation.LerpedFloat;
 import com.workert.robotics.client.KeybindList;
-import com.workert.robotics.entities.ExtendOBoots;
+import com.workert.robotics.entity.ExtendOBoots;
 import com.workert.robotics.lists.EntityList;
 import com.workert.robotics.lists.PacketList;
 import com.workert.robotics.packets.ChangeExtendOBootsHeightPacket;

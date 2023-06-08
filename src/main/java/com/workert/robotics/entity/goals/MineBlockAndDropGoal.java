@@ -1,4 +1,4 @@
-package com.workert.robotics.entities.goals;
+package com.workert.robotics.entity.goals;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

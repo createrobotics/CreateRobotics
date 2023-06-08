@@ -1,4 +1,4 @@
-package com.workert.robotics.blocks;
+package com.workert.robotics.block;
 
 import com.simibubi.create.foundation.gui.ScreenOpener;
 import com.workert.robotics.client.screens.CodeEditorScreen;

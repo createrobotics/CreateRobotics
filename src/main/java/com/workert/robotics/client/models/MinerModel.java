@@ -3,7 +3,7 @@ package com.workert.robotics.client.models;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.workert.robotics.Robotics;
-import com.workert.robotics.entities.Miner;
+import com.workert.robotics.entity.Miner;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;

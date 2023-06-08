@@ -3,7 +3,7 @@ package com.workert.robotics.client.renderers;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.workert.robotics.Robotics;
 import com.workert.robotics.client.models.ExtendOBootsModel;
-import com.workert.robotics.entities.ExtendOBoots;
+import com.workert.robotics.entity.ExtendOBoots;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;

@@ -1,6 +1,6 @@
-package com.workert.robotics.items;
+package com.workert.robotics.item;
 
-import com.workert.robotics.entities.AbstractRobotEntity;
+import com.workert.robotics.entity.AbstractRobotEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;

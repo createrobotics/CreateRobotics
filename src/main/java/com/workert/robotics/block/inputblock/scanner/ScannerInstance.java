@@ -1,4 +1,4 @@
-package com.workert.robotics.blocks.computing.blockentities;
+package com.workert.robotics.block.inputblock.scanner;
 
 import com.jozufozu.flywheel.api.MaterialManager;
 import com.jozufozu.flywheel.api.instance.DynamicInstance;

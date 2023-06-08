@@ -1,7 +1,7 @@
 package com.workert.robotics.client.models;
 
 import com.workert.robotics.Robotics;
-import com.workert.robotics.entities.CodeDrone;
+import com.workert.robotics.entity.CodeDrone;
 import net.minecraft.resources.ResourceLocation;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
 

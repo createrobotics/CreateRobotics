@@ -4,7 +4,7 @@ import com.simibubi.create.foundation.ponder.SceneBuilder;
 import com.simibubi.create.foundation.ponder.SceneBuildingUtil;
 import com.simibubi.create.foundation.ponder.element.InputWindowElement;
 import com.simibubi.create.foundation.utility.Pointing;
-import com.workert.robotics.entities.CodeDrone;
+import com.workert.robotics.entity.CodeDrone;
 import com.workert.robotics.lists.EntityList;
 import com.workert.robotics.lists.ItemList;
 import net.minecraft.core.BlockPos;

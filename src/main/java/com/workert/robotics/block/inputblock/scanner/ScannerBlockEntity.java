@@ -1,9 +1,11 @@
-package com.workert.robotics.blocks.computing.blockentities;
+package com.workert.robotics.block.inputblock.scanner;
 
 import com.simibubi.create.content.contraptions.base.KineticTileEntity;
 import com.simibubi.create.content.contraptions.relays.belt.transport.TransportedItemStack;
 import com.simibubi.create.foundation.tileEntity.SyncedTileEntity;
 import com.simibubi.create.foundation.tileEntity.TileEntityBehaviour;
+import com.workert.robotics.block.computer.ComputerBlockEntity;
+import com.workert.robotics.block.inputblock.IInputBlockEntity;
 import com.workert.robotics.lists.BlockEntityList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;

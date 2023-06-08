@@ -2,7 +2,7 @@ package com.workert.robotics.client.models;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.workert.robotics.entities.ExtendOBoots;
+import com.workert.robotics.entity.ExtendOBoots;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;

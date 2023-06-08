@@ -1,10 +1,9 @@
-package com.workert.robotics.blocks.computing;
+package com.workert.robotics.block.computer;
 
 import com.simibubi.create.AllItems;
 import com.simibubi.create.content.contraptions.relays.elementary.ICogWheel;
 import com.simibubi.create.foundation.block.ITE;
 import com.simibubi.create.foundation.gui.ScreenOpener;
-import com.workert.robotics.blocks.computing.blockentities.ComputerBlockEntity;
 import com.workert.robotics.client.screens.ConsoleScreen;
 import com.workert.robotics.lists.BlockEntityList;
 import net.minecraft.client.player.LocalPlayer;

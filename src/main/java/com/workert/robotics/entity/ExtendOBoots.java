@@ -1,6 +1,6 @@
-package com.workert.robotics.entities;
+package com.workert.robotics.entity;
 
-import com.workert.robotics.items.ExtendOBootsItem;
+import com.workert.robotics.item.ExtendOBootsItem;
 import com.workert.robotics.lists.EntityList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

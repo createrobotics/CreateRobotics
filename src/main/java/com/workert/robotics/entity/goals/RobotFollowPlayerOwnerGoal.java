@@ -1,4 +1,4 @@
-package com.workert.robotics.entities.goals;
+package com.workert.robotics.entity.goals;
 
 import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.PathfinderMob;

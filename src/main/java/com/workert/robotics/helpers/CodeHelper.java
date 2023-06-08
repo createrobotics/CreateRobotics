@@ -7,7 +7,7 @@ import com.simibubi.create.content.logistics.IRedstoneLinkable;
 import com.simibubi.create.content.logistics.RedstoneLinkNetworkHandler;
 import com.simibubi.create.foundation.utility.Couple;
 import com.workert.robotics.Robotics;
-import com.workert.robotics.entities.AbstractRobotEntity;
+import com.workert.robotics.entity.AbstractRobotEntity;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

@@ -1,4 +1,4 @@
-package com.workert.robotics.blocks.computing.blockentities;
+package com.workert.robotics.block.inputblock.scanner;
 
 import com.simibubi.create.content.contraptions.components.press.PressingBehaviour;
 import com.simibubi.create.content.contraptions.relays.belt.transport.TransportedItemStack;
