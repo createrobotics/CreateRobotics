@@ -35,8 +35,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.concurrent.CompletableFuture;
-
 public abstract class AbstractRobotEntity extends PathfinderMob implements InventoryCarrier {
 	private static final int maxAir = BackTankUtil.maxAirWithoutEnchants() * 10;
 	private int air;
@@ -56,9 +54,11 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 		if (this.isProgrammable()) {
 			this.roboScript = new RoboScript() {
 				@Override
-				public void handleReportMessage(String message) {
-					AbstractRobotEntity.this.setConsoleOutput(
-							AbstractRobotEntity.this.getConsoleOutput().concat(message + "\n"));
+				public RunningState getRunningState() {
+					if (AbstractRobotEntity.this.air <= 0) {
+						return RunningState.ENERGY_REQUIREMENT_NOT_MET;
+					}
+					return super.getRunningState();
 				}
 			};
 			this.fillInDefaultRoboScriptFunctions(this.roboScript);
@@ -147,11 +147,6 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 		roboScript.defineFunction("getZPos", 0, (interpreter, arguments) -> AbstractRobotEntity.this.getZ());
 		roboScript.defineFunction("getAir", 0, (interpreter, arguments) -> AbstractRobotEntity.this.air);
 		roboScript.defineFunction("getMaxAir", 0, (interpreter, arguments) -> AbstractRobotEntity.maxAir);
-		roboScript.defineFunction("print", 1, (interpreter, arguments) -> {
-			AbstractRobotEntity.this.setConsoleOutput(
-					AbstractRobotEntity.this.getConsoleOutput().concat(arguments.get(0).toString() + "\n"));
-			return null;
-		});
 	}
 
 	@Override
@@ -166,10 +161,11 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 			this.discard();
 		} else if (this.isProgrammable() && pPlayer.getItemInHand(pHand)
 				.is(AllItems.WRENCH.get().asItem()) && !pPlayer.isCrouching()) {
-			if (!this.level.isClientSide) CompletableFuture.runAsync(() -> this.roboScript.run(this.code));
+			if (!this.level.isClientSide) this.roboScript.runString(this.code);
 			return InteractionResult.SUCCESS;
 		} else if (this.isProgrammable() && pPlayer.isCrouching()) {
-			DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> ScreenOpener.open(new ConsoleScreen(this)));
+			DistExecutor.unsafeRunWhenOn(Dist.CLIENT,
+					() -> () -> ScreenOpener.open(new ConsoleScreen(this.roboScript)));
 		} else if (this.isProgrammable() && pPlayer.getItemInHand(pHand)
 				.is(ItemList.PROGRAM.get()) && !pPlayer.isCrouching()) {
 			if (!this.level.isClientSide) this.code = pPlayer.getItemInHand(pHand).getOrCreateTag().getString("code");

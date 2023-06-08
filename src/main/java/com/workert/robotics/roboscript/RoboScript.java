@@ -1,12 +1,24 @@
 package com.workert.robotics.roboscript;
 
+import com.workert.robotics.roboscript.ingame.IConsoleOutputProvider;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
 
-public abstract class RoboScript {
+public class RoboScript implements IConsoleOutputProvider {
 	private final Interpreter interpreter = new Interpreter(this);
 
 	private boolean hadError = false;
+
+	private boolean isRunning = false;
+
+	private final String consoleOutput = "";
+
+	public RoboScript() {
+		this.defineDefaultFunctions();
+	}
 
 	/**
 	 * Registers a function for use by this RoboScript instance.<br> The provided arguments from the {@link BiFunction} may
@@ -36,24 +48,61 @@ public abstract class RoboScript {
 		});
 	}
 
-	public void run(String source) {
-		this.hadError = false;
+	public void defineDefaultFunctions() {
+		this.defineFunction("print", 1, (interpreter, arguments) -> {
+			this.consoleOutput.concat(arguments.get(0).toString() + "\n");
+			return null;
+		});
+	}
 
-		Scanner scanner = new Scanner(this, source);
-		List<Token> tokens = scanner.scanTokens();
+	/**
+	 * Scans, parses, resolves and interprets a string <i>asynchronously</i>.<br>
+	 * This method won't block the thread and can be called from the main game thread.
+	 *
+	 * @param source the string to execute. May contain multiple statements.
+	 */
+	public void runString(String source) {
+		CompletableFuture.runAsync(() -> {
+			this.isRunning = true;
+			this.hadError = false;
 
-		Parser parser = new Parser(this, tokens);
-		List<Stmt> statements = parser.parse();
+			Scanner scanner = new Scanner(this, source);
+			List<Token> tokens = scanner.scanTokens();
 
-		// Stop if there was a syntax error.
-		if (this.hadError) return;
+			Parser parser = new Parser(this, tokens);
+			List<Statement> statements = parser.parse();
 
-		Resolver resolver = new Resolver(this.interpreter);
-		resolver.resolve(statements);
+			// Stop if there was a syntax error.
+			if (this.hadError) return;
 
-		if (this.hadError) return;
+			Resolver resolver = new Resolver(this.interpreter);
+			resolver.resolve(statements);
 
-		this.interpreter.interpret(statements);
+			if (this.hadError) return;
+
+			this.interpreter.interpret(statements);
+
+			this.isRunning = false;
+		});
+	}
+
+	/**
+	 * Interprets a function call <i>asynchronously</i>.<br>
+	 * This method won't block the thread and can be called from the main game thread.<br>
+	 * It will be called from a new thread and <i>not</i> the same as the already running program!
+	 *
+	 * @param function the function identifier to execute.
+	 */
+	public void runFunction(String function, List<Object> arguments) {
+		CompletableFuture.runAsync(() -> {
+			List<Expression> argumentExpressionList = new ArrayList<>();
+			for (Object argument : arguments) {
+				argumentExpressionList.add(new Expression.Literal(argument));
+			}
+			this.interpreter.interpret(List.of(new Statement.Expression(new Expression.Call(
+					new Expression.Variable(new Token(Token.TokenType.IDENTIFIER, function, function, 0)),
+					new Token(Token.TokenType.LEFT_PAREN, "(", "(", 0), argumentExpressionList))));
+		});
 	}
 
 	public void error(Token token, String message) {
@@ -73,9 +122,21 @@ public abstract class RoboScript {
 	}
 
 	private void report(int line, String where, String message) {
-		this.handleReportMessage("[line " + line + "] Error" + where + ": " + message);
+		this.consoleOutput.concat("[line " + line + "] ERROR" + where + ": " + message + "\n");
 		this.hadError = true;
 	}
 
-	public abstract void handleReportMessage(String message);
+	public void requestStop() {
+		this.interpreter.requestStop();
+	}
+
+	@Override
+	public String getConsoleOutput() {
+		return this.consoleOutput;
+	}
+
+	@Override
+	public RunningState getRunningState() {
+		return this.isRunning ? RunningState.RUNNING : RunningState.STOPPED;
+	}
 }

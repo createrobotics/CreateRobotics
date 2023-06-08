@@ -3,7 +3,7 @@ package com.workert.robotics.roboscript;
 
 import java.util.List;
 
-public abstract class Stmt {
+public abstract class Statement {
 	interface Visitor<R> {
 		R visitBlockStmt(Block stmt);
 
@@ -26,8 +26,8 @@ public abstract class Stmt {
 
 	// Nested Stmt classes here...
 	//> stmt-block
-	static class Block extends Stmt {
-		Block(List<Stmt> statements) {
+	static class Block extends Statement {
+		Block(List<Statement> statements) {
 			this.statements = statements;
 		}
 
@@ -36,13 +36,13 @@ public abstract class Stmt {
 			return visitor.visitBlockStmt(this);
 		}
 
-		final List<Stmt> statements;
+		final List<Statement> statements;
 	}
 
 	//< stmt-block
 	//> stmt-class
-	static class Class extends Stmt {
-		Class(Token name, Expr.Variable superclass, List<Stmt.Function> methods) {
+	static class Class extends Statement {
+		Class(Token name, com.workert.robotics.roboscript.Expression.Variable superclass, List<Statement.Function> methods) {
 			this.name = name;
 			this.superclass = superclass;
 			this.methods = methods;
@@ -54,14 +54,14 @@ public abstract class Stmt {
 		}
 
 		final Token name;
-		final Expr.Variable superclass;
-		final List<Stmt.Function> methods;
+		final com.workert.robotics.roboscript.Expression.Variable superclass;
+		final List<Statement.Function> methods;
 	}
 
 	//< stmt-class
 	//> stmt-expression
-	static class Expression extends Stmt {
-		Expression(Expr expression) {
+	static class Expression extends Statement {
+		Expression(com.workert.robotics.roboscript.Expression expression) {
 			this.expression = expression;
 		}
 
@@ -70,13 +70,13 @@ public abstract class Stmt {
 			return visitor.visitExpressionStmt(this);
 		}
 
-		final Expr expression;
+		final com.workert.robotics.roboscript.Expression expression;
 	}
 
 	//< stmt-expression
 	//> stmt-function
-	static class Function extends Stmt {
-		Function(Token name, List<Token> params, List<Stmt> body) {
+	static class Function extends Statement {
+		Function(Token name, List<Token> params, List<Statement> body) {
 			this.name = name;
 			this.params = params;
 			this.body = body;
@@ -89,13 +89,13 @@ public abstract class Stmt {
 
 		final Token name;
 		final List<Token> params;
-		final List<Stmt> body;
+		final List<Statement> body;
 	}
 
 	//< stmt-function
 	//> stmt-if
-	static class If extends Stmt {
-		If(Expr condition, Stmt thenBranch, Stmt elseBranch) {
+	static class If extends Statement {
+		If(com.workert.robotics.roboscript.Expression condition, Statement thenBranch, Statement elseBranch) {
 			this.condition = condition;
 			this.thenBranch = thenBranch;
 			this.elseBranch = elseBranch;
@@ -106,15 +106,15 @@ public abstract class Stmt {
 			return visitor.visitIfStmt(this);
 		}
 
-		final Expr condition;
-		final Stmt thenBranch;
-		final Stmt elseBranch;
+		final com.workert.robotics.roboscript.Expression condition;
+		final Statement thenBranch;
+		final Statement elseBranch;
 	}
 
 	//< stmt-if
 	//> stmt-return
-	static class Return extends Stmt {
-		Return(Token keyword, Expr value) {
+	static class Return extends Statement {
+		Return(Token keyword, com.workert.robotics.roboscript.Expression value) {
 			this.keyword = keyword;
 			this.value = value;
 		}
@@ -125,12 +125,12 @@ public abstract class Stmt {
 		}
 
 		final Token keyword;
-		final Expr value;
+		final com.workert.robotics.roboscript.Expression value;
 	}
 
 	//< stmt-return
 	//> stmt-break
-	static class Break extends Stmt {
+	static class Break extends Statement {
 		Break(Token keyword) {
 			this.keyword = keyword;
 		}
@@ -145,8 +145,8 @@ public abstract class Stmt {
 
 	//< stmt-break
 	//> stmt-var
-	static class Var extends Stmt {
-		Var(Token name, Expr initializer) {
+	static class Var extends Statement {
+		Var(Token name, com.workert.robotics.roboscript.Expression initializer) {
 			this.name = name;
 			this.initializer = initializer;
 		}
@@ -157,13 +157,13 @@ public abstract class Stmt {
 		}
 
 		final Token name;
-		final Expr initializer;
+		final com.workert.robotics.roboscript.Expression initializer;
 	}
 
 	//< stmt-var
 	//> stmt-while
-	static class While extends Stmt {
-		While(Expr condition, Stmt body) {
+	static class While extends Statement {
+		While(com.workert.robotics.roboscript.Expression condition, Statement body) {
 			this.condition = condition;
 			this.body = body;
 		}
@@ -173,8 +173,8 @@ public abstract class Stmt {
 			return visitor.visitWhileStmt(this);
 		}
 
-		final Expr condition;
-		final Stmt body;
+		final com.workert.robotics.roboscript.Expression condition;
+		final Statement body;
 	}
 	//< stmt-while
 

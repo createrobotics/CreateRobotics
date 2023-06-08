@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
+public class Resolver implements Expression.Visitor<Void>, Statement.Visitor<Void> {
 	private final Interpreter interpreter;
 	private final Stack<Map<String, Boolean>> scopes = new Stack<>();
 	private FunctionType currentFunction = FunctionType.NONE;
@@ -28,21 +28,21 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 		SUBCLASS
 	}
 
-	void resolve(List<Stmt> statements) {
-		for (Stmt statement : statements) {
+	void resolve(List<Statement> statements) {
+		for (Statement statement : statements) {
 			this.resolve(statement);
 		}
 	}
 
-	private void resolve(Stmt stmt) {
-		stmt.accept(this);
+	private void resolve(Statement statement) {
+		statement.accept(this);
 	}
 
-	private void resolve(Expr expr) {
-		expr.accept(this);
+	private void resolve(Expression expression) {
+		expression.accept(this);
 	}
 
-	private void resolveFunction(Stmt.Function function, FunctionType type) {
+	private void resolveFunction(Statement.Function function, FunctionType type) {
 		FunctionType enclosingFunction = this.currentFunction;
 		this.currentFunction = type;
 
@@ -82,17 +82,17 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 		this.scopes.peek().put(name.lexeme, true);
 	}
 
-	private void resolveLocal(Expr expr, Token name) {
+	private void resolveLocal(Expression expression, Token name) {
 		for (int i = this.scopes.size() - 1; i >= 0; i--) {
 			if (this.scopes.get(i).containsKey(name.lexeme)) {
-				this.interpreter.resolve(expr, this.scopes.size() - 1 - i);
+				this.interpreter.resolve(expression, this.scopes.size() - 1 - i);
 				return;
 			}
 		}
 	}
 
 	@Override
-	public Void visitBlockStmt(Stmt.Block stmt) {
+	public Void visitBlockStmt(Statement.Block stmt) {
 		this.beginScope();
 		this.resolve(stmt.statements);
 		this.endScope();
@@ -100,7 +100,7 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 	}
 
 	@Override
-	public Void visitClassStmt(Stmt.Class stmt) {
+	public Void visitClassStmt(Statement.Class stmt) {
 		ClassType enclosingClass = this.currentClass;
 		this.currentClass = ClassType.CLASS;
 
@@ -122,7 +122,7 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 		this.beginScope();
 		this.scopes.peek().put("this", true);
 
-		for (Stmt.Function method : stmt.methods) {
+		for (Statement.Function method : stmt.methods) {
 			FunctionType declaration = FunctionType.METHOD;
 			if (method.name.lexeme.equals(stmt.name.lexeme)) declaration = FunctionType.INITIALIZER;
 
@@ -138,14 +138,14 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 	}
 
 	@Override
-	public Void visitExpressionStmt(Stmt.Expression stmt) {
+	public Void visitExpressionStmt(Statement.Expression stmt) {
 		this.resolve(stmt.expression);
 		return null;
 	}
 
 
 	@Override
-	public Void visitFunctionStmt(Stmt.Function stmt) {
+	public Void visitFunctionStmt(Statement.Function stmt) {
 		this.declare(stmt.name);
 		this.define(stmt.name);
 
@@ -154,7 +154,7 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 	}
 
 	@Override
-	public Void visitIfStmt(Stmt.If stmt) {
+	public Void visitIfStmt(Statement.If stmt) {
 		this.resolve(stmt.condition);
 		this.resolve(stmt.thenBranch);
 		if (stmt.elseBranch != null) this.resolve(stmt.elseBranch);
@@ -162,7 +162,7 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 	}
 
 	@Override
-	public Void visitReturnStmt(Stmt.Return stmt) {
+	public Void visitReturnStmt(Statement.Return stmt) {
 		if (this.currentFunction == FunctionType.NONE) {
 			this.interpreter.roboScriptInstance.error(stmt.keyword, "Can't return from top-level scope.");
 		}
@@ -178,7 +178,7 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 	}
 
 	@Override
-	public Void visitBreakStmt(Stmt.Break stmt) {
+	public Void visitBreakStmt(Statement.Break stmt) {
 		if (this.currentFunction == FunctionType.NONE || this.currentFunction == FunctionType.INITIALIZER) {
 			this.interpreter.roboScriptInstance.error(stmt.keyword, "Can't break from top-level scope.");
 		}
@@ -187,7 +187,7 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 	}
 
 	@Override
-	public Void visitVarStmt(Stmt.Var stmt) {
+	public Void visitVarStmt(Statement.Var stmt) {
 		this.declare(stmt.name);
 		if (stmt.initializer != null) {
 			this.resolve(stmt.initializer);
@@ -197,14 +197,14 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 	}
 
 	@Override
-	public Void visitWhileStmt(Stmt.While stmt) {
+	public Void visitWhileStmt(Statement.While stmt) {
 		this.resolve(stmt.condition);
 		this.resolve(stmt.body);
 		return null;
 	}
 
 	@Override
-	public Void visitVariableExpr(Expr.Variable expr) {
+	public Void visitVariableExpr(Expression.Variable expr) {
 		if (!this.scopes.isEmpty() && this.scopes.peek().get(expr.name.lexeme) == Boolean.FALSE) {
 			this.interpreter.roboScriptInstance.error(expr.name, "Can't read local variable in its own initializer.");
 		}
@@ -213,24 +213,24 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 	}
 
 	@Override
-	public Void visitAssignExpr(Expr.Assign expr) {
+	public Void visitAssignExpr(Expression.Assign expr) {
 		this.resolve(expr.value);
 		this.resolveLocal(expr, expr.name);
 		return null;
 	}
 
 	@Override
-	public Void visitBinaryExpr(Expr.Binary expr) {
+	public Void visitBinaryExpr(Expression.Binary expr) {
 		this.resolve(expr.left);
 		this.resolve(expr.right);
 		return null;
 	}
 
 	@Override
-	public Void visitCallExpr(Expr.Call expr) {
+	public Void visitCallExpr(Expression.Call expr) {
 		this.resolve(expr.callee);
 
-		for (Expr argument : expr.arguments) {
+		for (Expression argument : expr.arguments) {
 			this.resolve(argument);
 		}
 
@@ -238,20 +238,20 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 	}
 
 	@Override
-	public Void visitGetExpr(Expr.Get expr) {
+	public Void visitGetExpr(Expression.Get expr) {
 		this.resolve(expr.object);
 		return null;
 	}
 
 	@Override
-	public Void visitSetExpr(Expr.Set expr) {
+	public Void visitSetExpr(Expression.Set expr) {
 		this.resolve(expr.value);
 		this.resolve(expr.object);
 		return null;
 	}
 
 	@Override
-	public Void visitSuperExpr(Expr.Super expr) {
+	public Void visitSuperExpr(Expression.Super expr) {
 		if (this.currentClass == ClassType.NONE) {
 			this.interpreter.roboScriptInstance.error(expr.keyword, "Can't use 'super' outside of a class.");
 		} else if (this.currentClass != ClassType.SUBCLASS) {
@@ -262,7 +262,7 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 	}
 
 	@Override
-	public Void visitThisExpr(Expr.This expr) {
+	public Void visitThisExpr(Expression.This expr) {
 		if (this.currentClass == ClassType.NONE) {
 			this.interpreter.roboScriptInstance.error(expr.keyword, "Can't use 'this' outside of a class.");
 			return null;
@@ -273,25 +273,25 @@ public class Resolver implements Expr.Visitor<Void>, Stmt.Visitor<Void> {
 	}
 
 	@Override
-	public Void visitGroupingExpr(Expr.Grouping expr) {
+	public Void visitGroupingExpr(Expression.Grouping expr) {
 		this.resolve(expr.expression);
 		return null;
 	}
 
 	@Override
-	public Void visitLiteralExpr(Expr.Literal expr) {
+	public Void visitLiteralExpr(Expression.Literal expr) {
 		return null;
 	}
 
 	@Override
-	public Void visitLogicalExpr(Expr.Logical expr) {
+	public Void visitLogicalExpr(Expression.Logical expr) {
 		this.resolve(expr.left);
 		this.resolve(expr.right);
 		return null;
 	}
 
 	@Override
-	public Void visitUnaryExpr(Expr.Unary expr) {
+	public Void visitUnaryExpr(Expression.Unary expr) {
 		this.resolve(expr.right);
 		return null;
 	}

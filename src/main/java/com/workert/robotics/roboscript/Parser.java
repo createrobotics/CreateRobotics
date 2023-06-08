@@ -15,19 +15,19 @@ public class Parser {
 		this.tokens = tokens;
 	}
 
-	List<Stmt> parse() {
-		List<Stmt> statements = new ArrayList<>();
+	public List<Statement> parse() {
+		List<Statement> statements = new ArrayList<>();
 		while (!this.isAtEnd()) {
 			statements.add(this.declaration());
 		}
 		return statements;
 	}
 
-	private Expr expression() {
+	private Expression expression() {
 		return this.assignment();
 	}
 
-	private Stmt declaration() {
+	private Statement declaration() {
 		try {
 			if (this.advanceIfNextTokenMatches(CLASS)) return this.classDeclaration();
 			if (this.advanceIfNextTokenMatches(FUNC)) return this.function("function");
@@ -40,18 +40,18 @@ public class Parser {
 		}
 	}
 
-	private Stmt classDeclaration() {
+	private Statement classDeclaration() {
 		Token name = this.consumeIfNextTokenMatches(IDENTIFIER, "Expected class name.");
 
-		Expr.Variable superclass = null;
+		Expression.Variable superclass = null;
 		if (this.advanceIfNextTokenMatches(EXTENDS)) {
 			this.consumeIfNextTokenMatches(IDENTIFIER, "Expected superclass name.");
-			superclass = new Expr.Variable(this.getPreviousToken());
+			superclass = new Expression.Variable(this.getPreviousToken());
 		}
 
 		this.consumeIfNextTokenMatches(LEFT_BRACE, "Expected '{' before class body.");
 
-		List<Stmt.Function> methods = new ArrayList<>();
+		List<Statement.Function> methods = new ArrayList<>();
 		while (!this.isNextToken(RIGHT_BRACE) && !this.isAtEnd()) {
 			this.consumeIfNextTokenMatches(FUNC, "Expected 'func' token.");
 			methods.add(this.function("method"));
@@ -59,24 +59,24 @@ public class Parser {
 
 		this.consumeIfNextTokenMatches(RIGHT_BRACE, "Expected '}' after class body.");
 
-		return new Stmt.Class(name, superclass, methods);
+		return new Statement.Class(name, superclass, methods);
 	}
 
-	private Stmt statement() {
+	private Statement statement() {
 		if (this.advanceIfNextTokenMatches(FOR)) return this.forStatement();
 		if (this.advanceIfNextTokenMatches(RETURN)) return this.returnStatement();
 		if (this.advanceIfNextTokenMatches(BREAK)) return this.breakStatement();
-		if (this.advanceIfNextTokenMatches(LEFT_BRACE)) return new Stmt.Block(this.block());
+		if (this.advanceIfNextTokenMatches(LEFT_BRACE)) return new Statement.Block(this.block());
 		if (this.advanceIfNextTokenMatches(IF)) return this.ifStatement();
 		if (this.advanceIfNextTokenMatches(WHILE)) return this.whileStatement();
 
 		return this.expressionStatement();
 	}
 
-	private Stmt forStatement() {
+	private Statement forStatement() {
 		this.consumeIfNextTokenMatches(LEFT_PAREN, "Expected '(' after 'for'.");
 
-		Stmt initializer;
+		Statement initializer;
 		if (this.advanceIfNextTokenMatches(SEMICOLON)) {
 			initializer = null;
 		} else if (this.advanceIfNextTokenMatches(VAR)) {
@@ -85,95 +85,95 @@ public class Parser {
 			initializer = this.expressionStatement();
 		}
 
-		Expr condition = null;
+		Expression condition = null;
 		if (!this.isNextToken(SEMICOLON)) {
 			condition = this.expression();
 		}
 		this.consumeIfNextTokenMatches(SEMICOLON, "Expected ';' after for loop condition.");
 
-		Expr increment = null;
+		Expression increment = null;
 		if (!this.isNextToken(RIGHT_PAREN)) {
 			increment = this.expression();
 		}
 		this.consumeIfNextTokenMatches(RIGHT_PAREN, "Expected ')' after for clauses.");
 
-		Stmt body = this.statement();
+		Statement body = this.statement();
 
 		// Make a while loop out of the for loop
 		if (increment != null) {
-			body = new Stmt.Block(Arrays.asList(body, new Stmt.Expression(increment)));
+			body = new Statement.Block(Arrays.asList(body, new Statement.Expression(increment)));
 		}
 
-		if (condition == null) condition = new Expr.Literal(true);
-		body = new Stmt.While(condition, body);
+		if (condition == null) condition = new Expression.Literal(true);
+		body = new Statement.While(condition, body);
 
 		if (initializer != null) {
-			body = new Stmt.Block(Arrays.asList(initializer, body));
+			body = new Statement.Block(Arrays.asList(initializer, body));
 		}
 
 
 		return body;
 	}
 
-	private Stmt ifStatement() {
+	private Statement ifStatement() {
 		this.consumeIfNextTokenMatches(LEFT_PAREN, "Expect '(' after 'if'.");
-		Expr condition = this.expression();
+		Expression condition = this.expression();
 		this.consumeIfNextTokenMatches(RIGHT_PAREN, "Expect ')' after if condition.");
 
-		Stmt thenBranch = this.statement();
-		Stmt elseBranch = null;
+		Statement thenBranch = this.statement();
+		Statement elseBranch = null;
 		if (this.advanceIfNextTokenMatches(ELSE)) {
 			elseBranch = this.statement();
 		}
 
-		return new Stmt.If(condition, thenBranch, elseBranch);
+		return new Statement.If(condition, thenBranch, elseBranch);
 	}
 
-	private Stmt returnStatement() {
+	private Statement returnStatement() {
 		Token keyword = this.getPreviousToken();
-		Expr value = null;
+		Expression value = null;
 		if (!this.isNextToken(SEMICOLON)) {
 			value = this.expression();
 		}
 
 		this.consumeIfNextTokenMatches(SEMICOLON, "Expected ';' after return value.");
-		return new Stmt.Return(keyword, value);
+		return new Statement.Return(keyword, value);
 	}
 
-	private Stmt breakStatement() {
+	private Statement breakStatement() {
 		Token keyword = this.getPreviousToken();
 		this.consumeIfNextTokenMatches(SEMICOLON, "Expected ';' after break.");
-		return new Stmt.Break(keyword);
+		return new Statement.Break(keyword);
 	}
 
-	private Stmt varDeclaration() {
+	private Statement varDeclaration() {
 		Token name = this.consumeIfNextTokenMatches(IDENTIFIER, "Expected variable name.");
 
-		Expr initializer = null;
+		Expression initializer = null;
 		if (this.advanceIfNextTokenMatches(EQUAL)) {
 			initializer = this.expression();
 		}
 
 		this.consumeIfNextTokenMatches(SEMICOLON, "Expected ';' after variable declaration.");
-		return new Stmt.Var(name, initializer);
+		return new Statement.Var(name, initializer);
 	}
 
-	private Stmt whileStatement() {
+	private Statement whileStatement() {
 		this.consumeIfNextTokenMatches(LEFT_PAREN, "Expected '(' after 'while'.");
-		Expr condition = this.expression();
+		Expression condition = this.expression();
 		this.consumeIfNextTokenMatches(RIGHT_PAREN, "Expected ')' after condition.");
-		Stmt body = this.statement();
+		Statement body = this.statement();
 
-		return new Stmt.While(condition, body);
+		return new Statement.While(condition, body);
 	}
 
-	private Stmt expressionStatement() {
-		Expr expr = this.expression();
+	private Statement expressionStatement() {
+		Expression expression = this.expression();
 		this.consumeIfNextTokenMatches(SEMICOLON, "Expected ';' after expression.");
-		return new Stmt.Expression(expr);
+		return new Statement.Expression(expression);
 	}
 
-	private Stmt.Function function(String kind) {
+	private Statement.Function function(String kind) {
 		Token name = this.consumeIfNextTokenMatches(IDENTIFIER, "Expected " + kind + " name.");
 
 		this.consumeIfNextTokenMatches(LEFT_PAREN, "Expected '(' after " + kind + " name.");
@@ -186,15 +186,15 @@ public class Parser {
 		this.consumeIfNextTokenMatches(RIGHT_PAREN, "Expected ')' after parameters.");
 
 		this.consumeIfNextTokenMatches(LEFT_BRACE, "Expected '{' before " + kind + " body.");
-		List<Stmt> body = this.block();
-		return new Stmt.Function(name, parameters, body);
+		List<Statement> body = this.block();
+		return new Statement.Function(name, parameters, body);
 	}
 
 	/**
 	 * This function assumes the <code>LEFT_BRACE</code> token has already been consumed.
 	 **/
-	private List<Stmt> block() {
-		List<Stmt> statements = new ArrayList<>();
+	private List<Statement> block() {
+		List<Statement> statements = new ArrayList<>();
 
 		while (!this.isNextToken(RIGHT_BRACE) && !this.isAtEnd()) {
 			statements.add(this.declaration());
@@ -204,127 +204,127 @@ public class Parser {
 		return statements;
 	}
 
-	private Expr assignment() {
-		Expr expr = this.or();
+	private Expression assignment() {
+		Expression expression = this.or();
 
 		if (this.advanceIfNextTokenMatches(EQUAL)) {
 			Token equals = this.getPreviousToken();
-			Expr value = this.assignment();
+			Expression value = this.assignment();
 
-			if (expr instanceof Expr.Variable) {
-				Token name = ((Expr.Variable) expr).name;
-				return new Expr.Assign(name, value);
-			} else if (expr instanceof Expr.Get) {
-				Expr.Get get = (Expr.Get) expr;
-				return new Expr.Set(get.object, get.name, value);
+			if (expression instanceof Expression.Variable) {
+				Token name = ((Expression.Variable) expression).name;
+				return new Expression.Assign(name, value);
+			} else if (expression instanceof Expression.Get) {
+				Expression.Get get = (Expression.Get) expression;
+				return new Expression.Set(get.object, get.name, value);
 			}
 			this.error(equals, "Invalid assignment target.");
 		}
 
-		return expr;
+		return expression;
 	}
 
-	private Expr or() {
-		Expr expr = this.and();
+	private Expression or() {
+		Expression expression = this.and();
 
 		while (this.advanceIfNextTokenMatches(OR)) {
 			Token operator = this.getPreviousToken();
-			Expr right = this.and();
-			expr = new Expr.Logical(expr, operator, right);
+			Expression right = this.and();
+			expression = new Expression.Logical(expression, operator, right);
 		}
 
-		return expr;
+		return expression;
 	}
 
-	private Expr and() {
-		Expr expr = this.equality();
+	private Expression and() {
+		Expression expression = this.equality();
 
 		while (this.advanceIfNextTokenMatches(AND)) {
 			Token operator = this.getPreviousToken();
-			Expr right = this.equality();
-			expr = new Expr.Logical(expr, operator, right);
+			Expression right = this.equality();
+			expression = new Expression.Logical(expression, operator, right);
 		}
 
-		return expr;
+		return expression;
 	}
 
-	private Expr equality() {
-		Expr expr = this.comparison();
+	private Expression equality() {
+		Expression expression = this.comparison();
 
 		while (this.advanceIfNextTokenMatches(BANG_EQUAL, EQUAL_EQUAL)) {
 			Token operator = this.getPreviousToken();
-			Expr right = this.comparison();
-			expr = new Expr.Binary(expr, operator, right);
+			Expression right = this.comparison();
+			expression = new Expression.Binary(expression, operator, right);
 		}
 
-		return expr;
+		return expression;
 	}
 
-	private Expr comparison() {
-		Expr expr = this.term();
+	private Expression comparison() {
+		Expression expression = this.term();
 
 		while (this.advanceIfNextTokenMatches(GREATER, GREATER_EQUAL, LESS, LESS_EQUAL)) {
 			Token operator = this.getPreviousToken();
-			Expr right = this.term();
-			expr = new Expr.Binary(expr, operator, right);
+			Expression right = this.term();
+			expression = new Expression.Binary(expression, operator, right);
 		}
 
-		return expr;
+		return expression;
 	}
 
-	private Expr term() {
-		Expr expr = this.factor();
+	private Expression term() {
+		Expression expression = this.factor();
 
 		while (this.advanceIfNextTokenMatches(MINUS, PLUS)) {
 			Token operator = this.getPreviousToken();
-			Expr right = this.factor();
-			expr = new Expr.Binary(expr, operator, right);
+			Expression right = this.factor();
+			expression = new Expression.Binary(expression, operator, right);
 		}
 
-		return expr;
+		return expression;
 	}
 
-	private Expr factor() {
-		Expr expr = this.unary();
+	private Expression factor() {
+		Expression expression = this.unary();
 
 		while (this.advanceIfNextTokenMatches(SLASH, STAR)) {
 			Token operator = this.getPreviousToken();
-			Expr right = this.unary();
-			expr = new Expr.Binary(expr, operator, right);
+			Expression right = this.unary();
+			expression = new Expression.Binary(expression, operator, right);
 		}
 
-		return expr;
+		return expression;
 	}
 
-	private Expr unary() {
+	private Expression unary() {
 		if (this.advanceIfNextTokenMatches(BANG, MINUS)) {
 			Token operator = this.getPreviousToken();
-			Expr right = this.unary();
-			return new Expr.Unary(operator, right);
+			Expression right = this.unary();
+			return new Expression.Unary(operator, right);
 		}
 
 		return this.call();
 	}
 
-	private Expr call() {
-		Expr expr = this.primary();
+	private Expression call() {
+		Expression expression = this.primary();
 
 		while (true) {
 			if (this.advanceIfNextTokenMatches(LEFT_PAREN)) {
-				expr = this.finishCall(expr);
+				expression = this.finishCall(expression);
 			} else if (this.advanceIfNextTokenMatches(DOT)) {
 				Token name = this.consumeIfNextTokenMatches(IDENTIFIER, "Expected property name after '.'.");
-				expr = new Expr.Get(expr, name);
+				expression = new Expression.Get(expression, name);
 			} else {
 				break;
 			}
 		}
 
-		return expr;
+		return expression;
 	}
 
-	private Expr finishCall(Expr callee) {
-		List<Expr> arguments = new ArrayList<>();
+	private Expression finishCall(Expression callee) {
+		List<Expression> arguments = new ArrayList<>();
 		if (!this.isNextToken(RIGHT_PAREN)) {
 			do {
 				arguments.add(this.expression());
@@ -333,35 +333,35 @@ public class Parser {
 
 		Token paren = this.consumeIfNextTokenMatches(RIGHT_PAREN, "Expected ')' after arguments.");
 
-		return new Expr.Call(callee, paren, arguments);
+		return new Expression.Call(callee, paren, arguments);
 	}
 
-	private Expr primary() {
-		if (this.advanceIfNextTokenMatches(FALSE)) return new Expr.Literal(false);
-		if (this.advanceIfNextTokenMatches(TRUE)) return new Expr.Literal(true);
-		if (this.advanceIfNextTokenMatches(NULL)) return new Expr.Literal(null);
+	private Expression primary() {
+		if (this.advanceIfNextTokenMatches(FALSE)) return new Expression.Literal(false);
+		if (this.advanceIfNextTokenMatches(TRUE)) return new Expression.Literal(true);
+		if (this.advanceIfNextTokenMatches(NULL)) return new Expression.Literal(null);
 
 		if (this.advanceIfNextTokenMatches(NUMBER, STRING)) {
-			return new Expr.Literal(this.getPreviousToken().literal);
+			return new Expression.Literal(this.getPreviousToken().literal);
 		}
 
 		if (this.advanceIfNextTokenMatches(SUPER)) {
 			Token keyword = this.getPreviousToken();
 			this.consumeIfNextTokenMatches(DOT, "Expected '.' after 'super'.");
 			Token method = this.consumeIfNextTokenMatches(IDENTIFIER, "Expected superclass method name.");
-			return new Expr.Super(keyword, method);
+			return new Expression.Super(keyword, method);
 		}
 
-		if (this.advanceIfNextTokenMatches(THIS)) return new Expr.This(this.getPreviousToken());
+		if (this.advanceIfNextTokenMatches(THIS)) return new Expression.This(this.getPreviousToken());
 
 		if (this.advanceIfNextTokenMatches(IDENTIFIER)) {
-			return new Expr.Variable(this.getPreviousToken());
+			return new Expression.Variable(this.getPreviousToken());
 		}
 
 		if (this.advanceIfNextTokenMatches(LEFT_PAREN)) {
-			Expr expr = this.expression();
+			Expression expression = this.expression();
 			this.consumeIfNextTokenMatches(RIGHT_PAREN, "Expected ')' after expression.");
-			return new Expr.Grouping(expr);
+			return new Expression.Grouping(expression);
 		}
 
 		throw this.error(this.getCurrentToken(), "Expected expression.");

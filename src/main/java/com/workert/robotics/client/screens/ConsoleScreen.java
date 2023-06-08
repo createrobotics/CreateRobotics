@@ -4,20 +4,20 @@ import com.simibubi.create.foundation.gui.AbstractSimiScreen;
 import com.simibubi.create.foundation.gui.AllIcons;
 import com.simibubi.create.foundation.gui.widget.IconButton;
 import com.simibubi.create.foundation.utility.Components;
-import com.workert.robotics.entities.AbstractRobotEntity;
+import com.workert.robotics.roboscript.ingame.IConsoleOutputProvider;
 import net.minecraft.client.gui.components.MultiLineEditBox;
 import net.minecraft.network.chat.Component;
 
 public class ConsoleScreen extends AbstractSimiScreen {
 	private MultiLineEditBox consoleOutput;
-	private IconButton close;
-	private IconButton run;
+	private IconButton closeButton;
+	private IconButton runningStateButton;
 
-	private AbstractRobotEntity robot;
+	private IConsoleOutputProvider consoleOutputProvider;
 
-	public ConsoleScreen(AbstractRobotEntity robot) {
+	public ConsoleScreen(IConsoleOutputProvider consoleOutputProvider) {
 		super(Component.literal("Edit Signal Name"));
-		this.robot = robot;
+		this.consoleOutputProvider = consoleOutputProvider;
 	}
 
 
@@ -25,14 +25,19 @@ public class ConsoleScreen extends AbstractSimiScreen {
 	public void tick() {
 		super.tick();
 
-		if (this.robot.getAir() > 0) {
-			this.run.setIcon(AllIcons.I_PLAY);
-			this.run.setToolTip(Component.literal("Currently running"));
-		} else {
-			this.run.setIcon(AllIcons.I_PAUSE);
-			this.run.setToolTip(Component.literal("Not enough Air Pressure"));
+		if (this.consoleOutputProvider.getRunningState().equals(IConsoleOutputProvider.RunningState.RUNNING)) {
+			this.runningStateButton.setIcon(AllIcons.I_PLAY);
+			this.runningStateButton.setToolTip(Component.literal("Currently running"));
+		} else if (this.consoleOutputProvider.getRunningState().equals(IConsoleOutputProvider.RunningState.STOPPED)) {
+			this.runningStateButton.setIcon(AllIcons.I_STOP);
+			this.runningStateButton.setToolTip(Component.literal("Currently stopped"));
+		} else if (this.consoleOutputProvider.getRunningState()
+				.equals(IConsoleOutputProvider.RunningState.ENERGY_REQUIREMENT_NOT_MET)) {
+			this.runningStateButton.setIcon(AllIcons.I_PAUSE);
+			this.runningStateButton.setToolTip(
+					Component.literal("The Energy Requirement is currently not met.\nThe program has been stopped."));
 		}
-		this.consoleOutput.setValue(this.robot.getConsoleOutput());
+		this.consoleOutput.setValue(this.consoleOutputProvider.getConsoleOutput());
 	}
 
 	@Override
@@ -44,15 +49,15 @@ public class ConsoleScreen extends AbstractSimiScreen {
 		int x = this.guiLeft;
 		int y = this.guiTop;
 
-		this.run = new IconButton(x - 20, y, AllIcons.I_STOP);
-		this.run.withCallback(() -> {
+		this.runningStateButton = new IconButton(x - 20, y, AllIcons.I_STOP);
+		this.runningStateButton.withCallback(() -> {
 		});
-		this.addRenderableWidget(this.run);
+		this.addRenderableWidget(this.runningStateButton);
 
-		this.close = new IconButton(x - 20, y + 20, AllIcons.I_MTD_CLOSE);
-		this.close.withCallback(this::onClose);
-		this.close.setToolTip(Component.literal("Close"));
-		this.addRenderableWidget(this.close);
+		this.closeButton = new IconButton(x - 20, y + 20, AllIcons.I_MTD_CLOSE);
+		this.closeButton.withCallback(this::onClose);
+		this.closeButton.setToolTip(Component.literal("Close"));
+		this.addRenderableWidget(this.closeButton);
 
 		this.consoleOutput = new MultiLineEditBox(this.font, x, y, width, 210, Components.immutableEmpty(),
 				Components.immutableEmpty()) {

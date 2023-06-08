@@ -1,17 +1,24 @@
 package com.workert.robotics.lists;
 
 import com.simibubi.create.content.AllSections;
+import com.simibubi.create.foundation.block.BlockStressDefaults;
+import com.simibubi.create.foundation.data.AssetLookup;
+import com.simibubi.create.foundation.data.BlockStateGen;
 import com.simibubi.create.foundation.data.TagGen;
 import com.tterrag.registrate.providers.loot.RegistrateBlockLootTables;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.workert.robotics.Robotics;
 import com.workert.robotics.blocks.CodeEditor;
 import com.workert.robotics.blocks.SmasherBlock;
+import com.workert.robotics.blocks.computing.ComputerBlock;
+import com.workert.robotics.blocks.computing.RedstoneDetectorBlock;
+import com.workert.robotics.blocks.computing.ScannerBlock;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DropExperienceBlock;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
@@ -30,7 +37,7 @@ public class BlockList {
 	public static final BlockEntry<DropExperienceBlock> TIN_ORE = Robotics.REGISTRATE.block("tin_ore",
 					DropExperienceBlock::new).lang("Tin ore").properties(
 					properties -> properties.of(Material.STONE).sound(SoundType.STONE).strength(3.0F, 3.0F)
-							.requiresCorrectToolForDrops()).transform(TagGen.pickaxeOnly()).loot((lt, b) -> lt.add(b,
+							.requiresCorrectToolForDrops()).transform(TagGen.TagGen.pickaxeOnlyOnly()).loot((lt, b) -> lt.add(b,
 					RegistrateBlockLootTables.createSilkTouchDispatchTable(b, RegistrateBlockLootTables.applyExplosionDecay(b,
 							LootItem.lootTableItem(ItemList.RAW_TIN.get())
 									.apply(ApplyBonusCount.addOreBonusCount(Enchantments.BLOCK_FORTUNE))))))
@@ -41,25 +48,24 @@ public class BlockList {
 					"deepslate_tin_ore", DropExperienceBlock::new).lang("Deepslate tin ore")
 			.initialProperties(() -> BlockList.TIN_ORE.get()).properties(
 					properties -> properties.sound(SoundType.DEEPSLATE).strength(4.5F, 3.0F)
-							.requiresCorrectToolForDrops()).transform(TagGen.pickaxeOnly()).loot((lt, b) -> lt.add(b,
-					RegistrateBlockLootTables.createSilkTouchDispatchTable(b,
-							RegistrateBlockLootTables.applyExplosionDecay(b,
-									LootItem.lootTableItem(ItemList.RAW_TIN.get())
-											.apply(ApplyBonusCount.addOreBonusCount(Enchantments.BLOCK_FORTUNE))))))
+							.requiresCorrectToolForDrops()).transform(TagGen.TagGen.pickaxeOnlyOnly())
+			.loot((lt, b) -> lt.add(b, RegistrateBlockLootTables.createSilkTouchDispatchTable(b,
+					RegistrateBlockLootTables.applyExplosionDecay(b, LootItem.lootTableItem(ItemList.RAW_TIN.get())
+							.apply(ApplyBonusCount.addOreBonusCount(Enchantments.BLOCK_FORTUNE))))))
 			.tag(BlockTags.NEEDS_IRON_TOOL).tag(Tags.Blocks.ORES)
 			.transform(tagBlockAndItem("ores/tin", "ores_in_ground/deepslate")).tag(Tags.Items.ORES).build().register();
 
 	public static final BlockEntry<Block> TIN_BLOCK = Robotics.REGISTRATE.block("tin_block", Block::new)
 			.lang("Tin block").properties(
 					properties -> properties.of(Material.METAL).sound(SoundType.METAL).strength(5.0F, 6.0F)
-							.requiresCorrectToolForDrops()).transform(TagGen.pickaxeOnly())
+							.requiresCorrectToolForDrops()).transform(TagGen.TagGen.pickaxeOnlyOnly())
 			.tag(BlockTags.NEEDS_IRON_TOOL).tag(Tags.Blocks.STORAGE_BLOCKS).tag(BlockTags.BEACON_BASE_BLOCKS)
 			.transform(tagBlockAndItem("storage_blocks/tin")).tag(Tags.Items.STORAGE_BLOCKS).build().register();
 
 	public static final BlockEntry<Block> BRONZE_BLOCK = Robotics.REGISTRATE.block("bronze_block", Block::new)
 			.lang("Bronze block").properties(
 					properties -> properties.of(Material.METAL).sound(SoundType.METAL).strength(6.0F, 7.0F)
-							.requiresCorrectToolForDrops()).transform(TagGen.pickaxeOnly())
+							.requiresCorrectToolForDrops()).transform(TagGen.TagGen.pickaxeOnlyOnly())
 			.tag(BlockTags.NEEDS_IRON_TOOL).tag(Tags.Blocks.STORAGE_BLOCKS).tag(BlockTags.BEACON_BASE_BLOCKS)
 			.transform(tagBlockAndItem("storage_blocks/bronze")).tag(Tags.Items.STORAGE_BLOCKS).build().register();
 
@@ -74,4 +80,20 @@ public class BlockList {
 					provider.models().getExistingFile(provider.modLoc("block/code_editor"))))
 			.properties(properties -> properties.of(Material.WOOD).sound(SoundType.WOOD).noOcclusion()).simpleItem()
 			.register();
+
+	public static final BlockEntry<ComputerBlock> COMPUTER = REGISTRATE.block("computer", ComputerBlock::new)
+			.initialProperties(() -> Blocks.STONE).transform(TagGen.TagGen.pickaxeOnlyOnly())
+			.transform(BlockStressDefaults.setImpact(12))
+			.onRegister(assignDataBehaviour(new TerminalDisplaySource(), "terminal"))
+			.onRegister(assignDataBehaviour(new FrequencyDisplaySource(), "frequency")).simpleItem()
+			.properties(BlockBehaviour.Properties::noOcclusion).register();
+
+	public static final BlockEntry<RedstoneDetectorBlock> REDSTONE_DETECTOR = REGISTRATE.block("redstone_detector",
+					RedstoneDetectorBlock::new).initialProperties(() -> Blocks.STONE).transform(TagGen.pickaxeOnly())
+			.item(RedstoneDetectorItem::new).transform(customItemModel()).register();
+	public static final BlockEntry<ScannerBlock> SCANNER = REGISTRATE.block("scanner", ScannerBlock::new)
+			.initialProperties(() -> Blocks.STONE).transform(TagGen.pickaxeOnly())
+			.properties(BlockBehaviour.Properties::noOcclusion).blockstate(BlockStateGen.horizontalBlockProvider(true))
+			.item(ScannerItem::new).model(AssetLookup::customItemModel).register();
+
 }

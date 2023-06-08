@@ -3,6 +3,7 @@ package com.workert.robotics.lists;
 import com.simibubi.create.foundation.networking.SimplePacketBase;
 import com.workert.robotics.Robotics;
 import com.workert.robotics.packets.ChangeExtendOBootsHeightPacket;
+import com.workert.robotics.packets.ConfigureInputSignalPacket;
 import com.workert.robotics.packets.ReturnEditedCodePacket;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -19,7 +20,9 @@ public enum PacketList {
 	// Packets to Server
 	CHANGE_EXTEND_O_BOOTS_HEIGHT(ChangeExtendOBootsHeightPacket.class, ChangeExtendOBootsHeightPacket::new,
 			NetworkDirection.PLAY_TO_SERVER),
-	RETURN_EDITED_CODE(ReturnEditedCodePacket.class, ReturnEditedCodePacket::new, NetworkDirection.PLAY_TO_SERVER);
+	RETURN_EDITED_CODE(ReturnEditedCodePacket.class, ReturnEditedCodePacket::new, NetworkDirection.PLAY_TO_SERVER),
+	CONFIGURE_INPUT_SIGNAL(ConfigureInputSignalPacket.class, ConfigureInputSignalPacket::new,
+			NetworkDirection.PLAY_TO_SERVER);
 
 	public static final String PROTOCOL_VERSION = "1";
 	public static SimpleChannel CHANNEL;

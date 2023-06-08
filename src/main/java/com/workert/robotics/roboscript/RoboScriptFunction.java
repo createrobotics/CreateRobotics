@@ -2,12 +2,12 @@ package com.workert.robotics.roboscript;
 import java.util.List;
 
 public class RoboScriptFunction implements RoboScriptCallable {
-	private final Stmt.Function declaration;
+	private final Statement.Function declaration;
 	private final Environment closure; // parent
 
 	private final boolean isInitializer;
 
-	RoboScriptFunction(Stmt.Function declaration, Environment parent, boolean isInitializer) {
+	RoboScriptFunction(Statement.Function declaration, Environment parent, boolean isInitializer) {
 		this.isInitializer = isInitializer;
 		this.closure = parent;
 		this.declaration = declaration;

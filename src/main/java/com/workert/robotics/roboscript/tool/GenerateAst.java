@@ -10,9 +10,9 @@ public class GenerateAst {
 	public static void main(String[] args) throws IOException {
 		if (args.length != 1) {
 			System.err.println("Usage: generate_ast <output directory>");
-			// System.exit(64);
+			System.exit(64);
 		}
-		String outputDir = "D:\\MinecraftMods\\CreateRobotics\\src\\main\\java\\com\\workert\\robotics\\roboscript"; //args[0];
+		String outputDir = args[0];
 
 		defineAst(outputDir, "Expr",
 				Arrays.asList("Assign : Token name, Expr value", "Binary : Expr left, Token operator, Expr right",

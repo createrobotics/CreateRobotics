@@ -5,19 +5,29 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
+public class Interpreter implements Expression.Visitor<Object>, Statement.Visitor<Void> {
 	public final RoboScript roboScriptInstance;
 	final Environment globals = new Environment();
 	private Environment environment = this.globals;
-	private final Map<Expr, Integer> locals = new HashMap<>();
+	private final Map<Expression, Integer> locals = new HashMap<>();
+
+	private boolean stopRequested = false;
 
 	public Interpreter(RoboScript roboScriptInstance) {
 		this.roboScriptInstance = roboScriptInstance;
 	}
 
-	public void interpret(List<Stmt> statements) {
+	public void requestStop() {
+		this.stopRequested = true;
+	}
+
+	public void interpret(List<Statement> statements) {
 		try {
-			for (Stmt statement : statements) {
+			for (Statement statement : statements) {
+				if (this.stopRequested) {
+					this.stopRequested = false;
+					break;
+				}
 				this.execute(statement);
 			}
 		} catch (RuntimeError error) {
@@ -25,22 +35,22 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 		}
 	}
 
-	private void execute(Stmt stmt) {
-		stmt.accept(this);
+	private void execute(Statement statement) {
+		statement.accept(this);
 	}
 
-	void resolve(Expr expr, int depth) {
-		this.locals.put(expr, depth);
+	void resolve(Expression expression, int depth) {
+		this.locals.put(expression, depth);
 	}
 
 	@Override
-	public Void visitBlockStmt(Stmt.Block stmt) {
+	public Void visitBlockStmt(Statement.Block stmt) {
 		this.executeBlock(stmt.statements, new Environment(this.environment));
 		return null;
 	}
 
 	@Override
-	public Void visitClassStmt(Stmt.Class stmt) {
+	public Void visitClassStmt(Statement.Class stmt) {
 		Object superclass = null;
 		if (stmt.superclass != null) {
 			superclass = this.evaluate(stmt.superclass);
@@ -57,7 +67,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 		}
 
 		Map<String, RoboScriptFunction> methods = new HashMap<>();
-		for (Stmt.Function method : stmt.methods) {
+		for (Statement.Function method : stmt.methods) {
 			RoboScriptFunction function = new RoboScriptFunction(method, this.environment,
 					method.name.lexeme.equals(stmt.name.lexeme));
 			methods.put(method.name.lexeme, function);
@@ -75,7 +85,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 	}
 
 	@Override
-	public Object visitGetExpr(Expr.Get expr) {
+	public Object visitGetExpr(Expression.Get expr) {
 		Object object = this.evaluate(expr.object);
 		if (object instanceof RoboScriptClassInstance) {
 			return ((RoboScriptClassInstance) object).get(expr.name);
@@ -85,7 +95,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 	}
 
 	@Override
-	public Object visitSetExpr(Expr.Set expr) {
+	public Object visitSetExpr(Expression.Set expr) {
 		Object object = this.evaluate(expr.object);
 
 		if (!(object instanceof RoboScriptClassInstance)) {
@@ -97,7 +107,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 	}
 
 	@Override
-	public Object visitSuperExpr(Expr.Super expr) {
+	public Object visitSuperExpr(Expression.Super expr) {
 		int distance = this.locals.get(expr);
 		RoboScriptClass superclass = (RoboScriptClass) this.environment.getAt(distance,
 				new Token(Token.TokenType.SUPER, "super", "super", expr.keyword.line));
@@ -110,16 +120,16 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 	}
 
 	@Override
-	public Object visitThisExpr(Expr.This expr) {
+	public Object visitThisExpr(Expression.This expr) {
 		return this.lookUpVariable(expr.keyword, expr);
 	}
 
-	void executeBlock(List<Stmt> statements, Environment environment) {
+	void executeBlock(List<Statement> statements, Environment environment) {
 		Environment previous = this.environment;
 		try {
 			this.environment = environment;
 
-			for (Stmt statement : statements) {
+			for (Statement statement : statements) {
 				this.execute(statement);
 			}
 		} finally {
@@ -128,12 +138,12 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 	}
 
 	@Override
-	public Object visitLiteralExpr(Expr.Literal expr) {
+	public Object visitLiteralExpr(Expression.Literal expr) {
 		return expr.value;
 	}
 
 	@Override
-	public Object visitLogicalExpr(Expr.Logical expr) {
+	public Object visitLogicalExpr(Expression.Logical expr) {
 		Object left = this.evaluate(expr.left);
 
 		if (expr.operator.type == Token.TokenType.OR) {
@@ -146,29 +156,29 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 	}
 
 	@Override
-	public Object visitGroupingExpr(Expr.Grouping expr) {
+	public Object visitGroupingExpr(Expression.Grouping expr) {
 		return this.evaluate(expr.expression);
 	}
 
-	private Object evaluate(Expr expr) {
-		return expr.accept(this);
+	private Object evaluate(Expression expression) {
+		return expression.accept(this);
 	}
 
 	@Override
-	public Void visitExpressionStmt(Stmt.Expression stmt) {
+	public Void visitExpressionStmt(Statement.Expression stmt) {
 		this.evaluate(stmt.expression);
 		return null;
 	}
 
 	@Override
-	public Void visitFunctionStmt(Stmt.Function stmt) {
+	public Void visitFunctionStmt(Statement.Function stmt) {
 		RoboScriptFunction function = new RoboScriptFunction(stmt, this.environment, false);
 		this.environment.define(stmt.name.lexeme, function);
 		return null;
 	}
 
 	@Override
-	public Void visitIfStmt(Stmt.If stmt) {
+	public Void visitIfStmt(Statement.If stmt) {
 		if (this.isTruthy(this.evaluate(stmt.condition))) {
 			this.execute(stmt.thenBranch);
 		} else if (stmt.elseBranch != null) {
@@ -178,7 +188,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 	}
 
 	@Override
-	public Void visitReturnStmt(Stmt.Return stmt) {
+	public Void visitReturnStmt(Statement.Return stmt) {
 		Object value = null;
 		if (stmt.value != null) value = this.evaluate(stmt.value);
 
@@ -186,12 +196,12 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 	}
 
 	@Override
-	public Void visitBreakStmt(Stmt.Break stmt) {
+	public Void visitBreakStmt(Statement.Break stmt) {
 		throw new Break();
 	}
 
 	@Override
-	public Void visitVarStmt(Stmt.Var stmt) {
+	public Void visitVarStmt(Statement.Var stmt) {
 		Object value = null;
 		if (stmt.initializer != null) {
 			value = this.evaluate(stmt.initializer);
@@ -202,7 +212,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 	}
 
 	@Override
-	public Void visitWhileStmt(Stmt.While stmt) {
+	public Void visitWhileStmt(Statement.While stmt) {
 		try {
 			while (this.isTruthy(this.evaluate(stmt.condition))) {
 				this.execute(stmt.body);
@@ -213,7 +223,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 	}
 
 	@Override
-	public Object visitAssignExpr(Expr.Assign expr) {
+	public Object visitAssignExpr(Expression.Assign expr) {
 		Object value = this.evaluate(expr.value);
 
 		Integer distance = this.locals.get(expr);
@@ -227,13 +237,13 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 	}
 
 	@Override
-	public Object visitBinaryExpr(Expr.Binary expr) {
+	public Object visitBinaryExpr(Expression.Binary expr) {
 		Object left = this.evaluate(expr.left);
 		Object right = this.evaluate(expr.right);
 
 		switch (expr.operator.type) {
 			case PLUS -> {
-				if (left instanceof Double && right instanceof Double) {
+				if (left instanceof Number && right instanceof Number) {
 					return (double) left + (double) right;
 				} else if (left instanceof String && right instanceof String) {
 					return (String) left + (String) right;
@@ -286,11 +296,11 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 	}
 
 	@Override
-	public Object visitCallExpr(Expr.Call expr) {
+	public Object visitCallExpr(Expression.Call expr) {
 		Object callee = this.evaluate(expr.callee);
 
 		List<Object> arguments = new ArrayList<>();
-		for (Expr argument : expr.arguments) {
+		for (Expression argument : expr.arguments) {
 			arguments.add(this.evaluate(argument));
 		}
 
@@ -308,7 +318,7 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 	}
 
 	@Override
-	public Object visitUnaryExpr(Expr.Unary expr) {
+	public Object visitUnaryExpr(Expression.Unary expr) {
 		Object right = this.evaluate(expr.right);
 
 		return switch (expr.operator.type) {
@@ -321,12 +331,12 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 	}
 
 	@Override
-	public Object visitVariableExpr(Expr.Variable expr) {
+	public Object visitVariableExpr(Expression.Variable expr) {
 		return this.lookUpVariable(expr.name, expr);
 	}
 
-	private Object lookUpVariable(Token name, Expr expr) {
-		Integer distance = this.locals.get(expr);
+	private Object lookUpVariable(Token name, Expression expression) {
+		Integer distance = this.locals.get(expression);
 		if (distance != null) {
 			return this.environment.getAt(distance, name);
 		} else {
