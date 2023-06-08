@@ -4,15 +4,14 @@ import com.mojang.logging.LogUtils;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.simibubi.create.foundation.data.LangMerger;
 import com.simibubi.create.foundation.ponder.PonderLocalization;
-import com.workert.robotics.client.ClientHandler;
-import com.workert.robotics.client.KeybindList;
-import com.workert.robotics.client.LangPartials;
-import com.workert.robotics.client.screens.MenuList;
-import com.workert.robotics.client.screens.SmasherBlockScreen;
+import com.workert.robotics.base.client.ClientHandler;
+import com.workert.robotics.base.client.KeybindList;
+import com.workert.robotics.base.client.LangPartials;
+import com.workert.robotics.base.lists.*;
+import com.workert.robotics.base.world.feature.RoboticsConfiguredFeatures;
+import com.workert.robotics.base.world.feature.RoboticsPlacedFeatures;
 import com.workert.robotics.helpers.CodeHelper;
-import com.workert.robotics.lists.*;
-import com.workert.robotics.world.feature.ModConfiguredFeatures;
-import com.workert.robotics.world.feature.ModPlacedFeatures;
+import com.workert.robotics.unused.smasher.SmasherBlockScreen;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.data.event.GatherDataEvent;
@@ -48,8 +47,8 @@ public class Robotics {
 		MenuList.register(this.modEventBus);
 		RecipeList.register(this.modEventBus);
 
-		ModConfiguredFeatures.register(this.modEventBus);
-		ModPlacedFeatures.register(this.modEventBus);
+		RoboticsConfiguredFeatures.register(this.modEventBus);
+		RoboticsPlacedFeatures.register(this.modEventBus);
 
 		PacketList.registerPackets();
 
