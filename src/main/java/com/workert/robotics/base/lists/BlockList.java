@@ -10,8 +10,12 @@ import com.tterrag.registrate.providers.loot.RegistrateBlockLootTables;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.workert.robotics.Robotics;
 import com.workert.robotics.content.computing.computer.ComputerBlock;
+import com.workert.robotics.content.computing.computer.FrequencyDisplaySource;
+import com.workert.robotics.content.computing.computer.TerminalDisplaySource;
 import com.workert.robotics.content.computing.inputs.redstonedetector.RedstoneDetectorBlock;
+import com.workert.robotics.content.computing.inputs.redstonedetector.RedstoneDetectorItem;
 import com.workert.robotics.content.computing.inputs.scanner.ScannerBlock;
+import com.workert.robotics.content.computing.inputs.scanner.ScannerItem;
 import com.workert.robotics.content.robotics.codeeditor.CodeEditorBlock;
 import com.workert.robotics.unused.smasher.SmasherBlock;
 import net.minecraft.tags.BlockTags;
@@ -137,8 +141,10 @@ public class BlockList {
 			.initialProperties(() -> Blocks.STONE)
 			.transform(TagGen.pickaxeOnly())
 			.transform(BlockStressDefaults.setImpact(12))
-			.onRegister(AllDisplayBehaviours.assignDataBehaviour(new TerminalDisplaySource(), "terminal"))
-			.onRegister(AllDisplayBehaviours.assignDataBehaviour(new FrequencyDisplaySource(), "frequency"))
+			.onRegister(AllDisplayBehaviours.assignDataBehaviour(
+					new TerminalDisplaySource(), "terminal"))
+			.onRegister(AllDisplayBehaviours.assignDataBehaviour(
+					new FrequencyDisplaySource(), "frequency"))
 			.simpleItem()
 			.properties(BlockBehaviour.Properties::noOcclusion).register();
 
@@ -148,6 +154,7 @@ public class BlockList {
 			.transform(TagGen.pickaxeOnly())
 			.item(RedstoneDetectorItem::new)
 			.model(AssetLookup::customItemModel)
+			.build()
 			.register();
 	public static final BlockEntry<ScannerBlock> SCANNER = Robotics.REGISTRATE
 			.block("scanner", ScannerBlock::new)
@@ -157,6 +164,7 @@ public class BlockList {
 			.blockstate(BlockStateGen.horizontalBlockProvider(true))
 			.item(ScannerItem::new)
 			.model(AssetLookup::customItemModel)
+			.build()
 			.register();
 
 }
