@@ -19,9 +19,13 @@ public class RoboScript implements ConsoleOutputProvider {
 
 	private final CompoundTag savedVariableCompound = new CompoundTag();
 
-	public RoboScript() {
+	private boolean runningInJVM;
+
+	public RoboScript(boolean runningInJVM) {
+		this.runningInJVM = runningInJVM;
 		this.defineDefaultFunctions();
 	}
+
 
 	/**
 	 * Registers a function for use by this RoboScript instance.<br> The provided arguments from the {@link BiFunction} may
@@ -52,10 +56,14 @@ public class RoboScript implements ConsoleOutputProvider {
 	}
 
 	public void defineDefaultFunctions() {
-		this.defineFunction("print", 1, (interpreter, arguments) -> {
+		this.defineFunction("print", 1, (this.runningInJVM) ? (interpreter, arguments) -> {
+			System.out.println(Interpreter.stringify(arguments.get(0)));
+			return null;
+		} : (interpreter, arguments) -> {
 			this.consoleOutput.concat(Interpreter.stringify(arguments.get(0)) + "\n");
 			return null;
 		});
+
 
 		this.defineFunction("save", 2, (interpreter, arguments) -> {
 			CompoundTag entryTag = new CompoundTag();
@@ -152,7 +160,11 @@ public class RoboScript implements ConsoleOutputProvider {
 	}
 
 	private void report(int line, String where, String message) {
-		this.consoleOutput.concat("[line " + line + "] ERROR" + where + ": " + message + "\n");
+		if (this.runningInJVM) {
+			System.err.println("[line " + line + "] ERROR" + where + ": " + message);
+		} else {
+			this.consoleOutput.concat("[line " + line + "] ERROR" + where + ": " + message + "\n");
+		}
 		this.hadError = true;
 	}
 

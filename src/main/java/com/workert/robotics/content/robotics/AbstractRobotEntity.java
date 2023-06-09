@@ -51,7 +51,7 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 		super(entity, world);
 		this.air = maxAir;
 		if (this.isProgrammable()) {
-			this.roboScript = new RoboScript() {
+			this.roboScript = new RoboScript(false) {
 				@Override
 				public RunningState getRunningState() {
 					if (AbstractRobotEntity.this.air <= 0) {

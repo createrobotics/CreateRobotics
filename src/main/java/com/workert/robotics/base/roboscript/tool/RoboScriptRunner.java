@@ -9,7 +9,7 @@ import java.nio.file.Paths;
 
 public class RoboScriptRunner {
 	private static String sourcePath = "src/main/java/com/workert/robotics/base/roboscript/tool/script.robo";
-	private static RoboScript program = new RoboScript();
+	private static RoboScript program = new RoboScript(true);
 
 	public static void main(String[] args) throws IOException {
 		program.defineFunction("print", 1, (interpreter, arguments) -> {

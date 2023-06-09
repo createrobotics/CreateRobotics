@@ -37,7 +37,7 @@ public class ComputerBlockEntity extends KineticTileEntity {
 	public ComputerBlockEntity(BlockEntityType<?> type, BlockPos blockPos, BlockState blockState) {
 		super(type, blockPos, blockState);
 		this.attachedInventories = new LinkedHashSet<>();
-		this.roboScript = new RoboScript() {
+		this.roboScript = new RoboScript(false) {
 			@Override
 			public RunningState getRunningState() {
 				if (!ComputerBlockEntity.this.isSpeedRequirementFulfilled())
