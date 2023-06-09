@@ -250,10 +250,18 @@ public class Interpreter implements Expression.Visitor<Object>, Statement.Visito
 					throw new RuntimeError(expr.operator, "Operands must be two numbers or two strings.");
 				}
 			}
+			case PLUS_PLUS -> {
+				this.checkNumberOperand(expr.operator, left);
+				return (double) left + 1.0d;
+			}
 
 			case MINUS -> {
 				this.checkNumberOperands(expr.operator, left, right);
 				return (double) left - (double) right;
+			}
+			case MINUS_MINUS -> {
+				this.checkNumberOperand(expr.operator, left);
+				return (double) left - 1.0d;
 			}
 			case SLASH -> {
 				this.checkNumberOperands(expr.operator, left, right);

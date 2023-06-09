@@ -213,6 +213,14 @@ public class Parser {
 			if (expression instanceof Expression.Get get) return new Expression.Set(get.object, get.name, value);
 
 			this.error(equals, "Invalid assignment target.");
+		} else if (this.advanceIfNextTokenMatches(Token.TokenType.PLUS_PLUS, Token.TokenType.MINUS_MINUS)) {
+			Token operator = this.getPreviousToken();
+			if (expression instanceof Expression.Variable var)
+				return new Expression.Assign(var.name,
+						new Expression.Binary(expression, operator, new Expression.Literal(1.0d)));
+			if (expression instanceof Expression.Get get)
+				return new Expression.Set(get.object, get.name,
+						new Expression.Binary(expression, operator, new Expression.Literal(1.0d)));
 		} else if (this.advanceIfNextTokenMatches(
 				Token.TokenType.PLUS_EQUAL, Token.TokenType.MINUS_EQUAL, Token.TokenType.STAR_EQUAL,
 				Token.TokenType.SLASH_EQUAL, Token.TokenType.CARET_EQUAL)) {
@@ -220,9 +228,9 @@ public class Parser {
 			Token operator = this.createTokenFromOperatorEquals(operatorEqual);
 			Expression value = this.assignment();
 			if (expression instanceof Expression.Variable var)
-				return (new Expression.Assign(var.name, new Expression.Binary(expression, operator, value)));
+				return new Expression.Assign(var.name, new Expression.Binary(expression, operator, value));
 			if (expression instanceof Expression.Get get)
-				return (new Expression.Set(get.object, get.name, new Expression.Binary(expression, operator, value)));
+				return new Expression.Set(get.object, get.name, new Expression.Binary(expression, operator, value));
 		}
 
 		return expression;

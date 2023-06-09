@@ -76,9 +76,17 @@ public class Scanner {
 				this.addToken(DOT);
 				break;
 			case '-':
+				if (this.consumeIfNextCharMatches('-')) {
+					this.addToken(MINUS_MINUS);
+					break;
+				}
 				this.addToken(this.consumeIfNextCharMatches('=') ? MINUS_EQUAL : MINUS);
 				break;
 			case '+':
+				if (this.consumeIfNextCharMatches('+')) {
+					this.addToken(PLUS_PLUS);
+					break;
+				}
 				this.addToken(this.consumeIfNextCharMatches('=') ? PLUS_EQUAL : PLUS);
 				break;
 			case ';':
