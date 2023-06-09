@@ -4,7 +4,7 @@ import com.simibubi.create.foundation.gui.AbstractSimiScreen;
 import com.simibubi.create.foundation.gui.AllIcons;
 import com.simibubi.create.foundation.gui.widget.IconButton;
 import com.simibubi.create.foundation.utility.Components;
-import com.workert.robotics.base.roboscript.ingame.IConsoleOutputProvider;
+import com.workert.robotics.base.roboscript.ingame.ConsoleOutputProvider;
 import net.minecraft.client.gui.components.MultiLineEditBox;
 import net.minecraft.network.chat.Component;
 
@@ -13,9 +13,9 @@ public class ConsoleScreen extends AbstractSimiScreen {
 	private IconButton closeButton;
 	private IconButton runningStateButton;
 
-	private IConsoleOutputProvider consoleOutputProvider;
+	private ConsoleOutputProvider consoleOutputProvider;
 
-	public ConsoleScreen(IConsoleOutputProvider consoleOutputProvider) {
+	public ConsoleScreen(ConsoleOutputProvider consoleOutputProvider) {
 		super(Component.literal("Edit Signal Name"));
 		this.consoleOutputProvider = consoleOutputProvider;
 	}
@@ -25,14 +25,14 @@ public class ConsoleScreen extends AbstractSimiScreen {
 	public void tick() {
 		super.tick();
 
-		if (this.consoleOutputProvider.getRunningState().equals(IConsoleOutputProvider.RunningState.RUNNING)) {
+		if (this.consoleOutputProvider.getRunningState().equals(ConsoleOutputProvider.RunningState.RUNNING)) {
 			this.runningStateButton.setIcon(AllIcons.I_PLAY);
 			this.runningStateButton.setToolTip(Component.literal("Currently running"));
-		} else if (this.consoleOutputProvider.getRunningState().equals(IConsoleOutputProvider.RunningState.STOPPED)) {
+		} else if (this.consoleOutputProvider.getRunningState().equals(ConsoleOutputProvider.RunningState.STOPPED)) {
 			this.runningStateButton.setIcon(AllIcons.I_STOP);
 			this.runningStateButton.setToolTip(Component.literal("Currently stopped"));
 		} else if (this.consoleOutputProvider.getRunningState()
-				.equals(IConsoleOutputProvider.RunningState.ENERGY_REQUIREMENT_NOT_MET)) {
+				.equals(ConsoleOutputProvider.RunningState.ENERGY_REQUIREMENT_NOT_MET)) {
 			this.runningStateButton.setIcon(AllIcons.I_PAUSE);
 			this.runningStateButton.setToolTip(
 					Component.literal("The Energy Requirement is currently not met. The program has been stopped."));

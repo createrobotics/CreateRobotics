@@ -1,5 +1,5 @@
 package com.workert.robotics.base.roboscript.ingame;
-public interface IConsoleOutputProvider {
+public interface ConsoleOutputProvider {
 
 	String getConsoleOutput();
 

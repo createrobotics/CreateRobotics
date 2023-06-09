@@ -40,7 +40,7 @@ public class InputSignalScreen extends AbstractSimiScreen {
 
 	@Override
 	protected void init() {
-		if (!(this.be instanceof IInputBlockEntity inputBlock)) {
+		if (!(this.be instanceof InputBlockEntity inputBlock)) {
 			this.onClose();
 			return;
 		}

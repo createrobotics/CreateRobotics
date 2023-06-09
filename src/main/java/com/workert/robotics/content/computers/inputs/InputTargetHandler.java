@@ -97,7 +97,7 @@ public class InputTargetHandler {
 		BlockPos resultPos = result.getBlockPos();
 
 		BlockEntity te = Minecraft.getInstance().level.getBlockEntity(resultPos);
-		if (!(te instanceof IInputBlockEntity inputBlockEntity)) {
+		if (!(te instanceof InputBlockEntity inputBlockEntity)) {
 			lastHoveredBlockPos = -1;
 			currentSelection = null;
 			return;

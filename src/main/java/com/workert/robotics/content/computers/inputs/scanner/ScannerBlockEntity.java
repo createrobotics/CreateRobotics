@@ -6,7 +6,7 @@ import com.simibubi.create.foundation.tileEntity.SyncedTileEntity;
 import com.simibubi.create.foundation.tileEntity.TileEntityBehaviour;
 import com.workert.robotics.base.registries.BlockEntityRegistry;
 import com.workert.robotics.content.computers.computer.ComputerBlockEntity;
-import com.workert.robotics.content.computers.inputs.IInputBlockEntity;
+import com.workert.robotics.content.computers.inputs.InputBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ScannerBlockEntity extends KineticTileEntity implements ScannerBehaviour.ScanningBehaviorSpecifics, IInputBlockEntity {
+public class ScannerBlockEntity extends KineticTileEntity implements ScannerBehaviour.ScanningBehaviorSpecifics, InputBlockEntity {
 	public ScannerBehaviour processingBehaviour;
 	private BlockPos targetPos = this.getBlockPos();
 	private String signalName = "";

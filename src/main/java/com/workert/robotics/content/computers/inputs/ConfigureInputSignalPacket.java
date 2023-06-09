@@ -33,7 +33,7 @@ public class ConfigureInputSignalPacket extends TileEntityConfigurationPacket<Sy
 
 	@Override
 	protected void applySettings(SyncedTileEntity be) {
-		if (!(be instanceof IInputBlockEntity input)) return;
+		if (!(be instanceof InputBlockEntity input)) return;
 		input.setSignalName(this.signalName);
 		input.getBlockEntity().sendData();
 	}

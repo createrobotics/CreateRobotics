@@ -1,13 +1,13 @@
 package com.workert.robotics.base.roboscript;
 
-import com.workert.robotics.base.roboscript.ingame.IConsoleOutputProvider;
+import com.workert.robotics.base.roboscript.ingame.ConsoleOutputProvider;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
 
-public class RoboScript implements IConsoleOutputProvider {
+public class RoboScript implements ConsoleOutputProvider {
 	private final Interpreter interpreter = new Interpreter(this);
 
 	private boolean hadError = false;

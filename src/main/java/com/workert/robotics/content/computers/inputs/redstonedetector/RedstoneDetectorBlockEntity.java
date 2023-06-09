@@ -2,14 +2,14 @@ package com.workert.robotics.content.computers.inputs.redstonedetector;
 
 import com.simibubi.create.foundation.tileEntity.SyncedTileEntity;
 import com.workert.robotics.base.registries.BlockEntityRegistry;
-import com.workert.robotics.content.computers.inputs.IInputBlockEntity;
+import com.workert.robotics.content.computers.inputs.InputBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class RedstoneDetectorBlockEntity extends SyncedTileEntity implements IInputBlockEntity {
+public class RedstoneDetectorBlockEntity extends SyncedTileEntity implements InputBlockEntity {
 	private String signalName = "";
 	private BlockPos targetPos = this.getBlockPos();
 
