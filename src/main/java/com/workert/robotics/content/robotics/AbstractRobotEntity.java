@@ -59,16 +59,16 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 		if (this.isProgrammable()) {
 			this.roboScript = new RoboScript() {
 				@Override
-				public void saveVariableExternally(Map.Entry<String, Object> variableMap) {
-					if (variableMap.getValue() instanceof Double doubleValue) {
-						AbstractRobotEntity.this.savedVariables.putDouble(variableMap.getKey(), doubleValue);
-					} else if (variableMap.getValue() instanceof String stringValue) {
-						AbstractRobotEntity.this.savedVariables.putString(variableMap.getKey(), stringValue);
-					} else if (variableMap.getValue() instanceof Boolean booleanValue) {
-						AbstractRobotEntity.this.savedVariables.putBoolean(variableMap.getKey(), booleanValue);
+				public void saveVariableExternally(Map.Entry<String, Object> variableEntry) {
+					if (variableEntry.getValue() instanceof Double doubleValue) {
+						AbstractRobotEntity.this.savedVariables.putDouble(variableEntry.getKey(), doubleValue);
+					} else if (variableEntry.getValue() instanceof String stringValue) {
+						AbstractRobotEntity.this.savedVariables.putString(variableEntry.getKey(), stringValue);
+					} else if (variableEntry.getValue() instanceof Boolean booleanValue) {
+						AbstractRobotEntity.this.savedVariables.putBoolean(variableEntry.getKey(), booleanValue);
 					} else {
-						AbstractRobotEntity.this.savedVariables.putString(variableMap.getKey(),
-								Interpreter.stringify(variableMap.getValue()));
+						AbstractRobotEntity.this.savedVariables.putString(variableEntry.getKey(),
+								Interpreter.stringify(variableEntry.getValue()));
 					}
 				}
 

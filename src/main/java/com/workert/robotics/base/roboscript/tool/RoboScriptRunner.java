@@ -14,8 +14,8 @@ public class RoboScriptRunner {
 	private static RoboScript program = new RoboScript(true) {
 
 		@Override
-		public void saveVariableExternally(Map.Entry<String, Object> variableMap) {
-			RoboScriptRunner.variableMap.put(variableMap.getKey(), variableMap.getValue());
+		public void saveVariableExternally(Map.Entry<String, Object> variableEntry) {
+			RoboScriptRunner.variableMap.put(variableEntry.getKey(), variableEntry.getValue());
 		}
 
 		@Override
