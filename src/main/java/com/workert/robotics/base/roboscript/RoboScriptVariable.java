@@ -13,6 +13,9 @@ public class RoboScriptVariable {
 		this.name = name;
 		this.staticc = staticc;
 		this.value = value;
+
+		if (this.staticc)
+			this.roboScriptInstance.saveVariableExternally(Map.entry(this.name, value));
 	}
 
 	public Object getValue() {
