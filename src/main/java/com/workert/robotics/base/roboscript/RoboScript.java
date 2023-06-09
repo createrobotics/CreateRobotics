@@ -1,6 +1,7 @@
 package com.workert.robotics.base.roboscript;
 
 import com.workert.robotics.base.roboscript.ingame.ConsoleOutputProvider;
+import net.minecraft.nbt.CompoundTag;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,8 @@ public class RoboScript implements ConsoleOutputProvider {
 
 	private final String consoleOutput = "";
 
+	private final CompoundTag savedVariableCompound = new CompoundTag();
+
 	public RoboScript() {
 		this.defineDefaultFunctions();
 	}
@@ -30,7 +33,7 @@ public class RoboScript implements ConsoleOutputProvider {
 	 *                 provided arguments to the command. May return an object.
 	 */
 	public void defineFunction(String name, int expectedArgumentSize, BiFunction<Interpreter, List<Object>, Object> function) {
-		this.interpreter.globals.define(name, new RoboScriptCallable() {
+		this.interpreter.environment.define(name, new RoboScriptCallable() {
 			@Override
 			public int expectedArgumentSize() {
 				return expectedArgumentSize;
@@ -50,8 +53,28 @@ public class RoboScript implements ConsoleOutputProvider {
 
 	public void defineDefaultFunctions() {
 		this.defineFunction("print", 1, (interpreter, arguments) -> {
-			this.consoleOutput.concat(arguments.get(0).toString() + "\n");
+			this.consoleOutput.concat(Interpreter.stringify(arguments.get(0)) + "\n");
 			return null;
+		});
+
+		this.defineFunction("save", 2, (interpreter, arguments) -> {
+			CompoundTag entryTag = new CompoundTag();
+			Object value = arguments.get(0);
+			if (value instanceof Double doubleValue) {
+				entryTag.putString("Identifier", arguments.get(0).toString());
+				entryTag.putDouble("Value", doubleValue);
+			} else if (value instanceof String stringValue) {
+				entryTag.putString("Identifier", arguments.get(0).toString());
+				entryTag.putString("Value", stringValue);
+			} else if (value instanceof Boolean booleanValue) {
+				entryTag.putString("Identifier", arguments.get(0).toString());
+				entryTag.putBoolean("Value", booleanValue);
+			} else {
+				entryTag.putString("Identifier", arguments.get(0).toString());
+				entryTag.putString("Value", value.toString());
+			}
+			return null;
+
 		});
 	}
 
@@ -62,7 +85,8 @@ public class RoboScript implements ConsoleOutputProvider {
 	 * @param source the string to execute. May contain multiple statements.
 	 */
 	public void runString(String source) {
-		CompletableFuture.runAsync(() -> {
+		new Thread(() -> {
+
 			this.isRunning = true;
 			this.hadError = false;
 
@@ -73,17 +97,23 @@ public class RoboScript implements ConsoleOutputProvider {
 			List<Statement> statements = parser.parse();
 
 			// Stop if there was a syntax error.
-			if (this.hadError) return;
+			if (this.hadError) {
+				System.out.println("Error 1");
+				return;
+			}
 
 			Resolver resolver = new Resolver(this.interpreter);
 			resolver.resolve(statements);
 
-			if (this.hadError) return;
+			if (this.hadError) {
+				System.out.println("Error 2");
+				return;
+			}
 
 			this.interpreter.interpret(statements);
 
 			this.isRunning = false;
-		});
+		}).start();
 	}
 
 	/**
@@ -118,7 +148,7 @@ public class RoboScript implements ConsoleOutputProvider {
 	}
 
 	public void runtimeError(RuntimeError error) {
-		System.err.println("[line " + error.token.line + "] Runtime Error: " + error.getMessage());
+		this.consoleOutput.concat("[line " + error.token.line + "] Runtime Error: " + error.getMessage() + "\n");
 	}
 
 	private void report(int line, String where, String message) {

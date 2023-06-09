@@ -7,8 +7,7 @@ import java.util.Map;
 
 public class Interpreter implements Expression.Visitor<Object>, Statement.Visitor<Void> {
 	public final RoboScript roboScriptInstance;
-	final Environment globals = new Environment();
-	private Environment environment = this.globals;
+	Environment environment = new Environment();
 	private final Map<Expression, Integer> locals = new HashMap<>();
 
 	private boolean stopRequested = false;
@@ -230,7 +229,7 @@ public class Interpreter implements Expression.Visitor<Object>, Statement.Visito
 		if (distance != null) {
 			this.environment.assignAt(distance, expr.name, value);
 		} else {
-			this.globals.assign(expr.name, value);
+			this.environment.assign(expr.name, value);
 		}
 
 		return value;
@@ -340,7 +339,7 @@ public class Interpreter implements Expression.Visitor<Object>, Statement.Visito
 		if (distance != null) {
 			return this.environment.getAt(distance, name);
 		} else {
-			return this.globals.get(name);
+			return this.environment.get(name);
 		}
 	}
 
@@ -366,7 +365,7 @@ public class Interpreter implements Expression.Visitor<Object>, Statement.Visito
 		return a.equals(b);
 	}
 
-	private String stringify(Object object) {
+	public static String stringify(Object object) {
 		if (object == null) return "null";
 
 		if (object instanceof Double) {
