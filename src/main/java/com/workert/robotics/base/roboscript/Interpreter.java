@@ -265,6 +265,11 @@ public class Interpreter implements Expression.Visitor<Object>, Statement.Visito
 				return (double) left * (double) right;
 			}
 
+			case CARET -> {
+				this.checkNumberOperands(expr.operator, left, right);
+				return Math.pow((double) left, (double) right);
+			}
+
 			case GREATER -> {
 				this.checkNumberOperands(expr.operator, left, right);
 				return (double) left > (double) right;
@@ -324,7 +329,7 @@ public class Interpreter implements Expression.Visitor<Object>, Statement.Visito
 			case BANG -> !this.isTruthy(right);
 			case MINUS -> -(double) right;
 			default ->
-				// Unreachable.
+					// Unreachable.
 					null;
 		};
 	}

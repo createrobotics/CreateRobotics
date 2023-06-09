@@ -209,14 +209,20 @@ public class Parser {
 			Token equals = this.getPreviousToken();
 			Expression value = this.assignment();
 
-			if (expression instanceof Expression.Variable) {
-				Token name = ((Expression.Variable) expression).name;
-				return new Expression.Assign(name, value);
-			} else if (expression instanceof Expression.Get) {
-				Expression.Get get = (Expression.Get) expression;
-				return new Expression.Set(get.object, get.name, value);
-			}
+			if (expression instanceof Expression.Variable var) return new Expression.Assign(var.name, value);
+			if (expression instanceof Expression.Get get) return new Expression.Set(get.object, get.name, value);
+
 			this.error(equals, "Invalid assignment target.");
+		} else if (this.advanceIfNextTokenMatches(
+				Token.TokenType.PLUS_EQUAL, Token.TokenType.MINUS_EQUAL, Token.TokenType.STAR_EQUAL,
+				Token.TokenType.SLASH_EQUAL, Token.TokenType.CARET_EQUAL)) {
+			Token operatorEqual = this.getPreviousToken();
+			Token operator = this.createTokenFromOperatorEquals(operatorEqual);
+			Expression value = this.assignment();
+			if (expression instanceof Expression.Variable var)
+				return (new Expression.Assign(var.name, new Expression.Binary(expression, operator, value)));
+			if (expression instanceof Expression.Get get)
+				return (new Expression.Set(get.object, get.name, new Expression.Binary(expression, operator, value)));
 		}
 
 		return expression;
@@ -285,9 +291,21 @@ public class Parser {
 	}
 
 	private Expression factor() {
-		Expression expression = this.unary();
+		Expression expression = this.exponent();
 
 		while (this.advanceIfNextTokenMatches(Token.TokenType.SLASH, Token.TokenType.STAR)) {
+			Token operator = this.getPreviousToken();
+			Expression right = this.exponent();
+			expression = new Expression.Binary(expression, operator, right);
+		}
+
+		return expression;
+	}
+
+	private Expression exponent() {
+		Expression expression = this.unary();
+
+		while (this.advanceIfNextTokenMatches(Token.TokenType.CARET)) {
 			Token operator = this.getPreviousToken();
 			Expression right = this.unary();
 			expression = new Expression.Binary(expression, operator, right);
@@ -421,6 +439,23 @@ public class Parser {
 
 	private Token getPreviousToken() {
 		return this.tokens.get(this.current - 1);
+	}
+
+	private Token createTokenFromOperatorEquals(Token operatorEqual) {
+		switch (operatorEqual.type) {
+			case PLUS_EQUAL:
+				return new Token(Token.TokenType.PLUS, "+", null, operatorEqual.line);
+			case MINUS_EQUAL:
+				return new Token(Token.TokenType.MINUS, "-", null, operatorEqual.line);
+			case STAR_EQUAL:
+				return new Token(Token.TokenType.STAR, "*", null, operatorEqual.line);
+			case SLASH_EQUAL:
+				return new Token(Token.TokenType.SLASH, "/", null, operatorEqual.line);
+			case CARET_EQUAL:
+				return new Token(Token.TokenType.CARET, "^", null, operatorEqual.line);
+		}
+		//Unreachable
+		return null;
 	}
 
 	private ParseError error(Token token, String message) {

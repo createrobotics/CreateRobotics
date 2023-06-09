@@ -76,16 +76,19 @@ public class Scanner {
 				this.addToken(DOT);
 				break;
 			case '-':
-				this.addToken(MINUS);
+				this.addToken(this.consumeIfNextCharMatches('=') ? MINUS_EQUAL : MINUS);
 				break;
 			case '+':
-				this.addToken(PLUS);
+				this.addToken(this.consumeIfNextCharMatches('=') ? PLUS_EQUAL : PLUS);
 				break;
 			case ';':
 				this.addToken(SEMICOLON);
 				break;
 			case '*':
-				this.addToken(STAR);
+				this.addToken(this.consumeIfNextCharMatches('=') ? STAR_EQUAL : STAR);
+				break;
+			case '^':
+				this.addToken(this.consumeIfNextCharMatches('=') ? CARET_EQUAL : CARET);
 				break;
 			case '!':
 				this.addToken(this.consumeIfNextCharMatches('=') ? BANG_EQUAL : BANG);
@@ -105,7 +108,7 @@ public class Scanner {
 						this.consumeNextChar();
 					}
 				} else {
-					this.addToken(SLASH);
+					this.addToken(this.consumeIfNextCharMatches('=') ? SLASH_EQUAL : SLASH);
 				}
 				break;
 
