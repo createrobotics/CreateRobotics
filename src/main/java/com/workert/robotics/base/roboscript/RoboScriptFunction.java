@@ -15,7 +15,7 @@ public class RoboScriptFunction implements RoboScriptCallable {
 
 	RoboScriptFunction bind(RoboScriptClassInstance instance) {
 		Environment environment = new Environment(this.closure);
-		environment.define("this", instance);
+		environment.define("this", instance, false);
 		return new RoboScriptFunction(this.declaration, environment, this.isInitializer);
 	}
 
@@ -23,7 +23,7 @@ public class RoboScriptFunction implements RoboScriptCallable {
 	public Object call(Interpreter interpreter, List<Object> arguments) {
 		Environment environment = new Environment(this.closure);
 		for (int i = 0; i < this.declaration.params.size(); i++) {
-			environment.define(this.declaration.params.get(i).lexeme, arguments.get(i));
+			environment.define(this.declaration.params.get(i).lexeme, arguments.get(i), false);
 		}
 
 		try {

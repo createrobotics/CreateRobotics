@@ -55,7 +55,7 @@ public abstract class RoboScript implements ConsoleOutputProvider, VariableDataE
 			public String toString() {
 				return "<native function " + name + ">";
 			}
-		});
+		}, false);
 	}
 
 	public void defineDefaultFunctions() {

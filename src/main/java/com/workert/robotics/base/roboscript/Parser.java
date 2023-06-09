@@ -29,7 +29,11 @@ public class Parser {
 		try {
 			if (this.advanceIfNextTokenMatches(Token.TokenType.CLASS)) return this.classDeclaration();
 			if (this.advanceIfNextTokenMatches(Token.TokenType.FUNC)) return this.function("function");
-			if (this.advanceIfNextTokenMatches(Token.TokenType.VAR)) return this.varDeclaration();
+			if (this.advanceIfNextTokenMatches(Token.TokenType.STATIC)) {
+				this.consumeIfNextTokenMatches(Token.TokenType.VAR, "Expected keyword 'var' after keyword 'static'.");
+				return this.varDeclaration(true);
+			}
+			if (this.advanceIfNextTokenMatches(Token.TokenType.VAR)) return this.varDeclaration(false);
 
 			return this.statement();
 		} catch (ParseError error) {
@@ -78,7 +82,7 @@ public class Parser {
 		if (this.advanceIfNextTokenMatches(Token.TokenType.SEMICOLON)) {
 			initializer = null;
 		} else if (this.advanceIfNextTokenMatches(Token.TokenType.VAR)) {
-			initializer = this.varDeclaration();
+			initializer = this.varDeclaration(false);
 		} else {
 			initializer = this.expressionStatement();
 		}
@@ -144,7 +148,7 @@ public class Parser {
 		return new Statement.Break(keyword);
 	}
 
-	private Statement varDeclaration() {
+	private Statement varDeclaration(boolean staticc) {
 		Token name = this.consumeIfNextTokenMatches(Token.TokenType.IDENTIFIER, "Expected variable name.");
 
 		Expression initializer = null;
@@ -153,7 +157,7 @@ public class Parser {
 		}
 
 		this.consumeIfNextTokenMatches(Token.TokenType.SEMICOLON, "Expected ';' after variable declaration.");
-		return new Statement.Var(name, initializer);
+		return new Statement.Var(name, initializer, staticc);
 	}
 
 	private Statement whileStatement() {

@@ -1,2 +1,5 @@
-save("x", 5);
-print(load("x"));
+static var a = 4;
+var b = 4;
+{
+	static var c = 3;
+}

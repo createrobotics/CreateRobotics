@@ -188,6 +188,11 @@ public class Resolver implements Expression.Visitor<Void>, Statement.Visitor<Voi
 
 	@Override
 	public Void visitVarStmt(Statement.Var stmt) {
+		if (stmt.staticc && !this.scopes.isEmpty()) {
+			this.interpreter.roboScriptInstance.error(stmt.name,
+					"Cannot have a static variable outside the global scope.");
+			return null;
+		}
 		this.declare(stmt.name);
 		if (stmt.initializer != null) {
 			this.resolve(stmt.initializer);

@@ -58,11 +58,11 @@ public class Interpreter implements Expression.Visitor<Object>, Statement.Visito
 			}
 		}
 
-		this.environment.define(stmt.name.lexeme, null);
+		this.environment.define(stmt.name.lexeme, null, false);
 
 		if (stmt.superclass != null) {
 			this.environment = new Environment(this.environment);
-			this.environment.define("super", superclass);
+			this.environment.define("super", superclass, false);
 		}
 
 		Map<String, RoboScriptFunction> methods = new HashMap<>();
@@ -172,7 +172,7 @@ public class Interpreter implements Expression.Visitor<Object>, Statement.Visito
 	@Override
 	public Void visitFunctionStmt(Statement.Function stmt) {
 		RoboScriptFunction function = new RoboScriptFunction(stmt, this.environment, false);
-		this.environment.define(stmt.name.lexeme, function);
+		this.environment.define(stmt.name.lexeme, function, false);
 		return null;
 	}
 
@@ -206,7 +206,7 @@ public class Interpreter implements Expression.Visitor<Object>, Statement.Visito
 			value = this.evaluate(stmt.initializer);
 		}
 
-		this.environment.define(stmt.name.lexeme, value);
+		this.environment.define(stmt.name.lexeme, value, stmt.staticc);
 		return null;
 	}
 

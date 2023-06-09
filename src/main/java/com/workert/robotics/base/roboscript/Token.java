@@ -74,6 +74,7 @@ public class Token {
 		TRUE,
 		VAR,
 		WHILE,
+		STATIC,
 
 		EOF
 	}

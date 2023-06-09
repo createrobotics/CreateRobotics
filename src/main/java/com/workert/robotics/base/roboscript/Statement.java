@@ -137,9 +137,10 @@ public abstract class Statement {
 
 
 	static class Var extends Statement {
-		Var(Token name, com.workert.robotics.base.roboscript.Expression initializer) {
+		Var(Token name, com.workert.robotics.base.roboscript.Expression initializer, boolean staticc) {
 			this.name = name;
 			this.initializer = initializer;
+			this.staticc = staticc;
 		}
 
 		@Override
@@ -149,6 +150,7 @@ public abstract class Statement {
 
 		final Token name;
 		final com.workert.robotics.base.roboscript.Expression initializer;
+		final boolean staticc;
 	}
 
 

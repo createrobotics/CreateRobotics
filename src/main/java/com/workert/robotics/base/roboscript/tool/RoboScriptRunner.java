@@ -1,5 +1,4 @@
 package com.workert.robotics.base.roboscript.tool;
-import com.workert.robotics.base.roboscript.Interpreter;
 import com.workert.robotics.base.roboscript.RoboScript;
 
 import java.io.IOException;
@@ -28,10 +27,6 @@ public class RoboScriptRunner {
 	private static Map<String, Object> variableMap = new HashMap<>();
 
 	public static void main(String[] args) throws IOException {
-		program.defineFunction("print", 1, (interpreter, arguments) -> {
-			System.out.println(Interpreter.stringify(arguments.get(0)));
-			return null;
-		});
 		runFile();
 	}
 
