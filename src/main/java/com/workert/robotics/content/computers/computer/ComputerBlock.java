@@ -4,7 +4,7 @@ import com.simibubi.create.AllItems;
 import com.simibubi.create.content.contraptions.relays.elementary.ICogWheel;
 import com.simibubi.create.foundation.block.ITE;
 import com.simibubi.create.foundation.gui.ScreenOpener;
-import com.workert.robotics.base.lists.BlockEntityList;
+import com.workert.robotics.base.registries.AllBlockEntities;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -53,13 +53,13 @@ public class ComputerBlock extends Block implements EntityBlock, ICogWheel, ITE<
 
 	@Override
 	public BlockEntityType<? extends ComputerBlockEntity> getTileEntityType() {
-		return BlockEntityList.COMPUTER.get();
+		return AllBlockEntities.COMPUTER.get();
 	}
 
 	@Nullable
 	@Override
 	public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
-		return BlockEntityList.COMPUTER.get().create(blockPos, blockState);
+		return AllBlockEntities.COMPUTER.get().create(blockPos, blockState);
 	}
 
 

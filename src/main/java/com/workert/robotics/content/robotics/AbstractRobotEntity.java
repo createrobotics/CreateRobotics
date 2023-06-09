@@ -1,11 +1,10 @@
 package com.workert.robotics.content.robotics;
 
-import com.simibubi.create.AllItems;
 import com.simibubi.create.content.curiosities.armor.BackTankUtil;
 import com.simibubi.create.content.logistics.RedstoneLinkNetworkHandler;
 import com.simibubi.create.foundation.gui.ScreenOpener;
 import com.simibubi.create.foundation.utility.Couple;
-import com.workert.robotics.base.lists.ItemList;
+import com.workert.robotics.base.registries.AllItems;
 import com.workert.robotics.base.roboscript.RoboScript;
 import com.workert.robotics.content.computers.computer.ConsoleScreen;
 import com.workert.robotics.helpers.CodeHelper;
@@ -151,7 +150,7 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 
 	@Override
 	protected InteractionResult mobInteract(Player pPlayer, InteractionHand pHand) {
-		if (pPlayer.getItemInHand(pHand).is(AllItems.WRENCH.get().asItem()) && pPlayer.isCrouching()) {
+		if (pPlayer.getItemInHand(pHand).is(com.simibubi.create.AllItems.WRENCH.get().asItem()) && pPlayer.isCrouching()) {
 			ItemStack stack = new ItemStack(this.getRobotItem());
 			CompoundTag saveTag = new CompoundTag();
 			this.save(saveTag);
@@ -160,14 +159,14 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 			pPlayer.getInventory().add(stack);
 			this.discard();
 		} else if (this.isProgrammable() && pPlayer.getItemInHand(pHand)
-				.is(AllItems.WRENCH.get().asItem()) && !pPlayer.isCrouching()) {
+				.is(com.simibubi.create.AllItems.WRENCH.get().asItem()) && !pPlayer.isCrouching()) {
 			if (!this.level.isClientSide) this.roboScript.runString(this.code);
 			return InteractionResult.SUCCESS;
 		} else if (this.isProgrammable() && pPlayer.isCrouching()) {
 			DistExecutor.unsafeRunWhenOn(Dist.CLIENT,
 					() -> () -> ScreenOpener.open(new ConsoleScreen(this.roboScript)));
 		} else if (this.isProgrammable() && pPlayer.getItemInHand(pHand)
-				.is(ItemList.PROGRAM.get()) && !pPlayer.isCrouching()) {
+				.is(AllItems.PROGRAM.get()) && !pPlayer.isCrouching()) {
 			if (!this.level.isClientSide) this.code = pPlayer.getItemInHand(pHand).getOrCreateTag().getString("code");
 			return InteractionResult.SUCCESS;
 		}/* else if (this.isProgrammable() && (pPlayer.getItemInHand(pHand)

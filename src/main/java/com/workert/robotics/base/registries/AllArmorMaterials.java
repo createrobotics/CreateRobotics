@@ -1,4 +1,4 @@
-package com.workert.robotics.base.lists;
+package com.workert.robotics.base.registries;
 
 import com.workert.robotics.Robotics;
 import net.minecraft.resources.ResourceLocation;
@@ -12,7 +12,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 
 import java.util.function.Supplier;
 
-public enum ArmorMaterialList implements ArmorMaterial {
+public enum AllArmorMaterials implements ArmorMaterial {
 	EXTEND_O_BOOTS("scaffolding", 4, new int[] {1, 2, 2, 1}, 0, SoundEvents.SCAFFOLDING_PLACE, 0.0F, 0.0F,
 			() -> Ingredient.of(Items.SCAFFOLDING));
 
@@ -26,7 +26,7 @@ public enum ArmorMaterialList implements ArmorMaterial {
 	private final float knockbackResistance;
 	private final LazyLoadedValue<Ingredient> repairIngredient;
 
-	ArmorMaterialList(String name, int durabilityMultiplier, int[] slotProtections, int enchantability, SoundEvent sound, float toughness, float knockbackResistance, Supplier<Ingredient> repairIngredient) {
+	AllArmorMaterials(String name, int durabilityMultiplier, int[] slotProtections, int enchantability, SoundEvent sound, float toughness, float knockbackResistance, Supplier<Ingredient> repairIngredient) {
 		this.name = name;
 		this.durabilityMultiplier = durabilityMultiplier;
 		this.slotProtections = slotProtections;

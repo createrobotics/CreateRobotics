@@ -1,4 +1,4 @@
-package com.workert.robotics.base.lists;
+package com.workert.robotics.base.registries;
 
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import com.workert.robotics.Robotics;
@@ -11,30 +11,30 @@ import com.workert.robotics.content.computers.inputs.scanner.ScannerInstance;
 import com.workert.robotics.content.computers.inputs.scanner.ScannerRenderer;
 import com.workert.robotics.unused.smasher.SmasherBlockEntity;
 
-public class BlockEntityList {
+public class AllBlockEntities {
 	public static void register() {
 	}
 
 	public static final BlockEntityEntry<SmasherBlockEntity> SMASHER_BLOCK_ENTITY = Robotics.REGISTRATE
 			.tileEntity("smasher", SmasherBlockEntity::new)
-			.validBlock(() -> BlockList.SMASHER.get())
+			.validBlock(() -> AllBlocks.SMASHER.get())
 			.register();
 
 	public static final BlockEntityEntry<ComputerBlockEntity> COMPUTER = Robotics.REGISTRATE
 			.tileEntity("computer", ComputerBlockEntity::new)
 			.instance(() -> ComputerInstance::new)
-			.validBlocks(BlockList.COMPUTER)
+			.validBlocks(AllBlocks.COMPUTER)
 			.renderer(() -> ComputerRenderer::new)
 			.register();
 
 	public static final BlockEntityEntry<RedstoneDetectorBlockEntity> REDSTONE_DETECTOR = Robotics.REGISTRATE
 			.tileEntity("redstone_detector", RedstoneDetectorBlockEntity::new)
-			.validBlocks(BlockList.REDSTONE_DETECTOR)
+			.validBlocks(AllBlocks.REDSTONE_DETECTOR)
 			.register();
 	public static final BlockEntityEntry<ScannerBlockEntity> SCANNER = Robotics.REGISTRATE
 			.tileEntity("scanner", ScannerBlockEntity::new)
 			.instance(() -> ScannerInstance::new)
-			.validBlocks(BlockList.SCANNER)
+			.validBlocks(AllBlocks.SCANNER)
 			.renderer(() -> ScannerRenderer::new)
 			.register();
 }

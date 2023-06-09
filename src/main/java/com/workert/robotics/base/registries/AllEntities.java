@@ -1,4 +1,4 @@
-package com.workert.robotics.base.lists;
+package com.workert.robotics.base.registries;
 
 import com.tterrag.registrate.util.entry.EntityEntry;
 import com.workert.robotics.Robotics;
@@ -14,7 +14,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 
-public class EntityList {
+public class AllEntities {
 	public static void register() {
 	}
 

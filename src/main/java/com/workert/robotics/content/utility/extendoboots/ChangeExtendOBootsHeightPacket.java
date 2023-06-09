@@ -1,7 +1,7 @@
 package com.workert.robotics.content.utility.extendoboots;
 
 import com.simibubi.create.foundation.networking.SimplePacketBase;
-import com.workert.robotics.base.lists.ItemList;
+import com.workert.robotics.base.registries.AllItems;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -29,7 +29,7 @@ public class ChangeExtendOBootsHeightPacket extends SimplePacketBase {
 	public void handle(Supplier<NetworkEvent.Context> context) {
 		context.get().enqueueWork(() -> {
 			if (!context.get().getSender().getItemBySlot(EquipmentSlot.FEET).getItem()
-					.equals(ItemList.EXTEND_O_BOOTS.get())) return;
+					.equals(AllItems.EXTEND_O_BOOTS.get())) return;
 			if (context.get().getSender().getItemBySlot(EquipmentSlot.FEET).getOrCreateTag()
 					.getDouble("currentHeight") == 0 && !context.get().getSender().isOnGround()) return;
 			if (this.value > 0 && !context.get().getSender().getLevel()

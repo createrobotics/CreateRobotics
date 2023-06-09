@@ -4,7 +4,7 @@ import com.simibubi.create.foundation.config.AllConfigs;
 import com.simibubi.create.foundation.item.TooltipHelper;
 import com.simibubi.create.foundation.ponder.PonderRegistrationHelper;
 import com.workert.robotics.Robotics;
-import com.workert.robotics.base.lists.ItemList;
+import com.workert.robotics.base.registries.AllItems;
 import com.workert.robotics.content.robotics.clockcopter.ClockcopterModel;
 import com.workert.robotics.content.robotics.miner.MinerModel;
 import com.workert.robotics.content.utility.extendoboots.ExtendOBootsModel;
@@ -24,7 +24,7 @@ public class ClientHandler {
 	public static void init() {
 		MinecraftForge.EVENT_BUS.register(ClientHandler.class);
 
-		PONDER_REGISTRATION_HELPER.forComponents(ItemList.PROGRAM)
+		PONDER_REGISTRATION_HELPER.forComponents(AllItems.PROGRAM)
 				.addStoryBoard("programming", PonderList::programming);
 	}
 

@@ -7,7 +7,7 @@ import com.simibubi.create.foundation.ponder.PonderLocalization;
 import com.workert.robotics.base.client.ClientHandler;
 import com.workert.robotics.base.client.KeybindList;
 import com.workert.robotics.base.client.LangPartials;
-import com.workert.robotics.base.lists.*;
+import com.workert.robotics.base.registries.*;
 import com.workert.robotics.base.world.feature.RoboticsConfiguredFeatures;
 import com.workert.robotics.base.world.feature.RoboticsPlacedFeatures;
 import com.workert.robotics.helpers.CodeHelper;
@@ -38,19 +38,19 @@ public class Robotics {
 		REGISTRATE.registerEventListeners(this.modEventBus);
 		this.modEventBus.addListener(Robotics::gatherData);
 
-		Robotics.REGISTRATE.creativeModeTab(() -> ItemList.ROBOTICS_TAB, "Create Robotics");
-		BlockList.register();
-		EntityList.register();
-		ItemList.register();
-		BlockEntityList.register();
+		Robotics.REGISTRATE.creativeModeTab(() -> AllItems.ROBOTICS_TAB, "Create Robotics");
+		AllBlocks.register();
+		AllEntities.register();
+		AllItems.register();
+		AllBlockEntities.register();
 
-		MenuList.register(this.modEventBus);
-		RecipeList.register(this.modEventBus);
+		AllMenus.register(this.modEventBus);
+		AllRecipes.register(this.modEventBus);
 
 		RoboticsConfiguredFeatures.register(this.modEventBus);
 		RoboticsPlacedFeatures.register(this.modEventBus);
 
-		PacketList.registerPackets();
+		AllPackets.registerPackets();
 
 		CodeHelper.registerDefaultCommands();
 	}
@@ -59,7 +59,7 @@ public class Robotics {
 		ClientHandler.init();
 		KeybindList.init();
 
-		MenuScreens.register(MenuList.SMASHER_BLOCK_MENU.get(), SmasherBlockScreen::new);
+		MenuScreens.register(AllMenus.SMASHER_BLOCK_MENU.get(), SmasherBlockScreen::new);
 	}
 
 	public static void gatherData(GatherDataEvent event) {

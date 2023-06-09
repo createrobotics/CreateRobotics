@@ -1,7 +1,7 @@
 package com.workert.robotics.content.robotics.codeeditor;
 
 import com.simibubi.create.foundation.gui.ScreenOpener;
-import com.workert.robotics.base.lists.ItemList;
+import com.workert.robotics.base.registries.AllItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -34,7 +34,7 @@ public class CodeEditorBlock extends HorizontalDirectionalBlock {
 
 	@Override
 	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult ray) {
-		if (!world.isClientSide() && player.getItemInHand(hand).is(ItemList.PROGRAM.get())) {
+		if (!world.isClientSide() && player.getItemInHand(hand).is(AllItems.PROGRAM.get())) {
 			DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> ScreenOpener.open(
 					new CodeEditorScreen(player.getItemInHand(hand).getOrCreateTag().getString("code"))));
 			return InteractionResult.SUCCESS;

@@ -1,6 +1,6 @@
 package com.workert.robotics.content.robotics.clockcopter;
 
-import com.workert.robotics.base.lists.ItemList;
+import com.workert.robotics.base.registries.AllItems;
 import com.workert.robotics.content.robotics.AbstractRobotEntity;
 import com.workert.robotics.content.robotics.clockcopter.goals.MineBlockAndDropGoal;
 import net.minecraft.world.damagesource.DamageSource;
@@ -50,7 +50,7 @@ public class Clockcopter extends AbstractRobotEntity implements FlyingAnimal {
 
 	@Override
 	public Item getRobotItem() {
-		return ItemList.CLOCKCOPTER.get();
+		return AllItems.CLOCKCOPTER.get();
 	}
 
 	@Override

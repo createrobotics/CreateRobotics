@@ -4,7 +4,7 @@ import com.simibubi.create.AllItems;
 import com.simibubi.create.foundation.block.ITE;
 import com.simibubi.create.foundation.gui.ScreenOpener;
 import com.simibubi.create.foundation.utility.Iterate;
-import com.workert.robotics.base.lists.BlockEntityList;
+import com.workert.robotics.base.registries.AllBlockEntities;
 import com.workert.robotics.content.computers.computer.ComputerBlockEntity;
 import com.workert.robotics.content.computers.inputs.InputSignalScreen;
 import net.minecraft.client.player.LocalPlayer;
@@ -47,13 +47,13 @@ public class RedstoneDetectorBlock extends Block implements EntityBlock, ITE<Red
 
 	@Override
 	public BlockEntityType<? extends RedstoneDetectorBlockEntity> getTileEntityType() {
-		return BlockEntityList.REDSTONE_DETECTOR.get();
+		return AllBlockEntities.REDSTONE_DETECTOR.get();
 	}
 
 	@Nullable
 	@Override
 	public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
-		return BlockEntityList.REDSTONE_DETECTOR.get().create(blockPos, blockState);
+		return AllBlockEntities.REDSTONE_DETECTOR.get().create(blockPos, blockState);
 	}
 
 

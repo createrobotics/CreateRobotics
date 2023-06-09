@@ -1,6 +1,6 @@
 package com.workert.robotics.content.computers.inputs.scanner;
 
-import com.workert.robotics.base.lists.PacketList;
+import com.workert.robotics.base.registries.AllPackets;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
@@ -37,7 +37,7 @@ public class ScannerItem extends BlockItem {
 	protected boolean updateCustomBlockEntityTag(BlockPos pPos, Level pLevel, @Nullable Player pPlayer, ItemStack pStack, BlockState pState) {
 		if (!pLevel.isClientSide && pPlayer instanceof ServerPlayer serverPlayer)
 			//A block has been placed on the server
-			PacketList.CHANNEL.send(PacketDistributor.PLAYER.with(() -> serverPlayer),
+			AllPackets.CHANNEL.send(PacketDistributor.PLAYER.with(() -> serverPlayer),
 					new com.lightdev6.computing.packets.ScannerPlacementPacket.ClientBoundRequest(pPos));
 		return super.updateCustomBlockEntityTag(pPos, pLevel, pPlayer, pStack, pState);
 	}

@@ -3,7 +3,7 @@ package com.workert.robotics.content.computers.inputs.scanner;
 import com.simibubi.create.AllItems;
 import com.simibubi.create.CreateClient;
 import com.simibubi.create.foundation.networking.AllPackets;
-import com.workert.robotics.base.lists.BlockList;
+import com.workert.robotics.base.registries.AllBlocks;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -78,7 +78,7 @@ public class ScannerTargetHandler {
 		if (player == null)
 			return;
 		ItemStack heldItem = player.getMainHandItem();
-		if (!BlockList.SCANNER.isIn(heldItem)) {
+		if (!AllBlocks.SCANNER.isIn(heldItem)) {
 			currentItem = null;
 		} else {
 			if (heldItem != currentItem) {

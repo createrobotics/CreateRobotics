@@ -1,4 +1,4 @@
-package com.workert.robotics.base.lists;
+package com.workert.robotics.base.registries;
 
 import com.simibubi.create.foundation.networking.SimplePacketBase;
 import com.workert.robotics.Robotics;
@@ -16,7 +16,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public enum PacketList {
+public enum AllPackets {
 	// Packets to Server
 	CHANGE_EXTEND_O_BOOTS_HEIGHT(ChangeExtendOBootsHeightPacket.class, ChangeExtendOBootsHeightPacket::new,
 			NetworkDirection.PLAY_TO_SERVER),
@@ -27,16 +27,16 @@ public enum PacketList {
 	public static final String PROTOCOL_VERSION = "1";
 	public static SimpleChannel CHANNEL;
 
-	private final PacketList.LoadedPacket<?> packet;
+	private final AllPackets.LoadedPacket<?> packet;
 
-	<T extends SimplePacketBase> PacketList(Class<T> type, Function<FriendlyByteBuf, T> factory, NetworkDirection direction) {
-		this.packet = new PacketList.LoadedPacket<>(type, factory, direction);
+	<T extends SimplePacketBase> AllPackets(Class<T> type, Function<FriendlyByteBuf, T> factory, NetworkDirection direction) {
+		this.packet = new AllPackets.LoadedPacket<>(type, factory, direction);
 	}
 
 	public static void registerPackets() {
 		CHANNEL = NetworkRegistry.newSimpleChannel(new ResourceLocation(Robotics.MOD_ID, "main"),
 				() -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals, PROTOCOL_VERSION::equals);
-		for (PacketList packet : values()) {
+		for (AllPackets packet : values()) {
 			packet.packet.register();
 		}
 	}

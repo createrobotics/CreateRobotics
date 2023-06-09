@@ -1,4 +1,4 @@
-package com.workert.robotics.base.lists;
+package com.workert.robotics.base.registries;
 
 import com.simibubi.create.AllTags;
 import com.simibubi.create.content.AllSections;
@@ -12,7 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraftforge.common.Tags;
 
-public class ItemList {
+public class AllItems {
 	public static void register() {
 	}
 
@@ -23,7 +23,7 @@ public class ItemList {
 	public static final CreativeModeTab ROBOTICS_TAB = new CreativeModeTab(Robotics.MOD_ID) {
 		@Override
 		public ItemStack makeIcon() {
-			return ItemList.BRONZE_INGOT.get().getDefaultInstance();
+			return AllItems.BRONZE_INGOT.get().getDefaultInstance();
 		}
 	};
 
@@ -69,7 +69,7 @@ public class ItemList {
 	public static final ItemEntry<BaseRobotItem> CLOCKCOPTER = Robotics.REGISTRATE
 			.item("clockcopter", BaseRobotItem::new)
 			.lang("Clockcopter")
-			.onRegister(item -> item.setEntity(EntityList.CLOCKCOPTER))
+			.onRegister(item -> item.setEntity(AllEntities.CLOCKCOPTER))
 			.register();
 
 
@@ -81,7 +81,7 @@ public class ItemList {
 	public static final ItemEntry<BaseRobotItem> CODE_DRONE = Robotics.REGISTRATE
 			.item("code_drone", BaseRobotItem::new)
 			.lang("Juan")
-			.onRegister(item -> item.setEntity(EntityList.CODE_DRONE))
+			.onRegister(item -> item.setEntity(AllEntities.CODE_DRONE))
 			.register();
 
 	public static final ItemEntry<ExtendOBootsItem> EXTEND_O_BOOTS = Robotics.REGISTRATE

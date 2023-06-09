@@ -4,8 +4,8 @@ import com.simibubi.create.foundation.ponder.SceneBuilder;
 import com.simibubi.create.foundation.ponder.SceneBuildingUtil;
 import com.simibubi.create.foundation.ponder.element.InputWindowElement;
 import com.simibubi.create.foundation.utility.Pointing;
-import com.workert.robotics.base.lists.EntityList;
-import com.workert.robotics.base.lists.ItemList;
+import com.workert.robotics.base.registries.AllEntities;
+import com.workert.robotics.base.registries.AllItems;
 import com.workert.robotics.content.robotics.codedrone.CodeDrone;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -37,7 +37,7 @@ public class PonderList {
 		scene.idle(20);
 
 		scene.overlay.showControls(new InputWindowElement(util.vector.blockSurface(codeEditorPos, Direction.UP),
-				Pointing.DOWN).rightClick().withItem(ItemList.PROGRAM.asStack()), 40);
+				Pointing.DOWN).rightClick().withItem(AllItems.PROGRAM.asStack()), 40);
 
 		scene.idle(60);
 
@@ -46,7 +46,7 @@ public class PonderList {
 		scene.idle(20);
 
 		scene.world.createEntity(world -> {
-			CodeDrone entity = EntityList.CODE_DRONE.create(world);
+			CodeDrone entity = AllEntities.CODE_DRONE.create(world);
 			entity.setPos(dronePos.x, dronePos.y, dronePos.z);
 			entity.xo = dronePos.x;
 			entity.yo = dronePos.y;
@@ -60,7 +60,7 @@ public class PonderList {
 		scene.idle(20);
 
 		scene.overlay.showControls(new InputWindowElement(dronePos.add(0, 0.5, 0), Pointing.DOWN).rightClick()
-				.withItem(ItemList.PROGRAM.asStack()), 40);
+				.withItem(AllItems.PROGRAM.asStack()), 40);
 
 		scene.idle(100);
 	}

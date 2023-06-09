@@ -3,7 +3,7 @@ package com.workert.robotics.content.computers.inputs.redstonedetector;
 import com.simibubi.create.AllItems;
 import com.simibubi.create.CreateClient;
 import com.simibubi.create.foundation.networking.AllPackets;
-import com.workert.robotics.base.lists.BlockList;
+import com.workert.robotics.base.registries.AllBlocks;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -77,7 +77,7 @@ public class RedstoneDetectorTargetHandler {
 		if (player == null)
 			return;
 		ItemStack heldItem = player.getMainHandItem();
-		if (!BlockList.REDSTONE_DETECTOR.isIn(heldItem)) {
+		if (!AllBlocks.REDSTONE_DETECTOR.isIn(heldItem)) {
 			currentItem = null;
 		} else {
 			if (heldItem != currentItem) {

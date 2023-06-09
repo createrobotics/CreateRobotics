@@ -1,4 +1,4 @@
-package com.workert.robotics.base.lists;
+package com.workert.robotics.base.registries;
 
 import com.workert.robotics.Robotics;
 import com.workert.robotics.unused.smasher.SmasherBlockRecipe;
@@ -8,7 +8,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
-public class RecipeList {
+public class AllRecipes {
 	public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(
 			ForgeRegistries.RECIPE_SERIALIZERS, Robotics.MOD_ID);
 

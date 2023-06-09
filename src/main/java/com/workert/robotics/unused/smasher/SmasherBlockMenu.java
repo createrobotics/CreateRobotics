@@ -1,8 +1,8 @@
 package com.workert.robotics.unused.smasher;
 
 import com.workert.robotics.Robotics;
-import com.workert.robotics.base.lists.BlockList;
-import com.workert.robotics.base.lists.MenuList;
+import com.workert.robotics.base.registries.AllBlocks;
+import com.workert.robotics.base.registries.AllMenus;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -25,7 +25,7 @@ public class SmasherBlockMenu extends AbstractContainerMenu {
 	}
 
 	public SmasherBlockMenu(int pContainerId, Inventory inv, BlockEntity entity, ContainerData data) {
-		super(MenuList.SMASHER_BLOCK_MENU.get(), pContainerId);
+		super(AllMenus.SMASHER_BLOCK_MENU.get(), pContainerId);
 		AbstractContainerMenu.checkContainerSize(inv, 3);
 		this.blockEntity = ((SmasherBlockEntity) entity);
 		this.level = inv.player.level;
@@ -109,7 +109,7 @@ public class SmasherBlockMenu extends AbstractContainerMenu {
 	@Override
 	public boolean stillValid(Player pPlayer) {
 		return AbstractContainerMenu.stillValid(ContainerLevelAccess.create(this.level, this.blockEntity.getBlockPos()),
-				pPlayer, BlockList.SMASHER.get());
+				pPlayer, AllBlocks.SMASHER.get());
 	}
 
 	private void addPlayerInventory(Inventory playerInventory) {

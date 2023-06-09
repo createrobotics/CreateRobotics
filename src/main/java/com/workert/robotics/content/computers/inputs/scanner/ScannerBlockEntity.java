@@ -4,7 +4,7 @@ import com.simibubi.create.content.contraptions.base.KineticTileEntity;
 import com.simibubi.create.content.contraptions.relays.belt.transport.TransportedItemStack;
 import com.simibubi.create.foundation.tileEntity.SyncedTileEntity;
 import com.simibubi.create.foundation.tileEntity.TileEntityBehaviour;
-import com.workert.robotics.base.lists.BlockEntityList;
+import com.workert.robotics.base.registries.AllBlockEntities;
 import com.workert.robotics.content.computers.computer.ComputerBlockEntity;
 import com.workert.robotics.content.computers.inputs.IInputBlockEntity;
 import net.minecraft.core.BlockPos;
@@ -23,7 +23,7 @@ public class ScannerBlockEntity extends KineticTileEntity implements ScannerBeha
 	private String signalName = "";
 
 	public ScannerBlockEntity(BlockEntityType<?> typeIn, BlockPos pos, BlockState state) {
-		super(BlockEntityList.SCANNER.get(), pos, state);
+		super(AllBlockEntities.SCANNER.get(), pos, state);
 	}
 
 

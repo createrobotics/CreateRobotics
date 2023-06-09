@@ -7,7 +7,7 @@ import com.simibubi.create.foundation.gui.AbstractSimiScreen;
 import com.simibubi.create.foundation.gui.AllGuiTextures;
 import com.simibubi.create.foundation.gui.AllIcons;
 import com.simibubi.create.foundation.gui.widget.IconButton;
-import com.workert.robotics.base.lists.PacketList;
+import com.workert.robotics.base.registries.AllPackets;
 import com.workert.robotics.helpers.CodeHelper;
 import net.minecraft.Util;
 import net.minecraft.client.gui.GuiComponent;
@@ -117,7 +117,7 @@ public class CodeEditorScreen extends AbstractSimiScreen {
 			FileInputStream inputStream = new FileInputStream(this.editFile);
 			try {
 				String fileCode = IOUtils.toString(inputStream);
-				PacketList.CHANNEL.sendToServer(new ReturnEditedCodePacket(fileCode));
+				AllPackets.CHANNEL.sendToServer(new ReturnEditedCodePacket(fileCode));
 			} finally {
 				inputStream.close();
 			}
