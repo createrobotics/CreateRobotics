@@ -5,6 +5,7 @@ import com.simibubi.create.content.contraptions.relays.elementary.ICogWheel;
 import com.simibubi.create.foundation.block.ITE;
 import com.simibubi.create.foundation.gui.ScreenOpener;
 import com.workert.robotics.base.registries.BlockEntityRegistry;
+import com.workert.robotics.base.registries.ItemRegistry;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -35,7 +36,14 @@ public class ComputerBlock extends Block implements EntityBlock, ICogWheel, ITE<
 	@Override
 	public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand hand, BlockHitResult result) {
 		ItemStack held = player.getMainHandItem();
-		if (AllItems.WRENCH.isIn(held)) return InteractionResult.PASS;
+		if (AllItems.WRENCH.isIn(held)) {
+			((ComputerBlockEntity) level.getBlockEntity(blockPos)).runScript();
+			return InteractionResult.SUCCESS;
+		} else if (ItemRegistry.PROGRAM.isIn(held)) {
+			((ComputerBlockEntity) level.getBlockEntity(blockPos)).setScript(
+					player.getItemInHand(hand).getOrCreateTag().getString("code"));
+			return InteractionResult.SUCCESS;
+		}
 		DistExecutor.unsafeRunWhenOn(Dist.CLIENT,
 				() -> () -> this.withTileEntityDo(level, blockPos, te -> this.displayScreen(te, player)));
 		return InteractionResult.SUCCESS;

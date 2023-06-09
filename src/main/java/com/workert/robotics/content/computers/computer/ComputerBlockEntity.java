@@ -3,7 +3,6 @@ package com.workert.robotics.content.computers.computer;
 import com.simibubi.create.AllItems;
 import com.simibubi.create.content.contraptions.base.KineticTileEntity;
 import com.simibubi.create.foundation.utility.Iterate;
-import com.workert.robotics.base.registries.BlockEntityRegistry;
 import com.workert.robotics.base.roboscript.RoboScript;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -36,7 +35,7 @@ public class ComputerBlockEntity extends KineticTileEntity {
 	public RoboScript roboScript;
 
 	public ComputerBlockEntity(BlockEntityType<?> type, BlockPos blockPos, BlockState blockState) {
-		super(BlockEntityRegistry.COMPUTER.get(), blockPos, blockState);
+		super(type, blockPos, blockState);
 		this.attachedInventories = new LinkedHashSet<>();
 		this.roboScript = new RoboScript() {
 			@Override
@@ -55,6 +54,10 @@ public class ComputerBlockEntity extends KineticTileEntity {
 
 	public String getScript() {
 		return this.script;
+	}
+
+	public void runScript() {
+		this.roboScript.runString(this.script);
 	}
 
 	public void setTerminal(String terminal) {
@@ -193,7 +196,6 @@ public class ComputerBlockEntity extends KineticTileEntity {
 		compound.putString("Script", this.script);
 		compound.putString("Terminal", this.terminal);
 		compound.putBoolean("Running", this.running);
-
 	}
 
 	@Override
