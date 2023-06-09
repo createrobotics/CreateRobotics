@@ -31,7 +31,7 @@ import net.minecraftforge.common.Tags;
 
 import static com.simibubi.create.foundation.data.TagGen.tagBlockAndItem;
 
-public class AllBlocks {
+public class BlockRegistry {
 	public static void register() {
 	}
 
@@ -49,7 +49,7 @@ public class AllBlocks {
 					.requiresCorrectToolForDrops())
 			.transform(TagGen.pickaxeOnly())
 			.loot((lt, b) -> lt.add(b, RegistrateBlockLootTables.createSilkTouchDispatchTable(b,
-					RegistrateBlockLootTables.applyExplosionDecay(b, LootItem.lootTableItem(AllItems.RAW_TIN.get())
+					RegistrateBlockLootTables.applyExplosionDecay(b, LootItem.lootTableItem(ItemRegistry.RAW_TIN.get())
 							.apply(ApplyBonusCount.addOreBonusCount(Enchantments.BLOCK_FORTUNE))))))
 			.tag(BlockTags.NEEDS_IRON_TOOL)
 			.tag(Tags.Blocks.ORES)
@@ -61,14 +61,14 @@ public class AllBlocks {
 	public static final BlockEntry<DropExperienceBlock> DEEPSLATE_TIN_ORE = Robotics.REGISTRATE
 			.block("deepslate_tin_ore", DropExperienceBlock::new)
 			.lang("Deepslate tin ore")
-			.initialProperties(() -> AllBlocks.TIN_ORE.get())
+			.initialProperties(() -> BlockRegistry.TIN_ORE.get())
 			.properties(properties -> properties
 					.sound(SoundType.DEEPSLATE)
 					.strength(4.5F, 3.0F)
 					.requiresCorrectToolForDrops())
 			.transform(TagGen.pickaxeOnly())
 			.loot((lt, b) -> lt.add(b, RegistrateBlockLootTables.createSilkTouchDispatchTable(b,
-					RegistrateBlockLootTables.applyExplosionDecay(b, LootItem.lootTableItem(AllItems.RAW_TIN.get())
+					RegistrateBlockLootTables.applyExplosionDecay(b, LootItem.lootTableItem(ItemRegistry.RAW_TIN.get())
 							.apply(ApplyBonusCount.addOreBonusCount(Enchantments.BLOCK_FORTUNE))))))
 			.tag(BlockTags.NEEDS_IRON_TOOL).tag(Tags.Blocks.ORES)
 			.transform(tagBlockAndItem("ores/tin", "ores_in_ground/deepslate"))

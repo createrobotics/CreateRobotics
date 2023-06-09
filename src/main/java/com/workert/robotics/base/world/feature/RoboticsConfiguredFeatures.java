@@ -2,7 +2,7 @@ package com.workert.robotics.base.world.feature;
 
 import com.google.common.base.Suppliers;
 import com.workert.robotics.Robotics;
-import com.workert.robotics.base.registries.AllBlocks;
+import com.workert.robotics.base.registries.BlockRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.data.worldgen.features.OreFeatures;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
@@ -20,9 +20,9 @@ public class RoboticsConfiguredFeatures {
 			Registry.CONFIGURED_FEATURE_REGISTRY, Robotics.MOD_ID);
 	public static final Supplier<List<OreConfiguration.TargetBlockState>> OVERWORLD_TIN_ORES = Suppliers.memoize(
 			() -> List.of(OreConfiguration.target(OreFeatures.STONE_ORE_REPLACEABLES,
-							AllBlocks.TIN_ORE.get().defaultBlockState()),
+							BlockRegistry.TIN_ORE.get().defaultBlockState()),
 					OreConfiguration.target(OreFeatures.DEEPSLATE_ORE_REPLACEABLES,
-							AllBlocks.DEEPSLATE_TIN_ORE.get().defaultBlockState())));
+							BlockRegistry.DEEPSLATE_TIN_ORE.get().defaultBlockState())));
 
 	public static final RegistryObject<ConfiguredFeature<?, ?>> TIN_ORE = CONFIGURED_FEATURES.register("tin_ore",
 			() -> new ConfiguredFeature<>(Feature.ORE, new OreConfiguration(OVERWORLD_TIN_ORES.get(), 9)));

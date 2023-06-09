@@ -12,7 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraftforge.common.Tags;
 
-public class AllItems {
+public class ItemRegistry {
 	public static void register() {
 	}
 
@@ -23,7 +23,7 @@ public class AllItems {
 	public static final CreativeModeTab ROBOTICS_TAB = new CreativeModeTab(Robotics.MOD_ID) {
 		@Override
 		public ItemStack makeIcon() {
-			return AllItems.BRONZE_INGOT.get().getDefaultInstance();
+			return ItemRegistry.BRONZE_INGOT.get().getDefaultInstance();
 		}
 	};
 
@@ -69,7 +69,7 @@ public class AllItems {
 	public static final ItemEntry<BaseRobotItem> CLOCKCOPTER = Robotics.REGISTRATE
 			.item("clockcopter", BaseRobotItem::new)
 			.lang("Clockcopter")
-			.onRegister(item -> item.setEntity(AllEntities.CLOCKCOPTER))
+			.onRegister(item -> item.setEntity(EntityRegistry.CLOCKCOPTER))
 			.register();
 
 
@@ -81,7 +81,7 @@ public class AllItems {
 	public static final ItemEntry<BaseRobotItem> CODE_DRONE = Robotics.REGISTRATE
 			.item("code_drone", BaseRobotItem::new)
 			.lang("Juan")
-			.onRegister(item -> item.setEntity(AllEntities.CODE_DRONE))
+			.onRegister(item -> item.setEntity(EntityRegistry.CODE_DRONE))
 			.register();
 
 	public static final ItemEntry<ExtendOBootsItem> EXTEND_O_BOOTS = Robotics.REGISTRATE

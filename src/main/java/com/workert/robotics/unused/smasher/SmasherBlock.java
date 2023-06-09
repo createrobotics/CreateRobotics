@@ -1,6 +1,6 @@
 package com.workert.robotics.unused.smasher;
 
-import com.workert.robotics.base.registries.AllBlockEntities;
+import com.workert.robotics.base.registries.BlockEntityRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -94,13 +94,13 @@ public class SmasherBlock extends BaseEntityBlock {
 	@Nullable
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
-		return new SmasherBlockEntity(AllBlockEntities.SMASHER_BLOCK_ENTITY.get(), pPos, pState);
+		return new SmasherBlockEntity(BlockEntityRegistry.SMASHER_BLOCK_ENTITY.get(), pPos, pState);
 	}
 
 	@Nullable
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
-		return createTickerHelper(pBlockEntityType, AllBlockEntities.SMASHER_BLOCK_ENTITY.get(),
+		return createTickerHelper(pBlockEntityType, BlockEntityRegistry.SMASHER_BLOCK_ENTITY.get(),
 				SmasherBlockEntity::tick);
 	}
 }

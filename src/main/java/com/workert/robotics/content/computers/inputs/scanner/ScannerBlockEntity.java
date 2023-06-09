@@ -4,11 +4,12 @@ import com.simibubi.create.content.contraptions.base.KineticTileEntity;
 import com.simibubi.create.content.contraptions.relays.belt.transport.TransportedItemStack;
 import com.simibubi.create.foundation.tileEntity.SyncedTileEntity;
 import com.simibubi.create.foundation.tileEntity.TileEntityBehaviour;
-import com.workert.robotics.base.registries.AllBlockEntities;
+import com.workert.robotics.base.registries.BlockEntityRegistry;
 import com.workert.robotics.content.computers.computer.ComputerBlockEntity;
 import com.workert.robotics.content.computers.inputs.IInputBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -23,7 +24,7 @@ public class ScannerBlockEntity extends KineticTileEntity implements ScannerBeha
 	private String signalName = "";
 
 	public ScannerBlockEntity(BlockEntityType<?> typeIn, BlockPos pos, BlockState state) {
-		super(AllBlockEntities.SCANNER.get(), pos, state);
+		super(BlockEntityRegistry.SCANNER.get(), pos, state);
 	}
 
 
@@ -31,16 +32,14 @@ public class ScannerBlockEntity extends KineticTileEntity implements ScannerBeha
 	protected void read(CompoundTag compound, boolean clientPacket) {
 		super.read(compound, clientPacket);
 		this.signalName = compound.getString("SignalName");
-		this.targetPos = new BlockPos(compound.getInt("TX"), compound.getInt("TY"), compound.getInt("TZ"));
+		this.targetPos = NbtUtils.readBlockPos(compound.getCompound("TargetPosition"));
 	}
 
 	@Override
 	protected void write(CompoundTag compound, boolean clientPacket) {
 		super.write(compound, clientPacket);
 		compound.putString("SignalName", this.signalName);
-		compound.putInt("TX", this.getTargetPos().getX());
-		compound.putInt("TY", this.getTargetPos().getY());
-		compound.putInt("TZ", this.getTargetPos().getZ());
+		compound.put("TargetPosition", NbtUtils.writeBlockPos(this.targetPos));
 	}
 
 	@Override
@@ -93,7 +92,7 @@ public class ScannerBlockEntity extends KineticTileEntity implements ScannerBeha
 
 	@Override
 	public BlockPos getBlockEntityPos() {
-		return getBlockPos();
+		return this.getBlockPos();
 	}
 
 	@Override

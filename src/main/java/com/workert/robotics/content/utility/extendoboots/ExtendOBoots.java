@@ -1,6 +1,6 @@
 package com.workert.robotics.content.utility.extendoboots;
 
-import com.workert.robotics.base.registries.AllEntities;
+import com.workert.robotics.base.registries.EntityRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -25,7 +25,7 @@ public class ExtendOBoots extends LivingEntity {
 			EntityDataSerializers.FLOAT);
 
 	public ExtendOBoots(EntityType<?> pEntityType, Level pLevel) {
-		super(AllEntities.EXTEND_O_BOOTS.get(), pLevel);
+		super(EntityRegistry.EXTEND_O_BOOTS.get(), pLevel);
 	}
 
 	@Override

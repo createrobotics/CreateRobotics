@@ -14,7 +14,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 
-public class AllEntities {
+public class EntityRegistry {
 	public static void register() {
 	}
 

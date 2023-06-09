@@ -12,7 +12,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 
 import java.util.function.Supplier;
 
-public enum AllArmorMaterials implements ArmorMaterial {
+public enum ArmorMaterialRegistry implements ArmorMaterial {
 	EXTEND_O_BOOTS("scaffolding", 4, new int[] {1, 2, 2, 1}, 0, SoundEvents.SCAFFOLDING_PLACE, 0.0F, 0.0F,
 			() -> Ingredient.of(Items.SCAFFOLDING));
 
@@ -26,7 +26,7 @@ public enum AllArmorMaterials implements ArmorMaterial {
 	private final float knockbackResistance;
 	private final LazyLoadedValue<Ingredient> repairIngredient;
 
-	AllArmorMaterials(String name, int durabilityMultiplier, int[] slotProtections, int enchantability, SoundEvent sound, float toughness, float knockbackResistance, Supplier<Ingredient> repairIngredient) {
+	ArmorMaterialRegistry(String name, int durabilityMultiplier, int[] slotProtections, int enchantability, SoundEvent sound, float toughness, float knockbackResistance, Supplier<Ingredient> repairIngredient) {
 		this.name = name;
 		this.durabilityMultiplier = durabilityMultiplier;
 		this.slotProtections = slotProtections;

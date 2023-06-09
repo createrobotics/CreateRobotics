@@ -38,19 +38,19 @@ public class Robotics {
 		REGISTRATE.registerEventListeners(this.modEventBus);
 		this.modEventBus.addListener(Robotics::gatherData);
 
-		Robotics.REGISTRATE.creativeModeTab(() -> AllItems.ROBOTICS_TAB, "Create Robotics");
-		AllBlocks.register();
-		AllEntities.register();
-		AllItems.register();
-		AllBlockEntities.register();
+		Robotics.REGISTRATE.creativeModeTab(() -> ItemRegistry.ROBOTICS_TAB, "Create Robotics");
+		BlockRegistry.register();
+		EntityRegistry.register();
+		ItemRegistry.register();
+		BlockEntityRegistry.register();
 
-		AllMenus.register(this.modEventBus);
-		AllRecipes.register(this.modEventBus);
+		MenuRegistry.register(this.modEventBus);
+		RecipeRegistry.register(this.modEventBus);
 
 		RoboticsConfiguredFeatures.register(this.modEventBus);
 		RoboticsPlacedFeatures.register(this.modEventBus);
 
-		AllPackets.registerPackets();
+		PacketRegistry.registerPackets();
 
 		CodeHelper.registerDefaultCommands();
 	}
@@ -59,7 +59,7 @@ public class Robotics {
 		ClientHandler.init();
 		KeybindList.init();
 
-		MenuScreens.register(AllMenus.SMASHER_BLOCK_MENU.get(), SmasherBlockScreen::new);
+		MenuScreens.register(MenuRegistry.SMASHER_BLOCK_MENU.get(), SmasherBlockScreen::new);
 	}
 
 	public static void gatherData(GatherDataEvent event) {

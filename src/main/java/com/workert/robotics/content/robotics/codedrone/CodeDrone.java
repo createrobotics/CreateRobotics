@@ -1,7 +1,7 @@
 package com.workert.robotics.content.robotics.codedrone;
 
 import com.workert.robotics.Robotics;
-import com.workert.robotics.base.registries.AllItems;
+import com.workert.robotics.base.registries.ItemRegistry;
 import com.workert.robotics.content.robotics.AbstractRobotEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -101,7 +101,7 @@ public class CodeDrone extends AbstractRobotEntity implements FlyingAnimal, IAni
 
 	@Override
 	public Item getRobotItem() {
-		return AllItems.CODE_DRONE.get();
+		return ItemRegistry.CODE_DRONE.get();
 	}
 
 	@Override

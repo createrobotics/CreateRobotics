@@ -5,7 +5,7 @@ import com.simibubi.create.AllShapes;
 import com.simibubi.create.content.contraptions.base.HorizontalKineticBlock;
 import com.simibubi.create.foundation.block.ITE;
 import com.simibubi.create.foundation.gui.ScreenOpener;
-import com.workert.robotics.base.registries.AllBlockEntities;
+import com.workert.robotics.base.registries.BlockEntityRegistry;
 import com.workert.robotics.content.computers.inputs.InputSignalScreen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
@@ -41,7 +41,7 @@ public class ScannerBlock extends HorizontalKineticBlock implements ITE<ScannerB
 
 	@Override
 	public BlockEntityType getTileEntityType() {
-		return AllBlockEntities.SCANNER.get();
+		return BlockEntityRegistry.SCANNER.get();
 	}
 
 	@Override

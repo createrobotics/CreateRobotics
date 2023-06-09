@@ -3,7 +3,6 @@ package com.workert.robotics.base.registries;
 import com.simibubi.create.foundation.networking.SimplePacketBase;
 import com.workert.robotics.Robotics;
 import com.workert.robotics.content.computers.inputs.ConfigureInputSignalPacket;
-import com.workert.robotics.content.computers.inputs.InputPlacementPacket;
 import com.workert.robotics.content.robotics.codeeditor.ReturnEditedCodePacket;
 import com.workert.robotics.content.utility.extendoboots.ChangeExtendOBootsHeightPacket;
 import net.minecraft.network.FriendlyByteBuf;
@@ -17,35 +16,28 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static net.minecraftforge.network.NetworkDirection.PLAY_TO_CLIENT;
 import static net.minecraftforge.network.NetworkDirection.PLAY_TO_SERVER;
 
-public enum AllPackets {
+public enum PacketRegistry {
 	// Packets to Server
 	CHANGE_EXTEND_O_BOOTS_HEIGHT(ChangeExtendOBootsHeightPacket.class, ChangeExtendOBootsHeightPacket::new,
 			PLAY_TO_SERVER),
 	RETURN_EDITED_CODE(ReturnEditedCodePacket.class, ReturnEditedCodePacket::new, PLAY_TO_SERVER),
-	CONFIGURE_INPUT_SIGNAL(ConfigureInputSignalPacket.class, ConfigureInputSignalPacket::new, PLAY_TO_SERVER),
-	PLACE_INPUT(InputPlacementPacket.class, InputPlacementPacket::new, PLAY_TO_SERVER),
-
-
-	//Packets to client
-	S_PLACE_INPUT(InputPlacementPacket.ClientBoundRequest.class, InputPlacementPacket.ClientBoundRequest::new,
-			PLAY_TO_CLIENT);
+	CONFIGURE_INPUT_SIGNAL(ConfigureInputSignalPacket.class, ConfigureInputSignalPacket::new, PLAY_TO_SERVER);
 
 	public static final String PROTOCOL_VERSION = "1";
 	public static SimpleChannel CHANNEL;
 
-	private final AllPackets.LoadedPacket<?> packet;
+	private final PacketRegistry.LoadedPacket<?> packet;
 
-	<T extends SimplePacketBase> AllPackets(Class<T> type, Function<FriendlyByteBuf, T> factory, NetworkDirection direction) {
-		this.packet = new AllPackets.LoadedPacket<>(type, factory, direction);
+	<T extends SimplePacketBase> PacketRegistry(Class<T> type, Function<FriendlyByteBuf, T> factory, NetworkDirection direction) {
+		this.packet = new PacketRegistry.LoadedPacket<>(type, factory, direction);
 	}
 
 	public static void registerPackets() {
 		CHANNEL = NetworkRegistry.newSimpleChannel(new ResourceLocation(Robotics.MOD_ID, "main"),
 				() -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals, PROTOCOL_VERSION::equals);
-		for (AllPackets packet : values()) {
+		for (PacketRegistry packet : values()) {
 			packet.packet.register();
 		}
 	}
