@@ -2,13 +2,13 @@ package com.workert.robotics.base.lists;
 
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import com.workert.robotics.Robotics;
-import com.workert.robotics.content.computing.computer.ComputerBlockEntity;
-import com.workert.robotics.content.computing.computer.ComputerInstance;
-import com.workert.robotics.content.computing.computer.ComputerRenderer;
-import com.workert.robotics.content.computing.inputs.redstonedetector.RedstoneDetectorBlockEntity;
-import com.workert.robotics.content.computing.inputs.scanner.ScannerBlockEntity;
-import com.workert.robotics.content.computing.inputs.scanner.ScannerInstance;
-import com.workert.robotics.content.computing.inputs.scanner.ScannerRenderer;
+import com.workert.robotics.content.computers.computer.ComputerBlockEntity;
+import com.workert.robotics.content.computers.computer.ComputerInstance;
+import com.workert.robotics.content.computers.computer.ComputerRenderer;
+import com.workert.robotics.content.computers.inputs.redstonedetector.RedstoneDetectorBlockEntity;
+import com.workert.robotics.content.computers.inputs.scanner.ScannerBlockEntity;
+import com.workert.robotics.content.computers.inputs.scanner.ScannerInstance;
+import com.workert.robotics.content.computers.inputs.scanner.ScannerRenderer;
 import com.workert.robotics.unused.smasher.SmasherBlockEntity;
 
 public class BlockEntityList {

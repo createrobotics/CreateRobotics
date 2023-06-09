@@ -1,4 +1,4 @@
-package com.workert.robotics.content.computing.inputs.scanner;
+package com.workert.robotics.content.computers.inputs.scanner;
 
 import com.simibubi.create.AllItems;
 import com.simibubi.create.AllShapes;
@@ -6,7 +6,7 @@ import com.simibubi.create.content.contraptions.base.HorizontalKineticBlock;
 import com.simibubi.create.foundation.block.ITE;
 import com.simibubi.create.foundation.gui.ScreenOpener;
 import com.workert.robotics.base.lists.BlockEntityList;
-import com.workert.robotics.content.computing.inputs.InputSignalScreen;
+import com.workert.robotics.content.computers.inputs.InputSignalScreen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

@@ -2,7 +2,7 @@ package com.workert.robotics.base.lists;
 
 import com.simibubi.create.foundation.networking.SimplePacketBase;
 import com.workert.robotics.Robotics;
-import com.workert.robotics.content.computing.inputs.ConfigureInputSignalPacket;
+import com.workert.robotics.content.computers.inputs.ConfigureInputSignalPacket;
 import com.workert.robotics.content.robotics.codeeditor.ReturnEditedCodePacket;
 import com.workert.robotics.content.utility.extendoboots.ChangeExtendOBootsHeightPacket;
 import net.minecraft.network.FriendlyByteBuf;

@@ -1,8 +1,8 @@
-package com.workert.robotics.content.computing.inputs.redstonedetector;
+package com.workert.robotics.content.computers.inputs.redstonedetector;
 
 import com.simibubi.create.foundation.tileEntity.SyncedTileEntity;
 import com.workert.robotics.base.lists.BlockEntityList;
-import com.workert.robotics.content.computing.inputs.IInputBlockEntity;
+import com.workert.robotics.content.computers.inputs.IInputBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;

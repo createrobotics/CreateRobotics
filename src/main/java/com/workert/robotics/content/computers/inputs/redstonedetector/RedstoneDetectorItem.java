@@ -1,4 +1,4 @@
-package com.workert.robotics.content.computing.inputs.redstonedetector;
+package com.workert.robotics.content.computers.inputs.redstonedetector;
 
 import com.simibubi.create.foundation.networking.AllPackets;
 import net.minecraft.core.BlockPos;

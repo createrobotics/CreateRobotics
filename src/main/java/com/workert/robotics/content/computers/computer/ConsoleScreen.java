@@ -1,4 +1,4 @@
-package com.workert.robotics.content.computing.computer;
+package com.workert.robotics.content.computers.computer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.foundation.gui.AbstractSimiScreen;
 import com.simibubi.create.foundation.gui.AllIcons;

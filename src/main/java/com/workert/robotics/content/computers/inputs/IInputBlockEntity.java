@@ -1,4 +1,4 @@
-package com.workert.robotics.content.computing.inputs;
+package com.workert.robotics.content.computers.inputs;
 
 import com.simibubi.create.foundation.tileEntity.SyncedTileEntity;
 import net.minecraft.core.BlockPos;

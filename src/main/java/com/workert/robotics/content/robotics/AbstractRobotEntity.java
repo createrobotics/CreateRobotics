@@ -7,7 +7,7 @@ import com.simibubi.create.foundation.gui.ScreenOpener;
 import com.simibubi.create.foundation.utility.Couple;
 import com.workert.robotics.base.lists.ItemList;
 import com.workert.robotics.base.roboscript.RoboScript;
-import com.workert.robotics.content.computing.computer.ConsoleScreen;
+import com.workert.robotics.content.computers.computer.ConsoleScreen;
 import com.workert.robotics.helpers.CodeHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;

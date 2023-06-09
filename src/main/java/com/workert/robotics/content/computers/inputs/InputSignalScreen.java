@@ -1,4 +1,4 @@
-package com.workert.robotics.content.computing.inputs;
+package com.workert.robotics.content.computers.inputs;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.AllItems;

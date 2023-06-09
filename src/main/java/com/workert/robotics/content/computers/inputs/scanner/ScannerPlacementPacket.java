@@ -1,8 +1,8 @@
 package com.lightdev6.computing.packets;
 
 import com.simibubi.create.foundation.networking.SimplePacketBase;
-import com.workert.robotics.content.computing.inputs.scanner.ScannerBlockEntity;
-import com.workert.robotics.content.computing.inputs.scanner.ScannerTargetHandler;
+import com.workert.robotics.content.computers.inputs.scanner.ScannerBlockEntity;
+import com.workert.robotics.content.computers.inputs.scanner.ScannerTargetHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;

@@ -1,4 +1,4 @@
-package com.workert.robotics.content.computing.computer;
+package com.workert.robotics.content.computers.computer;
 
 
 import com.simibubi.create.content.logistics.block.display.DisplayLinkContext;

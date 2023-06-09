@@ -1,4 +1,4 @@
-package com.workert.robotics.content.computing.computer;
+package com.workert.robotics.content.computers.computer;
 
 import com.jozufozu.flywheel.api.Instancer;
 import com.jozufozu.flywheel.api.MaterialManager;

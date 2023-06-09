@@ -1,4 +1,4 @@
-package com.workert.robotics.content.computing.inputs.scanner;
+package com.workert.robotics.content.computers.inputs.redstonedetector;
 
 import com.simibubi.create.AllItems;
 import com.simibubi.create.CreateClient;
@@ -25,7 +25,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT)
-public class ScannerTargetHandler {
+public class RedstoneDetectorTargetHandler {
 	static BlockPos currentSelection;
 	static ItemStack currentItem;
 	static long lastHoveredBlockPos;
@@ -67,8 +67,7 @@ public class ScannerTargetHandler {
 	public static void flushSettings(BlockPos pos) {
 		LocalPlayer player = Minecraft.getInstance().player;
 		player.displayClientMessage(Component.literal("Selected computer"), true);
-		AllPackets.channel.sendToServer(
-				new com.lightdev6.computing.packets.ScannerPlacementPacket(pos, currentSelection));
+		AllPackets.channel.sendToServer(new RedstoneDetectorPlacementPacket(pos, currentSelection));
 		currentSelection = null;
 		currentItem = null;
 	}
@@ -78,7 +77,7 @@ public class ScannerTargetHandler {
 		if (player == null)
 			return;
 		ItemStack heldItem = player.getMainHandItem();
-		if (!BlockList.SCANNER.isIn(heldItem)) {
+		if (!BlockList.REDSTONE_DETECTOR.isIn(heldItem)) {
 			currentItem = null;
 		} else {
 			if (heldItem != currentItem) {
@@ -100,17 +99,17 @@ public class ScannerTargetHandler {
 		BlockPos pos = result.getBlockPos();
 
 		BlockEntity te = Minecraft.getInstance().level.getBlockEntity(pos);
-		if (!(te instanceof ScannerBlockEntity)) {
+		if (!(te instanceof RedstoneDetectorBlockEntity)) {
 			lastHoveredBlockPos = -1;
 			currentSelection = null;
 			return;
 		}
 
 		if (lastHoveredBlockPos == -1 || lastHoveredBlockPos != pos.asLong()) {
-			ScannerBlockEntity s = (ScannerBlockEntity) te;
-			if (!s.getTargetPos()
-					.equals(s.getBlockPos()))
-				currentSelection = s.getTargetPos();
+			RedstoneDetectorBlockEntity rd = (RedstoneDetectorBlockEntity) te;
+			if (!rd.getTargetPos()
+					.equals(rd.getBlockPos()))
+				currentSelection = rd.getTargetPos();
 			lastHoveredBlockPos = pos.asLong();
 		}
 

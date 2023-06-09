@@ -1,4 +1,4 @@
-package com.workert.robotics.content.computing.inputs.redstonedetector;
+package com.workert.robotics.content.computers.inputs.scanner;
 
 import com.simibubi.create.AllItems;
 import com.simibubi.create.CreateClient;
@@ -25,7 +25,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT)
-public class RedstoneDetectorTargetHandler {
+public class ScannerTargetHandler {
 	static BlockPos currentSelection;
 	static ItemStack currentItem;
 	static long lastHoveredBlockPos;
@@ -67,7 +67,8 @@ public class RedstoneDetectorTargetHandler {
 	public static void flushSettings(BlockPos pos) {
 		LocalPlayer player = Minecraft.getInstance().player;
 		player.displayClientMessage(Component.literal("Selected computer"), true);
-		AllPackets.channel.sendToServer(new RedstoneDetectorPlacementPacket(pos, currentSelection));
+		AllPackets.channel.sendToServer(
+				new com.lightdev6.computing.packets.ScannerPlacementPacket(pos, currentSelection));
 		currentSelection = null;
 		currentItem = null;
 	}
@@ -77,7 +78,7 @@ public class RedstoneDetectorTargetHandler {
 		if (player == null)
 			return;
 		ItemStack heldItem = player.getMainHandItem();
-		if (!BlockList.REDSTONE_DETECTOR.isIn(heldItem)) {
+		if (!BlockList.SCANNER.isIn(heldItem)) {
 			currentItem = null;
 		} else {
 			if (heldItem != currentItem) {
@@ -99,17 +100,17 @@ public class RedstoneDetectorTargetHandler {
 		BlockPos pos = result.getBlockPos();
 
 		BlockEntity te = Minecraft.getInstance().level.getBlockEntity(pos);
-		if (!(te instanceof RedstoneDetectorBlockEntity)) {
+		if (!(te instanceof ScannerBlockEntity)) {
 			lastHoveredBlockPos = -1;
 			currentSelection = null;
 			return;
 		}
 
 		if (lastHoveredBlockPos == -1 || lastHoveredBlockPos != pos.asLong()) {
-			RedstoneDetectorBlockEntity rd = (RedstoneDetectorBlockEntity) te;
-			if (!rd.getTargetPos()
-					.equals(rd.getBlockPos()))
-				currentSelection = rd.getTargetPos();
+			ScannerBlockEntity s = (ScannerBlockEntity) te;
+			if (!s.getTargetPos()
+					.equals(s.getBlockPos()))
+				currentSelection = s.getTargetPos();
 			lastHoveredBlockPos = pos.asLong();
 		}
 

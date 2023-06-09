@@ -1,4 +1,4 @@
-package com.workert.robotics.content.computing.inputs.scanner;
+package com.workert.robotics.content.computers.inputs.scanner;
 
 import com.simibubi.create.AllSoundEvents;
 import com.simibubi.create.content.contraptions.relays.belt.transport.TransportedItemStack;
