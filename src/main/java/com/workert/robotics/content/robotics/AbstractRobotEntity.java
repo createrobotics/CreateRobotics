@@ -5,11 +5,13 @@ import com.simibubi.create.content.logistics.RedstoneLinkNetworkHandler;
 import com.simibubi.create.foundation.gui.ScreenOpener;
 import com.simibubi.create.foundation.utility.Couple;
 import com.workert.robotics.base.registries.ItemRegistry;
+import com.workert.robotics.base.roboscript.Interpreter;
 import com.workert.robotics.base.roboscript.RoboScript;
 import com.workert.robotics.content.computers.computer.ConsoleScreen;
 import com.workert.robotics.helpers.CodeHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -34,6 +36,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public abstract class AbstractRobotEntity extends PathfinderMob implements InventoryCarrier {
 	private static final int maxAir = BackTankUtil.maxAirWithoutEnchants() * 10;
 	private int air;
@@ -42,6 +47,7 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 
 	private RoboScript roboScript = null;
 	public String code = "";
+	private CompoundTag savedVariables = new CompoundTag();
 	private static final EntityDataAccessor<String> DATA_CONSOLE_OUTPUT_ID = SynchedEntityData.defineId(
 			AbstractRobotEntity.class, EntityDataSerializers.STRING);
 
@@ -51,7 +57,38 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 		super(entity, world);
 		this.air = maxAir;
 		if (this.isProgrammable()) {
-			this.roboScript = new RoboScript(false) {
+			this.roboScript = new RoboScript() {
+				@Override
+				public void saveVariableExternally(Map.Entry<String, Object> variableMap) {
+					if (variableMap.getValue() instanceof Double doubleValue) {
+						AbstractRobotEntity.this.savedVariables.putDouble(variableMap.getKey(), doubleValue);
+					} else if (variableMap.getValue() instanceof String stringValue) {
+						AbstractRobotEntity.this.savedVariables.putString(variableMap.getKey(), stringValue);
+					} else if (variableMap.getValue() instanceof Boolean booleanValue) {
+						AbstractRobotEntity.this.savedVariables.putBoolean(variableMap.getKey(), booleanValue);
+					} else {
+						AbstractRobotEntity.this.savedVariables.putString(variableMap.getKey(),
+								Interpreter.stringify(variableMap.getValue()));
+					}
+				}
+
+				@Override
+				public Map<String, Object> getExternallySavedVariables() {
+					Map<String, Object> variableMap = new HashMap<>();
+
+					AbstractRobotEntity.this.savedVariables.getAllKeys().forEach(identifier -> {
+						byte valueTagType = AbstractRobotEntity.this.savedVariables.get(identifier).getId();
+						if (valueTagType == Tag.TAG_DOUBLE) {
+							variableMap.put(identifier, AbstractRobotEntity.this.savedVariables.getDouble(identifier));
+						} else if (valueTagType == Tag.TAG_STRING) {
+							variableMap.put(identifier, AbstractRobotEntity.this.savedVariables.getString(identifier));
+						} else if (valueTagType == Tag.TAG_BYTE) {
+							variableMap.put(identifier, AbstractRobotEntity.this.savedVariables.getBoolean(identifier));
+						}
+					});
+					return variableMap;
+				}
+
 				@Override
 				public RunningState getRunningState() {
 					if (AbstractRobotEntity.this.air <= 0) {
@@ -84,6 +121,7 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 		if (this.hasInventory()) pCompound.put("Inventory", this.inventory.createTag());
 		pCompound.putString("Code", this.code);
 		pCompound.putString("ConsoleOutput", this.getConsoleOutput());
+		pCompound.put("SavedVariables", this.savedVariables);
 		super.addAdditionalSaveData(pCompound);
 	}
 
@@ -94,6 +132,8 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 			if (this.hasInventory()) this.inventory.fromTag(pCompound.getList("Inventory", 10));
 			this.code = pCompound.getString("Code");
 			this.setConsoleOutput(pCompound.getString("ConsoleOutput"));
+			this.savedVariables = pCompound.getCompound("SavedVariables") != null ? pCompound.getCompound(
+					"SavedVariables") : new CompoundTag();
 			super.readAdditionalSaveData(pCompound);
 		} catch (NullPointerException exception) {
 			exception.printStackTrace();

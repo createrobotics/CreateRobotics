@@ -3,6 +3,7 @@ package com.workert.robotics.content.computers.computer;
 import com.simibubi.create.AllItems;
 import com.simibubi.create.content.contraptions.base.KineticTileEntity;
 import com.simibubi.create.foundation.utility.Iterate;
+import com.workert.robotics.base.roboscript.Interpreter;
 import com.workert.robotics.base.roboscript.RoboScript;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -19,7 +20,9 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.EmptyHandler;
 
+import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 
 public class ComputerBlockEntity extends KineticTileEntity {
 
@@ -33,11 +36,43 @@ public class ComputerBlockEntity extends KineticTileEntity {
 	private LinkedHashSet<LazyOptional<IItemHandler>> attachedInventories;
 
 	public RoboScript roboScript;
+	private CompoundTag savedVariables = new CompoundTag();
 
 	public ComputerBlockEntity(BlockEntityType<?> type, BlockPos blockPos, BlockState blockState) {
 		super(type, blockPos, blockState);
 		this.attachedInventories = new LinkedHashSet<>();
-		this.roboScript = new RoboScript(false) {
+		this.roboScript = new RoboScript() {
+			@Override
+			public void saveVariableExternally(Map.Entry<String, Object> variableMap) {
+				if (variableMap.getValue() instanceof Double doubleValue) {
+					ComputerBlockEntity.this.savedVariables.putDouble(variableMap.getKey(), doubleValue);
+				} else if (variableMap.getValue() instanceof String stringValue) {
+					ComputerBlockEntity.this.savedVariables.putString(variableMap.getKey(), stringValue);
+				} else if (variableMap.getValue() instanceof Boolean booleanValue) {
+					ComputerBlockEntity.this.savedVariables.putBoolean(variableMap.getKey(), booleanValue);
+				} else {
+					ComputerBlockEntity.this.savedVariables.putString(variableMap.getKey(),
+							Interpreter.stringify(variableMap.getValue()));
+				}
+			}
+
+			@Override
+			public Map<String, Object> getExternallySavedVariables() {
+				Map<String, Object> variableMap = new HashMap<>();
+
+				ComputerBlockEntity.this.savedVariables.getAllKeys().forEach(identifier -> {
+					byte valueTagType = ComputerBlockEntity.this.savedVariables.get(identifier).getId();
+					if (valueTagType == Tag.TAG_DOUBLE) {
+						variableMap.put(identifier, ComputerBlockEntity.this.savedVariables.getDouble(identifier));
+					} else if (valueTagType == Tag.TAG_STRING) {
+						variableMap.put(identifier, ComputerBlockEntity.this.savedVariables.getString(identifier));
+					} else if (valueTagType == Tag.TAG_BYTE) {
+						variableMap.put(identifier, ComputerBlockEntity.this.savedVariables.getBoolean(identifier));
+					}
+				});
+				return variableMap;
+			}
+
 			@Override
 			public RunningState getRunningState() {
 				if (!ComputerBlockEntity.this.isSpeedRequirementFulfilled())
@@ -188,6 +223,7 @@ public class ComputerBlockEntity extends KineticTileEntity {
 		this.script = compound.getString("Script");
 		this.terminal = compound.getString("Terminal");
 		this.running = compound.getBoolean("Running");
+		this.savedVariables = compound.getCompound("SavedVariables");
 	}
 
 	@Override
@@ -196,6 +232,7 @@ public class ComputerBlockEntity extends KineticTileEntity {
 		compound.putString("Script", this.script);
 		compound.putString("Terminal", this.terminal);
 		compound.putBoolean("Running", this.running);
+		compound.put("SavedVariables", this.savedVariables);
 	}
 
 	@Override
