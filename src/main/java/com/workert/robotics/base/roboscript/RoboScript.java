@@ -1,14 +1,16 @@
 package com.workert.robotics.base.roboscript;
 
 import com.workert.robotics.base.roboscript.ingame.ConsoleOutputProvider;
-import net.minecraft.nbt.CompoundTag;
+import com.workert.robotics.base.roboscript.ingame.VariableDataExternalSavingProvider;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
 
-public class RoboScript implements ConsoleOutputProvider {
+public abstract class RoboScript implements ConsoleOutputProvider, VariableDataExternalSavingProvider {
 	private final Interpreter interpreter = new Interpreter(this);
 
 	private boolean hadError = false;
@@ -17,13 +19,19 @@ public class RoboScript implements ConsoleOutputProvider {
 
 	private final String consoleOutput = "";
 
-	private final CompoundTag savedVariableCompound = new CompoundTag();
+	private Map<String, Object> savedVariables = new HashMap<>();
 
-	private boolean runningInJVM;
+	private boolean printToJVMConsole;
 
-	public RoboScript(boolean runningInJVM) {
-		this.runningInJVM = runningInJVM;
+	public RoboScript() {
+		this(false);
+	}
+
+	public RoboScript(boolean printToJVMConsole) {
+		this.printToJVMConsole = printToJVMConsole;
 		this.defineDefaultFunctions();
+		if (this.getExternallySavedVariables() != null)
+			this.savedVariables = this.getExternallySavedVariables();
 	}
 
 
@@ -56,7 +64,7 @@ public class RoboScript implements ConsoleOutputProvider {
 	}
 
 	public void defineDefaultFunctions() {
-		this.defineFunction("print", 1, (this.runningInJVM) ? (interpreter, arguments) -> {
+		this.defineFunction("print", 1, (this.printToJVMConsole) ? (interpreter, arguments) -> {
 			System.out.println(Interpreter.stringify(arguments.get(0)));
 			return null;
 		} : (interpreter, arguments) -> {
@@ -64,26 +72,12 @@ public class RoboScript implements ConsoleOutputProvider {
 			return null;
 		});
 
-
 		this.defineFunction("save", 2, (interpreter, arguments) -> {
-			CompoundTag entryTag = new CompoundTag();
-			Object value = arguments.get(0);
-			if (value instanceof Double doubleValue) {
-				entryTag.putString("Identifier", arguments.get(0).toString());
-				entryTag.putDouble("Value", doubleValue);
-			} else if (value instanceof String stringValue) {
-				entryTag.putString("Identifier", arguments.get(0).toString());
-				entryTag.putString("Value", stringValue);
-			} else if (value instanceof Boolean booleanValue) {
-				entryTag.putString("Identifier", arguments.get(0).toString());
-				entryTag.putBoolean("Value", booleanValue);
-			} else {
-				entryTag.putString("Identifier", arguments.get(0).toString());
-				entryTag.putString("Value", value.toString());
-			}
+			this.savedVariables.put(arguments.get(0).toString(), arguments.get(1));
 			return null;
-
 		});
+		this.defineFunction("read", 1,
+				(interpreter, arguments) -> this.savedVariables.get(arguments.get(0).toString()));
 	}
 
 	/**
@@ -160,7 +154,7 @@ public class RoboScript implements ConsoleOutputProvider {
 	}
 
 	private void report(int line, String where, String message) {
-		if (this.runningInJVM) {
+		if (this.printToJVMConsole) {
 			System.err.println("[line " + line + "] ERROR" + where + ": " + message);
 		} else {
 			this.consoleOutput.concat("[line " + line + "] ERROR" + where + ": " + message + "\n");
