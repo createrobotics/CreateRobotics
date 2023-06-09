@@ -1,9 +1,8 @@
-package com.workert.robotics.content.computers.inputs.scanner;
-
+package com.workert.robotics.content.computers.inputs;
 import com.simibubi.create.AllItems;
 import com.simibubi.create.CreateClient;
-import com.simibubi.create.foundation.networking.AllPackets;
 import com.workert.robotics.base.registries.AllBlocks;
+import com.workert.robotics.base.registries.AllPackets;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -25,13 +24,13 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT)
-public class ScannerTargetHandler {
+public class InputTargetHandler {
 	static BlockPos currentSelection;
 	static ItemStack currentItem;
 	static long lastHoveredBlockPos;
 
 	@SubscribeEvent
-	public static void rightClickBlock(PlayerInteractEvent.RightClickBlock event) {
+	public static void rightClickBlock(PlayerInteractEvent.RightClickBlock event){
 		if (currentItem == null)
 			return;
 		BlockPos pos = event.getPos();
@@ -49,7 +48,7 @@ public class ScannerTargetHandler {
 	}
 
 	@SubscribeEvent
-	public static void leftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
+	public static void leftClickBlock(PlayerInteractEvent.LeftClickBlock event){
 		if (currentItem == null)
 			return;
 		if (!event.getLevel().isClientSide)
@@ -57,31 +56,30 @@ public class ScannerTargetHandler {
 		if (!event.getEntity().isShiftKeyDown())
 			return;
 		BlockPos pos = event.getPos();
-		if (pos.equals(currentSelection)) {
+		if (pos.equals(currentSelection)){
 			currentSelection = null;
 			event.setCanceled(true);
 			event.setCancellationResult(InteractionResult.SUCCESS);
 		}
 	}
 
-	public static void flushSettings(BlockPos pos) {
+	public static void flushSettings(BlockPos pos){
 		LocalPlayer player = Minecraft.getInstance().player;
 		player.displayClientMessage(Component.literal("Selected computer"), true);
-		AllPackets.channel.sendToServer(
-				new com.lightdev6.computing.packets.ScannerPlacementPacket(pos, currentSelection));
+		AllPackets.CHANNEL.sendToServer(new InputPlacementPacket(pos, currentSelection));
 		currentSelection = null;
 		currentItem = null;
 	}
 
-	public static void tick() {
+	public static void tick(){
 		Player player = Minecraft.getInstance().player;
 		if (player == null)
 			return;
 		ItemStack heldItem = player.getMainHandItem();
-		if (!AllBlocks.SCANNER.isIn(heldItem)) {
+		if (!(heldItem.getItem() instanceof InputBlockItem)){
 			currentItem = null;
 		} else {
-			if (heldItem != currentItem) {
+			if (heldItem != currentItem){
 				currentSelection = null;
 				currentItem = heldItem;
 			}
@@ -100,17 +98,16 @@ public class ScannerTargetHandler {
 		BlockPos pos = result.getBlockPos();
 
 		BlockEntity te = Minecraft.getInstance().level.getBlockEntity(pos);
-		if (!(te instanceof ScannerBlockEntity)) {
+		if (!(te instanceof IInputBlockEntity inputBlockEntity)) {
 			lastHoveredBlockPos = -1;
 			currentSelection = null;
 			return;
 		}
 
 		if (lastHoveredBlockPos == -1 || lastHoveredBlockPos != pos.asLong()) {
-			ScannerBlockEntity s = (ScannerBlockEntity) te;
-			if (!s.getTargetPos()
-					.equals(s.getBlockPos()))
-				currentSelection = s.getTargetPos();
+			if (!inputBlockEntity.getTargetPos()
+					.equals(inputBlockEntity.getBlockEntityPos()))
+				currentSelection = inputBlockEntity.getTargetPos();
 			lastHoveredBlockPos = pos.asLong();
 		}
 

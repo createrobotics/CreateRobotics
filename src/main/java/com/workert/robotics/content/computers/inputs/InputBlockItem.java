@@ -1,6 +1,5 @@
-package com.workert.robotics.content.computers.inputs.redstonedetector;
-
-import com.simibubi.create.foundation.networking.AllPackets;
+package com.workert.robotics.content.computers.inputs;
+import com.workert.robotics.base.registries.AllPackets;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
@@ -12,10 +11,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.network.PacketDistributor;
+import org.jetbrains.annotations.Nullable;
 
-public class RedstoneDetectorItem extends BlockItem {
-
-	public RedstoneDetectorItem(Block pBlock, Properties pProperties) {
+public class InputBlockItem extends BlockItem {
+	public InputBlockItem(Block pBlock, Properties pProperties) {
 		super(pBlock, pProperties);
 	}
 
@@ -33,11 +32,10 @@ public class RedstoneDetectorItem extends BlockItem {
 	}
 
 	@Override
-	protected boolean updateCustomBlockEntityTag(BlockPos pPos, Level pLevel, Player pPlayer, ItemStack pStack, BlockState pState) {
-		if (!pLevel.isClientSide && pPlayer instanceof ServerPlayer serverPlayer)
-			// A block has been placed on the server
-			AllPackets.channel.send(PacketDistributor.PLAYER.with(() -> serverPlayer),
-					new RedstoneDetectorPlacementPacket.ClientBoundRequest(pPos));
+	protected boolean updateCustomBlockEntityTag(BlockPos pPos, Level pLevel, @Nullable Player pPlayer, ItemStack pStack, BlockState pState) {
+		if (!pLevel.isClientSide && pPlayer instanceof ServerPlayer sp)
+			//A block has been placed on the server
+			AllPackets.CHANNEL.send(PacketDistributor.PLAYER.with(() -> sp), new InputPlacementPacket.ClientBoundRequest(pPos));
 		return super.updateCustomBlockEntityTag(pPos, pLevel, pPlayer, pStack, pState);
 	}
 }

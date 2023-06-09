@@ -1,8 +1,5 @@
-package com.lightdev6.computing.packets;
-
+package com.workert.robotics.content.computers.inputs;
 import com.simibubi.create.foundation.networking.SimplePacketBase;
-import com.workert.robotics.content.computers.inputs.scanner.ScannerBlockEntity;
-import com.workert.robotics.content.computers.inputs.scanner.ScannerTargetHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
@@ -14,62 +11,55 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class ScannerPlacementPacket extends SimplePacketBase {
+public class InputPlacementPacket extends SimplePacketBase {
 	private BlockPos pos;
 	private BlockPos targetPos;
-
-	public ScannerPlacementPacket(BlockPos pos, BlockPos targetPos) {
+	public InputPlacementPacket(BlockPos pos, BlockPos targetPos){
 		this.pos = pos;
 		this.targetPos = targetPos;
 	}
-
-	public ScannerPlacementPacket(FriendlyByteBuf buffer) {
+	public InputPlacementPacket(FriendlyByteBuf buffer){
 		this.pos = buffer.readBlockPos();
 		this.targetPos = buffer.readBlockPos();
 	}
 
 	@Override
 	public void write(FriendlyByteBuf buffer) {
-		buffer.writeBlockPos(this.pos);
-		buffer.writeBlockPos(this.targetPos);
+		buffer.writeBlockPos(pos);
+		buffer.writeBlockPos(targetPos);
 	}
 
 	@Override
 	public void handle(Supplier<NetworkEvent.Context> context) {
 		context.get().enqueueWork(() -> {
 			ServerPlayer player = context.get().getSender();
-			if (player == null)
-				return;
-			Level level = player.level;
-			if (level == null || !level.isLoaded(this.pos))
-				return;
-			BlockEntity blockEntity = level.getBlockEntity(this.pos);
-			if (blockEntity instanceof ScannerBlockEntity scanner)
-				scanner.setTargetPos(this.targetPos);
-
+			if (player == null) return;
+			Level world = player.level;
+			if (world == null || !world.isLoaded(pos)) return;
+			BlockEntity be = world.getBlockEntity(pos);
+			if (be instanceof IInputBlockEntity inputBlockEntity) inputBlockEntity.setTargetPos(targetPos);
 		});
+		context.get().setPacketHandled(true);
 	}
 
-	public static class ClientBoundRequest extends SimplePacketBase {
+	public static class ClientBoundRequest extends SimplePacketBase{
 		BlockPos pos;
-
-		public ClientBoundRequest(BlockPos pos) {
+		public ClientBoundRequest(BlockPos pos){
 			this.pos = pos;
 		}
-
-		public ClientBoundRequest(FriendlyByteBuf buffer) {
+		public ClientBoundRequest(FriendlyByteBuf buffer){
 			this.pos = buffer.readBlockPos();
 		}
 
 		@Override
 		public void write(FriendlyByteBuf buffer) {
-			buffer.writeBlockPos(this.pos);
+			buffer.writeBlockPos(pos);
 		}
 
 		@Override
 		public void handle(Supplier<NetworkEvent.Context> context) {
-			context.get().enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT,
-					() -> () -> ScannerTargetHandler.flushSettings(this.pos)));
+			context.get().enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> InputTargetHandler.flushSettings(pos)));
+			context.get().setPacketHandled(true);
 		}
 	}
 }

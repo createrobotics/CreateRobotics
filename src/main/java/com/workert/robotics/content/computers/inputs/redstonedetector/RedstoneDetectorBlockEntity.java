@@ -54,6 +54,11 @@ public class RedstoneDetectorBlockEntity extends SyncedTileEntity implements IIn
 	}
 
 	@Override
+	public BlockPos getBlockEntityPos() {
+		return getBlockPos();
+	}
+
+	@Override
 	public SyncedTileEntity getBlockEntity() {
 		return this;
 	}

@@ -12,10 +12,9 @@ import com.workert.robotics.Robotics;
 import com.workert.robotics.content.computers.computer.ComputerBlock;
 import com.workert.robotics.content.computers.computer.FrequencyDisplaySource;
 import com.workert.robotics.content.computers.computer.TerminalDisplaySource;
+import com.workert.robotics.content.computers.inputs.InputBlockItem;
 import com.workert.robotics.content.computers.inputs.redstonedetector.RedstoneDetectorBlock;
-import com.workert.robotics.content.computers.inputs.redstonedetector.RedstoneDetectorItem;
 import com.workert.robotics.content.computers.inputs.scanner.ScannerBlock;
-import com.workert.robotics.content.computers.inputs.scanner.ScannerItem;
 import com.workert.robotics.content.robotics.codeeditor.CodeEditorBlock;
 import com.workert.robotics.unused.smasher.SmasherBlock;
 import net.minecraft.tags.BlockTags;
@@ -152,7 +151,7 @@ public class AllBlocks {
 			.block("redstone_detector", RedstoneDetectorBlock::new)
 			.initialProperties(() -> Blocks.STONE)
 			.transform(TagGen.pickaxeOnly())
-			.item(RedstoneDetectorItem::new)
+			.item(InputBlockItem::new)
 			.model(AssetLookup::customItemModel)
 			.build()
 			.register();
@@ -162,7 +161,7 @@ public class AllBlocks {
 			.transform(TagGen.pickaxeOnly())
 			.properties(BlockBehaviour.Properties::noOcclusion)
 			.blockstate(BlockStateGen.horizontalBlockProvider(true))
-			.item(ScannerItem::new)
+			.item(InputBlockItem::new)
 			.model(AssetLookup::customItemModel)
 			.build()
 			.register();

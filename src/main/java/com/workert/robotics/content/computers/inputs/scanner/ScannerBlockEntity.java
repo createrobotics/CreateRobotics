@@ -92,6 +92,11 @@ public class ScannerBlockEntity extends KineticTileEntity implements ScannerBeha
 	}
 
 	@Override
+	public BlockPos getBlockEntityPos() {
+		return getBlockPos();
+	}
+
+	@Override
 	public SyncedTileEntity getBlockEntity() {
 		return this;
 	}
