@@ -1,4 +1,3 @@
-//> Appendix II stmt
 package com.workert.robotics.base.roboscript;
 
 import java.util.List;
@@ -24,8 +23,7 @@ public abstract class Statement {
 		R visitWhileStmt(While stmt);
 	}
 
-	// Nested Stmt classes here...
-	//> stmt-block
+
 	static class Block extends Statement {
 		Block(List<Statement> statements) {
 			this.statements = statements;
@@ -39,8 +37,7 @@ public abstract class Statement {
 		final List<Statement> statements;
 	}
 
-	//< stmt-block
-	//> stmt-class
+
 	static class Class extends Statement {
 		Class(Token name, com.workert.robotics.base.roboscript.Expression.Variable superclass, List<Statement.Function> methods) {
 			this.name = name;
@@ -58,8 +55,7 @@ public abstract class Statement {
 		final List<Statement.Function> methods;
 	}
 
-	//< stmt-class
-	//> stmt-expression
+
 	static class Expression extends Statement {
 		Expression(com.workert.robotics.base.roboscript.Expression expression) {
 			this.expression = expression;
@@ -73,8 +69,7 @@ public abstract class Statement {
 		final com.workert.robotics.base.roboscript.Expression expression;
 	}
 
-	//< stmt-expression
-	//> stmt-function
+
 	static class Function extends Statement {
 		Function(Token name, List<Token> params, List<Statement> body) {
 			this.name = name;
@@ -92,8 +87,7 @@ public abstract class Statement {
 		final List<Statement> body;
 	}
 
-	//< stmt-function
-	//> stmt-if
+
 	static class If extends Statement {
 		If(com.workert.robotics.base.roboscript.Expression condition, Statement thenBranch, Statement elseBranch) {
 			this.condition = condition;
@@ -111,8 +105,7 @@ public abstract class Statement {
 		final Statement elseBranch;
 	}
 
-	//< stmt-if
-	//> stmt-return
+
 	static class Return extends Statement {
 		Return(Token keyword, com.workert.robotics.base.roboscript.Expression value) {
 			this.keyword = keyword;
@@ -128,8 +121,7 @@ public abstract class Statement {
 		final com.workert.robotics.base.roboscript.Expression value;
 	}
 
-	//< stmt-return
-	//> stmt-break
+
 	static class Break extends Statement {
 		Break(Token keyword) {
 			this.keyword = keyword;
@@ -143,8 +135,7 @@ public abstract class Statement {
 		final Token keyword;
 	}
 
-	//< stmt-break
-	//> stmt-var
+
 	static class Var extends Statement {
 		Var(Token name, com.workert.robotics.base.roboscript.Expression initializer) {
 			this.name = name;
@@ -160,8 +151,7 @@ public abstract class Statement {
 		final com.workert.robotics.base.roboscript.Expression initializer;
 	}
 
-	//< stmt-var
-	//> stmt-while
+
 	static class While extends Statement {
 		While(com.workert.robotics.base.roboscript.Expression condition, Statement body) {
 			this.condition = condition;
@@ -176,8 +166,7 @@ public abstract class Statement {
 		final com.workert.robotics.base.roboscript.Expression condition;
 		final Statement body;
 	}
-	//< stmt-while
+
 
 	abstract <R> R accept(Visitor<R> visitor);
 }
-//< Appendix II stmt

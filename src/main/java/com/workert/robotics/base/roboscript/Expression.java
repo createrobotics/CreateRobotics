@@ -1,4 +1,3 @@
-//> Appendix II expr
 package com.workert.robotics.base.roboscript;
 
 import java.util.List;
@@ -30,8 +29,7 @@ public abstract class Expression {
 		R visitVariableExpr(Variable expr);
 	}
 
-	// Nested Expr classes here...
-	//> expr-assign
+
 	static class Assign extends Expression {
 		Assign(Token name, Expression value) {
 			this.name = name;
@@ -47,8 +45,7 @@ public abstract class Expression {
 		final Expression value;
 	}
 
-	//< expr-assign
-	//> expr-binary
+
 	static class Binary extends Expression {
 		Binary(Expression left, Token operator, Expression right) {
 			this.left = left;
@@ -66,8 +63,7 @@ public abstract class Expression {
 		final Expression right;
 	}
 
-	//< expr-binary
-	//> expr-call
+
 	static class Call extends Expression {
 		Call(Expression callee, Token paren, List<Expression> arguments) {
 			this.callee = callee;
@@ -85,8 +81,7 @@ public abstract class Expression {
 		final List<Expression> arguments;
 	}
 
-	//< expr-call
-	//> expr-get
+
 	static class Get extends Expression {
 		Get(Expression object, Token name) {
 			this.object = object;
@@ -102,8 +97,7 @@ public abstract class Expression {
 		final Token name;
 	}
 
-	//< expr-get
-	//> expr-set
+
 	static class Set extends Expression {
 		Set(Expression object, Token name, Expression value) {
 			this.object = object;
@@ -121,8 +115,7 @@ public abstract class Expression {
 		final Expression value;
 	}
 
-	//< expr-set
-	//> expr-super
+
 	static class Super extends Expression {
 		Super(Token keyword, Token method) {
 			this.keyword = keyword;
@@ -138,8 +131,7 @@ public abstract class Expression {
 		final Token method;
 	}
 
-	//< expr-super
-	//> expr-this
+
 	static class This extends Expression {
 		This(Token keyword) {
 			this.keyword = keyword;
@@ -153,8 +145,7 @@ public abstract class Expression {
 		final Token keyword;
 	}
 
-	//< expr-this
-	//> expr-grouping
+
 	static class Grouping extends Expression {
 		Grouping(Expression expression) {
 			this.expression = expression;
@@ -168,8 +159,7 @@ public abstract class Expression {
 		final Expression expression;
 	}
 
-	//< expr-grouping
-	//> expr-literal
+
 	static class Literal extends Expression {
 		Literal(Object value) {
 			this.value = value;
@@ -183,8 +173,7 @@ public abstract class Expression {
 		final Object value;
 	}
 
-	//< expr-literal
-	//> expr-logical
+
 	static class Logical extends Expression {
 		Logical(Expression left, Token operator, Expression right) {
 			this.left = left;
@@ -202,8 +191,7 @@ public abstract class Expression {
 		final Expression right;
 	}
 
-	//< expr-logical
-	//> expr-unary
+
 	static class Unary extends Expression {
 		Unary(Token operator, Expression right) {
 			this.operator = operator;
@@ -219,8 +207,7 @@ public abstract class Expression {
 		final Expression right;
 	}
 
-	//< expr-unary
-	//> expr-variable
+
 	static class Variable extends Expression {
 		Variable(Token name) {
 			this.name = name;
@@ -233,8 +220,7 @@ public abstract class Expression {
 
 		final Token name;
 	}
-	//< expr-variable
+
 
 	abstract <R> R accept(Visitor<R> visitor);
 }
-//< Appendix II expr
