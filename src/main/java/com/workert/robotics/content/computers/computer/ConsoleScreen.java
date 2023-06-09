@@ -35,7 +35,7 @@ public class ConsoleScreen extends AbstractSimiScreen {
 				.equals(IConsoleOutputProvider.RunningState.ENERGY_REQUIREMENT_NOT_MET)) {
 			this.runningStateButton.setIcon(AllIcons.I_PAUSE);
 			this.runningStateButton.setToolTip(
-					Component.literal("The Energy Requirement is currently not met.\nThe program has been stopped."));
+					Component.literal("The Energy Requirement is currently not met. The program has been stopped."));
 		}
 		this.consoleOutput.setValue(this.consoleOutputProvider.getConsoleOutput());
 	}

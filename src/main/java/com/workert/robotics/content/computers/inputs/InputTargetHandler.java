@@ -1,12 +1,9 @@
 package com.workert.robotics.content.computers.inputs;
 import com.simibubi.create.AllItems;
 import com.simibubi.create.CreateClient;
-import com.workert.robotics.base.registries.AllPackets;
-import net.minecraft.ChatFormatting;
+import com.workert.robotics.content.computers.computer.ComputerBlockEntity;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -40,7 +37,13 @@ public class InputTargetHandler {
 		if (player == null || player.isSpectator() || !player.isShiftKeyDown())
 			return;
 
-		player.displayClientMessage(Component.literal("Target set").withStyle(ChatFormatting.GOLD), true);
+		if (!(event.getLevel()
+				.getBlockEntity(event.getPos()) instanceof ComputerBlockEntity)) {
+			event.setCanceled(true);
+			event.setCancellationResult(InteractionResult.FAIL);
+			return;
+		}
+
 		currentSelection = pos;
 		event.setCanceled(true);
 		event.setCancellationResult(InteractionResult.SUCCESS);
@@ -62,10 +65,7 @@ public class InputTargetHandler {
 		}
 	}
 
-	public static void flushSettings(BlockPos pos) {
-		LocalPlayer player = Minecraft.getInstance().player;
-		player.displayClientMessage(Component.literal("Selected computer"), true);
-		AllPackets.CHANNEL.sendToServer(new InputPlacementPacket(pos, currentSelection));
+	public static void flush() {
 		currentSelection = null;
 		currentItem = null;
 	}
@@ -94,20 +94,20 @@ public class InputTargetHandler {
 		if (!(objectMouseOver instanceof BlockHitResult))
 			return;
 		BlockHitResult result = (BlockHitResult) objectMouseOver;
-		BlockPos pos = result.getBlockPos();
+		BlockPos resultPos = result.getBlockPos();
 
-		BlockEntity te = Minecraft.getInstance().level.getBlockEntity(pos);
+		BlockEntity te = Minecraft.getInstance().level.getBlockEntity(resultPos);
 		if (!(te instanceof IInputBlockEntity inputBlockEntity)) {
 			lastHoveredBlockPos = -1;
 			currentSelection = null;
 			return;
 		}
 
-		if (lastHoveredBlockPos == -1 || lastHoveredBlockPos != pos.asLong()) {
+		if (lastHoveredBlockPos == -1 || lastHoveredBlockPos != resultPos.asLong()) {
 			if (!inputBlockEntity.getTargetPos()
 					.equals(inputBlockEntity.getBlockEntityPos()))
 				currentSelection = inputBlockEntity.getTargetPos();
-			lastHoveredBlockPos = pos.asLong();
+			lastHoveredBlockPos = resultPos.asLong();
 		}
 
 		if (lastHoveredBlockPos != -1)
