@@ -64,11 +64,8 @@ public abstract class RoboScript implements ConsoleOutputProvider, VariableDataE
 	}
 
 	public void defineDefaultFunctions() {
-		this.defineFunction("print", 1, (this.printToJVMConsole) ? (interpreter, arguments) -> {
-			System.out.println(Interpreter.stringify(arguments.get(0)));
-			return null;
-		} : (interpreter, arguments) -> {
-			this.consoleOutput.concat(Interpreter.stringify(arguments.get(0)) + "\n");
+		this.defineFunction("print", 1, (interpreter, arguments) -> {
+			this.printToConsole(Interpreter.stringify(arguments.get(0)) + "\n");
 			return null;
 		});
 
@@ -76,7 +73,7 @@ public abstract class RoboScript implements ConsoleOutputProvider, VariableDataE
 			this.savedVariables.put(arguments.get(0).toString(), arguments.get(1));
 			return null;
 		});
-		this.defineFunction("read", 1,
+		this.defineFunction("load", 1,
 				(interpreter, arguments) -> this.savedVariables.get(arguments.get(0).toString()));
 	}
 
@@ -99,18 +96,12 @@ public abstract class RoboScript implements ConsoleOutputProvider, VariableDataE
 			List<Statement> statements = parser.parse();
 
 			// Stop if there was a syntax error.
-			if (this.hadError) {
-				System.out.println("Error 1");
-				return;
-			}
+			if (this.hadError) return;
 
 			Resolver resolver = new Resolver(this.interpreter);
 			resolver.resolve(statements);
 
-			if (this.hadError) {
-				System.out.println("Error 2");
-				return;
-			}
+			if (this.hadError) return;
 
 			this.interpreter.interpret(statements);
 
@@ -150,16 +141,20 @@ public abstract class RoboScript implements ConsoleOutputProvider, VariableDataE
 	}
 
 	public void runtimeError(RuntimeError error) {
-		this.consoleOutput.concat("[line " + error.token.line + "] Runtime Error: " + error.getMessage() + "\n");
+		this.printToConsole("[line " + error.token.line + "] Runtime Error: " + error.getMessage() + "\n");
 	}
 
 	private void report(int line, String where, String message) {
-		if (this.printToJVMConsole) {
-			System.err.println("[line " + line + "] ERROR" + where + ": " + message);
-		} else {
-			this.consoleOutput.concat("[line " + line + "] ERROR" + where + ": " + message + "\n");
-		}
+		this.printToConsole("[line " + line + "] ERROR" + where + ": " + message + "\n");
 		this.hadError = true;
+	}
+
+	private void printToConsole(String message) {
+		if (this.printToJVMConsole) {
+			System.out.print(message);
+		} else {
+			this.consoleOutput.concat(message);
+		}
 	}
 
 	public void requestStop() {

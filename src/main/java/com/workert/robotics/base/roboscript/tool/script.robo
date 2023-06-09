@@ -1,4 +1,2 @@
-var x = 3;
-while (true){
-  print(x);
-}
+save("x", 5);
+print(load("x"));
