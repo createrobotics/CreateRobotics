@@ -4,7 +4,6 @@ import com.workert.robotics.base.roboscript.ingame.ConsoleOutputProvider;
 import com.workert.robotics.base.roboscript.ingame.VariableDataExternalSavingProvider;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -19,8 +18,6 @@ public abstract class RoboScript implements ConsoleOutputProvider, VariableDataE
 
 	private final String consoleOutput = "";
 
-	private Map<String, Object> savedVariables = new HashMap<>();
-
 	private boolean printToJVMConsole;
 
 	public RoboScript() {
@@ -30,8 +27,6 @@ public abstract class RoboScript implements ConsoleOutputProvider, VariableDataE
 	public RoboScript(boolean printToJVMConsole) {
 		this.printToJVMConsole = printToJVMConsole;
 		this.defineDefaultFunctions();
-		if (this.getExternallySavedVariables() != null)
-			this.savedVariables = this.getExternallySavedVariables();
 	}
 
 
@@ -70,11 +65,11 @@ public abstract class RoboScript implements ConsoleOutputProvider, VariableDataE
 		});
 
 		this.defineFunction("save", 2, (interpreter, arguments) -> {
-			this.savedVariables.put(arguments.get(0).toString(), arguments.get(1));
+			this.saveVariableExternally(Map.entry(arguments.get(0).toString(), arguments.get(1)));
 			return null;
 		});
 		this.defineFunction("load", 1,
-				(interpreter, arguments) -> this.savedVariables.get(arguments.get(0).toString()));
+				(interpreter, arguments) -> this.getExternallySavedVariables().get(arguments.get(0).toString()));
 	}
 
 	/**
