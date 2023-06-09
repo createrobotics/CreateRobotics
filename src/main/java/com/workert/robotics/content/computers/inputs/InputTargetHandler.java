@@ -1,7 +1,6 @@
 package com.workert.robotics.content.computers.inputs;
 import com.simibubi.create.AllItems;
 import com.simibubi.create.CreateClient;
-import com.workert.robotics.base.registries.AllBlocks;
 import com.workert.robotics.base.registries.AllPackets;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -30,7 +29,7 @@ public class InputTargetHandler {
 	static long lastHoveredBlockPos;
 
 	@SubscribeEvent
-	public static void rightClickBlock(PlayerInteractEvent.RightClickBlock event){
+	public static void rightClickBlock(PlayerInteractEvent.RightClickBlock event) {
 		if (currentItem == null)
 			return;
 		BlockPos pos = event.getPos();
@@ -48,7 +47,7 @@ public class InputTargetHandler {
 	}
 
 	@SubscribeEvent
-	public static void leftClickBlock(PlayerInteractEvent.LeftClickBlock event){
+	public static void leftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
 		if (currentItem == null)
 			return;
 		if (!event.getLevel().isClientSide)
@@ -56,14 +55,14 @@ public class InputTargetHandler {
 		if (!event.getEntity().isShiftKeyDown())
 			return;
 		BlockPos pos = event.getPos();
-		if (pos.equals(currentSelection)){
+		if (pos.equals(currentSelection)) {
 			currentSelection = null;
 			event.setCanceled(true);
 			event.setCancellationResult(InteractionResult.SUCCESS);
 		}
 	}
 
-	public static void flushSettings(BlockPos pos){
+	public static void flushSettings(BlockPos pos) {
 		LocalPlayer player = Minecraft.getInstance().player;
 		player.displayClientMessage(Component.literal("Selected computer"), true);
 		AllPackets.CHANNEL.sendToServer(new InputPlacementPacket(pos, currentSelection));
@@ -71,15 +70,15 @@ public class InputTargetHandler {
 		currentItem = null;
 	}
 
-	public static void tick(){
+	public static void tick() {
 		Player player = Minecraft.getInstance().player;
 		if (player == null)
 			return;
 		ItemStack heldItem = player.getMainHandItem();
-		if (!(heldItem.getItem() instanceof InputBlockItem)){
+		if (!(heldItem.getItem() instanceof InputBlockItem)) {
 			currentItem = null;
 		} else {
-			if (heldItem != currentItem){
+			if (heldItem != currentItem) {
 				currentSelection = null;
 				currentItem = heldItem;
 			}

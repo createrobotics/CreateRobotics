@@ -150,7 +150,8 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 
 	@Override
 	protected InteractionResult mobInteract(Player pPlayer, InteractionHand pHand) {
-		if (pPlayer.getItemInHand(pHand).is(com.simibubi.create.AllItems.WRENCH.get().asItem()) && pPlayer.isCrouching()) {
+		if (pPlayer.getItemInHand(pHand)
+				.is(com.simibubi.create.AllItems.WRENCH.get().asItem()) && pPlayer.isCrouching()) {
 			ItemStack stack = new ItemStack(this.getRobotItem());
 			CompoundTag saveTag = new CompoundTag();
 			this.save(saveTag);

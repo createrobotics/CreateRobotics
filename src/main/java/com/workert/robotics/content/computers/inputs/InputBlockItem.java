@@ -35,7 +35,8 @@ public class InputBlockItem extends BlockItem {
 	protected boolean updateCustomBlockEntityTag(BlockPos pPos, Level pLevel, @Nullable Player pPlayer, ItemStack pStack, BlockState pState) {
 		if (!pLevel.isClientSide && pPlayer instanceof ServerPlayer sp)
 			//A block has been placed on the server
-			AllPackets.CHANNEL.send(PacketDistributor.PLAYER.with(() -> sp), new InputPlacementPacket.ClientBoundRequest(pPos));
+			AllPackets.CHANNEL.send(PacketDistributor.PLAYER.with(() -> sp),
+					new InputPlacementPacket.ClientBoundRequest(pPos));
 		return super.updateCustomBlockEntityTag(pPos, pLevel, pPlayer, pStack, pState);
 	}
 }

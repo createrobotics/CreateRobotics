@@ -22,16 +22,16 @@ import static net.minecraftforge.network.NetworkDirection.PLAY_TO_SERVER;
 
 public enum AllPackets {
 	// Packets to Server
-	CHANGE_EXTEND_O_BOOTS_HEIGHT(ChangeExtendOBootsHeightPacket.class, ChangeExtendOBootsHeightPacket::new, PLAY_TO_SERVER),
+	CHANGE_EXTEND_O_BOOTS_HEIGHT(ChangeExtendOBootsHeightPacket.class, ChangeExtendOBootsHeightPacket::new,
+			PLAY_TO_SERVER),
 	RETURN_EDITED_CODE(ReturnEditedCodePacket.class, ReturnEditedCodePacket::new, PLAY_TO_SERVER),
 	CONFIGURE_INPUT_SIGNAL(ConfigureInputSignalPacket.class, ConfigureInputSignalPacket::new, PLAY_TO_SERVER),
 	PLACE_INPUT(InputPlacementPacket.class, InputPlacementPacket::new, PLAY_TO_SERVER),
 
 
 	//Packets to client
-	S_PLACE_INPUT(InputPlacementPacket.ClientBoundRequest.class, InputPlacementPacket.ClientBoundRequest::new, PLAY_TO_CLIENT)
-
-	;
+	S_PLACE_INPUT(InputPlacementPacket.ClientBoundRequest.class, InputPlacementPacket.ClientBoundRequest::new,
+			PLAY_TO_CLIENT);
 
 	public static final String PROTOCOL_VERSION = "1";
 	public static SimpleChannel CHANNEL;

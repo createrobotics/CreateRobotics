@@ -14,19 +14,21 @@ import java.util.function.Supplier;
 public class InputPlacementPacket extends SimplePacketBase {
 	private BlockPos pos;
 	private BlockPos targetPos;
-	public InputPlacementPacket(BlockPos pos, BlockPos targetPos){
+
+	public InputPlacementPacket(BlockPos pos, BlockPos targetPos) {
 		this.pos = pos;
 		this.targetPos = targetPos;
 	}
-	public InputPlacementPacket(FriendlyByteBuf buffer){
+
+	public InputPlacementPacket(FriendlyByteBuf buffer) {
 		this.pos = buffer.readBlockPos();
 		this.targetPos = buffer.readBlockPos();
 	}
 
 	@Override
 	public void write(FriendlyByteBuf buffer) {
-		buffer.writeBlockPos(pos);
-		buffer.writeBlockPos(targetPos);
+		buffer.writeBlockPos(this.pos);
+		buffer.writeBlockPos(this.targetPos);
 	}
 
 	@Override
@@ -35,30 +37,34 @@ public class InputPlacementPacket extends SimplePacketBase {
 			ServerPlayer player = context.get().getSender();
 			if (player == null) return;
 			Level world = player.level;
-			if (world == null || !world.isLoaded(pos)) return;
-			BlockEntity be = world.getBlockEntity(pos);
-			if (be instanceof IInputBlockEntity inputBlockEntity) inputBlockEntity.setTargetPos(targetPos);
+			if (world == null || !world.isLoaded(this.pos)) return;
+			BlockEntity be = world.getBlockEntity(this.pos);
+			if (be instanceof IInputBlockEntity inputBlockEntity) inputBlockEntity.setTargetPos(this.targetPos);
 		});
 		context.get().setPacketHandled(true);
 	}
 
-	public static class ClientBoundRequest extends SimplePacketBase{
+	public static class ClientBoundRequest extends SimplePacketBase {
 		BlockPos pos;
-		public ClientBoundRequest(BlockPos pos){
+
+		public ClientBoundRequest(BlockPos pos) {
 			this.pos = pos;
 		}
-		public ClientBoundRequest(FriendlyByteBuf buffer){
+
+		public ClientBoundRequest(FriendlyByteBuf buffer) {
 			this.pos = buffer.readBlockPos();
 		}
 
 		@Override
 		public void write(FriendlyByteBuf buffer) {
-			buffer.writeBlockPos(pos);
+			buffer.writeBlockPos(this.pos);
 		}
 
 		@Override
 		public void handle(Supplier<NetworkEvent.Context> context) {
-			context.get().enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> InputTargetHandler.flushSettings(pos)));
+			context.get().enqueueWork(
+					() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> InputTargetHandler.flushSettings(
+							this.pos)));
 			context.get().setPacketHandled(true);
 		}
 	}
