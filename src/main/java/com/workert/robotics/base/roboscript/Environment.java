@@ -24,7 +24,7 @@ public class Environment {
 	protected void define(Token name, Object value, boolean staticc) {
 		if (this.checkAccessibleVariable(name)) throw new RuntimeError(name,
 				"Variable with the name '" + name.lexeme + "' already shares this environment");
-		this.values.put(name.lexeme, new RoboScriptVar(staticc, value));
+		this.values.put(name.lexeme, new RoboScriptVariable(this.roboScriptInstance, name.lexeme, staticc, value));
 	}
 
 	Environment ancestor(int distance) {
