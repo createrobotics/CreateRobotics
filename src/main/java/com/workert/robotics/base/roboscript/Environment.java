@@ -3,21 +3,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Environment {
-
-
+	public RoboScript roboScriptInstance;
 	public final Environment enclosing;
-	private final Map<String, RoboScriptVar> values = new HashMap<>();
+	private final Map<String, RoboScriptVariable> values = new HashMap<>();
 
-	public Environment() {
+	public Environment(RoboScript roboScriptInstance) {
+		this.roboScriptInstance = roboScriptInstance;
 		this.enclosing = null;
 	}
 
-	public Environment(Environment enclosing) {
+	public Environment(RoboScript roboScriptInstance, Environment enclosing) {
+		this.roboScriptInstance = roboScriptInstance;
 		this.enclosing = enclosing;
 	}
 
 	protected void define(String name, Object value, boolean staticc) {
-		this.values.put(name, new RoboScriptVar(staticc, value));
+		this.values.put(name, new RoboScriptVariable(this.roboScriptInstance, name, staticc, value));
 	}
 
 	protected void define(Token name, Object value, boolean staticc) {
@@ -36,12 +37,12 @@ public class Environment {
 	}
 
 	Object getAt(int distance, Token name) {
-		return this.ancestor(distance).values.get(name).value;
+		return this.ancestor(distance).values.get(name).getValue();
 	}
 
 	Object get(Token name) {
 		if (this.values.containsKey(name.lexeme)) {
-			return this.values.get(name.lexeme).value;
+			return this.values.get(name.lexeme).getValue();
 		}
 
 		if (this.enclosing != null) return this.enclosing.get(name);
@@ -60,12 +61,13 @@ public class Environment {
 	}
 
 	void assignAt(int distance, Token name, Object value) {
-		this.ancestor(distance).values.put(name.lexeme, new RoboScriptVar(false, value));
+		this.ancestor(distance).values.put(name.lexeme,
+				new RoboScriptVariable(this.roboScriptInstance, name.lexeme, false, value));
 	}
 
 	public void assign(Token name, Object value) {
 		if (this.values.containsKey(name.lexeme)) {
-			this.values.get(name.lexeme).value = value;
+			this.values.get(name.lexeme).setValue(value);
 			return;
 		}
 

@@ -5,7 +5,6 @@ import com.workert.robotics.base.roboscript.ingame.VariableDataExternalSavingPro
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
 
@@ -63,13 +62,6 @@ public abstract class RoboScript implements ConsoleOutputProvider, VariableDataE
 			this.printToConsole(Interpreter.stringify(arguments.get(0)) + "\n");
 			return null;
 		});
-
-		this.defineFunction("save", 2, (interpreter, arguments) -> {
-			this.saveVariableExternally(Map.entry(arguments.get(0).toString(), arguments.get(1)));
-			return null;
-		});
-		this.defineFunction("load", 1,
-				(interpreter, arguments) -> this.getExternallySavedVariables().get(arguments.get(0).toString()));
 	}
 
 	/**
