@@ -3,7 +3,7 @@ package com.workert.robotics.base.roboscript;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RoboScriptClassInstance {
+public class RoboScriptClassInstance extends RoboScriptGettable implements RoboScriptSettable {
 	private final RoboScript roboScriptInstance;
 	private final RoboScriptClass clazz;
 	private final Map<String, Object> fields = new HashMap<>();
@@ -13,7 +13,8 @@ public class RoboScriptClassInstance {
 		this.clazz = clazz;
 	}
 
-	Object get(Token name) {
+	@Override
+	public Object get(Token name) {
 		if (name.lexeme.equals(this.clazz.name))
 			this.roboScriptInstance.runtimeError(new RuntimeError(name, "Can't re-initialize a class instance."));
 
@@ -27,7 +28,8 @@ public class RoboScriptClassInstance {
 		throw new RuntimeError(name, "Undefined property '" + name.lexeme + "'.");
 	}
 
-	void set(Token name, Object value) {
+	@Override
+	public void set(Token name, Object value) {
 		this.fields.put(name.lexeme, value);
 	}
 

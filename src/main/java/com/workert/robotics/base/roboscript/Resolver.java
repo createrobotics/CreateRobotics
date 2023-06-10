@@ -8,6 +8,7 @@ import java.util.Stack;
 public class Resolver implements Expression.Visitor<Void>, Statement.Visitor<Void> {
 	private final Interpreter interpreter;
 	private final Stack<Map<String, Boolean>> scopes = new Stack<>();
+	private final Map<String, Boolean> publicScope = new HashMap<>();
 	private FunctionType currentFunction = FunctionType.NONE;
 	private ClassType currentClass = ClassType.NONE;
 
@@ -66,7 +67,14 @@ public class Resolver implements Expression.Visitor<Void>, Statement.Visitor<Voi
 	}
 
 	private void declare(Token name) {
-		if (this.scopes.isEmpty()) return;
+		if (this.scopes.isEmpty()) {
+			if (this.publicScope.containsKey(name.lexeme)) {
+				this.interpreter.roboScriptInstance.error(name,
+						"Variable with this name in the public scope already exists.");
+			}
+			this.publicScope.put(name.lexeme, false);
+			return;
+		}
 
 		Map<String, Boolean> scope = this.scopes.peek();
 
@@ -77,8 +85,12 @@ public class Resolver implements Expression.Visitor<Void>, Statement.Visitor<Voi
 		scope.put(name.lexeme, false);
 	}
 
+
 	private void define(Token name) {
-		if (this.scopes.isEmpty()) return;
+		if (this.scopes.isEmpty()) {
+			this.publicScope.put(name.lexeme, true);
+			return;
+		}
 		this.scopes.peek().put(name.lexeme, true);
 	}
 
@@ -214,6 +226,27 @@ public class Resolver implements Expression.Visitor<Void>, Statement.Visitor<Voi
 			this.interpreter.roboScriptInstance.error(expr.name, "Can't read local variable in its own initializer.");
 		}
 		this.resolveLocal(expr, expr.name);
+		return null;
+	}
+
+	@Override
+	public Void visitArrayExpr(Expression.Array expr) {
+		expr.elements.forEach(this::resolve);
+		return null;
+	}
+
+	@Override
+	public Void visitIndexGetExpr(Expression.IndexGet expr) {
+		this.resolve(expr.index);
+		this.resolve(expr.array);
+		return null;
+	}
+
+	@Override
+	public Void visitIndexSetExpr(Expression.IndexSet expr) {
+		this.resolve(expr.index);
+		this.resolve(expr.array);
+		this.resolve(expr.value);
 		return null;
 	}
 

@@ -20,6 +20,12 @@ public class Environment {
 		this.values.put(name, new RoboScriptVar(staticc, value));
 	}
 
+	protected void define(Token name, Object value, boolean staticc) {
+		if (this.checkAccessibleVariable(name)) throw new RuntimeError(name,
+				"Variable with the name '" + name.lexeme + "' already shares this environment");
+		this.values.put(name.lexeme, new RoboScriptVar(staticc, value));
+	}
+
 	Environment ancestor(int distance) {
 		Environment environment = this;
 		for (int i = 0; i < distance; i++) {
@@ -41,6 +47,16 @@ public class Environment {
 		if (this.enclosing != null) return this.enclosing.get(name);
 
 		throw new RuntimeError(name, "Undefined variable '" + name.lexeme + "'.");
+	}
+
+	boolean checkAccessibleVariable(Token name) {
+		if (this.values.containsKey(name.lexeme)) {
+			return true;
+		}
+
+		if (this.enclosing != null) return this.enclosing.checkAccessibleVariable(name);
+
+		return false;
 	}
 
 	void assignAt(int distance, Token name, Object value) {

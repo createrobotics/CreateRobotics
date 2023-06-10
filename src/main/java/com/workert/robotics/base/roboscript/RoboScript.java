@@ -140,13 +140,21 @@ public abstract class RoboScript implements ConsoleOutputProvider, VariableDataE
 	}
 
 	private void report(int line, String where, String message) {
-		this.printToConsole("[line " + line + "] ERROR" + where + ": " + message + "\n");
+		this.errorToConsole("[line " + line + "] ERROR" + where + ": " + message + "\n");
 		this.hadError = true;
 	}
 
 	private void printToConsole(String message) {
 		if (this.printToJVMConsole) {
-			System.out.print(message);
+			System.out.println(message);
+		} else {
+			this.consoleOutput.concat(message);
+		}
+	}
+
+	private void errorToConsole(String message) {
+		if (this.printToJVMConsole) {
+			System.err.println(message);
 		} else {
 			this.consoleOutput.concat(message);
 		}

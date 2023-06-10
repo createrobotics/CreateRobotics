@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Interpreter implements Expression.Visitor<Object>, Statement.Visitor<Void> {
 	public final RoboScript roboScriptInstance;
@@ -58,7 +59,7 @@ public class Interpreter implements Expression.Visitor<Object>, Statement.Visito
 			}
 		}
 
-		this.environment.define(stmt.name.lexeme, null, false);
+		this.environment.define(stmt.name, null, false);
 
 		if (stmt.superclass != null) {
 			this.environment = new Environment(this.environment);
@@ -86,8 +87,8 @@ public class Interpreter implements Expression.Visitor<Object>, Statement.Visito
 	@Override
 	public Object visitGetExpr(Expression.Get expr) {
 		Object object = this.evaluate(expr.object);
-		if (object instanceof RoboScriptClassInstance) {
-			return ((RoboScriptClassInstance) object).get(expr.name);
+		if (object instanceof RoboScriptGettable gettable) {
+			return gettable.get(expr.name);
 		}
 
 		throw new RuntimeError(expr.name, "Only class instances have properties.");
@@ -172,7 +173,7 @@ public class Interpreter implements Expression.Visitor<Object>, Statement.Visito
 	@Override
 	public Void visitFunctionStmt(Statement.Function stmt) {
 		RoboScriptFunction function = new RoboScriptFunction(stmt, this.environment, false);
-		this.environment.define(stmt.name.lexeme, function, false);
+		this.environment.define(stmt.name, function, false);
 		return null;
 	}
 
@@ -206,7 +207,7 @@ public class Interpreter implements Expression.Visitor<Object>, Statement.Visito
 			value = this.evaluate(stmt.initializer);
 		}
 
-		this.environment.define(stmt.name.lexeme, value, stmt.staticc);
+		this.environment.define(stmt.name, value, stmt.staticc);
 		return null;
 	}
 
@@ -345,6 +346,40 @@ public class Interpreter implements Expression.Visitor<Object>, Statement.Visito
 	@Override
 	public Object visitVariableExpr(Expression.Variable expr) {
 		return this.lookUpVariable(expr.name, expr);
+	}
+
+	@Override
+	public Object visitArrayExpr(Expression.Array expr) {
+		return new RoboScriptArray(expr.elements.stream().map(this::evaluate).collect(Collectors.toList()));
+	}
+
+	@Override
+	public Object visitIndexGetExpr(Expression.IndexGet expr) {
+		Object array = this.evaluate(expr.array);
+		Object index = this.evaluate(expr.index);
+
+		if (!(index instanceof Double d))
+			throw new RuntimeError(expr.bracket, "Index must be a positive whole number.");
+		if (!(array instanceof RoboScriptArray arrayObject))
+			throw new RuntimeError(expr.bracket, "Object is not an array");
+
+		return arrayObject.get(d, expr.bracket);
+	}
+
+	@Override
+	public Object visitIndexSetExpr(Expression.IndexSet expr) {
+		Object array = this.evaluate(expr.array);
+
+		Object index = this.evaluate(expr.index);
+		Object value = this.evaluate(expr.value);
+
+		if (!(index instanceof Double d))
+			throw new RuntimeError(expr.bracket, "Index must be a positive whole number.");
+		if (!(array instanceof RoboScriptArray arrayObject))
+			throw new RuntimeError(expr.bracket, "Object is not an array.");
+
+		arrayObject.set(d, value, expr.bracket);
+		return null;
 	}
 
 	private Object lookUpVariable(Token name, Expression expression) {

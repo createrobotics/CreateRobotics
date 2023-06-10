@@ -23,7 +23,7 @@ public class RoboScriptFunction implements RoboScriptCallable {
 	public Object call(Interpreter interpreter, List<Object> arguments) {
 		Environment environment = new Environment(this.closure);
 		for (int i = 0; i < this.declaration.params.size(); i++) {
-			environment.define(this.declaration.params.get(i).lexeme, arguments.get(i), false);
+			environment.define(this.declaration.params.get(i), arguments.get(i), false);
 		}
 
 		try {

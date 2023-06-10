@@ -27,6 +27,12 @@ public abstract class Expression {
 		R visitUnaryExpr(Unary expr);
 
 		R visitVariableExpr(Variable expr);
+
+		R visitArrayExpr(Array expr);
+
+		R visitIndexGetExpr(IndexGet expr);
+
+		R visitIndexSetExpr(IndexSet expr);
 	}
 
 
@@ -79,6 +85,57 @@ public abstract class Expression {
 		final Expression callee;
 		final Token paren;
 		final List<Expression> arguments;
+	}
+
+	static class IndexGet extends Expression {
+		IndexGet(Expression array, Token bracket, Expression index) {
+			this.array = array;
+			this.bracket = bracket;
+			this.index = index;
+		}
+
+		@Override
+		<R> R accept(Visitor<R> visitor) {
+			return visitor.visitIndexGetExpr(this);
+		}
+
+		final Expression array;
+		final Token bracket;
+		final Expression index;
+	}
+
+	static class IndexSet extends Expression {
+		IndexSet(Expression array, Token bracket, Expression index, Expression value) {
+			this.array = array;
+			this.bracket = bracket;
+			this.index = index;
+			this.value = value;
+		}
+
+		@Override
+		<R> R accept(Visitor<R> visitor) {
+			return visitor.visitIndexSetExpr(this);
+		}
+
+		final Expression array;
+		final Token bracket;
+		final Expression index;
+		final Expression value;
+	}
+
+	static class Array extends Expression {
+		Array(Token closeBracket, List<Expression> elements) {
+			this.closeBracket = closeBracket;
+			this.elements = elements;
+		}
+
+		@Override
+		<R> R accept(Visitor<R> visitor) {
+			return visitor.visitArrayExpr(this);
+		}
+
+		final Token closeBracket;
+		final List<Expression> elements;
 	}
 
 

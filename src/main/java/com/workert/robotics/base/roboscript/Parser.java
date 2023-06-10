@@ -192,6 +192,18 @@ public class Parser {
 		return new Statement.Function(name, parameters, body);
 	}
 
+	private Expression array() {
+		List<Expression> elements = new ArrayList<>();
+		if (!this.isNextToken(Token.TokenType.RIGHT_BRACKET)) {
+			do {
+				elements.add(this.expression());
+			} while (this.advanceIfNextTokenMatches(Token.TokenType.COMMA));
+		}
+
+		Token bracket = this.consumeIfNextTokenMatches(Token.TokenType.RIGHT_BRACKET, "Expect ']' after array.");
+		return new Expression.Array(bracket, elements);
+	}
+
 	/**
 	 * This function assumes the <code>LEFT_BRACE</code> token has already been consumed.
 	 **/
@@ -208,14 +220,13 @@ public class Parser {
 
 	private Expression assignment() {
 		Expression expression = this.or();
-
 		if (this.advanceIfNextTokenMatches(Token.TokenType.EQUAL)) {
 			Token equals = this.getPreviousToken();
 			Expression value = this.assignment();
-
 			if (expression instanceof Expression.Variable var) return new Expression.Assign(var.name, value);
 			if (expression instanceof Expression.Get get) return new Expression.Set(get.object, get.name, value);
-
+			if (expression instanceof Expression.IndexGet get)
+				return new Expression.IndexSet(get.array, get.bracket, get.index, value);
 			this.error(equals, "Invalid assignment target.");
 		} else if (this.advanceIfNextTokenMatches(Token.TokenType.PLUS_PLUS, Token.TokenType.MINUS_MINUS)) {
 			Token operator = this.getPreviousToken();
@@ -225,6 +236,7 @@ public class Parser {
 			if (expression instanceof Expression.Get get)
 				return new Expression.Set(get.object, get.name,
 						new Expression.Binary(expression, operator, new Expression.Literal(1.0d)));
+			this.error(operator, "Invalid assignment target.");
 		} else if (this.advanceIfNextTokenMatches(
 				Token.TokenType.PLUS_EQUAL, Token.TokenType.MINUS_EQUAL, Token.TokenType.STAR_EQUAL,
 				Token.TokenType.SLASH_EQUAL, Token.TokenType.CARET_EQUAL)) {
@@ -235,8 +247,8 @@ public class Parser {
 				return new Expression.Assign(var.name, new Expression.Binary(expression, operator, value));
 			if (expression instanceof Expression.Get get)
 				return new Expression.Set(get.object, get.name, new Expression.Binary(expression, operator, value));
+			this.error(operatorEqual, "Invalid assignment target.");
 		}
-
 		return expression;
 	}
 
@@ -346,12 +358,20 @@ public class Parser {
 				Token name = this.consumeIfNextTokenMatches(Token.TokenType.IDENTIFIER,
 						"Expected property name after '.'.");
 				expression = new Expression.Get(expression, name);
+			} else if (this.advanceIfNextTokenMatches(Token.TokenType.LEFT_BRACKET)) {
+				expression = this.indexGet(expression);
 			} else {
 				break;
 			}
 		}
 
 		return expression;
+	}
+
+	private Expression indexGet(Expression callee) {
+		Expression expression = this.expression();
+		Token bracket = this.consumeIfNextTokenMatches(Token.TokenType.RIGHT_BRACKET, "Expect ']' after index.");
+		return new Expression.IndexGet(callee, bracket, expression);
 	}
 
 	private Expression finishCall(Expression callee) {
@@ -394,6 +414,10 @@ public class Parser {
 			Expression expression = this.expression();
 			this.consumeIfNextTokenMatches(Token.TokenType.RIGHT_PAREN, "Expected ')' after expression.");
 			return new Expression.Grouping(expression);
+		}
+
+		if (this.advanceIfNextTokenMatches(Token.TokenType.LEFT_BRACKET)) {
+			return this.array();
 		}
 
 		throw this.error(this.getCurrentToken(), "Expected expression.");
