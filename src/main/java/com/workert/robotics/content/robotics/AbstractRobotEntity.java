@@ -96,6 +96,21 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 					}
 					return super.getRunningState();
 				}
+
+				@Override
+				public void defineDefaultGlobalFunctions() {
+					super.defineDefaultGlobalFunctions();
+					AbstractRobotEntity.this.roboScript.defineFunction("getXPos", 0,
+							(interpreter, arguments) -> AbstractRobotEntity.this.getX());
+					AbstractRobotEntity.this.roboScript.defineFunction("getYPos", 0,
+							(interpreter, arguments) -> AbstractRobotEntity.this.getY());
+					AbstractRobotEntity.this.roboScript.defineFunction("getZPos", 0,
+							(interpreter, arguments) -> AbstractRobotEntity.this.getZ());
+					AbstractRobotEntity.this.roboScript.defineFunction("getAir", 0,
+							(interpreter, arguments) -> AbstractRobotEntity.this.air);
+					AbstractRobotEntity.this.roboScript.defineFunction("getMaxAir", 0,
+							(interpreter, arguments) -> AbstractRobotEntity.maxAir);
+				}
 			};
 			this.fillInDefaultRoboScriptFunctions(this.roboScript);
 		}
@@ -181,11 +196,7 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 	public abstract boolean isProgrammable();
 
 	public void fillInDefaultRoboScriptFunctions(RoboScript roboScript) {
-		roboScript.defineFunction("getXPos", 0, (interpreter, arguments) -> AbstractRobotEntity.this.getX());
-		roboScript.defineFunction("getYPos", 0, (interpreter, arguments) -> AbstractRobotEntity.this.getY());
-		roboScript.defineFunction("getZPos", 0, (interpreter, arguments) -> AbstractRobotEntity.this.getZ());
-		roboScript.defineFunction("getAir", 0, (interpreter, arguments) -> AbstractRobotEntity.this.air);
-		roboScript.defineFunction("getMaxAir", 0, (interpreter, arguments) -> AbstractRobotEntity.maxAir);
+
 	}
 
 	@Override

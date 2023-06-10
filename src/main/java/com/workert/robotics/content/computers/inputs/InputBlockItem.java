@@ -60,10 +60,11 @@ public class InputBlockItem extends BlockItem {
 						.withStyle(ChatFormatting.RED), true);
 				return InteractionResult.FAIL;
 			}
+			InteractionResult result = super.useOn(pContext);
 			pContext.getItemInHand().getTag().remove("BlockEntityTag");
 			if (pContext.getLevel().isClientSide)
 				InputTargetHandler.flush();
-			return super.useOn(pContext);
+			return result;
 		}
 	}
 

@@ -25,7 +25,7 @@ public abstract class RoboScript implements ConsoleOutputProvider, VariableDataE
 
 	public RoboScript(boolean printToJVMConsole) {
 		this.printToJVMConsole = printToJVMConsole;
-		this.defineDefaultFunctions();
+		this.defineDefaultGlobalFunctions();
 	}
 
 
@@ -57,7 +57,7 @@ public abstract class RoboScript implements ConsoleOutputProvider, VariableDataE
 		}, false);
 	}
 
-	public void defineDefaultFunctions() {
+	public void defineDefaultGlobalFunctions() {
 		this.defineFunction("print", 1, (interpreter, arguments) -> {
 			this.printToConsole(Interpreter.stringify(arguments.get(0)) + "\n");
 			return null;

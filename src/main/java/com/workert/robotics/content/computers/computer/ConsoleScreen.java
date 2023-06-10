@@ -26,16 +26,16 @@ public class ConsoleScreen extends AbstractSimiScreen {
 		super.tick();
 
 		if (this.consoleOutputProvider.getRunningState().equals(ConsoleOutputProvider.RunningState.RUNNING)) {
-			this.runningStateButton.setIcon(AllIcons.I_PLAY);
-			this.runningStateButton.setToolTip(Component.literal("Currently running"));
-		} else if (this.consoleOutputProvider.getRunningState().equals(ConsoleOutputProvider.RunningState.STOPPED)) {
 			this.runningStateButton.setIcon(AllIcons.I_STOP);
-			this.runningStateButton.setToolTip(Component.literal("Currently stopped"));
+			this.runningStateButton.setToolTip(Component.literal("Stop Program"));
+		} else if (this.consoleOutputProvider.getRunningState().equals(ConsoleOutputProvider.RunningState.STOPPED)) {
+			this.runningStateButton.setIcon(AllIcons.I_PLAY);
+			this.runningStateButton.setToolTip(Component.literal("Run Program"));
 		} else if (this.consoleOutputProvider.getRunningState()
 				.equals(ConsoleOutputProvider.RunningState.ENERGY_REQUIREMENT_NOT_MET)) {
 			this.runningStateButton.setIcon(AllIcons.I_PAUSE);
 			this.runningStateButton.setToolTip(
-					Component.literal("The Energy Requirement is currently not met. The program has been stopped."));
+					Component.literal("The energy requirement is currently not met"));
 		}
 		this.consoleOutput.setValue(this.consoleOutputProvider.getConsoleOutput());
 	}
@@ -71,6 +71,10 @@ public class ConsoleScreen extends AbstractSimiScreen {
 
 	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+		if (keyCode == 256 && this.shouldCloseOnEsc()) {
+			this.onClose();
+			return true;
+		}
 		return false;
 	}
 

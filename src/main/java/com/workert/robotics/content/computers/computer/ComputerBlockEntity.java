@@ -33,6 +33,7 @@ public class ComputerBlockEntity extends KineticTileEntity {
 				} else if (variableEntry.getValue() instanceof Boolean booleanValue) {
 					ComputerBlockEntity.this.savedVariables.putBoolean(variableEntry.getKey(), booleanValue);
 				} else {
+					//TODO: change this for classes to get all fields and save them here. need to interpret classes and functions first before saving these, to convert instances or references with their proper functions or classes.
 					ComputerBlockEntity.this.savedVariables.putString(variableEntry.getKey(),
 							Interpreter.stringify(variableEntry.getValue()));
 				}
