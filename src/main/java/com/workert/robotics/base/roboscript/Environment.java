@@ -3,28 +3,25 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Environment {
-	public RoboScript roboScriptInstance;
 	public final Environment enclosing;
-	private final Map<String, RoboScriptVariable> values = new HashMap<>();
+	public Map<String, RoboScriptVariable> values = new HashMap<>();
 
-	public Environment(RoboScript roboScriptInstance) {
-		this.roboScriptInstance = roboScriptInstance;
+	public Environment() {
 		this.enclosing = null;
 	}
 
-	public Environment(RoboScript roboScriptInstance, Environment enclosing) {
-		this.roboScriptInstance = roboScriptInstance;
+	public Environment(Environment enclosing) {
 		this.enclosing = enclosing;
 	}
 
 	protected void define(String name, Object value, boolean staticc) {
-		this.values.put(name, new RoboScriptVariable(this.roboScriptInstance, name, staticc, value));
+		this.values.put(name, new RoboScriptVariable(staticc, value));
 	}
 
 	protected void define(Token name, Object value, boolean staticc) {
 		if (this.checkAccessibleVariable(name)) throw new RuntimeError(name,
 				"Variable with the name '" + name.lexeme + "' already shares this environment");
-		this.values.put(name.lexeme, new RoboScriptVariable(this.roboScriptInstance, name.lexeme, staticc, value));
+		this.values.put(name.lexeme, new RoboScriptVariable(staticc, value));
 	}
 
 	Environment ancestor(int distance) {
@@ -37,12 +34,12 @@ public class Environment {
 	}
 
 	Object getAt(int distance, Token name) {
-		return this.ancestor(distance).values.get(name).getValue();
+		return this.ancestor(distance).values.get(name).value;
 	}
 
 	Object get(Token name) {
 		if (this.values.containsKey(name.lexeme)) {
-			return this.values.get(name.lexeme).getValue();
+			return this.values.get(name.lexeme).value;
 		}
 
 		if (this.enclosing != null) return this.enclosing.get(name);
@@ -62,12 +59,12 @@ public class Environment {
 
 	void assignAt(int distance, Token name, Object value) {
 		this.ancestor(distance).values.put(name.lexeme,
-				new RoboScriptVariable(this.roboScriptInstance, name.lexeme, false, value));
+				new RoboScriptVariable(false, value));
 	}
 
 	public void assign(Token name, Object value) {
 		if (this.values.containsKey(name.lexeme)) {
-			this.values.get(name.lexeme).setValue(value);
+			this.values.get(name.lexeme).value = value;
 			return;
 		}
 

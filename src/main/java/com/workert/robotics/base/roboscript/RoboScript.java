@@ -1,33 +1,23 @@
 package com.workert.robotics.base.roboscript;
 
-import com.workert.robotics.base.roboscript.ingame.ConsoleOutputProvider;
-import com.workert.robotics.base.roboscript.ingame.VariableDataExternalSavingProvider;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
 
-public abstract class RoboScript implements ConsoleOutputProvider, VariableDataExternalSavingProvider {
-	private final Interpreter interpreter = new Interpreter(this);
+public abstract class RoboScript {
+	public final Interpreter interpreter = new Interpreter(this);
 
 	private boolean hadError = false;
 
-	private boolean isRunning = false;
-
-	private final String consoleOutput = "";
-
-	private boolean printToJVMConsole;
-
 	public RoboScript() {
-		this(false);
+		System.out.println("eeeeeeeeeeeeeeee");
+		this.defineFunction("print", 1, (interpreter, objects) -> {
+			this.print(Interpreter.stringify(objects.get(0)));
+			return null;
+		});
 	}
-
-	public RoboScript(boolean printToJVMConsole) {
-		this.printToJVMConsole = printToJVMConsole;
-		this.defineDefaultGlobalFunctions();
-	}
-
 
 	/**
 	 * Registers a function for use by this RoboScript instance.<br> The provided arguments from the {@link BiFunction} may
@@ -57,13 +47,6 @@ public abstract class RoboScript implements ConsoleOutputProvider, VariableDataE
 		}, false);
 	}
 
-	public void defineDefaultGlobalFunctions() {
-		this.defineFunction("print", 1, (interpreter, arguments) -> {
-			this.printToConsole(Interpreter.stringify(arguments.get(0)) + "\n");
-			return null;
-		});
-	}
-
 	/**
 	 * Scans, parses, resolves and interprets a string <i>asynchronously</i>.<br>
 	 * This method won't block the thread and can be called from the main game thread.
@@ -72,8 +55,6 @@ public abstract class RoboScript implements ConsoleOutputProvider, VariableDataE
 	 */
 	public void runString(String source) {
 		new Thread(() -> {
-
-			this.isRunning = true;
 			this.hadError = false;
 
 			Scanner scanner = new Scanner(this, source);
@@ -92,7 +73,6 @@ public abstract class RoboScript implements ConsoleOutputProvider, VariableDataE
 
 			this.interpreter.interpret(statements);
 
-			this.isRunning = false;
 		}).start();
 	}
 
@@ -115,6 +95,13 @@ public abstract class RoboScript implements ConsoleOutputProvider, VariableDataE
 		});
 	}
 
+	public void setValues(Map<String, RoboScriptVariable> values) {
+		for (Map.Entry<String, RoboScriptVariable> entry : values.entrySet()) {
+			this.interpreter.environment.values.put(entry.getKey(), entry.getValue());
+		}
+		//this.interpreter.environment.values = values;
+	}
+
 	public void error(Token token, String message) {
 		if (token.type == Token.TokenType.EOF) {
 			this.report(token.line, " at end", message);
@@ -128,41 +115,19 @@ public abstract class RoboScript implements ConsoleOutputProvider, VariableDataE
 	}
 
 	public void runtimeError(RuntimeError error) {
-		this.printToConsole("[line " + error.token.line + "] Runtime Error: " + error.getMessage() + "\n");
+		this.error("[line " + error.token.line + "] Runtime Error: " + error.getMessage());
 	}
 
 	private void report(int line, String where, String message) {
-		this.errorToConsole("[line " + line + "] ERROR" + where + ": " + message + "\n");
+		this.error("[line " + line + "] ERROR" + where + ": " + message);
 		this.hadError = true;
 	}
 
-	private void printToConsole(String message) {
-		if (this.printToJVMConsole) {
-			System.out.println(message);
-		} else {
-			this.consoleOutput.concat(message);
-		}
-	}
+	public abstract void print(String message);
 
-	private void errorToConsole(String message) {
-		if (this.printToJVMConsole) {
-			System.err.println(message);
-		} else {
-			this.consoleOutput.concat(message);
-		}
-	}
+	public abstract void error(String error);
 
 	public void requestStop() {
 		this.interpreter.requestStop();
-	}
-
-	@Override
-	public String getConsoleOutput() {
-		return this.consoleOutput;
-	}
-
-	@Override
-	public RunningState getRunningState() {
-		return this.isRunning ? RunningState.RUNNING : RunningState.STOPPED;
 	}
 }

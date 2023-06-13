@@ -2,19 +2,14 @@ package com.workert.robotics.content.robotics;
 
 import com.simibubi.create.content.curiosities.armor.BackTankUtil;
 import com.simibubi.create.content.logistics.RedstoneLinkNetworkHandler;
-import com.simibubi.create.foundation.gui.ScreenOpener;
 import com.simibubi.create.foundation.utility.Couple;
 import com.workert.robotics.base.registries.ItemRegistry;
-import com.workert.robotics.base.roboscript.Interpreter;
 import com.workert.robotics.base.roboscript.RoboScript;
-import com.workert.robotics.content.computers.computer.ConsoleScreen;
+import com.workert.robotics.base.roboscript.ingame.CompoundTagEnvironmentConversion;
 import com.workert.robotics.helpers.CodeHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.*;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -32,87 +27,40 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.DistExecutor;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public abstract class AbstractRobotEntity extends PathfinderMob implements InventoryCarrier {
 	private static final int maxAir = BackTankUtil.maxAirWithoutEnchants() * 10;
 	private int air;
-
 	private final SimpleContainer inventory = new SimpleContainer(9);
-
-	private RoboScript roboScript = null;
-	public String code = "";
-	private CompoundTag savedVariables = new CompoundTag();
-	private static final EntityDataAccessor<String> DATA_CONSOLE_OUTPUT_ID = SynchedEntityData.defineId(
-			AbstractRobotEntity.class, EntityDataSerializers.STRING);
-
 	private CodeHelper.RobotFrequencyEntry robotFrequencyEntry = null;
+
+
+	private final RoboScript roboScript;
+
+	public String script = "";
+	public String terminal = "";
+	public boolean running = false;
+
 
 	public AbstractRobotEntity(EntityType<? extends PathfinderMob> entity, Level world) {
 		super(entity, world);
 		this.air = maxAir;
 		if (this.isProgrammable()) {
 			this.roboScript = new RoboScript() {
+
 				@Override
-				public void saveVariableExternally(Map.Entry<String, Object> variableEntry) {
-					if (variableEntry.getValue() instanceof Double doubleValue) {
-						AbstractRobotEntity.this.savedVariables.putDouble(variableEntry.getKey(), doubleValue);
-					} else if (variableEntry.getValue() instanceof String stringValue) {
-						AbstractRobotEntity.this.savedVariables.putString(variableEntry.getKey(), stringValue);
-					} else if (variableEntry.getValue() instanceof Boolean booleanValue) {
-						AbstractRobotEntity.this.savedVariables.putBoolean(variableEntry.getKey(), booleanValue);
-					} else {
-						AbstractRobotEntity.this.savedVariables.putString(variableEntry.getKey(),
-								Interpreter.stringify(variableEntry.getValue()));
-					}
+				public void print(String message) {
+					AbstractRobotEntity.this.terminal = AbstractRobotEntity.this.terminal.concat(message + "\n");
 				}
 
 				@Override
-				public Map<String, Object> getExternallySavedVariables() {
-					Map<String, Object> variableMap = new HashMap<>();
-
-					AbstractRobotEntity.this.savedVariables.getAllKeys().forEach(identifier -> {
-						byte valueTagType = AbstractRobotEntity.this.savedVariables.get(identifier).getId();
-						if (valueTagType == Tag.TAG_DOUBLE) {
-							variableMap.put(identifier, AbstractRobotEntity.this.savedVariables.getDouble(identifier));
-						} else if (valueTagType == Tag.TAG_STRING) {
-							variableMap.put(identifier, AbstractRobotEntity.this.savedVariables.getString(identifier));
-						} else if (valueTagType == Tag.TAG_BYTE) {
-							variableMap.put(identifier, AbstractRobotEntity.this.savedVariables.getBoolean(identifier));
-						}
-					});
-					return variableMap;
-				}
-
-				@Override
-				public RunningState getRunningState() {
-					if (AbstractRobotEntity.this.air <= 0) {
-						return RunningState.ENERGY_REQUIREMENT_NOT_MET;
-					}
-					return super.getRunningState();
-				}
-
-				@Override
-				public void defineDefaultGlobalFunctions() {
-					super.defineDefaultGlobalFunctions();
-					AbstractRobotEntity.this.roboScript.defineFunction("getXPos", 0,
-							(interpreter, arguments) -> AbstractRobotEntity.this.getX());
-					AbstractRobotEntity.this.roboScript.defineFunction("getYPos", 0,
-							(interpreter, arguments) -> AbstractRobotEntity.this.getY());
-					AbstractRobotEntity.this.roboScript.defineFunction("getZPos", 0,
-							(interpreter, arguments) -> AbstractRobotEntity.this.getZ());
-					AbstractRobotEntity.this.roboScript.defineFunction("getAir", 0,
-							(interpreter, arguments) -> AbstractRobotEntity.this.air);
-					AbstractRobotEntity.this.roboScript.defineFunction("getMaxAir", 0,
-							(interpreter, arguments) -> AbstractRobotEntity.maxAir);
+				public void error(String error) {
+					AbstractRobotEntity.this.terminal = AbstractRobotEntity.this.terminal.concat(error + "\n");
 				}
 			};
-			this.fillInDefaultRoboScriptFunctions(this.roboScript);
+		} else {
+			this.roboScript = null;
 		}
 	}
 
@@ -134,9 +82,9 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 	public void addAdditionalSaveData(CompoundTag pCompound) {
 		pCompound.putInt("Air", this.air);
 		if (this.hasInventory()) pCompound.put("Inventory", this.inventory.createTag());
-		pCompound.putString("Code", this.code);
-		pCompound.putString("ConsoleOutput", this.getConsoleOutput());
-		pCompound.put("SavedVariables", this.savedVariables);
+		pCompound.putString("Script", this.script);
+		pCompound.put("Memory",
+				CompoundTagEnvironmentConversion.valuesToTag(this.roboScript.interpreter.getValues()));
 		super.addAdditionalSaveData(pCompound);
 	}
 
@@ -145,35 +93,20 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 		try {
 			this.air = pCompound.getInt("Air");
 			if (this.hasInventory()) this.inventory.fromTag(pCompound.getList("Inventory", 10));
-			this.code = pCompound.getString("Code");
-			this.setConsoleOutput(pCompound.getString("ConsoleOutput"));
-			this.savedVariables = pCompound.getCompound("SavedVariables") != null ? pCompound.getCompound(
-					"SavedVariables") : new CompoundTag();
+			this.script = pCompound.getString("Script");
+			this.roboScript.setValues(
+					CompoundTagEnvironmentConversion.valuesFromTag(pCompound.getList("Memory", Tag.TAG_COMPOUND)));
 			super.readAdditionalSaveData(pCompound);
 		} catch (NullPointerException exception) {
 			exception.printStackTrace();
 		}
 	}
 
-	@Override
-	protected void defineSynchedData() {
-		super.defineSynchedData();
-		this.entityData.define(DATA_CONSOLE_OUTPUT_ID, "");
-	}
 
 	public int getAir() {
 		return this.air;
 	}
 
-	public String getConsoleOutput() {
-		return this.entityData.get(this.DATA_CONSOLE_OUTPUT_ID);
-	}
-
-	public void setConsoleOutput(String consoleOutput) {
-		if (this.getConsoleOutput().length() > 4096)
-			this.setConsoleOutput(this.getConsoleOutput().substring(this.getConsoleOutput().length() - 4096));
-		else this.entityData.set(this.DATA_CONSOLE_OUTPUT_ID, consoleOutput);
-	}
 
 	public void consumeAir(int amount) {
 		this.air = Math.max(this.air - amount, 0);
@@ -195,10 +128,6 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 
 	public abstract boolean isProgrammable();
 
-	public void fillInDefaultRoboScriptFunctions(RoboScript roboScript) {
-
-	}
-
 	@Override
 	protected InteractionResult mobInteract(Player pPlayer, InteractionHand pHand) {
 		if (pPlayer.getItemInHand(pHand)
@@ -212,14 +141,14 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 			this.discard();
 		} else if (this.isProgrammable() && pPlayer.getItemInHand(pHand)
 				.is(com.simibubi.create.AllItems.WRENCH.get().asItem()) && !pPlayer.isCrouching()) {
-			if (!this.level.isClientSide) this.roboScript.runString(this.code);
+			if (!this.level.isClientSide) this.roboScript.runString(this.script);
 			return InteractionResult.SUCCESS;
-		} else if (this.isProgrammable() && pPlayer.isCrouching()) {
+		} /*else if (this.isProgrammable() && pPlayer.isCrouching()) {
 			DistExecutor.unsafeRunWhenOn(Dist.CLIENT,
 					() -> () -> ScreenOpener.open(new ConsoleScreen(this.roboScript)));
-		} else if (this.isProgrammable() && pPlayer.getItemInHand(pHand)
+		}*/ else if (this.isProgrammable() && pPlayer.getItemInHand(pHand)
 				.is(ItemRegistry.PROGRAM.get()) && !pPlayer.isCrouching()) {
-			if (!this.level.isClientSide) this.code = pPlayer.getItemInHand(pHand).getOrCreateTag().getString("code");
+			if (!this.level.isClientSide) this.script = pPlayer.getItemInHand(pHand).getOrCreateTag().getString("code");
 			return InteractionResult.SUCCESS;
 		}/* else if (this.isProgrammable() && (pPlayer.getItemInHand(pHand)
 				.is(Items.WRITTEN_BOOK) || pPlayer.getItemInHand(pHand)

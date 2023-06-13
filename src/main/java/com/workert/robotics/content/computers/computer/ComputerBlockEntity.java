@@ -1,89 +1,42 @@
 package com.workert.robotics.content.computers.computer;
 
 import com.simibubi.create.content.contraptions.base.KineticTileEntity;
-import com.workert.robotics.base.roboscript.Interpreter;
 import com.workert.robotics.base.roboscript.RoboScript;
+import com.workert.robotics.base.roboscript.ingame.CompoundTagEnvironmentConversion;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class ComputerBlockEntity extends KineticTileEntity {
 
-	private String script = "";
-	private String terminal = "";
-	private boolean running = false;
+	public String script = "";
+	public String terminal = "";
+	public boolean running = false;
 
-	public RoboScript roboScript;
-	private CompoundTag savedVariables = new CompoundTag();
+	public final RoboScript roboScript;
 
 	public ComputerBlockEntity(BlockEntityType<?> type, BlockPos blockPos, BlockState blockState) {
 		super(type, blockPos, blockState);
 		this.roboScript = new RoboScript() {
+
 			@Override
-			public void saveVariableExternally(Map.Entry<String, Object> variableEntry) {
-				if (variableEntry.getValue() instanceof Double doubleValue) {
-					ComputerBlockEntity.this.savedVariables.putDouble(variableEntry.getKey(), doubleValue);
-				} else if (variableEntry.getValue() instanceof String stringValue) {
-					ComputerBlockEntity.this.savedVariables.putString(variableEntry.getKey(), stringValue);
-				} else if (variableEntry.getValue() instanceof Boolean booleanValue) {
-					ComputerBlockEntity.this.savedVariables.putBoolean(variableEntry.getKey(), booleanValue);
-				} else {
-					//TODO: change this for classes to get all fields and save them here. need to interpret classes and functions first before saving these, to convert instances or references with their proper functions or classes.
-					ComputerBlockEntity.this.savedVariables.putString(variableEntry.getKey(),
-							Interpreter.stringify(variableEntry.getValue()));
-				}
+			public void print(String message) {
+				ComputerBlockEntity.this.terminal = ComputerBlockEntity.this.terminal.concat(message + "\n");
+				//System.out.println(message);
 			}
 
 			@Override
-			public Map<String, Object> getExternallySavedVariables() {
-				Map<String, Object> variableMap = new HashMap<>();
-
-				ComputerBlockEntity.this.savedVariables.getAllKeys().forEach(identifier -> {
-					byte valueTagType = ComputerBlockEntity.this.savedVariables.get(identifier).getId();
-					if (valueTagType == Tag.TAG_DOUBLE) {
-						variableMap.put(identifier, ComputerBlockEntity.this.savedVariables.getDouble(identifier));
-					} else if (valueTagType == Tag.TAG_STRING) {
-						variableMap.put(identifier, ComputerBlockEntity.this.savedVariables.getString(identifier));
-					} else if (valueTagType == Tag.TAG_BYTE) {
-						variableMap.put(identifier, ComputerBlockEntity.this.savedVariables.getBoolean(identifier));
-					}
-				});
-				return variableMap;
-			}
-
-			@Override
-			public RunningState getRunningState() {
-				if (!ComputerBlockEntity.this.isSpeedRequirementFulfilled())
-					return RunningState.ENERGY_REQUIREMENT_NOT_MET;
-				return super.getRunningState();
+			public void error(String error) {
+				ComputerBlockEntity.this.terminal = ComputerBlockEntity.this.terminal.concat(error + "\n");
+				//System.err.println(error);
 			}
 		};
 	}
 
-
-	public void setScript(String script) {
-		this.script = script;
-	}
-
-	public String getScript() {
-		return this.script;
-	}
-
 	public void runScript() {
 		this.roboScript.runString(this.script);
-	}
-
-	public void setTerminal(String terminal) {
-		this.terminal = terminal;
-	}
-
-	public String getTerminal() {
-		return this.terminal;
 	}
 
 	@Override
@@ -92,7 +45,8 @@ public class ComputerBlockEntity extends KineticTileEntity {
 		this.script = compound.getString("Script");
 		this.terminal = compound.getString("Terminal");
 		this.running = compound.getBoolean("Running");
-		this.savedVariables = compound.getCompound("SavedVariables");
+		this.roboScript.setValues(
+				CompoundTagEnvironmentConversion.valuesFromTag(compound.getList("Memory", Tag.TAG_COMPOUND)));
 	}
 
 	@Override
@@ -101,7 +55,10 @@ public class ComputerBlockEntity extends KineticTileEntity {
 		compound.putString("Script", this.script);
 		compound.putString("Terminal", this.terminal);
 		compound.putBoolean("Running", this.running);
-		compound.put("SavedVariables", this.savedVariables);
+
+		compound.put("Memory",
+				CompoundTagEnvironmentConversion.valuesToTag(this.roboScript.interpreter.getValues()));
+
 	}
 
 	@Override
@@ -109,7 +66,7 @@ public class ComputerBlockEntity extends KineticTileEntity {
 		super.tick();
 		if (!this.isSpeedRequirementFulfilled()) {
 			this.roboScript.requestStop();
-			this.setTerminal(this.getTerminal() + "ERROR: Speed requirement not fulfilled, stopped program." + "\n");
+			this.terminal.concat("ERROR: Speed requirement not fulfilled, stopped program.\n");
 		}
 	}
 }

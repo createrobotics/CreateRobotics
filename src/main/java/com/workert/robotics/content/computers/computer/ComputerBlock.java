@@ -3,12 +3,12 @@ package com.workert.robotics.content.computers.computer;
 import com.simibubi.create.AllItems;
 import com.simibubi.create.content.contraptions.relays.elementary.ICogWheel;
 import com.simibubi.create.foundation.block.ITE;
-import com.simibubi.create.foundation.gui.ScreenOpener;
 import com.workert.robotics.base.registries.BlockEntityRegistry;
 import com.workert.robotics.base.registries.ItemRegistry;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -23,7 +23,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.DistExecutor;
 import org.jetbrains.annotations.Nullable;
 
 public class ComputerBlock extends Block implements EntityBlock, ICogWheel, ITE<ComputerBlockEntity> {
@@ -37,21 +36,26 @@ public class ComputerBlock extends Block implements EntityBlock, ICogWheel, ITE<
 	public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand hand, BlockHitResult result) {
 		ItemStack held = player.getMainHandItem();
 		if (AllItems.WRENCH.isIn(held)) {
-			((ComputerBlockEntity) level.getBlockEntity(blockPos)).runScript();
-			return InteractionResult.SUCCESS;
+			if (!level.isClientSide) ((ComputerBlockEntity) level.getBlockEntity(blockPos)).runScript();
+			player.playSound(SoundEvents.NOTE_BLOCK_CHIME);
 		} else if (ItemRegistry.PROGRAM.isIn(held)) {
-			((ComputerBlockEntity) level.getBlockEntity(blockPos)).setScript(
-					player.getItemInHand(hand).getOrCreateTag().getString("code"));
-			return InteractionResult.SUCCESS;
+			if (!level.isClientSide) ((ComputerBlockEntity) level.getBlockEntity(blockPos)).script =
+					player.getItemInHand(hand).getOrCreateTag().getString("code");
+
+			player.playSound(SoundEvents.NOTE_BLOCK_BIT);
+		} else {
+			if (!level.isClientSide)
+				player.sendSystemMessage(
+						Component.literal(((ComputerBlockEntity) level.getBlockEntity(blockPos)).terminal));
+			player.playSound(SoundEvents.BEACON_ACTIVATE);
 		}
-		DistExecutor.unsafeRunWhenOn(Dist.CLIENT,
-				() -> () -> this.withTileEntityDo(level, blockPos, te -> this.displayScreen(te, player)));
+		//DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> this.withTileEntityDo(level, blockPos, te -> this.displayScreen(te, player)));
 		return InteractionResult.SUCCESS;
 	}
 
 	@OnlyIn(value = Dist.CLIENT)
 	protected void displayScreen(ComputerBlockEntity computerBlockEntity, Player player) {
-		if (player instanceof LocalPlayer) ScreenOpener.open(new ConsoleScreen(computerBlockEntity.roboScript));
+		//if (player instanceof LocalPlayer) ScreenOpener.open(new ConsoleScreen(computerBlockEntity.roboScript));
 	}
 
 	@Override

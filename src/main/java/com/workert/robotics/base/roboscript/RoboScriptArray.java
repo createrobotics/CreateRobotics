@@ -5,10 +5,10 @@ import java.util.Map;
 
 
 public class RoboScriptArray extends RoboScriptGettable {
-	final List<Object> elements;
+	public final List<Object> elements;
 	final Map<String, Object> fields = new HashMap<>();
 
-	RoboScriptArray(List<Object> elements) {
+	public RoboScriptArray(List<Object> elements) {
 		this.register();
 		this.elements = elements;
 	}

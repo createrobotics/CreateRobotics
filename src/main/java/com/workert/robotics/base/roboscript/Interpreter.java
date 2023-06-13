@@ -8,14 +8,14 @@ import java.util.stream.Collectors;
 
 public class Interpreter implements Expression.Visitor<Object>, Statement.Visitor<Void> {
 	public final RoboScript roboScriptInstance;
-	Environment environment;
+	public final Environment globals = new Environment();
+	Environment environment = this.globals;
 	private final Map<Expression, Integer> locals = new HashMap<>();
 
 	private boolean stopRequested = false;
 
 	public Interpreter(RoboScript roboScriptInstance) {
 		this.roboScriptInstance = roboScriptInstance;
-		this.environment = new Environment(this.roboScriptInstance);
 	}
 
 	public void requestStop() {
@@ -44,9 +44,14 @@ public class Interpreter implements Expression.Visitor<Object>, Statement.Visito
 		this.locals.put(expression, depth);
 	}
 
+
+	public Map<String, RoboScriptVariable> getValues() {
+		return this.environment.values;
+	}
+
 	@Override
 	public Void visitBlockStmt(Statement.Block stmt) {
-		this.executeBlock(stmt.statements, new Environment(this.roboScriptInstance, this.environment));
+		this.executeBlock(stmt.statements, new Environment(this.environment));
 		return null;
 	}
 
@@ -63,7 +68,7 @@ public class Interpreter implements Expression.Visitor<Object>, Statement.Visito
 		this.environment.define(stmt.name, null, false);
 
 		if (stmt.superclass != null) {
-			this.environment = new Environment(this.roboScriptInstance, this.environment);
+			this.environment = new Environment(this.environment);
 			this.environment.define("super", superclass, false);
 		}
 
@@ -339,7 +344,7 @@ public class Interpreter implements Expression.Visitor<Object>, Statement.Visito
 			case BANG -> !this.isTruthy(right);
 			case MINUS -> -(double) right;
 			default ->
-				// Unreachable.
+					// Unreachable.
 					null;
 		};
 	}

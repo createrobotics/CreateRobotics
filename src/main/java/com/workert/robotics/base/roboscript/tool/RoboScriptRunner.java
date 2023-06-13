@@ -11,16 +11,15 @@ import java.util.Map;
 public class RoboScriptRunner {
 	private static String sourcePath = "src/main/java/com/workert/robotics/base/roboscript/tool/script.robo";
 
-	private static RoboScript program = new RoboScript(true) {
-
+	private static RoboScript program = new RoboScript() {
 		@Override
-		public void saveVariableExternally(Map.Entry<String, Object> variableEntry) {
-			RoboScriptRunner.variableMap.put(variableEntry.getKey(), variableEntry.getValue());
+		public void print(String message) {
+			System.out.println(message);
 		}
 
 		@Override
-		public Map<String, Object> getExternallySavedVariables() {
-			return variableMap;
+		public void error(String error) {
+			System.err.println(error);
 		}
 	};
 
@@ -33,6 +32,5 @@ public class RoboScriptRunner {
 	private static void runFile() throws IOException {
 		byte[] bytes = Files.readAllBytes(Paths.get(sourcePath));
 		program.runString(new String(bytes, Charset.defaultCharset()));
-		System.out.println(program.getConsoleOutput());
 	}
 }
