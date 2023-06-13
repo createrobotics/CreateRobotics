@@ -7,6 +7,5 @@ public class RoboScriptVariable {
 	public RoboScriptVariable(boolean staticc, Object value) {
 		this.staticc = staticc;
 		this.value = value;
-
 	}
 }

@@ -3,8 +3,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Environment {
-	public final Environment enclosing;
-	public Map<String, RoboScriptVariable> values = new HashMap<>();
+	protected final Environment enclosing;
+	protected final Map<String, RoboScriptVariable> values = new HashMap<>();
 
 	public Environment() {
 		this.enclosing = null;

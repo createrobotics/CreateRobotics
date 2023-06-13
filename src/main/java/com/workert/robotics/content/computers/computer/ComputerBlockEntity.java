@@ -2,10 +2,9 @@ package com.workert.robotics.content.computers.computer;
 
 import com.simibubi.create.content.contraptions.base.KineticTileEntity;
 import com.workert.robotics.base.roboscript.RoboScript;
-import com.workert.robotics.base.roboscript.ingame.CompoundTagEnvironmentConversion;
+import com.workert.robotics.base.roboscript.ingame.CompoundTagEnvironmentConversionHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -46,7 +45,8 @@ public class ComputerBlockEntity extends KineticTileEntity {
 		this.terminal = compound.getString("Terminal");
 		this.running = compound.getBoolean("Running");
 		this.roboScript.setValues(
-				CompoundTagEnvironmentConversion.valuesFromTag(compound.getList("Memory", Tag.TAG_COMPOUND)));
+				CompoundTagEnvironmentConversionHelper.valuesFromCompoundTag(
+						compound.getCompound("Memory")));
 	}
 
 	@Override
@@ -57,7 +57,7 @@ public class ComputerBlockEntity extends KineticTileEntity {
 		compound.putBoolean("Running", this.running);
 
 		compound.put("Memory",
-				CompoundTagEnvironmentConversion.valuesToTag(this.roboScript.interpreter.getValues()));
+				CompoundTagEnvironmentConversionHelper.valuesToTag(this.roboScript.interpreter.getValues()));
 
 	}
 

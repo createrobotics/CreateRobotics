@@ -7,12 +7,11 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
 
 public abstract class RoboScript {
-	public final Interpreter interpreter = new Interpreter(this);
+	protected final Interpreter interpreter = new Interpreter(this);
 
 	private boolean hadError = false;
 
 	public RoboScript() {
-		System.out.println("eeeeeeeeeeeeeeee");
 		this.defineFunction("print", 1, (interpreter, objects) -> {
 			this.print(Interpreter.stringify(objects.get(0)));
 			return null;

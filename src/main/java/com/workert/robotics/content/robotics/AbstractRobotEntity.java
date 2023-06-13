@@ -5,11 +5,10 @@ import com.simibubi.create.content.logistics.RedstoneLinkNetworkHandler;
 import com.simibubi.create.foundation.utility.Couple;
 import com.workert.robotics.base.registries.ItemRegistry;
 import com.workert.robotics.base.roboscript.RoboScript;
-import com.workert.robotics.base.roboscript.ingame.CompoundTagEnvironmentConversion;
+import com.workert.robotics.base.roboscript.ingame.CompoundTagEnvironmentConversionHelper;
 import com.workert.robotics.helpers.CodeHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.*;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -84,7 +83,7 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 		if (this.hasInventory()) pCompound.put("Inventory", this.inventory.createTag());
 		pCompound.putString("Script", this.script);
 		pCompound.put("Memory",
-				CompoundTagEnvironmentConversion.valuesToTag(this.roboScript.interpreter.getValues()));
+				CompoundTagEnvironmentConversionHelper.valuesToTag(this.roboScript.interpreter.getValues()));
 		super.addAdditionalSaveData(pCompound);
 	}
 
@@ -95,7 +94,8 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 			if (this.hasInventory()) this.inventory.fromTag(pCompound.getList("Inventory", 10));
 			this.script = pCompound.getString("Script");
 			this.roboScript.setValues(
-					CompoundTagEnvironmentConversion.valuesFromTag(pCompound.getList("Memory", Tag.TAG_COMPOUND)));
+					CompoundTagEnvironmentConversionHelper.valuesFromCompoundTag(
+							pCompound.getCompound("Memory")));
 			super.readAdditionalSaveData(pCompound);
 		} catch (NullPointerException exception) {
 			exception.printStackTrace();
