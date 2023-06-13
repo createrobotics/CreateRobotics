@@ -6,10 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class Interpreter implements Expression.Visitor<Object>, Statement.Visitor<Void> {
-	public final RoboScript roboScriptInstance;
-	public final Environment globals = new Environment();
-	Environment environment = this.globals;
+public final class Interpreter implements Expression.Visitor<Object>, Statement.Visitor<Void> {
+	final RoboScript roboScriptInstance;
+	Environment environment = new Environment();
 	private final Map<Expression, Integer> locals = new HashMap<>();
 
 	private boolean stopRequested = false;
@@ -46,7 +45,7 @@ public class Interpreter implements Expression.Visitor<Object>, Statement.Visito
 
 
 	public Map<String, RoboScriptVariable> getValues() {
-		return this.environment.values;
+		return this.environment.variableMap;
 	}
 
 	@Override
@@ -344,7 +343,7 @@ public class Interpreter implements Expression.Visitor<Object>, Statement.Visito
 			case BANG -> !this.isTruthy(right);
 			case MINUS -> -(double) right;
 			default ->
-					// Unreachable.
+				// Unreachable.
 					null;
 		};
 	}

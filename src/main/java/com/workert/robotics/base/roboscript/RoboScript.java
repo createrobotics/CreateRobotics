@@ -94,11 +94,14 @@ public abstract class RoboScript {
 		});
 	}
 
-	public void setValues(Map<String, RoboScriptVariable> values) {
+	public Map<String, RoboScriptVariable> getVariables() {
+		return this.interpreter.getValues();
+	}
+
+	public void putVariables(Map<String, RoboScriptVariable> values) {
 		for (Map.Entry<String, RoboScriptVariable> entry : values.entrySet()) {
-			this.interpreter.environment.values.put(entry.getKey(), entry.getValue());
+			this.interpreter.environment.define(entry.getKey(), entry.getValue(), false);
 		}
-		//this.interpreter.environment.values = values;
 	}
 
 	public void error(Token token, String message) {

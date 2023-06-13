@@ -2,9 +2,9 @@ package com.workert.robotics.base.roboscript;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Environment {
+public final class Environment {
 	protected final Environment enclosing;
-	protected final Map<String, RoboScriptVariable> values = new HashMap<>();
+	protected final Map<String, RoboScriptVariable> variableMap = new HashMap<>();
 
 	public Environment() {
 		this.enclosing = null;
@@ -15,13 +15,13 @@ public class Environment {
 	}
 
 	protected void define(String name, Object value, boolean staticc) {
-		this.values.put(name, new RoboScriptVariable(staticc, value));
+		this.variableMap.put(name, new RoboScriptVariable(staticc, value));
 	}
 
 	protected void define(Token name, Object value, boolean staticc) {
 		if (this.checkAccessibleVariable(name)) throw new RuntimeError(name,
 				"Variable with the name '" + name.lexeme + "' already shares this environment");
-		this.values.put(name.lexeme, new RoboScriptVariable(staticc, value));
+		this.variableMap.put(name.lexeme, new RoboScriptVariable(staticc, value));
 	}
 
 	Environment ancestor(int distance) {
@@ -34,12 +34,12 @@ public class Environment {
 	}
 
 	Object getAt(int distance, Token name) {
-		return this.ancestor(distance).values.get(name).value;
+		return this.ancestor(distance).variableMap.get(name).value;
 	}
 
 	Object get(Token name) {
-		if (this.values.containsKey(name.lexeme)) {
-			return this.values.get(name.lexeme).value;
+		if (this.variableMap.containsKey(name.lexeme)) {
+			return this.variableMap.get(name.lexeme).value;
 		}
 
 		if (this.enclosing != null) return this.enclosing.get(name);
@@ -48,7 +48,7 @@ public class Environment {
 	}
 
 	boolean checkAccessibleVariable(Token name) {
-		if (this.values.containsKey(name.lexeme)) {
+		if (this.variableMap.containsKey(name.lexeme)) {
 			return true;
 		}
 
@@ -58,13 +58,13 @@ public class Environment {
 	}
 
 	void assignAt(int distance, Token name, Object value) {
-		this.ancestor(distance).values.put(name.lexeme,
+		this.ancestor(distance).variableMap.put(name.lexeme,
 				new RoboScriptVariable(false, value));
 	}
 
 	public void assign(Token name, Object value) {
-		if (this.values.containsKey(name.lexeme)) {
-			this.values.get(name.lexeme).value = value;
+		if (this.variableMap.containsKey(name.lexeme)) {
+			this.variableMap.get(name.lexeme).value = value;
 			return;
 		}
 

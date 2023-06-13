@@ -44,7 +44,7 @@ public class ComputerBlockEntity extends KineticTileEntity {
 		this.script = compound.getString("Script");
 		this.terminal = compound.getString("Terminal");
 		this.running = compound.getBoolean("Running");
-		this.roboScript.setValues(
+		this.roboScript.putVariables(
 				CompoundTagEnvironmentConversionHelper.valuesFromCompoundTag(
 						compound.getCompound("Memory")));
 	}
@@ -57,7 +57,7 @@ public class ComputerBlockEntity extends KineticTileEntity {
 		compound.putBoolean("Running", this.running);
 
 		compound.put("Memory",
-				CompoundTagEnvironmentConversionHelper.valuesToTag(this.roboScript.interpreter.getValues()));
+				CompoundTagEnvironmentConversionHelper.valuesToTag(this.roboScript.getVariables()));
 
 	}
 

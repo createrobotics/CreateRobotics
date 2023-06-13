@@ -83,7 +83,7 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 		if (this.hasInventory()) pCompound.put("Inventory", this.inventory.createTag());
 		pCompound.putString("Script", this.script);
 		pCompound.put("Memory",
-				CompoundTagEnvironmentConversionHelper.valuesToTag(this.roboScript.interpreter.getValues()));
+				CompoundTagEnvironmentConversionHelper.valuesToTag(this.roboScript.getVariables()));
 		super.addAdditionalSaveData(pCompound);
 	}
 
@@ -93,7 +93,7 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 			this.air = pCompound.getInt("Air");
 			if (this.hasInventory()) this.inventory.fromTag(pCompound.getList("Inventory", 10));
 			this.script = pCompound.getString("Script");
-			this.roboScript.setValues(
+			this.roboScript.putVariables(
 					CompoundTagEnvironmentConversionHelper.valuesFromCompoundTag(
 							pCompound.getCompound("Memory")));
 			super.readAdditionalSaveData(pCompound);

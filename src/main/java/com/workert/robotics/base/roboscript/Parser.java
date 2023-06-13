@@ -3,7 +3,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Parser {
+public final class Parser {
 	private final RoboScript roboScriptInstance;
 	private final List<Token> tokens;
 	private int current = 0;

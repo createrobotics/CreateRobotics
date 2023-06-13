@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-public class Resolver implements Expression.Visitor<Void>, Statement.Visitor<Void> {
+public final class Resolver implements Expression.Visitor<Void>, Statement.Visitor<Void> {
 	private final Interpreter interpreter;
 	private final Stack<Map<String, Boolean>> scopes = new Stack<>();
 	private final Map<String, Boolean> publicScope = new HashMap<>();
