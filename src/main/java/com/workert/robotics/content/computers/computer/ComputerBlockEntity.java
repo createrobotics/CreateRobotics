@@ -25,13 +25,13 @@ public class ComputerBlockEntity extends KineticTileEntity {
 			@Override
 			public void print(String message) {
 				ComputerBlockEntity.this.terminal = ComputerBlockEntity.this.terminal.concat(message + "\n");
-				//System.out.println(message);
+				ComputerBlockEntity.this.notifyUpdate();
 			}
 
 			@Override
 			public void error(String error) {
 				ComputerBlockEntity.this.terminal = ComputerBlockEntity.this.terminal.concat(error + "\n");
-				//System.err.println(error);
+				ComputerBlockEntity.this.notifyUpdate();
 			}
 		};
 	}
