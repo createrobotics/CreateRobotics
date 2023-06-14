@@ -8,9 +8,9 @@ import com.simibubi.create.foundation.gui.AllGuiTextures;
 import com.simibubi.create.foundation.gui.AllIcons;
 import com.simibubi.create.foundation.gui.element.GuiGameElement;
 import com.simibubi.create.foundation.gui.widget.IconButton;
-import com.simibubi.create.foundation.networking.AllPackets;
 import com.simibubi.create.foundation.utility.Components;
 import com.simibubi.create.foundation.utility.Lang;
+import com.workert.robotics.base.registries.PacketRegistry;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -103,7 +103,7 @@ public class InputSignalScreen extends AbstractSimiScreen {
 	}
 
 	private void confirm() {
-		AllPackets.channel.sendToServer(new ConfigureInputSignalPacket(this.blockPos, this.nameField.getValue()));
+		PacketRegistry.CHANNEL.sendToServer(new ConfigureInputSignalPacket(this.blockPos, this.nameField.getValue()));
 		this.onClose();
 	}
 }
