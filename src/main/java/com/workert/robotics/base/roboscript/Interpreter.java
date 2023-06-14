@@ -35,6 +35,13 @@ public final class Interpreter implements Expression.Visitor<Object>, Statement.
 		}
 	}
 
+	public void reset() {
+		this.stopRequested = false;
+		this.locals.clear();
+		this.environment = new Environment();
+		this.roboScriptInstance.defineDefaultFunctions();
+	}
+
 	private void execute(Statement statement) {
 		statement.accept(this);
 	}
@@ -343,7 +350,7 @@ public final class Interpreter implements Expression.Visitor<Object>, Statement.
 			case BANG -> !this.isTruthy(right);
 			case MINUS -> -(double) right;
 			default ->
-				// Unreachable.
+					// Unreachable.
 					null;
 		};
 	}

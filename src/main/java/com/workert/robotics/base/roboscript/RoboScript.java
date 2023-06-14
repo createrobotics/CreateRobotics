@@ -12,10 +12,7 @@ public abstract class RoboScript {
 	private boolean hadError = false;
 
 	public RoboScript() {
-		this.defineFunction("print", 1, (interpreter, arguments) -> {
-			this.print(Interpreter.stringify(arguments.get(0)));
-			return null;
-		});
+		this.defineDefaultFunctions();
 	}
 
 	/**
@@ -27,7 +24,7 @@ public abstract class RoboScript {
 	 * @param function a {@link BiFunction} with two arguments: the Interpreter and a {@link List} with all
 	 *                 provided arguments to the command. May return an object.
 	 */
-	public void defineFunction(String name, int expectedArgumentSize, BiFunction<Interpreter, List<Object>, Object> function) {
+	public final void defineFunction(String name, int expectedArgumentSize, BiFunction<Interpreter, List<Object>, Object> function) {
 		this.interpreter.environment.define(name, new RoboScriptCallable() {
 			@Override
 			public int expectedArgumentSize() {
@@ -52,7 +49,8 @@ public abstract class RoboScript {
 	 *
 	 * @param source the string to execute. May contain multiple statements.
 	 */
-	public void runString(String source) {
+	public final void runString(String source) {
+		this.interpreter.reset();
 		new Thread(() -> {
 			this.hadError = false;
 
@@ -82,7 +80,7 @@ public abstract class RoboScript {
 	 *
 	 * @param function the function identifier to execute.
 	 */
-	public void runFunction(String function, List<Object> arguments) {
+	public final void runFunction(String function, List<Object> arguments) {
 		CompletableFuture.runAsync(() -> {
 			List<Expression> argumentExpressionList = new ArrayList<>();
 			for (Object argument : arguments) {
@@ -94,17 +92,24 @@ public abstract class RoboScript {
 		});
 	}
 
-	public Map<String, RoboScriptVariable> getVariables() {
+	protected void defineDefaultFunctions() {
+		this.defineFunction("print", 1, (interpreter, arguments) -> {
+			this.print(Interpreter.stringify(arguments.get(0)));
+			return null;
+		});
+	}
+
+	public final Map<String, RoboScriptVariable> getVariables() {
 		return this.interpreter.getValues();
 	}
 
-	public void putVariables(Map<String, RoboScriptVariable> values) {
+	public final void putVariables(Map<String, RoboScriptVariable> values) {
 		for (Map.Entry<String, RoboScriptVariable> entry : values.entrySet()) {
 			this.interpreter.environment.define(entry.getKey(), entry.getValue(), false);
 		}
 	}
 
-	public void error(Token token, String message) {
+	public final void error(Token token, String message) {
 		if (token.type == Token.TokenType.EOF) {
 			this.report(token.line, " at end", message);
 		} else {
@@ -112,15 +117,15 @@ public abstract class RoboScript {
 		}
 	}
 
-	public void error(int line, String message) {
+	public final void error(int line, String message) {
 		this.report(line, "", message);
 	}
 
-	public void runtimeError(RuntimeError error) {
+	public final void runtimeError(RuntimeError error) {
 		this.error("[line " + error.token.line + "] Runtime Error: " + error.getMessage());
 	}
 
-	private void report(int line, String where, String message) {
+	private final void report(int line, String where, String message) {
 		this.error("[line " + line + "] Error" + where + ": " + message);
 		this.hadError = true;
 	}
@@ -129,7 +134,7 @@ public abstract class RoboScript {
 
 	public abstract void error(String error);
 
-	public void requestStop() {
+	public final void requestStop() {
 		this.interpreter.requestStop();
 	}
 }
