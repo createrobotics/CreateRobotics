@@ -47,7 +47,7 @@ public class ComputerBlockEntity extends KineticTileEntity {
 	}
 
 	public void interpretSignal(String function, List<Object> args) {
-		this.roboScript.runFunction(function, args);
+		if (this.running) this.roboScript.runFunction(function, args);
 	}
 
 	@Override
