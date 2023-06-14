@@ -2,6 +2,9 @@ package com.workert.robotics.base.registries;
 
 import com.simibubi.create.foundation.networking.SimplePacketBase;
 import com.workert.robotics.Robotics;
+import com.workert.robotics.content.computers.computer.ComputerClearTerminalPacket;
+import com.workert.robotics.content.computers.computer.ComputerToggleRunningPacket;
+import com.workert.robotics.content.computers.computer.ConfigureComputerScriptPacket;
 import com.workert.robotics.content.computers.inputs.ConfigureInputSignalPacket;
 import com.workert.robotics.content.robotics.codeeditor.ReturnEditedCodePacket;
 import com.workert.robotics.content.utility.extendoboots.ChangeExtendOBootsHeightPacket;
@@ -23,7 +26,10 @@ public enum PacketRegistry {
 	CHANGE_EXTEND_O_BOOTS_HEIGHT(ChangeExtendOBootsHeightPacket.class, ChangeExtendOBootsHeightPacket::new,
 			PLAY_TO_SERVER),
 	RETURN_EDITED_CODE(ReturnEditedCodePacket.class, ReturnEditedCodePacket::new, PLAY_TO_SERVER),
-	CONFIGURE_INPUT_SIGNAL(ConfigureInputSignalPacket.class, ConfigureInputSignalPacket::new, PLAY_TO_SERVER);
+	CONFIGURE_INPUT_SIGNAL(ConfigureInputSignalPacket.class, ConfigureInputSignalPacket::new, PLAY_TO_SERVER),
+	CONFIGURE_COMPUTER_SCRIPT(ConfigureComputerScriptPacket.class, ConfigureComputerScriptPacket::new, PLAY_TO_SERVER),
+	CLEAR_COMPUTER_TERMINAL(ComputerClearTerminalPacket.class, ComputerClearTerminalPacket::new, PLAY_TO_SERVER),
+	COMPUTER_SET_RUNNING(ComputerToggleRunningPacket.class, ComputerToggleRunningPacket::new, PLAY_TO_SERVER);
 
 	public static final String PROTOCOL_VERSION = "1";
 	public static SimpleChannel CHANNEL;
