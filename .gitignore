@@ -25,5 +25,5 @@ runserver
 # Files from Forge MDK
 forge*changelog.txt
 
-# roboscript
+# RoboScript testing file
 script.robo
