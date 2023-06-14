@@ -122,7 +122,11 @@ public abstract class RoboScript {
 	}
 
 	public final void runtimeError(RuntimeError error) {
-		this.error("[line " + error.token.line + "] Runtime Error: " + error.getMessage());
+		if (error.token.line == 0) {
+			this.error("An external error occurred (possibly a signal) : " + error.getMessage());
+		} else {
+			this.error("[line " + error.token.line + "] Runtime Error: " + error.getMessage());
+		}
 	}
 
 	private final void report(int line, String where, String message) {
