@@ -33,7 +33,6 @@ public class RoboScriptFunction implements RoboScriptCallable {
 		}
 
 		if (this.isInitializer) {
-			System.out.println("this is initializer");
 			return this.parent.getAt(0, new Token(Token.TokenType.THIS, "this", "this", 0));
 		}
 		return null;
