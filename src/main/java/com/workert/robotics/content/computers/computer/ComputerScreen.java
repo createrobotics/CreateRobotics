@@ -5,8 +5,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.foundation.gui.AbstractSimiScreen;
 import com.simibubi.create.foundation.gui.AllIcons;
 import com.simibubi.create.foundation.gui.widget.IconButton;
-import com.simibubi.create.foundation.networking.AllPackets;
 import com.simibubi.create.foundation.utility.Components;
+import com.workert.robotics.base.registries.PacketRegistry;
 import net.minecraft.client.gui.components.MultiLineEditBox;
 import net.minecraft.client.gui.components.MultilineTextField;
 import net.minecraft.core.BlockPos;
@@ -33,7 +33,6 @@ public class ComputerScreen extends AbstractSimiScreen {
 	@Override
 	public void tick() {
 		super.tick();
-		this.computer.getUpdateTag();
 		this.output.setValue(this.computer.getTerminal());
 
 		if (this.computer.getRunning()) {
@@ -160,20 +159,20 @@ public class ComputerScreen extends AbstractSimiScreen {
 	}
 
 	private void save() {
-		AllPackets.channel.sendToServer(new ConfigureComputerScriptPacket(this.blockPos, this.terminal.getValue()));
+		PacketRegistry.CHANNEL.sendToServer(new ConfigureComputerScriptPacket(this.blockPos, this.terminal.getValue()));
 
 
 	}
 
 	private void run() {
-		AllPackets.channel.sendToServer(new ComputerSendRunPacket(this.blockPos));
+		PacketRegistry.CHANNEL.sendToServer(new ComputerSendRunPacket(this.blockPos));
 	}
 
 	private void stop() {
-		AllPackets.channel.sendToServer(new ComputerSendStopPacket(this.blockPos));
+		PacketRegistry.CHANNEL.sendToServer(new ComputerSendStopPacket(this.blockPos));
 	}
 
 	private void clearTerminal() {
-		AllPackets.channel.sendToServer(new ComputerSendTerminalPacket(this.blockPos, ""));
+		PacketRegistry.CHANNEL.sendToServer(new ComputerSendTerminalPacket(this.blockPos, ""));
 	}
 }
