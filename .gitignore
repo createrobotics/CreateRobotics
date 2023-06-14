@@ -26,4 +26,4 @@ runserver
 forge*changelog.txt
 
 # roboscript
-*.robo
+script.robo

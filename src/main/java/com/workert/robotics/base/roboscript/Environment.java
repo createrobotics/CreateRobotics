@@ -3,8 +3,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public final class Environment {
-	protected final Environment enclosing;
-	protected final Map<String, RoboScriptVariable> variableMap = new HashMap<>();
+	final Environment enclosing;
+	final Map<String, RoboScriptVariable> variableMap = new HashMap<>();
 
 	public Environment() {
 		this.enclosing = null;
@@ -14,11 +14,11 @@ public final class Environment {
 		this.enclosing = enclosing;
 	}
 
-	protected void define(String name, Object value, boolean staticc) {
+	void define(String name, Object value, boolean staticc) {
 		this.variableMap.put(name, new RoboScriptVariable(staticc, value));
 	}
 
-	protected void define(Token name, Object value, boolean staticc) {
+	void define(Token name, Object value, boolean staticc) {
 		if (this.checkAccessibleVariable(name)) throw new RuntimeError(name,
 				"Variable with the name '" + name.lexeme + "' already shares this environment");
 		this.variableMap.put(name.lexeme, new RoboScriptVariable(staticc, value));
@@ -34,7 +34,7 @@ public final class Environment {
 	}
 
 	Object getAt(int distance, Token name) {
-		return this.ancestor(distance).variableMap.get(name).value;
+		return this.ancestor(distance).variableMap.get(name.lexeme).value;
 	}
 
 	Object get(Token name) {
@@ -44,7 +44,7 @@ public final class Environment {
 
 		if (this.enclosing != null) return this.enclosing.get(name);
 
-		throw new RuntimeError(name, "Undefined variable '" + name.lexeme + "'.");
+		throw new RuntimeError(name, "Undefined variable or function '" + name.lexeme + "'.");
 	}
 
 	boolean checkAccessibleVariable(Token name) {

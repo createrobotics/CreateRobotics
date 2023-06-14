@@ -3,25 +3,25 @@ import java.util.List;
 
 public class RoboScriptFunction implements RoboScriptCallable {
 	private final Statement.Function declaration;
-	private final Environment closure; // parent
+	private final Environment parent;
 
 	private final boolean isInitializer;
 
 	RoboScriptFunction(Statement.Function declaration, Environment parent, boolean isInitializer) {
 		this.isInitializer = isInitializer;
-		this.closure = parent;
+		this.parent = parent;
 		this.declaration = declaration;
 	}
 
 	RoboScriptFunction bind(RoboScriptClassInstance instance) {
-		Environment environment = new Environment(this.closure);
+		Environment environment = new Environment(this.parent);
 		environment.define("this", instance, false);
 		return new RoboScriptFunction(this.declaration, environment, this.isInitializer);
 	}
 
 	@Override
 	public Object call(Interpreter interpreter, List<Object> arguments) {
-		Environment environment = new Environment(this.closure);
+		Environment environment = new Environment(this.parent);
 		for (int i = 0; i < this.declaration.params.size(); i++) {
 			environment.define(this.declaration.params.get(i), arguments.get(i), false);
 		}
@@ -32,7 +32,10 @@ public class RoboScriptFunction implements RoboScriptCallable {
 			return returnValue.value;
 		}
 
-		if (this.isInitializer) return this.closure.getAt(0, new Token(Token.TokenType.THIS, "this", "this", 0));
+		if (this.isInitializer) {
+			System.out.println("this is initializer");
+			return this.parent.getAt(0, new Token(Token.TokenType.THIS, "this", "this", 0));
+		}
 		return null;
 	}
 

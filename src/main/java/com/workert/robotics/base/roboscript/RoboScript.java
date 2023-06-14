@@ -12,8 +12,8 @@ public abstract class RoboScript {
 	private boolean hadError = false;
 
 	public RoboScript() {
-		this.defineFunction("print", 1, (interpreter, objects) -> {
-			this.print(Interpreter.stringify(objects.get(0)));
+		this.defineFunction("print", 1, (interpreter, arguments) -> {
+			this.print(Interpreter.stringify(arguments.get(0)));
 			return null;
 		});
 	}
