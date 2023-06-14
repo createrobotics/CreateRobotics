@@ -8,6 +8,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.List;
+
 public class ComputerBlockEntity extends KineticTileEntity {
 
 	private String script = "";
@@ -36,6 +38,16 @@ public class ComputerBlockEntity extends KineticTileEntity {
 
 	public void runScript() {
 		this.roboScript.runString(this.script);
+		this.running = true;
+	}
+
+	public void turnOff() {
+		this.roboScript.requestStop();
+		this.running = false;
+	}
+
+	public void interpretSignal(String function, List<Object> args) {
+		this.roboScript.runFunction(function, args);
 	}
 
 	@Override
@@ -66,6 +78,7 @@ public class ComputerBlockEntity extends KineticTileEntity {
 		super.tick();
 		if (!this.isSpeedRequirementFulfilled()) {
 			this.roboScript.requestStop();
+			this.running = false;
 			this.terminal.concat("ERROR: Speed requirement not fulfilled, stopped program.\n");
 		}
 	}
@@ -84,5 +97,9 @@ public class ComputerBlockEntity extends KineticTileEntity {
 
 	public boolean getRunning() {
 		return this.running;
+	}
+
+	public void clearTerminal() {
+		this.terminal = "";
 	}
 }

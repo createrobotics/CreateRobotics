@@ -3,8 +3,10 @@ package com.workert.robotics.content.computers.computer;
 import com.simibubi.create.AllItems;
 import com.simibubi.create.content.contraptions.relays.elementary.ICogWheel;
 import com.simibubi.create.foundation.block.ITE;
+import com.simibubi.create.foundation.gui.ScreenOpener;
 import com.workert.robotics.base.registries.BlockEntityRegistry;
 import com.workert.robotics.base.registries.ItemRegistry;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -23,6 +25,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.DistExecutor;
 import org.jetbrains.annotations.Nullable;
 
 public class ComputerBlock extends Block implements EntityBlock, ICogWheel, ITE<ComputerBlockEntity> {
@@ -49,13 +52,14 @@ public class ComputerBlock extends Block implements EntityBlock, ICogWheel, ITE<
 						Component.literal(((ComputerBlockEntity) level.getBlockEntity(blockPos)).getTerminal()));
 			player.playSound(SoundEvents.BEACON_ACTIVATE);
 		}
-		//DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> this.withTileEntityDo(level, blockPos, te -> this.displayScreen(te, player)));
+		DistExecutor.unsafeRunWhenOn(Dist.CLIENT,
+				() -> () -> this.withTileEntityDo(level, blockPos, te -> this.displayScreen(te, player)));
 		return InteractionResult.SUCCESS;
 	}
 
 	@OnlyIn(value = Dist.CLIENT)
 	protected void displayScreen(ComputerBlockEntity computerBlockEntity, Player player) {
-		//if (player instanceof LocalPlayer) ScreenOpener.open(new ConsoleScreen(computerBlockEntity.roboScript));
+		if (player instanceof LocalPlayer) ScreenOpener.open(new ComputerScreen(computerBlockEntity));
 	}
 
 	@Override

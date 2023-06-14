@@ -14,9 +14,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class ScannerBlockEntity extends KineticTileEntity implements ScannerBehaviour.ScanningBehaviorSpecifics, InputBlockEntity {
 	public ScannerBehaviour processingBehaviour;
@@ -53,15 +51,11 @@ public class ScannerBlockEntity extends KineticTileEntity implements ScannerBeha
 	@Override
 	public boolean scanOnBelt(TransportedItemStack itemStack) {
 		if (this.level.getBlockEntity(this.targetPos) instanceof ComputerBlockEntity computer) {
-			Map<String, Object> fields = new HashMap<>();
-			fields.put("id", ForgeRegistries.ITEMS.getKey(itemStack.stack.getItem()).toString());
-			fields.put("name", itemStack.stack.getHoverName().getString());
-			fields.put("count", (double) itemStack.stack.getCount());
-			/*Computing.runFunctionProgram(this.signalName,
-					Arrays.asList(new ZincStructureConversionObject("Item", fields)), computer.getScript(), computer);*/
-			// TODO Run method
+			// TODO: Make this a class system
+			computer.interpretSignal(this.getSignalName(),
+					List.of(ForgeRegistries.ITEMS.getKey(itemStack.stack.getItem()).toString(),
+							itemStack.stack.getHoverName().getString(), (double) itemStack.stack.getCount()));
 		}
-		System.out.println(itemStack.stack.getHoverName());
 		return true;
 	}
 

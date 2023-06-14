@@ -111,8 +111,8 @@ public class RedstoneDetectorBlock extends Block implements EntityBlock, ITE<Red
 	private void getRedstoneSignalUpdate(int power, ServerLevel level, BlockPos blockPos) {
 		RedstoneDetectorBlockEntity redstoneDetector = (RedstoneDetectorBlockEntity) level.getBlockEntity(blockPos);
 		if (level.getBlockEntity(redstoneDetector.getTargetPos()) instanceof ComputerBlockEntity computer) {
-			computer.roboScript.runFunction(
-					((RedstoneDetectorBlockEntity) level.getBlockEntity(blockPos)).getSignalName(), List.of(power));
+			computer.interpretSignal(((RedstoneDetectorBlockEntity) level.getBlockEntity(blockPos)).getSignalName(),
+					List.of(power));
 		}
 	}
 }

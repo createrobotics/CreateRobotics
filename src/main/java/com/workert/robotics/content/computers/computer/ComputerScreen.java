@@ -8,14 +8,13 @@ import com.simibubi.create.foundation.gui.widget.IconButton;
 import com.simibubi.create.foundation.utility.Components;
 import com.workert.robotics.base.registries.PacketRegistry;
 import net.minecraft.client.gui.components.MultiLineEditBox;
-import net.minecraft.client.gui.components.MultilineTextField;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import org.lwjgl.glfw.GLFW;
 
 public class ComputerScreen extends AbstractSimiScreen {
 	private MultiLineEditBox terminal;
-	private MultilineTextField output;
+	private MultiLineEditBox output;
 	private IconButton save;
 	private IconButton run;
 	private IconButton clear;
@@ -87,8 +86,13 @@ public class ComputerScreen extends AbstractSimiScreen {
 
 		this.addRenderableWidget(this.terminal);
 
-		this.output = new MultilineTextField(this.font, x, y + 153, width, 57, Components.immutableEmpty(),
-				Components.immutableEmpty());
+		this.output = new MultiLineEditBox(this.font, x, y + 153, width, 57, Components.immutableEmpty(),
+				Components.immutableEmpty()) {
+			@Override
+			public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers) {
+				return false;
+			}
+		};
 		this.output.setValue(this.computer.getTerminal());
 		this.addRenderableWidget(this.output);
 
@@ -165,14 +169,14 @@ public class ComputerScreen extends AbstractSimiScreen {
 	}
 
 	private void run() {
-		PacketRegistry.CHANNEL.sendToServer(new ComputerSendRunPacket(this.blockPos));
+		PacketRegistry.CHANNEL.sendToServer(new ComputerToggleRunningPacket(this.blockPos, true));
 	}
 
 	private void stop() {
-		PacketRegistry.CHANNEL.sendToServer(new ComputerSendStopPacket(this.blockPos));
+		PacketRegistry.CHANNEL.sendToServer(new ComputerToggleRunningPacket(this.blockPos, false));
 	}
 
 	private void clearTerminal() {
-		PacketRegistry.CHANNEL.sendToServer(new ComputerSendTerminalPacket(this.blockPos, ""));
+		PacketRegistry.CHANNEL.sendToServer(new ComputerClearTerminalPacket(this.blockPos));
 	}
 }
