@@ -51,11 +51,13 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 				@Override
 				public void print(String message) {
 					AbstractRobotEntity.this.terminal = AbstractRobotEntity.this.terminal.concat(message + "\n");
+					AbstractRobotEntity.this.saveWithoutId(new CompoundTag());
 				}
 
 				@Override
 				public void error(String error) {
 					AbstractRobotEntity.this.terminal = AbstractRobotEntity.this.terminal.concat(error + "\n");
+					AbstractRobotEntity.this.saveWithoutId(new CompoundTag());
 				}
 			};
 		} else {
