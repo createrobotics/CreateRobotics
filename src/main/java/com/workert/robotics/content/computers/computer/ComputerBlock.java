@@ -39,14 +39,14 @@ public class ComputerBlock extends Block implements EntityBlock, ICogWheel, ITE<
 			if (!level.isClientSide) ((ComputerBlockEntity) level.getBlockEntity(blockPos)).runScript();
 			player.playSound(SoundEvents.NOTE_BLOCK_CHIME);
 		} else if (ItemRegistry.PROGRAM.isIn(held)) {
-			if (!level.isClientSide) ((ComputerBlockEntity) level.getBlockEntity(blockPos)).script =
-					player.getItemInHand(hand).getOrCreateTag().getString("code");
+			if (!level.isClientSide) ((ComputerBlockEntity) level.getBlockEntity(blockPos)).setScript(
+					player.getItemInHand(hand).getOrCreateTag().getString("code"));
 
 			player.playSound(SoundEvents.NOTE_BLOCK_BIT);
 		} else {
 			if (!level.isClientSide)
 				player.sendSystemMessage(
-						Component.literal(((ComputerBlockEntity) level.getBlockEntity(blockPos)).terminal));
+						Component.literal(((ComputerBlockEntity) level.getBlockEntity(blockPos)).getTerminal()));
 			player.playSound(SoundEvents.BEACON_ACTIVATE);
 		}
 		//DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> this.withTileEntityDo(level, blockPos, te -> this.displayScreen(te, player)));

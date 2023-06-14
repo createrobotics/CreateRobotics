@@ -10,9 +10,9 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class ComputerBlockEntity extends KineticTileEntity {
 
-	public String script = "";
-	public String terminal = "";
-	public boolean running = false;
+	private String script = "";
+	private String terminal = "";
+	private boolean running = false;
 
 	public final RoboScript roboScript;
 
@@ -68,5 +68,21 @@ public class ComputerBlockEntity extends KineticTileEntity {
 			this.roboScript.requestStop();
 			this.terminal.concat("ERROR: Speed requirement not fulfilled, stopped program.\n");
 		}
+	}
+
+	public String getTerminal() {
+		return this.terminal;
+	}
+
+	public String getScript() {
+		return this.script;
+	}
+
+	public void setScript(String script) {
+		this.script = script;
+	}
+
+	public boolean getRunning() {
+		return this.running;
 	}
 }

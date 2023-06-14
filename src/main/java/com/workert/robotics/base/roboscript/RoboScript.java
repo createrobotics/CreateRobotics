@@ -121,7 +121,7 @@ public abstract class RoboScript {
 	}
 
 	private void report(int line, String where, String message) {
-		this.error("[line " + line + "] ERROR" + where + ": " + message);
+		this.error("[line " + line + "] Error" + where + ": " + message);
 		this.hadError = true;
 	}
 
