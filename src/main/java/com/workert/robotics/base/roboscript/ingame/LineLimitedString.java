@@ -3,17 +3,16 @@ import java.util.Arrays;
 import java.util.List;
 
 public class LineLimitedString {
-	private String baseString;
+	private String baseString = "";
 	public final int lineLimit;
 
 	public LineLimitedString(int lineLimit) {
-		this.baseString = "";
 		this.lineLimit = lineLimit;
 	}
 
-	public LineLimitedString(String baseString, int lineLimit) {
-		this.baseString = baseString;
+	public LineLimitedString(int lineLimit, String baseString) {
 		this.lineLimit = lineLimit;
+		this.addText(baseString);
 	}
 
 	public void addText(String text) {
