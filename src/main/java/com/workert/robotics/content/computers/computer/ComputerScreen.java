@@ -105,10 +105,6 @@ public class ComputerScreen extends AbstractSimiScreen {
 
 	@Override
 	protected void renderWindow(PoseStack ms, int mouseX, int mouseY, float partialTicks) {
-		int x = this.guiLeft;
-		int y = this.guiTop;
-
-
 	}
 
 	@Override
