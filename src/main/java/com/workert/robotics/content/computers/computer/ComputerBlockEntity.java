@@ -57,7 +57,7 @@ public class ComputerBlockEntity extends KineticTileEntity {
 	protected void read(CompoundTag compound, boolean clientPacket) {
 		super.read(compound, clientPacket);
 		this.script = compound.getString("Script");
-		this.terminal = new LineLimitedString(compound.getString("Terminal"), TERMINAL_LINE_LIMIT);
+		this.terminal = new LineLimitedString(TERMINAL_LINE_LIMIT, compound.getString("Terminal"));
 		this.running = compound.getBoolean("Running");
 		this.roboScript.putVariables(
 				CompoundTagEnvironmentConversionHelper.valuesFromCompoundTag(

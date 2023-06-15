@@ -38,7 +38,7 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 
 	private final RoboScript roboScript;
 	private String script = "";
-	
+
 	public static final int TERMINAL_LINE_LIMIT = 2048;
 	private LineLimitedString terminal = new LineLimitedString(TERMINAL_LINE_LIMIT);
 
@@ -97,7 +97,7 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 			this.air = pCompound.getInt("Air");
 			if (this.hasInventory()) this.inventory.fromTag(pCompound.getList("Inventory", 10));
 			this.script = pCompound.getString("Script");
-			this.terminal = new LineLimitedString(pCompound.getString("Terminal"), TERMINAL_LINE_LIMIT);
+			this.terminal = new LineLimitedString(TERMINAL_LINE_LIMIT, pCompound.getString("Terminal"));
 			this.roboScript.putVariables(
 					CompoundTagEnvironmentConversionHelper.valuesFromCompoundTag(
 							pCompound.getCompound("Memory")));
