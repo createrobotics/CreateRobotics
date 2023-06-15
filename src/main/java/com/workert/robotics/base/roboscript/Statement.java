@@ -21,6 +21,8 @@ public abstract class Statement {
 		R visitVarStmt(Var stmt);
 
 		R visitWhileStmt(While stmt);
+
+		R visitForeachStmt(Foreach stmt);
 	}
 
 
@@ -166,6 +168,25 @@ public abstract class Statement {
 		}
 
 		final com.workert.robotics.base.roboscript.Expression condition;
+		final Statement body;
+	}
+
+	static class Foreach extends Statement {
+		Foreach(Token variable, Token colon, com.workert.robotics.base.roboscript.Expression right, Statement body) {
+			this.variable = variable;
+			this.colon = colon;
+			this.right = right;
+			this.body = body;
+		}
+
+		@Override
+		<R> R accept(Visitor<R> visitor) {
+			return visitor.visitForeachStmt(this);
+		}
+
+		final Token variable;
+		final Token colon;
+		final com.workert.robotics.base.roboscript.Expression right;
 		final Statement body;
 	}
 

@@ -24,6 +24,7 @@ public final class Scanner {
 		keywords.put("else", ELSE);
 		keywords.put("false", FALSE);
 		keywords.put("for", FOR);
+		keywords.put("foreach", FOREACH);
 		keywords.put("func", FUNC);
 		keywords.put("if", IF);
 		keywords.put("null", NULL);
@@ -36,7 +37,7 @@ public final class Scanner {
 		keywords.put("true", TRUE);
 		keywords.put("var", VAR);
 		keywords.put("while", WHILE);
-		keywords.put("static", STATIC);
+		keywords.put("persistent", PERSISTENT);
 	}
 
 	Scanner(RoboScript roboScriptInstance, String source) {
@@ -98,6 +99,9 @@ public final class Scanner {
 				break;
 			case ';':
 				this.addToken(SEMICOLON);
+				break;
+			case ':':
+				this.addToken(COLON);
 				break;
 			case '*':
 				this.addToken(this.consumeIfNextCharMatches('=') ? STAR_EQUAL : STAR);

@@ -46,6 +46,10 @@ public final class Interpreter implements Expression.Visitor<Object>, Statement.
 		statement.accept(this);
 	}
 
+	private void execute(Statement statement, Environment environment) {
+		this.executeBlock(List.of(statement), environment);
+	}
+
 	void resolve(Expression expression, int depth) {
 		this.locals.put(expression, depth);
 	}
@@ -231,6 +235,27 @@ public final class Interpreter implements Expression.Visitor<Object>, Statement.
 			}
 		} catch (Break breakValue) {
 		}
+		return null;
+	}
+
+	@Override
+	public Void visitForeachStmt(Statement.Foreach stmt) {
+		Object iterator = this.evaluate(stmt.right);
+		Environment environment = new Environment(this.environment);
+		if (iterator instanceof Double d) {
+			environment.define(stmt.variable, 0.0d, false);
+			for (double i = 0; i < d; i++) {
+				environment.assign(stmt.variable, i);
+				this.execute(stmt.body, environment);
+			}
+		} else if (iterator instanceof RoboScriptArray array) {
+			environment.define(stmt.variable, null, false);
+			for (Object i : array.elements) {
+				environment.assign(stmt.variable, i);
+				this.execute(stmt.body, environment);
+			}
+		}
+
 		return null;
 	}
 

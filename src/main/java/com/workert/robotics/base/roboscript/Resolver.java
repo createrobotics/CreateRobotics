@@ -221,6 +221,17 @@ public final class Resolver implements Expression.Visitor<Void>, Statement.Visit
 	}
 
 	@Override
+	public Void visitForeachStmt(Statement.Foreach stmt) {
+		this.resolve(stmt.right);
+		this.beginScope();
+		this.declare(stmt.variable);
+		this.define(stmt.variable);
+		this.resolve(stmt.body);
+		this.endScope();
+		return null;
+	}
+
+	@Override
 	public Void visitVariableExpr(Expression.Variable expr) {
 		if (!this.scopes.isEmpty() && this.scopes.peek().get(expr.name.lexeme) == Boolean.FALSE) {
 			this.interpreter.roboScriptInstance.error(expr.name, "Can't read local variable in its own initializer.");

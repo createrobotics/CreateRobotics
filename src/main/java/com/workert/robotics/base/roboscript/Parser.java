@@ -29,7 +29,7 @@ public final class Parser {
 		try {
 			if (this.advanceIfNextTokenMatches(Token.TokenType.CLASS)) return this.classDeclaration();
 			if (this.advanceIfNextTokenMatches(Token.TokenType.FUNC)) return this.function("function");
-			if (this.advanceIfNextTokenMatches(Token.TokenType.STATIC)) {
+			if (this.advanceIfNextTokenMatches(Token.TokenType.PERSISTENT)) {
 				this.consumeIfNextTokenMatches(Token.TokenType.VAR, "Expected keyword 'var' after keyword 'static'.");
 				return this.varDeclaration(true);
 			}
@@ -66,6 +66,7 @@ public final class Parser {
 
 	private Statement statement() {
 		if (this.advanceIfNextTokenMatches(Token.TokenType.FOR)) return this.forStatement();
+		if (this.advanceIfNextTokenMatches(Token.TokenType.FOREACH)) return this.foreachStatement();
 		if (this.advanceIfNextTokenMatches(Token.TokenType.RETURN)) return this.returnStatement();
 		if (this.advanceIfNextTokenMatches(Token.TokenType.BREAK)) return this.breakStatement();
 		if (this.advanceIfNextTokenMatches(Token.TokenType.LEFT_BRACE)) return new Statement.Block(this.block());
@@ -115,6 +116,16 @@ public final class Parser {
 
 
 		return body;
+	}
+
+	private Statement foreachStatement(){
+		this.consumeIfNextTokenMatches(Token.TokenType.LEFT_PAREN, "Expected '(' after 'foreach'.");
+		Token variable = consumeIfNextTokenMatches(Token.TokenType.IDENTIFIER, "Expected variable name after '('.");
+		Token colon = consumeIfNextTokenMatches(Token.TokenType.COLON, "Expected ':' after variable name.");
+		Expression right = this.expression();
+		consumeIfNextTokenMatches(Token.TokenType.RIGHT_PAREN, "Expected ')' after expression");
+		Statement body = this.statement();
+		return new Statement.Foreach(variable, colon, right, body);
 	}
 
 	private Statement ifStatement() {
