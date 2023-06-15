@@ -1,5 +1,5 @@
 package com.workert.robotics.base.roboscript.ingame;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 public class LineLimitedString {
@@ -19,10 +19,13 @@ public class LineLimitedString {
 		StringBuilder builder = new StringBuilder(this.baseString);
 		builder.append(text);
 
-		List<String> lines = Arrays.asList(builder.toString().split("\n"));
+		List<String> lines = new ArrayList<>(List.of(builder.toString().split("\n")));
 		int size = lines.size();
 		int limit = Math.min(size, this.lineLimit);
 		lines = lines.subList(size - limit, size);
+
+		if (text.endsWith("\n"))
+			lines.add("");
 
 		this.baseString = String.join("\n", lines);
 	}
