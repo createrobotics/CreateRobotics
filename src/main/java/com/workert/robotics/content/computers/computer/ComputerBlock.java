@@ -49,7 +49,8 @@ public class ComputerBlock extends Block implements EntityBlock, ICogWheel, ITE<
 		} else {
 			if (!level.isClientSide)
 				player.sendSystemMessage(
-						Component.literal(((ComputerBlockEntity) level.getBlockEntity(blockPos)).getTerminal()));
+						Component.literal(
+								((ComputerBlockEntity) level.getBlockEntity(blockPos)).getTerminal().getString()));
 			player.playSound(SoundEvents.BEACON_ACTIVATE);
 		}
 		DistExecutor.unsafeRunWhenOn(Dist.CLIENT,

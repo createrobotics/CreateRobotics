@@ -32,7 +32,7 @@ public class ComputerScreen extends AbstractSimiScreen {
 	@Override
 	public void tick() {
 		super.tick();
-		this.output.setValue(this.computer.getTerminal());
+		this.output.setValue(this.computer.getTerminal().getString());
 
 		if (this.computer.getRunning()) {
 			this.run.setIcon(AllIcons.I_STOP);
@@ -73,9 +73,7 @@ public class ComputerScreen extends AbstractSimiScreen {
 		this.addRenderableWidget(this.run);
 
 		this.save = new IconButton(x - 20, y + 20, AllIcons.I_CONFIG_SAVE);
-		this.save.withCallback(() -> {
-			this.save();
-		});
+		this.save.withCallback(this::save);
 		this.save.setToolTip(Component.literal("Save Script"));
 		this.addRenderableWidget(this.save);
 
@@ -93,13 +91,11 @@ public class ComputerScreen extends AbstractSimiScreen {
 				return false;
 			}
 		};
-		this.output.setValue(this.computer.getTerminal());
+		this.output.setValue(this.computer.getTerminal().getString());
 		this.addRenderableWidget(this.output);
 
 		this.clear = new IconButton(x - 20, y + 153, AllIcons.I_TRASH);
-		this.clear.withCallback(() -> {
-			this.clearTerminal();
-		});
+		this.clear.withCallback(this::clearTerminal);
 		this.clear.setToolTip(Component.literal("Clear Terminal"));
 		this.addRenderableWidget(this.clear);
 
@@ -129,7 +125,7 @@ public class ComputerScreen extends AbstractSimiScreen {
 		//getting a character by the index of the cursor will always return the character infront of the cursor.
 		if (keyCode == GLFW.GLFW_KEY_ENTER && this.terminal.isFocused()) {
 			if (this.terminal.textField.cursor != 0) {
-				if (this.terminal.getValue().charAt(this.terminal.textField.cursor - 1) == "{".charAt(0)) {
+				if (this.terminal.getValue().charAt(this.terminal.textField.cursor - 1) == '{') {
 					this.terminal.textField.insertText("\n    \n}");
 					this.terminal.textField.cursor -= 2;
 					this.terminal.textField.selectCursor = this.terminal.textField.cursor;
@@ -146,7 +142,7 @@ public class ComputerScreen extends AbstractSimiScreen {
 
 	@Override
 	public boolean charTyped(char p_94683_, int p_94684_) {
-		if (p_94683_ == "(".charAt(0)) {
+		if (p_94683_ == '(') {
 			this.terminal.textField.insertText("()");
 			this.terminal.textField.cursor -= 1;
 			this.terminal.textField.selectCursor = this.terminal.textField.cursor;
@@ -164,8 +160,6 @@ public class ComputerScreen extends AbstractSimiScreen {
 
 	private void save() {
 		PacketRegistry.CHANNEL.sendToServer(new ConfigureComputerScriptPacket(this.blockPos, this.terminal.getValue()));
-
-
 	}
 
 	private void run() {

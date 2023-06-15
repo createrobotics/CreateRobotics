@@ -6,6 +6,7 @@ import com.simibubi.create.foundation.utility.Couple;
 import com.workert.robotics.base.registries.ItemRegistry;
 import com.workert.robotics.base.roboscript.RoboScript;
 import com.workert.robotics.base.roboscript.ingame.CompoundTagEnvironmentConversionHelper;
+import com.workert.robotics.base.roboscript.ingame.LineLimitedString;
 import com.workert.robotics.helpers.CodeHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -36,10 +37,10 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 
 
 	private final RoboScript roboScript;
-
-	public String script = "";
-	public String terminal = "";
-	public boolean running = false;
+	private String script = "";
+	
+	public static final int TERMINAL_LINE_LIMIT = 2048;
+	private LineLimitedString terminal = new LineLimitedString(TERMINAL_LINE_LIMIT);
 
 
 	public AbstractRobotEntity(EntityType<? extends PathfinderMob> entity, Level world) {
@@ -50,13 +51,13 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 
 				@Override
 				public void print(String message) {
-					AbstractRobotEntity.this.terminal = AbstractRobotEntity.this.terminal.concat(message + "\n");
+					AbstractRobotEntity.this.terminal.addText(message + "\n");
 					AbstractRobotEntity.this.saveWithoutId(new CompoundTag());
 				}
 
 				@Override
 				public void error(String error) {
-					AbstractRobotEntity.this.terminal = AbstractRobotEntity.this.terminal.concat(error + "\n");
+					AbstractRobotEntity.this.terminal.addText(error + "\n");
 					AbstractRobotEntity.this.saveWithoutId(new CompoundTag());
 				}
 			};
@@ -84,6 +85,7 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 		pCompound.putInt("Air", this.air);
 		if (this.hasInventory()) pCompound.put("Inventory", this.inventory.createTag());
 		pCompound.putString("Script", this.script);
+		pCompound.putString("Terminal", this.terminal.getString());
 		pCompound.put("Memory",
 				CompoundTagEnvironmentConversionHelper.valuesToTag(this.roboScript.getVariables()));
 		super.addAdditionalSaveData(pCompound);
@@ -95,6 +97,7 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 			this.air = pCompound.getInt("Air");
 			if (this.hasInventory()) this.inventory.fromTag(pCompound.getList("Inventory", 10));
 			this.script = pCompound.getString("Script");
+			this.terminal = new LineLimitedString(pCompound.getString("Terminal"), TERMINAL_LINE_LIMIT);
 			this.roboScript.putVariables(
 					CompoundTagEnvironmentConversionHelper.valuesFromCompoundTag(
 							pCompound.getCompound("Memory")));

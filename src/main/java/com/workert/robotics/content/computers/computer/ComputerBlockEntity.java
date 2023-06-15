@@ -3,6 +3,7 @@ package com.workert.robotics.content.computers.computer;
 import com.simibubi.create.content.contraptions.base.KineticTileEntity;
 import com.workert.robotics.base.roboscript.RoboScript;
 import com.workert.robotics.base.roboscript.ingame.CompoundTagEnvironmentConversionHelper;
+import com.workert.robotics.base.roboscript.ingame.LineLimitedString;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -11,12 +12,14 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.List;
 
 public class ComputerBlockEntity extends KineticTileEntity {
-
+	public final RoboScript roboScript;
 	private String script = "";
-	private String terminal = "";
+
+	public static final int TERMINAL_LINE_LIMIT = 2048;
+	private LineLimitedString terminal = new LineLimitedString(TERMINAL_LINE_LIMIT);
+
 	private boolean running = false;
 
-	public final RoboScript roboScript;
 
 	public ComputerBlockEntity(BlockEntityType<?> type, BlockPos blockPos, BlockState blockState) {
 		super(type, blockPos, blockState);
@@ -24,13 +27,13 @@ public class ComputerBlockEntity extends KineticTileEntity {
 
 			@Override
 			public void print(String message) {
-				ComputerBlockEntity.this.terminal = ComputerBlockEntity.this.terminal.concat(message + "\n");
+				ComputerBlockEntity.this.terminal.addText(message + "\n");
 				ComputerBlockEntity.this.notifyUpdate();
 			}
 
 			@Override
 			public void error(String error) {
-				ComputerBlockEntity.this.terminal = ComputerBlockEntity.this.terminal.concat(error + "\n");
+				ComputerBlockEntity.this.terminal.addText(error + "\n");
 				ComputerBlockEntity.this.notifyUpdate();
 			}
 		};
@@ -54,7 +57,7 @@ public class ComputerBlockEntity extends KineticTileEntity {
 	protected void read(CompoundTag compound, boolean clientPacket) {
 		super.read(compound, clientPacket);
 		this.script = compound.getString("Script");
-		this.terminal = compound.getString("Terminal");
+		this.terminal = new LineLimitedString(compound.getString("Terminal"), TERMINAL_LINE_LIMIT);
 		this.running = compound.getBoolean("Running");
 		this.roboScript.putVariables(
 				CompoundTagEnvironmentConversionHelper.valuesFromCompoundTag(
@@ -65,7 +68,7 @@ public class ComputerBlockEntity extends KineticTileEntity {
 	protected void write(CompoundTag compound, boolean clientPacket) {
 		super.write(compound, clientPacket);
 		compound.putString("Script", this.script);
-		compound.putString("Terminal", this.terminal);
+		compound.putString("Terminal", this.terminal.getString());
 		compound.putBoolean("Running", this.running);
 
 		compound.put("Memory",
@@ -79,11 +82,11 @@ public class ComputerBlockEntity extends KineticTileEntity {
 		if (!this.isSpeedRequirementFulfilled()) {
 			this.roboScript.requestStop();
 			this.running = false;
-			this.terminal.concat("ERROR: Speed requirement not fulfilled, stopped program.\n");
+			this.terminal.addText("ERROR: Speed requirement not fulfilled, stopped program.\n");
 		}
 	}
 
-	public String getTerminal() {
+	public LineLimitedString getTerminal() {
 		return this.terminal;
 	}
 
@@ -100,6 +103,6 @@ public class ComputerBlockEntity extends KineticTileEntity {
 	}
 
 	public void clearTerminal() {
-		this.terminal = "";
+		this.terminal = new LineLimitedString(TERMINAL_LINE_LIMIT);
 	}
 }

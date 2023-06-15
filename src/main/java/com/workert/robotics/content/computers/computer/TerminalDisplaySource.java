@@ -18,7 +18,7 @@ public class TerminalDisplaySource extends SingleLineDisplaySource {
 			return null;
 		if (!computer.isSpeedRequirementFulfilled())
 			return null;
-		String[] lines = computer.getTerminal().split("\n");
+		String[] lines = computer.getTerminal().getString().split("\n");
 		return Component.literal(lines[lines.length - 1]);
 	}
 
