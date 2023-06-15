@@ -274,6 +274,28 @@ public final class Interpreter implements Expression.Visitor<Object>, Statement.
 	}
 
 	@Override
+	public Object visitInstanceExpr(Expression.Instance expr) {
+		Object value = this.evaluate(expr.left);
+		return switch (expr.right.type) {
+			case STRING -> value instanceof String;
+			case DOUBLE -> value instanceof Double;
+			case BOOLEAN -> value instanceof Boolean;
+			case ARRAY -> value instanceof RoboScriptArray;
+			case FUNCTION -> value instanceof RoboScriptFunction;
+			case IDENTIFIER -> {
+				if (!(this.environment.get(expr.right) instanceof RoboScriptClass))
+					throw new RuntimeError(expr.right, "No valid class name.");
+				if (value instanceof RoboScriptClassInstance classInstance) {
+					yield classInstance.getBaseClass().equals(this.environment.get(expr.right));
+				} else
+					yield false;
+			}
+
+			default -> throw new IllegalArgumentException();
+		};
+	}
+
+	@Override
 	public Object visitBinaryExpr(Expression.Binary expr) {
 		Object left = this.evaluate(expr.left);
 		Object right = this.evaluate(expr.right);
@@ -339,10 +361,9 @@ public final class Interpreter implements Expression.Visitor<Object>, Statement.
 			case EQUAL_EQUAL -> {
 				return this.isEqual(left, right);
 			}
-		}
 
-		// Unreachable.
-		return null;
+			default -> throw new IllegalArgumentException();
+		}
 	}
 
 	@Override
@@ -375,7 +396,7 @@ public final class Interpreter implements Expression.Visitor<Object>, Statement.
 			case BANG -> !this.isTruthy(right);
 			case MINUS -> -(double) right;
 			default ->
-					// Unreachable.
+				// Unreachable.
 					null;
 		};
 	}

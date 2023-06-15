@@ -118,12 +118,13 @@ public final class Parser {
 		return body;
 	}
 
-	private Statement foreachStatement(){
+	private Statement foreachStatement() {
 		this.consumeIfNextTokenMatches(Token.TokenType.LEFT_PAREN, "Expected '(' after 'foreach'.");
-		Token variable = consumeIfNextTokenMatches(Token.TokenType.IDENTIFIER, "Expected variable name after '('.");
-		Token colon = consumeIfNextTokenMatches(Token.TokenType.COLON, "Expected ':' after variable name.");
+		Token variable = this.consumeIfNextTokenMatches(Token.TokenType.IDENTIFIER,
+				"Expected variable name after '('.");
+		Token colon = this.consumeIfNextTokenMatches(Token.TokenType.COLON, "Expected ':' after variable name.");
 		Expression right = this.expression();
-		consumeIfNextTokenMatches(Token.TokenType.RIGHT_PAREN, "Expected ')' after expression");
+		this.consumeIfNextTokenMatches(Token.TokenType.RIGHT_PAREN, "Expected ')' after expression");
 		Statement body = this.statement();
 		return new Statement.Foreach(variable, colon, right, body);
 	}
@@ -288,9 +289,21 @@ public final class Parser {
 	}
 
 	private Expression equality() {
-		Expression expression = this.comparison();
+		Expression expression = this.instanceCheck();
 
 		while (this.advanceIfNextTokenMatches(Token.TokenType.BANG_EQUAL, Token.TokenType.EQUAL_EQUAL)) {
+			Token operator = this.getPreviousToken();
+			Expression right = this.instanceCheck();
+			expression = new Expression.Binary(expression, operator, right);
+		}
+
+		return expression;
+	}
+
+	private Expression instanceCheck() {
+		Expression expression = this.comparison();
+
+		while (this.advanceIfNextTokenMatches(Token.TokenType.INSTANCEOF)) {
 			Token operator = this.getPreviousToken();
 			Expression right = this.comparison();
 			expression = new Expression.Binary(expression, operator, right);
@@ -403,7 +416,7 @@ public final class Parser {
 		if (this.advanceIfNextTokenMatches(Token.TokenType.TRUE)) return new Expression.Literal(true);
 		if (this.advanceIfNextTokenMatches(Token.TokenType.NULL)) return new Expression.Literal(null);
 
-		if (this.advanceIfNextTokenMatches(Token.TokenType.NUMBER, Token.TokenType.STRING)) {
+		if (this.advanceIfNextTokenMatches(Token.TokenType.DOUBLE_VALUE, Token.TokenType.STRING_VALUE)) {
 			return new Expression.Literal(this.getPreviousToken().literal);
 		}
 

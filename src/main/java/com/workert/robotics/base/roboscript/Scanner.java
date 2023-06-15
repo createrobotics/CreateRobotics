@@ -38,6 +38,12 @@ public final class Scanner {
 		keywords.put("var", VAR);
 		keywords.put("while", WHILE);
 		keywords.put("persistent", PERSISTENT);
+		keywords.put("instanceof", INSTANCEOF);
+		keywords.put("string", STRING);
+		keywords.put("double", DOUBLE);
+		keywords.put("boolean", BOOLEAN);
+		keywords.put("Array", ARRAY);
+		keywords.put("Function", FUNCTION);
 	}
 
 	Scanner(RoboScript roboScriptInstance, String source) {
@@ -182,7 +188,7 @@ public final class Scanner {
 			}
 		}
 
-		this.addToken(NUMBER, Double.parseDouble(this.source.substring(this.start, this.current)));
+		this.addToken(DOUBLE_VALUE, Double.parseDouble(this.source.substring(this.start, this.current)));
 	}
 
 	private void string() {
@@ -201,7 +207,7 @@ public final class Scanner {
 
 		// Trim the surrounding quotes.
 		String value = this.source.substring(this.start + 1, this.current - 1);
-		this.addToken(STRING, value);
+		this.addToken(STRING_VALUE, value);
 	}
 
 	/**

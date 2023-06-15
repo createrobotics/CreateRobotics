@@ -6,6 +6,8 @@ public abstract class Expression {
 	interface Visitor<R> {
 		R visitAssignExpr(Assign expr);
 
+		R visitInstanceExpr(Instance expr);
+
 		R visitBinaryExpr(Binary expr);
 
 		R visitCallExpr(Call expr);
@@ -67,6 +69,21 @@ public abstract class Expression {
 		final Expression left;
 		final Token operator;
 		final Expression right;
+	}
+
+	static class Instance extends Expression {
+		Instance(Expression left, Token right) {
+			this.left = left;
+			this.right = right;
+		}
+
+		@Override
+		<R> R accept(Visitor<R> visitor) {
+			return visitor.visitInstanceExpr(this);
+		}
+
+		final Expression left;
+		final Token right;
 	}
 
 

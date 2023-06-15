@@ -54,8 +54,8 @@ public final class Token {
 
 		// Literals.
 		IDENTIFIER,
-		STRING,
-		NUMBER,
+		STRING_VALUE,
+		DOUBLE_VALUE,
 
 		// Keywords.
 		AND,
@@ -77,6 +77,15 @@ public final class Token {
 		VAR,
 		WHILE,
 		PERSISTENT,
+		INSTANCEOF,
+
+		// Types
+		STRING,
+		DOUBLE,
+		BOOLEAN,
+		ARRAY,
+		FUNCTION,
+
 
 		EOF
 	}

@@ -33,6 +33,10 @@ public class RoboScriptClassInstance extends RoboScriptGettable implements RoboS
 		this.fields.put(name.lexeme, value);
 	}
 
+	public RoboScriptClass getBaseClass() {
+		return this.clazz;
+	}
+
 	@Override
 	public String toString() {
 		return "<instance of class " + this.clazz.name + ">";

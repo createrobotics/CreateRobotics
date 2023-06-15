@@ -269,6 +269,19 @@ public final class Resolver implements Expression.Visitor<Void>, Statement.Visit
 	}
 
 	@Override
+	public Void visitInstanceExpr(Expression.Instance expr) {
+		this.resolve(expr.left);
+		if (!(expr.right.type == Token.TokenType.STRING
+				|| expr.right.type == Token.TokenType.DOUBLE
+				|| expr.right.type == Token.TokenType.BOOLEAN
+				|| expr.right.type == Token.TokenType.ARRAY
+				|| expr.right.type == Token.TokenType.FUNCTION
+				|| expr.right.type == Token.TokenType.IDENTIFIER))
+			this.interpreter.roboScriptInstance.error(expr.right, "Not a valid instanceof type.");
+		return null;
+	}
+
+	@Override
 	public Void visitBinaryExpr(Expression.Binary expr) {
 		this.resolve(expr.left);
 		this.resolve(expr.right);
