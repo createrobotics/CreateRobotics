@@ -27,13 +27,13 @@ public class ComputerBlockEntity extends KineticTileEntity {
 
 			@Override
 			public void print(String message) {
-				ComputerBlockEntity.this.terminal.addText(message + "\n");
+				ComputerBlockEntity.this.terminal.addLine(message);
 				ComputerBlockEntity.this.notifyUpdate();
 			}
 
 			@Override
 			public void error(String error) {
-				ComputerBlockEntity.this.terminal.addText(error + "\n");
+				ComputerBlockEntity.this.terminal.addLine(error);
 				ComputerBlockEntity.this.notifyUpdate();
 			}
 		};
@@ -82,7 +82,7 @@ public class ComputerBlockEntity extends KineticTileEntity {
 		if (!this.isSpeedRequirementFulfilled()) {
 			this.roboScript.requestStop();
 			this.running = false;
-			this.terminal.addText("ERROR: Speed requirement not fulfilled, stopped program.\n");
+			this.terminal.addLine("ERROR: Speed requirement not fulfilled, stopped program");
 		}
 	}
 

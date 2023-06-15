@@ -30,6 +30,10 @@ public class LineLimitedString {
 		this.baseString = String.join("\n", lines);
 	}
 
+	public void addLine(String text) {
+		this.addText(text.concat("\n"));
+	}
+
 	public String getString() {
 		return this.baseString;
 	}
