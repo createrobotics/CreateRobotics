@@ -60,14 +60,11 @@ public final class Parser {
 
 			if (this.advanceIfNextTokenMatches(Token.TokenType.FUNC)) {
 				methods.add(this.function("method"));
-				continue;
 			} else if (this.advanceIfNextTokenMatches(Token.TokenType.VAR)) {
 				fields.add((Statement.Var) this.varDeclaration(false));
-				continue;
 			} else if (this.advanceIfNextTokenMatches(
 					Token.TokenType.IDENTIFIER) && this.getPreviousToken().lexeme.equals(name.lexeme)) {
 				initializer = this.function(this.getPreviousToken(), "initializer");
-				continue;
 			} else {
 				throw this.error(this.getCurrentToken(), "Can only declare fields and methods in a class");
 			}
