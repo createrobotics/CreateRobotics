@@ -113,7 +113,7 @@ public final class Resolver implements Expression.Visitor<Void>, Statement.Visit
 
 	@Override
 	public Void visitClassStmt(Statement.Class stmt) {
-		ClassType enclosingClass = this.currentClass;
+		/*ClassType enclosingClass = this.currentClass;
 		this.currentClass = ClassType.CLASS;
 
 		this.declare(stmt.name);
@@ -134,7 +134,7 @@ public final class Resolver implements Expression.Visitor<Void>, Statement.Visit
 		this.beginScope();
 		this.scopes.peek().put("this", true);
 
-		for (Statement.Function method : stmt.methods) {
+		for (Statement.Function method : stmt.body) {
 			FunctionType declaration = FunctionType.METHOD;
 			if (method.name.lexeme.equals(stmt.name.lexeme)) declaration = FunctionType.INITIALIZER;
 
@@ -145,6 +145,33 @@ public final class Resolver implements Expression.Visitor<Void>, Statement.Visit
 
 		if (stmt.superclass != null) this.endScope();
 
+		this.currentClass = enclosingClass;
+		return null;*/
+		ClassType enclosingClass = this.currentClass;
+		this.currentClass = ClassType.CLASS;
+		this.declare(stmt.name);
+		this.define(stmt.name);
+		if (stmt.superclass != null) {
+			if (stmt.name.lexeme.equals(stmt.superclass.name.lexeme))
+				this.interpreter.roboScriptInstance.error(stmt.superclass.name, "A class cannot extend itself.");
+		}
+		if (stmt.superclass != null) {
+			this.beginScope();
+			this.scopes.peek().put("super", true);
+		}
+		this.beginScope();
+		this.scopes.peek().put("this", true);
+		for (Statement statement : stmt.body) {
+			if (statement instanceof Statement.Function method) {
+				FunctionType declaration = FunctionType.METHOD;
+				if (method.name.lexeme.equals(stmt.name.lexeme)) declaration = FunctionType.INITIALIZER;
+				this.resolveFunction(method, declaration);
+			} else if (statement instanceof Statement.Var var) {
+				this.resolve(var);
+			} //continue this elif tree for classes in the future maybe
+		}
+		this.endScope();
+		if (stmt.superclass != null) this.endScope();
 		this.currentClass = enclosingClass;
 		return null;
 	}

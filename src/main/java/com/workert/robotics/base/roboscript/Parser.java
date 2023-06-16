@@ -43,7 +43,7 @@ public final class Parser {
 	}
 
 	private Statement classDeclaration() {
-		Token name = this.consumeIfNextTokenMatches(Token.TokenType.IDENTIFIER, "Expected class name.");
+		/*Token name = this.consumeIfNextTokenMatches(Token.TokenType.IDENTIFIER, "Expected class name.");
 
 		Expression.Variable superclass = null;
 		if (this.advanceIfNextTokenMatches(Token.TokenType.EXTENDS)) {
@@ -59,9 +59,39 @@ public final class Parser {
 			methods.add(this.function("method"));
 		}
 
+		this.consumeIfNextTokenMatches(Token.TokenType.RIGHT_BRACE, "Expected '}' after class body.");*/
+
+		Token name = this.consumeIfNextTokenMatches(Token.TokenType.IDENTIFIER, "Expected class name after 'class'.");
+		Expression.Variable superclass = null;
+		if (this.advanceIfNextTokenMatches(Token.TokenType.EXTENDS)) {
+			this.consumeIfNextTokenMatches(Token.TokenType.IDENTIFIER, "Expected superclass name after 'extends'.");
+			superclass = new Expression.Variable(this.getPreviousToken());
+		}
+		this.consumeIfNextTokenMatches(Token.TokenType.LEFT_BRACE, "Expected '{' before class body.");
+		List<Statement> body = new ArrayList<>();
+		Statement.Function initializer = null;
+		while (!this.isNextToken(Token.TokenType.RIGHT_BRACE) && !this.isAtEnd()) {
+			try {
+				//TODO: do we want classes in classes?
+				//if (this.advanceIfNextTokenMatches(Token.TokenType.CLASS)) body.add(this.classDeclaration()) ;
+				if (this.advanceIfNextTokenMatches(Token.TokenType.CLASS))
+					throw this.error(this.getPreviousToken(), "Cannot have a class in a class");
+				else if (this.advanceIfNextTokenMatches(Token.TokenType.FUNC)) body.add(this.function("method"));
+				else if (this.advanceIfNextTokenMatches(Token.TokenType.PERSISTENT))
+					throw this.error(this.getPreviousToken(), "Cannot have persistent variables in a class.");
+				else if (this.advanceIfNextTokenMatches(Token.TokenType.VAR)) body.add(this.varDeclaration(false));
+				else if (this.advanceIfNextTokenMatches(Token.TokenType.IDENTIFIER))
+					initializer = this.function(this.getPreviousToken(), "init");
+				else throw this.error(this.getCurrentToken(), "Can only declare fields and methods in a class");
+
+			} catch (ParseError error) {
+				this.synchronize();
+				return null;
+			}
+		}
 		this.consumeIfNextTokenMatches(Token.TokenType.RIGHT_BRACE, "Expected '}' after class body.");
 
-		return new Statement.Class(name, superclass, methods);
+		return new Statement.Class(name, superclass, body, initializer);
 	}
 
 	private Statement statement() {
@@ -190,6 +220,21 @@ public final class Parser {
 	private Statement.Function function(String kind) {
 		Token name = this.consumeIfNextTokenMatches(Token.TokenType.IDENTIFIER, "Expected " + kind + " name.");
 
+		this.consumeIfNextTokenMatches(Token.TokenType.LEFT_PAREN, "Expected '(' after " + kind + " name.");
+		List<Token> parameters = new ArrayList<>();
+		if (!this.isNextToken(Token.TokenType.RIGHT_PAREN)) {
+			do {
+				parameters.add(this.consumeIfNextTokenMatches(Token.TokenType.IDENTIFIER, "Expected parameter name."));
+			} while (this.advanceIfNextTokenMatches(Token.TokenType.COMMA));
+		}
+		this.consumeIfNextTokenMatches(Token.TokenType.RIGHT_PAREN, "Expected ')' after parameters.");
+
+		this.consumeIfNextTokenMatches(Token.TokenType.LEFT_BRACE, "Expected '{' before " + kind + " body.");
+		List<Statement> body = this.block();
+		return new Statement.Function(name, parameters, body);
+	}
+
+	private Statement.Function function(Token name, String kind) {
 		this.consumeIfNextTokenMatches(Token.TokenType.LEFT_PAREN, "Expected '(' after " + kind + " name.");
 		List<Token> parameters = new ArrayList<>();
 		if (!this.isNextToken(Token.TokenType.RIGHT_PAREN)) {
