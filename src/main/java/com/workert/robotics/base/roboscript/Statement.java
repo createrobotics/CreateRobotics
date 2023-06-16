@@ -41,11 +41,10 @@ public abstract class Statement {
 
 
 	static class Class extends Statement {
-		Class(Token name, com.workert.robotics.base.roboscript.Expression.Variable superclass, List<Statement> body, Statement.Function initializer) {
+		Class(Token name, com.workert.robotics.base.roboscript.Expression.Variable superclass, List<Statement.Function> methods) {
 			this.name = name;
 			this.superclass = superclass;
-			this.body = body;
-			this.initializer = initializer;
+			this.methods = methods;
 		}
 
 		@Override
@@ -55,8 +54,7 @@ public abstract class Statement {
 
 		final Token name;
 		final com.workert.robotics.base.roboscript.Expression.Variable superclass;
-		final List<Statement> body;
-		final Statement.Function initializer;
+		final List<Statement.Function> methods;
 	}
 
 

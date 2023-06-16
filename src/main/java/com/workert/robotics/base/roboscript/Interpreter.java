@@ -67,7 +67,7 @@ public final class Interpreter implements Expression.Visitor<Object>, Statement.
 
 	@Override
 	public Void visitClassStmt(Statement.Class stmt) {
-		/*Object superclass = null;
+		Object superclass = null;
 		if (stmt.superclass != null) {
 			superclass = this.evaluate(stmt.superclass);
 			if (!(superclass instanceof RoboScriptClass)) {
@@ -83,7 +83,7 @@ public final class Interpreter implements Expression.Visitor<Object>, Statement.
 		}
 
 		Map<String, RoboScriptFunction> methods = new HashMap<>();
-		for (Statement.Function method : stmt.body) {
+		for (Statement.Function method : stmt.methods) {
 			RoboScriptFunction function = new RoboScriptFunction(method, this.environment,
 					method.name.lexeme.equals(stmt.name.lexeme));
 			methods.put(method.name.lexeme, function);
@@ -97,45 +97,6 @@ public final class Interpreter implements Expression.Visitor<Object>, Statement.
 		}
 
 		this.environment.assign(stmt.name, clazz);
-		return null;*/
-
-
-		Object superclass = null;
-		RoboScriptFunction initializer = null;
-		if (stmt.superclass != null) {
-			superclass = this.evaluate(stmt.superclass);
-			if (!(superclass instanceof RoboScriptClass))
-				throw new RuntimeError(stmt.superclass.name, "Superclass must be a class.");
-		}
-		this.environment.define(stmt.name, null, false);
-		if (stmt.superclass != null) {
-			this.environment = new Environment(this.environment);
-			this.environment.define("super", superclass, false);
-		}
-		if (stmt.initializer != null) {
-			initializer = new RoboScriptFunction(stmt.initializer, this.environment, true);
-		}
-		Map<String, Object> variableMap = new HashMap<>();
-		for (Statement statement : stmt.body) {
-			if (statement instanceof Statement.Function method) {
-				RoboScriptFunction function = new RoboScriptFunction(method, this.environment,
-						method.name.lexeme.equals(stmt.name.lexeme));
-				variableMap.put(method.name.lexeme, function);
-			} else if (statement instanceof Statement.Var var) {
-				Object value = null;
-				if (var.initializer != null) {
-					value = this.evaluate(var.initializer);
-				}
-				if (variableMap.containsKey(
-						var.name.lexeme))
-					throw new RuntimeError(var.name,
-							"Class or superclass already has field '" + var.name.lexeme + "'.");
-				variableMap.put(var.name.lexeme, value);
-			}
-		}
-		RoboScriptClass clas = new RoboScriptClass(stmt.name.lexeme,
-				(RoboScriptClass) superclass, variableMap, initializer);
-		this.environment.assign(stmt.name, clas);
 		return null;
 	}
 
@@ -153,11 +114,11 @@ public final class Interpreter implements Expression.Visitor<Object>, Statement.
 	public Object visitSetExpr(Expression.Set expr) {
 		Object object = this.evaluate(expr.object);
 
-		if (!(object instanceof RoboScriptSettable s)) {
+		if (!(object instanceof RoboScriptClassInstance)) {
 			throw new RuntimeError(expr.name, "Only class instances have fields.");
 		}
 		Object value = this.evaluate(expr.value);
-		s.set(expr.name, value);
+		((RoboScriptClassInstance) object).set(expr.name, value);
 		return value;
 	}
 
@@ -450,7 +411,7 @@ public final class Interpreter implements Expression.Visitor<Object>, Statement.
 			case BANG -> !this.isTruthy(right);
 			case MINUS -> -(double) right;
 			default ->
-					// Unreachable.
+				// Unreachable.
 					null;
 		};
 	}
