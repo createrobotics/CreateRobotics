@@ -283,16 +283,31 @@ public final class Interpreter implements Expression.Visitor<Object>, Statement.
 			case ARRAY -> value instanceof RoboScriptArray;
 			case FUNCTION -> value instanceof RoboScriptFunction;
 			case IDENTIFIER -> {
-				if (!(this.environment.get(expr.right) instanceof RoboScriptClass))
-					throw new RuntimeError(expr.right, "No valid class name.");
-				if (value instanceof RoboScriptClassInstance classInstance) {
-					yield classInstance.getBaseClass().equals(this.environment.get(expr.right));
+				if (this.environment.get(expr.right) instanceof RoboScriptClass clazz) {
+					if (value instanceof RoboScriptClassInstance classInstance)
+						yield isInstanceOfClass(clazz, classInstance);
+					else
+						yield false;
 				} else
-					yield false;
+					throw new RuntimeError(expr.right, "No valid class name.");
 			}
 
 			default -> throw new IllegalArgumentException();
 		};
+	}
+
+	private static boolean isInstanceOfClass(RoboScriptClass clazz, RoboScriptClassInstance instance) {
+		return isInstanceOfClass(clazz, instance.getBaseClass());
+	}
+
+	private static boolean isInstanceOfClass(RoboScriptClass clazz, RoboScriptClass sameOrExtendingClass) {
+		if (clazz.equals(sameOrExtendingClass)) {
+			return true;
+		} else if (sameOrExtendingClass.superclass != null) {
+			return isInstanceOfClass(clazz, sameOrExtendingClass.superclass);
+		} else {
+			return false;
+		}
 	}
 
 	@Override

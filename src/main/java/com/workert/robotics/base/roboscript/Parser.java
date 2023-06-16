@@ -289,24 +289,25 @@ public final class Parser {
 	}
 
 	private Expression equality() {
-		Expression expression = this.instanceCheck();
+		Expression expression = this.instanceOf();
 
 		while (this.advanceIfNextTokenMatches(Token.TokenType.BANG_EQUAL, Token.TokenType.EQUAL_EQUAL)) {
 			Token operator = this.getPreviousToken();
-			Expression right = this.instanceCheck();
+			Expression right = this.instanceOf();
 			expression = new Expression.Binary(expression, operator, right);
 		}
 
 		return expression;
 	}
 
-	private Expression instanceCheck() {
+	private Expression instanceOf() {
 		Expression expression = this.comparison();
 
-		while (this.advanceIfNextTokenMatches(Token.TokenType.INSTANCEOF)) {
-			Token operator = this.getPreviousToken();
-			Expression right = this.comparison();
-			expression = new Expression.Binary(expression, operator, right);
+		if (this.advanceIfNextTokenMatches(Token.TokenType.INSTANCEOF)) {
+			Token token = this.consumeIfOneOfNextTokensMatch("Not a valid instanceof type.", Token.TokenType.STRING,
+					Token.TokenType.DOUBLE, Token.TokenType.BOOLEAN, Token.TokenType.ARRAY, Token.TokenType.FUNCTION,
+					Token.TokenType.IDENTIFIER);
+			expression = new Expression.Instance(expression, token);
 		}
 
 		return expression;
@@ -476,6 +477,13 @@ public final class Parser {
 	private Token consumeIfNextTokenMatches(Token.TokenType expectedTokenType, String errorMessage) {
 		if (this.isNextToken(expectedTokenType)) return this.advance();
 
+		throw this.error(this.getCurrentToken(), errorMessage);
+	}
+
+	private Token consumeIfOneOfNextTokensMatch(String errorMessage, Token.TokenType... expectedTokenTypes) {
+		for (Token.TokenType expectedTokenType : expectedTokenTypes) {
+			if (this.isNextToken(expectedTokenType)) return this.advance();
+		}
 		throw this.error(this.getCurrentToken(), errorMessage);
 	}
 
