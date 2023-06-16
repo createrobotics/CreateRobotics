@@ -1,5 +1,6 @@
 package com.workert.robotics.base.roboscript;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class RoboScriptClassInstance extends RoboScriptGettable implements RoboScriptSettable {
@@ -8,8 +9,7 @@ public class RoboScriptClassInstance extends RoboScriptGettable implements RoboS
 
 	RoboScriptClassInstance(RoboScriptClass clazz) {
 		this.clazz = clazz;
-		this.fields = clazz.fields;
-		System.out.println(this.fields);
+		this.fields = new HashMap<>(clazz.fields);
 	}
 
 	@Override
@@ -33,9 +33,6 @@ public class RoboScriptClassInstance extends RoboScriptGettable implements RoboS
 			this.fields.put(name.lexeme, value);
 		else throw new RuntimeError(name,
 				"Class '" + this.clazz.name + "' does not contain the field '" + name.lexeme + "'.");
-	}
-
-	public void register() {
 	}
 
 	public RoboScriptClass getBaseClass() {

@@ -91,8 +91,8 @@ public final class Interpreter implements Expression.Visitor<Object>, Statement.
 		}
 
 
-		Map<String, Object> fields = new HashMap<>();
-		if (superclass != null) fields = ((RoboScriptClass) superclass).fields;
+		Map<String, Object> fields = (superclass != null) ? new HashMap<>(
+				((RoboScriptClass) superclass).fields) : new HashMap<>();
 		for (Statement.Var var : stmt.fields) {
 			if (fields.containsKey(var.name.lexeme)) throw new RuntimeError(var.name,
 					"Class already contains the field '" + var.name.lexeme + "' in either a superclass or itself");

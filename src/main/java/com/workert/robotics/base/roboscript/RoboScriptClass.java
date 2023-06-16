@@ -20,7 +20,6 @@ public class RoboScriptClass implements RoboScriptCallable {
 	@Override
 	public Object call(Interpreter interpreter, List<Object> arguments) {
 		RoboScriptClassInstance instance = new RoboScriptClassInstance(this);
-		instance.register();
 		if (this.initializer != null) {
 			this.initializer.bind(instance).call(interpreter, arguments);
 		}
