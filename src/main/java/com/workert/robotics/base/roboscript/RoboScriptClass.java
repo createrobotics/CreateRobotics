@@ -40,9 +40,8 @@ public class RoboScriptClass implements RoboScriptCallable {
 
 	@Override
 	public int expectedArgumentSize() {
-		RoboScriptFunction initializer = this.findMethod(this.name);
-		if (initializer == null) return 0;
-		return initializer.expectedArgumentSize();
+		if (this.initializer != null) return this.initializer.expectedArgumentSize();
+		return 0;
 	}
 
 	@Override
