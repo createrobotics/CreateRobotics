@@ -97,7 +97,7 @@ public final class Interpreter implements Expression.Visitor<Object>, Statement.
 			if (fields.containsKey(var.name.lexeme)) throw new RuntimeError(var.name,
 					"Class already contains the field '" + var.name.lexeme + "' in either a superclass or itself");
 			Object value = null;
-			if (stmt.initializer != null) {
+			if (var.initializer != null) {
 				value = this.evaluate(var.initializer);
 			}
 			fields.put(var.name.lexeme, value);
