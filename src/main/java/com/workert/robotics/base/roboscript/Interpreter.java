@@ -82,6 +82,7 @@ public final class Interpreter implements Expression.Visitor<Object>, Statement.
 			this.environment.define("super", superclass, false);
 		}
 
+
 		Map<String, RoboScriptFunction> methods = new HashMap<>();
 		for (Statement.Function method : stmt.methods) {
 			RoboScriptFunction function = new RoboScriptFunction(method, this.environment,
@@ -89,8 +90,27 @@ public final class Interpreter implements Expression.Visitor<Object>, Statement.
 			methods.put(method.name.lexeme, function);
 		}
 
-		RoboScriptClass clazz = new RoboScriptClass(this.roboScriptInstance, stmt.name.lexeme,
-				(RoboScriptClass) superclass, methods);
+
+		Map<String, Object> fields = new HashMap<>();
+		if (superclass != null) fields = ((RoboScriptClass) superclass).fields;
+		for (Statement.Var var : stmt.fields) {
+			if (fields.containsKey(var.name.lexeme)) throw new RuntimeError(var.name,
+					"Class already contains the field '" + var.name.lexeme + "' in either a superclass or itself");
+			Object value = null;
+			if (stmt.initializer != null) {
+				value = this.evaluate(var.initializer);
+			}
+			fields.put(var.name.lexeme, value);
+		}
+
+
+		RoboScriptFunction initializer = new RoboScriptFunction(
+				new Statement.Function(stmt.name, new ArrayList<>(), new ArrayList<>()), this.environment, true);
+		if (stmt.initializer != null) initializer = new RoboScriptFunction(stmt.initializer, this.environment, true);
+
+
+		RoboScriptClass clazz = new RoboScriptClass(stmt.name.lexeme,
+				(RoboScriptClass) superclass, methods, fields, initializer);
 
 		if (superclass != null) {
 			this.environment = this.environment.enclosing;
@@ -411,7 +431,7 @@ public final class Interpreter implements Expression.Visitor<Object>, Statement.
 			case BANG -> !this.isTruthy(right);
 			case MINUS -> -(double) right;
 			default ->
-				// Unreachable.
+					// Unreachable.
 					null;
 		};
 	}

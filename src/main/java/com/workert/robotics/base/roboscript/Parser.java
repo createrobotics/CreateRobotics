@@ -54,14 +54,28 @@ public final class Parser {
 		this.consumeIfNextTokenMatches(Token.TokenType.LEFT_BRACE, "Expected '{' before class body.");
 
 		List<Statement.Function> methods = new ArrayList<>();
+		List<Statement.Var> fields = new ArrayList<>();
+		Statement.Function initializer = null;
 		while (!this.isNextToken(Token.TokenType.RIGHT_BRACE) && !this.isAtEnd()) {
-			this.consumeIfNextTokenMatches(Token.TokenType.FUNC, "Expected 'func' token.");
-			methods.add(this.function("method"));
+
+			if (this.advanceIfNextTokenMatches(Token.TokenType.FUNC)) {
+				methods.add(this.function("method"));
+				continue;
+			} else if (this.advanceIfNextTokenMatches(Token.TokenType.VAR)) {
+				fields.add((Statement.Var) this.varDeclaration(false));
+				continue;
+			} else if (this.advanceIfNextTokenMatches(Token.TokenType.IDENTIFIER)) {
+				initializer = this.function(this.getPreviousToken(), "initializer");
+				continue;
+			} else {
+				throw this.error(this.getCurrentToken(), "Can only declare fields and methods in a class");
+			}
 		}
 
 		this.consumeIfNextTokenMatches(Token.TokenType.RIGHT_BRACE, "Expected '}' after class body.");
 
-		return new Statement.Class(name, superclass, methods);
+
+		return new Statement.Class(name, superclass, methods, fields, initializer);
 	}
 
 	private Statement statement() {
@@ -189,7 +203,10 @@ public final class Parser {
 
 	private Statement.Function function(String kind) {
 		Token name = this.consumeIfNextTokenMatches(Token.TokenType.IDENTIFIER, "Expected " + kind + " name.");
+		return this.function(name, kind);
+	}
 
+	private Statement.Function function(Token name, String kind) {
 		this.consumeIfNextTokenMatches(Token.TokenType.LEFT_PAREN, "Expected '(' after " + kind + " name.");
 		List<Token> parameters = new ArrayList<>();
 		if (!this.isNextToken(Token.TokenType.RIGHT_PAREN)) {

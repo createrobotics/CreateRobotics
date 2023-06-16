@@ -3,25 +3,26 @@ import java.util.List;
 import java.util.Map;
 
 public class RoboScriptClass implements RoboScriptCallable {
-	private final RoboScript roboScriptInstance;
 	final String name;
 	final RoboScriptClass superclass;
 	private final Map<String, RoboScriptFunction> methods;
+	protected final Map<String, Object> fields;
+	private final RoboScriptFunction initializer;
 
-	RoboScriptClass(RoboScript roboScriptInstance, String name, RoboScriptClass superclass, Map<String, RoboScriptFunction> methods) {
-		this.roboScriptInstance = roboScriptInstance;
+	RoboScriptClass(String name, RoboScriptClass superclass, Map<String, RoboScriptFunction> methods, Map<String, Object> fields, RoboScriptFunction initializer) {
 		this.name = name;
 		this.superclass = superclass;
 		this.methods = methods;
+		this.fields = fields;
+		this.initializer = initializer;
 	}
 
 	@Override
 	public Object call(Interpreter interpreter, List<Object> arguments) {
-		RoboScriptClassInstance instance = new RoboScriptClassInstance(this.roboScriptInstance, this);
-
-		RoboScriptFunction initializer = this.findMethod(this.name);
-		if (initializer != null) {
-			initializer.bind(instance).call(interpreter, arguments);
+		RoboScriptClassInstance instance = new RoboScriptClassInstance(this);
+		instance.register();
+		if (this.initializer != null) {
+			this.initializer.bind(instance).call(interpreter, arguments);
 		}
 		return instance;
 	}

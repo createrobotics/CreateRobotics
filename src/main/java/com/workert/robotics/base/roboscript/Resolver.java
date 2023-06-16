@@ -136,11 +136,13 @@ public final class Resolver implements Expression.Visitor<Void>, Statement.Visit
 		this.beginScope();
 		this.scopes.peek().put("this", true);
 
+		if (stmt.initializer != null)
+			this.resolveFunction(stmt.initializer, FunctionType.INITIALIZER);
+		for (Statement.Var field : stmt.fields) {
+			this.resolve(field.initializer);
+		}
 		for (Statement.Function method : stmt.methods) {
-			FunctionType declaration = FunctionType.METHOD;
-			if (method.name.lexeme.equals(stmt.name.lexeme)) declaration = FunctionType.INITIALIZER;
-
-			this.resolveFunction(method, declaration);
+			this.resolveFunction(method, FunctionType.METHOD);
 		}
 
 		this.endScope();
