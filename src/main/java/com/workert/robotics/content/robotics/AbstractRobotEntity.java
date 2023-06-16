@@ -56,7 +56,7 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 				}
 
 				@Override
-				public void error(String error) {
+				public void reportCompileError(String error) {
 					AbstractRobotEntity.this.terminal.addLine(error);
 					AbstractRobotEntity.this.saveWithoutId(new CompoundTag());
 				}

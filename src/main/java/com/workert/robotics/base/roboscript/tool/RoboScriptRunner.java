@@ -18,7 +18,7 @@ public class RoboScriptRunner {
 		}
 
 		@Override
-		public void error(String error) {
+		public void reportCompileError(String error) {
 			System.err.println(error);
 		}
 	};

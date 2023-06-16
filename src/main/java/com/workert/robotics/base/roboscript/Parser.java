@@ -527,7 +527,7 @@ public final class Parser {
 	}
 
 	private ParseError error(Token token, String message) {
-		this.roboScriptInstance.error(token, message);
+		this.roboScriptInstance.reportCompileError(token, message);
 		return new ParseError();
 	}
 

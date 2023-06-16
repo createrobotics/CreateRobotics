@@ -156,7 +156,7 @@ public final class Scanner {
 				} else if (this.isAlpha(c)) {
 					this.identifier();
 				} else {
-					this.roboScriptInstance.error(this.line, "Unexpected character.");
+					this.roboScriptInstance.reportCompileError(this.line, "Unexpected character.");
 				}
 				break;
 		}
@@ -198,7 +198,7 @@ public final class Scanner {
 		}
 
 		if (this.isAtEnd()) {
-			this.roboScriptInstance.error(this.line, "Unclosed string.");
+			this.roboScriptInstance.reportCompileError(this.line, "Unclosed string.");
 			return;
 		}
 

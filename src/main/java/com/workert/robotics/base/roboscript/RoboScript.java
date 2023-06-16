@@ -109,7 +109,7 @@ public abstract class RoboScript {
 		}
 	}
 
-	public final void error(Token token, String message) {
+	public final void reportCompileError(Token token, String message) {
 		if (token.type == Token.TokenType.EOF) {
 			this.report(token.line, " at end", message);
 		} else {
@@ -117,26 +117,26 @@ public abstract class RoboScript {
 		}
 	}
 
-	public final void error(int line, String message) {
+	public final void reportCompileError(int line, String message) {
 		this.report(line, "", message);
 	}
 
-	public final void runtimeError(RuntimeError error) {
+	final void runtimeError(RuntimeError error) {
 		if (error.token.line == 0) {
-			this.error("An external error occurred (possibly a signal) : " + error.getMessage());
+			this.reportCompileError("An external error occurred (possibly a Signal): " + error.getMessage());
 		} else {
-			this.error("[line " + error.token.line + "] Runtime Error: " + error.getMessage());
+			this.reportCompileError("[line " + error.token.line + "] Runtime Error: " + error.getMessage());
 		}
 	}
 
-	private final void report(int line, String where, String message) {
-		this.error("[line " + line + "] Error" + where + ": " + message);
+	private void report(int line, String where, String message) {
+		this.reportCompileError("[line " + line + "] Error" + where + ": " + message);
 		this.hadError = true;
 	}
 
 	public abstract void print(String message);
 
-	public abstract void error(String error);
+	public abstract void reportCompileError(String error);
 
 	public final void requestStop() {
 		this.interpreter.requestStop();

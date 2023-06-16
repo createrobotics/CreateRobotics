@@ -32,7 +32,7 @@ public class ComputerBlockEntity extends KineticTileEntity {
 			}
 
 			@Override
-			public void error(String error) {
+			public void reportCompileError(String error) {
 				ComputerBlockEntity.this.terminal.addLine(error);
 				ComputerBlockEntity.this.notifyUpdate();
 			}

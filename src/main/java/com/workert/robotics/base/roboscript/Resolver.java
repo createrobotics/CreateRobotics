@@ -69,7 +69,7 @@ public final class Resolver implements Expression.Visitor<Void>, Statement.Visit
 	private void declare(Token name) {
 		if (this.scopes.isEmpty()) {
 			if (this.publicScope.containsKey(name.lexeme)) {
-				this.interpreter.roboScriptInstance.error(name,
+				this.interpreter.roboScriptInstance.reportCompileError(name,
 						"Variable with this name in the public scope already exists.");
 			}
 			this.publicScope.put(name.lexeme, false);
@@ -79,7 +79,8 @@ public final class Resolver implements Expression.Visitor<Void>, Statement.Visit
 		Map<String, Boolean> scope = this.scopes.peek();
 
 		if (scope.containsKey(name.lexeme)) {
-			this.interpreter.roboScriptInstance.error(name, "Variable with this name in this scope already exists.");
+			this.interpreter.roboScriptInstance.reportCompileError(name,
+					"Variable with this name in this scope already exists.");
 		}
 
 		scope.put(name.lexeme, false);
@@ -121,7 +122,8 @@ public final class Resolver implements Expression.Visitor<Void>, Statement.Visit
 
 		if (stmt.superclass != null) {
 			if (stmt.name.lexeme.equals(stmt.superclass.name.lexeme))
-				this.interpreter.roboScriptInstance.error(stmt.superclass.name, "A class can't extend itself.");
+				this.interpreter.roboScriptInstance.reportCompileError(stmt.superclass.name,
+						"A class can't extend itself.");
 			this.currentClass = ClassType.SUBCLASS;
 			this.resolve(stmt.superclass);
 		}
@@ -176,12 +178,14 @@ public final class Resolver implements Expression.Visitor<Void>, Statement.Visit
 	@Override
 	public Void visitReturnStmt(Statement.Return stmt) {
 		if (this.currentFunction == FunctionType.NONE) {
-			this.interpreter.roboScriptInstance.error(stmt.keyword, "Can't return from top-level scope.");
+			this.interpreter.roboScriptInstance.reportCompileError(stmt.keyword,
+					"Can't return from top-level scope.");
 		}
 
 		if (stmt.value != null) {
 			if (this.currentFunction == FunctionType.INITIALIZER) {
-				this.interpreter.roboScriptInstance.error(stmt.keyword, "An initializer can't return a value.");
+				this.interpreter.roboScriptInstance.reportCompileError(stmt.keyword,
+						"An initializer can't return a value.");
 			}
 			this.resolve(stmt.value);
 		}
@@ -192,7 +196,8 @@ public final class Resolver implements Expression.Visitor<Void>, Statement.Visit
 	@Override
 	public Void visitBreakStmt(Statement.Break stmt) {
 		if (this.currentFunction == FunctionType.NONE || this.currentFunction == FunctionType.INITIALIZER) {
-			this.interpreter.roboScriptInstance.error(stmt.keyword, "Can't break from top-level scope.");
+			this.interpreter.roboScriptInstance.reportCompileError(stmt.keyword,
+					"Can't break from top-level scope.");
 		}
 
 		return null;
@@ -201,7 +206,7 @@ public final class Resolver implements Expression.Visitor<Void>, Statement.Visit
 	@Override
 	public Void visitVarStmt(Statement.Var stmt) {
 		if (stmt.staticc && !this.scopes.isEmpty()) {
-			this.interpreter.roboScriptInstance.error(stmt.name,
+			this.interpreter.roboScriptInstance.reportCompileError(stmt.name,
 					"Cannot have a static variable outside the global scope.");
 			return null;
 		}
@@ -234,7 +239,8 @@ public final class Resolver implements Expression.Visitor<Void>, Statement.Visit
 	@Override
 	public Void visitVariableExpr(Expression.Variable expr) {
 		if (!this.scopes.isEmpty() && this.scopes.peek().get(expr.name.lexeme) == Boolean.FALSE) {
-			this.interpreter.roboScriptInstance.error(expr.name, "Can't read local variable in its own initializer.");
+			this.interpreter.roboScriptInstance.reportCompileError(expr.name,
+					"Can't read local variable in its own initializer.");
 		}
 		this.resolveLocal(expr, expr.name);
 		return null;
@@ -275,7 +281,8 @@ public final class Resolver implements Expression.Visitor<Void>, Statement.Visit
 		if (expr.right.type.equals(Token.TokenType.IDENTIFIER) &&
 				!(this.publicScope.containsKey(expr.right.lexeme) ||
 						(!this.scopes.isEmpty() && this.scopes.peek().containsKey(expr.right.lexeme))))
-			this.interpreter.roboScriptInstance.error(expr.right, "Undefined class '" + expr.right.lexeme + "'.");
+			this.interpreter.roboScriptInstance.reportCompileError(expr.right,
+					"Undefined class '" + expr.right.lexeme + "'.");
 		return null;
 	}
 
@@ -313,9 +320,11 @@ public final class Resolver implements Expression.Visitor<Void>, Statement.Visit
 	@Override
 	public Void visitSuperExpr(Expression.Super expr) {
 		if (this.currentClass == ClassType.NONE) {
-			this.interpreter.roboScriptInstance.error(expr.keyword, "Can't use 'super' outside of a class.");
+			this.interpreter.roboScriptInstance.reportCompileError(expr.keyword,
+					"Can't use 'super' outside of a class.");
 		} else if (this.currentClass != ClassType.SUBCLASS) {
-			this.interpreter.roboScriptInstance.error(expr.keyword, "Can't use 'super' in a class with no superclass.");
+			this.interpreter.roboScriptInstance.reportCompileError(expr.keyword,
+					"Can't use 'super' in a class with no superclass.");
 		}
 		this.resolveLocal(expr, expr.keyword);
 		return null;
@@ -324,7 +333,8 @@ public final class Resolver implements Expression.Visitor<Void>, Statement.Visit
 	@Override
 	public Void visitThisExpr(Expression.This expr) {
 		if (this.currentClass == ClassType.NONE) {
-			this.interpreter.roboScriptInstance.error(expr.keyword, "Can't use 'this' outside of a class.");
+			this.interpreter.roboScriptInstance.reportCompileError(expr.keyword,
+					"Can't use 'this' outside of a class.");
 			return null;
 		}
 
