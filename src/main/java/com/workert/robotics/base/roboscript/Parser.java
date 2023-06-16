@@ -65,7 +65,7 @@ public final class Parser {
 				fields.add((Statement.Var) this.varDeclaration(false));
 				continue;
 			} else if (this.advanceIfNextTokenMatches(
-					Token.TokenType.IDENTIFIER) && this.getPreviousToken().lexeme == name.lexeme) {
+					Token.TokenType.IDENTIFIER) && this.getPreviousToken().lexeme.equals(name.lexeme)) {
 				initializer = this.function(this.getPreviousToken(), "initializer");
 				continue;
 			} else {
