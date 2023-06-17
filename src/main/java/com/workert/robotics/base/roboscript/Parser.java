@@ -440,9 +440,10 @@ final class Parser {
 			Token keyword = this.getPreviousToken();
 			List<Expression> args = new ArrayList<>();
 			if (this.advanceIfNextTokenMatches(Token.TokenType.LEFT_PAREN)) {
-				do {
-					args.add(this.expression());
-				} while (this.advanceIfNextTokenMatches(Token.TokenType.COMMA));
+				if (!this.isNextToken(Token.TokenType.RIGHT_PAREN))
+					do {
+						args.add(this.expression());
+					} while (this.advanceIfNextTokenMatches(Token.TokenType.COMMA));
 				this.consumeIfNextTokenMatches(Token.TokenType.RIGHT_PAREN, "Expected ')' after arguments.");
 				return new Expression.Super(keyword, null, args);
 			}
