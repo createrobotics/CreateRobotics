@@ -6,7 +6,7 @@ import java.util.Map;
 
 import static com.workert.robotics.base.roboscript.Token.TokenType.*;
 
-public final class Scanner {
+final class Scanner {
 	private final RoboScript roboScriptInstance;
 	private final String source;
 	private final List<Token> tokens = new ArrayList<>();

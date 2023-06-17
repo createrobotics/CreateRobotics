@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class RoboScriptArray extends RoboScriptGettable {
 	public final List<Object> elements;
-	final Map<String, Object> fields = new HashMap<>();
+	private final Map<String, Object> fields = new HashMap<>();
 
 	public RoboScriptArray(List<Object> elements) {
 		this.register();

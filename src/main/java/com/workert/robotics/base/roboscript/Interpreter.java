@@ -13,15 +13,15 @@ public final class Interpreter implements Expression.Visitor<Object>, Statement.
 
 	private boolean stopRequested = false;
 
-	public Interpreter(RoboScript roboScriptInstance) {
+	Interpreter(RoboScript roboScriptInstance) {
 		this.roboScriptInstance = roboScriptInstance;
 	}
 
-	public void requestStop() {
+	void requestStop() {
 		this.stopRequested = true;
 	}
 
-	public void interpret(List<Statement> statements) {
+	void interpret(List<Statement> statements) {
 		try {
 			for (Statement statement : statements) {
 				if (this.stopRequested) {
@@ -35,7 +35,7 @@ public final class Interpreter implements Expression.Visitor<Object>, Statement.
 		}
 	}
 
-	public void reset() {
+	void reset() {
 		this.stopRequested = false;
 		this.locals.clear();
 		this.environment = new Environment();
@@ -440,7 +440,7 @@ public final class Interpreter implements Expression.Visitor<Object>, Statement.
 			case BANG -> !this.isTruthy(right);
 			case MINUS -> -(double) right;
 			default ->
-					// Unreachable.
+				// Unreachable.
 					null;
 		};
 	}
@@ -515,7 +515,7 @@ public final class Interpreter implements Expression.Visitor<Object>, Statement.
 		return a.equals(b);
 	}
 
-	public static String stringify(Object object) {
+	static String stringify(Object object) {
 		if (object == null) return "null";
 
 		if (object instanceof Double) {

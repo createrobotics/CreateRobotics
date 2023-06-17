@@ -3,7 +3,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public final class Parser {
+final class Parser {
 	private final RoboScript roboScriptInstance;
 	private final List<Token> tokens;
 	private int current = 0;
@@ -13,7 +13,7 @@ public final class Parser {
 		this.tokens = tokens;
 	}
 
-	public List<Statement> parse() {
+	List<Statement> parse() {
 		List<Statement> statements = new ArrayList<>();
 		while (!this.isAtEnd()) {
 			statements.add(this.declaration());

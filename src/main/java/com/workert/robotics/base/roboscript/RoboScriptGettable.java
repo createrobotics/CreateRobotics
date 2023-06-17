@@ -7,7 +7,7 @@ public abstract class RoboScriptGettable {
 
 	public abstract Object get(Token name);
 
-	public final void defineFunction(String name, int expectedArgumentSize, BiFunction<Interpreter, List<Object>, Object> function, Map<String, Object> fields) {
+	final void defineFunction(String name, int expectedArgumentSize, BiFunction<Interpreter, List<Object>, Object> function, Map<String, Object> fields) {
 		fields.put(name, new RoboScriptCallable() {
 			@Override
 			public int expectedArgumentSize() {

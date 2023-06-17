@@ -2,7 +2,7 @@ package com.workert.robotics.base.roboscript;
 
 import java.util.List;
 
-public abstract class Statement {
+abstract class Statement {
 	interface Visitor<R> {
 		R visitBlockStmt(Block stmt);
 
