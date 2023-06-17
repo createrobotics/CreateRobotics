@@ -11,7 +11,7 @@ import net.minecraft.network.chat.MutableComponent;
 public class TerminalDisplaySource extends SingleLineDisplaySource {
 	@Override
 	protected MutableComponent provideLine(DisplayLinkContext context, DisplayTargetStats stats) {
-		if (!context.level().isClientSide)
+		if (context.level().isClientSide)
 			return Component.empty();
 		if (!(context.getSourceTE() instanceof ComputerBlockEntity computer))
 			return Component.empty();
