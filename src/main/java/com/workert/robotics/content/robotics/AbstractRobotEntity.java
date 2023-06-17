@@ -118,8 +118,10 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 		if (this.hasInventory()) pCompound.put("Inventory", this.inventory.createTag());
 		pCompound.putString("Script", this.script);
 		pCompound.putString("Terminal", this.terminal.getString());
-		pCompound.put("Memory",
-				CompoundTagEnvironmentConversionHelper.valuesToTag(this.roboScript.getVariables()));
+		if (this.isProgrammable()) {
+			pCompound.put("Memory",
+					CompoundTagEnvironmentConversionHelper.valuesToTag(this.roboScript.getVariables()));
+		}
 		super.addAdditionalSaveData(pCompound);
 	}
 
@@ -130,9 +132,11 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 			if (this.hasInventory()) this.inventory.fromTag(pCompound.getList("Inventory", 10));
 			this.script = pCompound.getString("Script");
 			this.terminal = new LineLimitedString(TERMINAL_LINE_LIMIT, pCompound.getString("Terminal"));
-			this.roboScript.putVariables(
-					CompoundTagEnvironmentConversionHelper.valuesFromCompoundTag(
-							pCompound.getCompound("Memory")));
+			if (this.isProgrammable()) {
+				this.roboScript.putVariables(
+						CompoundTagEnvironmentConversionHelper.valuesFromCompoundTag(
+								pCompound.getCompound("Memory")));
+			}
 			super.readAdditionalSaveData(pCompound);
 		} catch (NullPointerException exception) {
 			exception.printStackTrace();
@@ -185,7 +189,8 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 					() -> () -> ScreenOpener.open(new ConsoleScreen(this.roboScript)));
 		}*/ else if (this.isProgrammable() && pPlayer.getItemInHand(pHand)
 				.is(ItemRegistry.PROGRAM.get()) && !pPlayer.isCrouching()) {
-			if (!this.level.isClientSide) this.script = pPlayer.getItemInHand(pHand).getOrCreateTag().getString("code");
+			if (!this.level.isClientSide)
+				this.script = pPlayer.getItemInHand(pHand).getOrCreateTag().getString("code");
 			return InteractionResult.SUCCESS;
 		}/* else if (this.isProgrammable() && (pPlayer.getItemInHand(pHand)
 				.is(Items.WRITTEN_BOOK) || pPlayer.getItemInHand(pHand)
@@ -214,7 +219,8 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 	public CodeHelper.RobotFrequencyEntry getRobotFrequencyEntry() {
 		if (!this.isProgrammable()) return null;
 		if (this.robotFrequencyEntry == null) this.robotFrequencyEntry = new CodeHelper.RobotFrequencyEntry(this,
-				Couple.create(RedstoneLinkNetworkHandler.Frequency.EMPTY, RedstoneLinkNetworkHandler.Frequency.EMPTY),
+				Couple.create(RedstoneLinkNetworkHandler.Frequency.EMPTY,
+						RedstoneLinkNetworkHandler.Frequency.EMPTY),
 				0);
 		return this.robotFrequencyEntry;
 	}

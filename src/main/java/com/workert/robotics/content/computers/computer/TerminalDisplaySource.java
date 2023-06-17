@@ -7,12 +7,11 @@ import com.simibubi.create.content.logistics.block.display.target.DisplayTargetS
 import com.simibubi.create.content.logistics.trains.management.display.FlapDisplaySection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.server.level.ServerLevel;
 
 public class TerminalDisplaySource extends SingleLineDisplaySource {
 	@Override
 	protected MutableComponent provideLine(DisplayLinkContext context, DisplayTargetStats stats) {
-		if (!(context.level() instanceof ServerLevel level))
+		if (!context.level().isClientSide)
 			return null;
 		if (!(context.getSourceTE() instanceof ComputerBlockEntity computer))
 			return null;
@@ -29,7 +28,7 @@ public class TerminalDisplaySource extends SingleLineDisplaySource {
 
 	@Override
 	public int getPassiveRefreshTicks() {
-		return 10;
+		return 2;
 	}
 
 	@Override
