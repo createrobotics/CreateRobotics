@@ -10,7 +10,6 @@ import com.tterrag.registrate.providers.loot.RegistrateBlockLootTables;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.workert.robotics.Robotics;
 import com.workert.robotics.content.computers.computer.ComputerBlock;
-import com.workert.robotics.content.computers.computer.FrequencyDisplaySource;
 import com.workert.robotics.content.computers.computer.TerminalDisplaySource;
 import com.workert.robotics.content.computers.inputs.InputBlockItem;
 import com.workert.robotics.content.computers.inputs.redstonedetector.RedstoneDetectorBlock;
@@ -142,8 +141,6 @@ public class BlockRegistry {
 			.transform(BlockStressDefaults.setImpact(12))
 			.onRegister(AllDisplayBehaviours.assignDataBehaviour(
 					new TerminalDisplaySource(), "terminal"))
-			.onRegister(AllDisplayBehaviours.assignDataBehaviour(
-					new FrequencyDisplaySource(), "frequency"))
 			.simpleItem()
 			.properties(BlockBehaviour.Properties::noOcclusion).register();
 
