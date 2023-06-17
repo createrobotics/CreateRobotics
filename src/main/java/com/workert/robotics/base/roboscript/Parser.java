@@ -66,7 +66,7 @@ final class Parser {
 					Token.TokenType.IDENTIFIER) && this.getPreviousToken().lexeme.equals(name.lexeme)) {
 				initializer = this.function(this.getPreviousToken(), "initializer");
 			} else {
-				throw this.error(this.getCurrentToken(), "Can only declare fields and methods in a class");
+				throw this.error(this.getCurrentToken(), "Can only declare fields and methods in a class.");
 			}
 		}
 
@@ -136,7 +136,7 @@ final class Parser {
 				"Expected variable name after '('.");
 		Token colon = this.consumeIfNextTokenMatches(Token.TokenType.COLON, "Expected ':' after variable name.");
 		Expression right = this.expression();
-		this.consumeIfNextTokenMatches(Token.TokenType.RIGHT_PAREN, "Expected ')' after expression");
+		this.consumeIfNextTokenMatches(Token.TokenType.RIGHT_PAREN, "Expected ')' after expression.");
 		Statement body = this.statement();
 		return new Statement.Foreach(variable, colon, right, body);
 	}

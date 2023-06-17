@@ -92,6 +92,9 @@ public abstract class RoboScript {
 		});
 	}
 
+	/**
+	 * If you override this method to define own functions <b>do not forget</b> to call <code>super.defineDefaultFunctions()</code> at the end of your code!
+	 */
 	public void defineDefaultFunctions() {
 		this.defineFunction("print", 1, (interpreter, arguments) -> {
 			this.print(Interpreter.stringify(arguments.get(0)));

@@ -5,6 +5,7 @@ import com.simibubi.create.content.logistics.RedstoneLinkNetworkHandler;
 import com.simibubi.create.foundation.utility.Couple;
 import com.workert.robotics.base.registries.ItemRegistry;
 import com.workert.robotics.base.roboscript.RoboScript;
+import com.workert.robotics.base.roboscript.RoboScriptArray;
 import com.workert.robotics.base.roboscript.ingame.CompoundTagEnvironmentConversionHelper;
 import com.workert.robotics.base.roboscript.ingame.LineLimitedString;
 import com.workert.robotics.helpers.CodeHelper;
@@ -27,7 +28,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class AbstractRobotEntity extends PathfinderMob implements InventoryCarrier {
 	private static final int maxAir = BackTankUtil.maxAirWithoutEnchants() * 10;
@@ -59,6 +64,33 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 				public void reportCompileError(String error) {
 					AbstractRobotEntity.this.terminal.addLine(error);
 					AbstractRobotEntity.this.saveWithoutId(new CompoundTag());
+				}
+
+				@Override
+				public void defineDefaultFunctions() {
+					this.defineFunction("getXPos", 0,
+							(interpreter, arguments) -> AbstractRobotEntity.this.position().x);
+					this.defineFunction("getYPos", 0,
+							(interpreter, arguments) -> AbstractRobotEntity.this.position().y);
+					this.defineFunction("getZPos", 0,
+							(interpreter, arguments) -> AbstractRobotEntity.this.position().z);
+					this.defineFunction("getAirSupply", 0, (interpreter, arguments) -> AbstractRobotEntity.this.air);
+					this.defineFunction("getMaxAirSupply", 0,
+							(interpreter, arguments) -> AbstractRobotEntity.this.getMaxAirSupply());
+					this.defineFunction("getInventorySupply", 0,
+							(interpreter, arguments) -> {
+								List<Object> itemList = new ArrayList<>();
+								for (int inventoryIndex = 0; inventoryIndex < AbstractRobotEntity.this.inventory.getContainerSize(); inventoryIndex++) {
+									ItemStack itemStack = AbstractRobotEntity.this.inventory.getItem(inventoryIndex);
+									if (itemStack.isEmpty()) continue;
+									itemList.add(new RoboScriptArray(
+											List.of(ForgeRegistries.ITEMS.getKey(itemStack.getItem()).toString(),
+													itemStack.getHoverName().getString(),
+													(double) itemStack.getCount())));
+								}
+								return new RoboScriptArray(itemList);
+							});
+					super.defineDefaultFunctions();
 				}
 			};
 		} else {
