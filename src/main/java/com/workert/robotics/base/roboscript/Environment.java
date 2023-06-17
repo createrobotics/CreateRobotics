@@ -2,15 +2,15 @@ package com.workert.robotics.base.roboscript;
 import java.util.HashMap;
 import java.util.Map;
 
-public final class Environment {
+final class Environment {
 	final Environment enclosing;
 	final Map<String, RoboScriptVariable> variableMap = new HashMap<>();
 
-	public Environment() {
+	Environment() {
 		this.enclosing = null;
 	}
 
-	public Environment(Environment enclosing) {
+	Environment(Environment enclosing) {
 		this.enclosing = enclosing;
 	}
 
@@ -24,7 +24,7 @@ public final class Environment {
 		this.variableMap.put(name.lexeme, new RoboScriptVariable(staticc, value));
 	}
 
-	Environment ancestor(int distance) {
+	private Environment ancestor(int distance) {
 		Environment environment = this;
 		for (int i = 0; i < distance; i++) {
 			environment = environment.enclosing;
@@ -47,7 +47,7 @@ public final class Environment {
 		throw new RuntimeError(name, "Undefined variable or function '" + name.lexeme + "'.");
 	}
 
-	boolean checkAccessibleVariable(Token name) {
+	private boolean checkAccessibleVariable(Token name) {
 		if (this.variableMap.containsKey(name.lexeme)) {
 			return true;
 		}
@@ -62,7 +62,7 @@ public final class Environment {
 				new RoboScriptVariable(false, value));
 	}
 
-	public void assign(Token name, Object value) {
+	void assign(Token name, Object value) {
 		if (this.variableMap.containsKey(name.lexeme)) {
 			this.variableMap.get(name.lexeme).value = value;
 			return;

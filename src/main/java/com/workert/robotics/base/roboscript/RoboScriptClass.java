@@ -6,7 +6,7 @@ public class RoboScriptClass implements RoboScriptCallable {
 	final String name;
 	final RoboScriptClass superclass;
 	private final Map<String, RoboScriptFunction> methods;
-	protected final Map<String, Object> fields;
+	final Map<String, Object> fields;
 	private final RoboScriptFunction initializer;
 
 	RoboScriptClass(String name, RoboScriptClass superclass, Map<String, RoboScriptFunction> methods, Map<String, Object> fields, RoboScriptFunction initializer) {
@@ -26,7 +26,7 @@ public class RoboScriptClass implements RoboScriptCallable {
 		return instance;
 	}
 
-	protected Object callSuperInitializer(Interpreter interpreter, List<Object> arguments, RoboScriptClassInstance instance) {
+	Object callSuperInitializer(Interpreter interpreter, List<Object> arguments, RoboScriptClassInstance instance) {
 		RoboScriptClassInstance superInstance = new RoboScriptClassInstance(this.superclass);
 		this.superclass.initializer.bind(instance).call(interpreter, arguments);
 		return superInstance;

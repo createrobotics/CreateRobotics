@@ -35,7 +35,7 @@ public class RoboScriptClassInstance extends RoboScriptGettable implements RoboS
 				"Class '" + this.clazz.name + "' does not contain the field '" + name.lexeme + "'.");
 	}
 
-	public RoboScriptClass getBaseClass() {
+	RoboScriptClass getBaseClass() {
 		return this.clazz;
 	}
 

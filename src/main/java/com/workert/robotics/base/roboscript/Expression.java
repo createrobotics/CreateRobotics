@@ -2,7 +2,7 @@ package com.workert.robotics.base.roboscript;
 
 import java.util.List;
 
-public abstract class Expression {
+abstract class Expression {
 	interface Visitor<R> {
 		R visitAssignExpr(Assign expr);
 

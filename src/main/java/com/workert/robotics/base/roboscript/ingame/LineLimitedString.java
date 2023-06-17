@@ -4,7 +4,7 @@ import java.util.List;
 
 public class LineLimitedString {
 	private String baseString = "";
-	public final int lineLimit;
+	private final int lineLimit;
 
 	public LineLimitedString(int lineLimit) {
 		this.lineLimit = lineLimit;
@@ -15,7 +15,7 @@ public class LineLimitedString {
 		this.addText(baseString);
 	}
 
-	public void addText(String text) {
+	private void addText(String text) {
 		StringBuilder builder = new StringBuilder(this.baseString);
 		builder.append(text);
 

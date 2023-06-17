@@ -7,7 +7,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
 
 public abstract class RoboScript {
-	protected final Interpreter interpreter = new Interpreter(this);
+	private final Interpreter interpreter = new Interpreter(this);
 
 	private boolean hadError = false;
 
@@ -24,7 +24,7 @@ public abstract class RoboScript {
 	 * @param function a {@link BiFunction} with two arguments: the Interpreter and a {@link List} with all
 	 *                 provided arguments to the command. May return an object.
 	 */
-	public final void defineFunction(String name, int expectedArgumentSize, BiFunction<Interpreter, List<Object>, Object> function) {
+	public void defineFunction(String name, int expectedArgumentSize, BiFunction<Interpreter, List<Object>, Object> function) {
 		this.interpreter.environment.define(name, new RoboScriptCallable() {
 			@Override
 			public int expectedArgumentSize() {
@@ -92,7 +92,7 @@ public abstract class RoboScript {
 		});
 	}
 
-	protected void defineDefaultFunctions() {
+	public void defineDefaultFunctions() {
 		this.defineFunction("print", 1, (interpreter, arguments) -> {
 			this.print(Interpreter.stringify(arguments.get(0)));
 			return null;
@@ -109,7 +109,7 @@ public abstract class RoboScript {
 		}
 	}
 
-	public final void reportCompileError(Token token, String message) {
+	final void reportCompileError(Token token, String message) {
 		if (token.type == Token.TokenType.EOF) {
 			this.report(token.line, " at end", message);
 		} else {
@@ -117,7 +117,7 @@ public abstract class RoboScript {
 		}
 	}
 
-	public final void reportCompileError(int line, String message) {
+	final void reportCompileError(int line, String message) {
 		this.report(line, "", message);
 	}
 
