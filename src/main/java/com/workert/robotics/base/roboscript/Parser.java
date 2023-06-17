@@ -438,10 +438,19 @@ public final class Parser {
 
 		if (this.advanceIfNextTokenMatches(Token.TokenType.SUPER)) {
 			Token keyword = this.getPreviousToken();
+			List<Expression> args = new ArrayList<>();
+			if (this.advanceIfNextTokenMatches(Token.TokenType.LEFT_PAREN)) {
+				do {
+					args.add(this.expression());
+				} while (this.advanceIfNextTokenMatches(Token.TokenType.COMMA));
+				this.consumeIfNextTokenMatches(Token.TokenType.RIGHT_PAREN, "Expected ')' after arguments.");
+				return new Expression.Super(keyword, null, args);
+			}
+
 			this.consumeIfNextTokenMatches(Token.TokenType.DOT, "Expected '.' after 'super'.");
 			Token method = this.consumeIfNextTokenMatches(Token.TokenType.IDENTIFIER,
 					"Expected superclass method name.");
-			return new Expression.Super(keyword, method);
+			return new Expression.Super(keyword, method, null);
 		}
 
 		if (this.advanceIfNextTokenMatches(Token.TokenType.THIS)) return new Expression.This(this.getPreviousToken());

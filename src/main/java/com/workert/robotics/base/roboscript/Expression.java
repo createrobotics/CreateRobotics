@@ -191,9 +191,10 @@ public abstract class Expression {
 
 
 	static class Super extends Expression {
-		Super(Token keyword, Token method) {
+		Super(Token keyword, Token method, List<Expression> arguments) {
 			this.keyword = keyword;
 			this.method = method;
+			this.arguments = arguments;
 		}
 
 		@Override
@@ -203,6 +204,7 @@ public abstract class Expression {
 
 		final Token keyword;
 		final Token method;
+		final List<Expression> arguments;
 	}
 
 

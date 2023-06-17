@@ -151,8 +151,17 @@ public final class Interpreter implements Expression.Visitor<Object>, Statement.
 		RoboScriptClassInstance instance = (RoboScriptClassInstance) this.environment.getAt(distance - 1,
 				new Token(Token.TokenType.THIS, "this", "this", expr.keyword.line));
 
-		RoboScriptFunction method = superclass.findMethod(expr.method.lexeme);
-		return method.bind(instance);
+		if (expr.method != null) {
+			RoboScriptFunction method = superclass.findMethod(expr.method.lexeme);
+			return method.bind(instance);
+		} else { //you should not be able to have a super expr with no arguments or no method, should be tested though.
+			List<Object> arguments = new ArrayList<>();
+			for (Expression argument : expr.arguments) {
+				arguments.add(this.evaluate(argument));
+			}
+			return instance.getBaseClass().callSuperInitializer(this, arguments, instance);
+		}
+
 	}
 
 	@Override

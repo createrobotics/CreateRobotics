@@ -328,6 +328,10 @@ public final class Resolver implements Expression.Visitor<Void>, Statement.Visit
 			this.interpreter.roboScriptInstance.reportCompileError(expr.keyword,
 					"Can't use 'super' in a class with no superclass.");
 		}
+		if (expr.arguments != null)
+			for (Expression expression : expr.arguments) {
+				this.resolve(expression);
+			}
 		this.resolveLocal(expr, expr.keyword);
 		return null;
 	}

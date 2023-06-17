@@ -26,6 +26,12 @@ public class RoboScriptClass implements RoboScriptCallable {
 		return instance;
 	}
 
+	protected Object callSuperInitializer(Interpreter interpreter, List<Object> arguments, RoboScriptClassInstance instance) {
+		RoboScriptClassInstance superInstance = new RoboScriptClassInstance(this.superclass);
+		this.superclass.initializer.bind(instance).call(interpreter, arguments);
+		return superInstance;
+	}
+
 	RoboScriptFunction findMethod(String name) {
 		if (this.methods.containsKey(name)) {
 			return this.methods.get(name);
