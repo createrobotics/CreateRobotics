@@ -4,7 +4,6 @@ import com.simibubi.create.content.AllSections;
 import com.simibubi.create.content.logistics.block.display.AllDisplayBehaviours;
 import com.simibubi.create.foundation.block.BlockStressDefaults;
 import com.simibubi.create.foundation.data.AssetLookup;
-import com.simibubi.create.foundation.data.BlockStateGen;
 import com.simibubi.create.foundation.data.TagGen;
 import com.tterrag.registrate.providers.loot.RegistrateBlockLootTables;
 import com.tterrag.registrate.util.entry.BlockEntry;
@@ -165,11 +164,11 @@ public class BlockRegistry {
 	public static final BlockEntry<ScannerBlock> SCANNER = Robotics.REGISTRATE
 			.block("scanner", ScannerBlock::new)
 			.lang("Scanner")
-			
+			.blockstate((dataGenContext, provider) -> provider.simpleBlock(dataGenContext.get(),
+					provider.models().getExistingFile(provider.modLoc("block/scanner"))))
 			.initialProperties(() -> Blocks.STONE)
 			.transform(TagGen.pickaxeOnly())
 			.properties(BlockBehaviour.Properties::noOcclusion)
-			.blockstate(BlockStateGen.horizontalBlockProvider(true))
 			.item(InputBlockItem::new)
 			.model(AssetLookup::customItemModel)
 			.build()
