@@ -28,7 +28,7 @@ final class Parser {
 	private Statement declaration() {
 		try {
 			if (this.advanceIfNextTokenMatches(Token.TokenType.CLASS)) return this.classDeclaration();
-			if (this.advanceIfNextTokenMatches(Token.TokenType.FUNC)) return this.function("function");
+			if (this.advanceIfNextTokenMatches(Token.TokenType.FUNCTION)) return this.function("function");
 			if (this.advanceIfNextTokenMatches(Token.TokenType.PERSISTENT)) {
 				this.consumeIfNextTokenMatches(Token.TokenType.VAR, "Expected keyword 'var' after keyword 'static'.");
 				return this.varDeclaration(true);
@@ -58,7 +58,7 @@ final class Parser {
 		Statement.Function initializer = null;
 		while (!this.isNextToken(Token.TokenType.RIGHT_BRACE) && !this.isAtEnd()) {
 
-			if (this.advanceIfNextTokenMatches(Token.TokenType.FUNC)) {
+			if (this.advanceIfNextTokenMatches(Token.TokenType.FUNCTION)) {
 				methods.add(this.function("method"));
 			} else if (this.advanceIfNextTokenMatches(Token.TokenType.VAR)) {
 				fields.add((Statement.Var) this.varDeclaration(false));
@@ -320,7 +320,7 @@ final class Parser {
 
 		if (this.advanceIfNextTokenMatches(Token.TokenType.INSTANCEOF)) {
 			Token token = this.consumeIfOneOfNextTokensMatch("Not a valid instanceof type.", Token.TokenType.STRING,
-					Token.TokenType.DOUBLE, Token.TokenType.BOOLEAN, Token.TokenType.ARRAY, Token.TokenType.FUNCTION,
+					Token.TokenType.DOUBLE, Token.TokenType.BOOLEAN, Token.TokenType.ARRAY, Token.TokenType.OBJECT,
 					Token.TokenType.IDENTIFIER);
 			expression = new Expression.Instance(expression, token);
 		}
@@ -563,7 +563,7 @@ final class Parser {
 			if (this.getPreviousToken().type == Token.TokenType.SEMICOLON) return;
 
 			switch (this.getCurrentToken().type) {
-				case CLASS, FUNC, VAR, FOR, IF, WHILE, RETURN -> {
+				case CLASS, FUNCTION, VAR, FOR, IF, WHILE, RETURN -> {
 					return;
 				}
 			}

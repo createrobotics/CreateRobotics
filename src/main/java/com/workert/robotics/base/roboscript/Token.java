@@ -62,7 +62,7 @@ public final class Token {
 		CLASS,
 		ELSE,
 		FALSE,
-		FUNC,
+		FUNCTION,
 		FOR,
 		FOREACH,
 		IF,
@@ -84,7 +84,7 @@ public final class Token {
 		DOUBLE,
 		BOOLEAN,
 		ARRAY,
-		FUNCTION,
+		OBJECT,
 
 
 		EOF

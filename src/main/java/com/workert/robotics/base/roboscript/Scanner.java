@@ -25,7 +25,7 @@ final class Scanner {
 		keywords.put("false", FALSE);
 		keywords.put("for", FOR);
 		keywords.put("foreach", FOREACH);
-		keywords.put("func", FUNC);
+		keywords.put("function", FUNCTION);
 		keywords.put("if", IF);
 		keywords.put("null", NULL);
 		keywords.put("or", OR);
@@ -43,7 +43,7 @@ final class Scanner {
 		keywords.put("double", DOUBLE);
 		keywords.put("boolean", BOOLEAN);
 		keywords.put("Array", ARRAY);
-		keywords.put("Function", FUNCTION);
+		keywords.put("Object", OBJECT);
 	}
 
 	Scanner(RoboScript roboScriptInstance, String source) {

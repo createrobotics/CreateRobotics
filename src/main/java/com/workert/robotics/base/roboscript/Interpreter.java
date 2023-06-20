@@ -310,7 +310,8 @@ public final class Interpreter implements Expression.Visitor<Object>, Statement.
 			case DOUBLE -> value instanceof Double;
 			case BOOLEAN -> value instanceof Boolean;
 			case ARRAY -> value instanceof RoboScriptArray;
-			case FUNCTION -> value instanceof RoboScriptFunction;
+			case OBJECT ->
+					value instanceof RoboScriptVariable || value instanceof RoboScriptFunction || value instanceof RoboScriptClassInstance;
 			case IDENTIFIER -> {
 				if (this.environment.get(expr.right) instanceof RoboScriptClass clazz) {
 					if (value instanceof RoboScriptClassInstance classInstance)
