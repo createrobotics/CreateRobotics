@@ -1,4 +1,4 @@
-package com.workert.robotics.content.robotics.miner;
+package com.workert.robotics.unused.miner;
 
 import com.workert.robotics.content.robotics.AbstractRobotEntity;
 import net.minecraft.server.level.ServerLevel;

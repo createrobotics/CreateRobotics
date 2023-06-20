@@ -1,4 +1,4 @@
-package com.workert.robotics.content.robotics.miner;
+package com.workert.robotics.unused.miner;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;

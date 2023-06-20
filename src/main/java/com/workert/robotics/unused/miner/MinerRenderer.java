@@ -1,4 +1,4 @@
-package com.workert.robotics.content.robotics.miner;
+package com.workert.robotics.unused.miner;
 
 import com.workert.robotics.Robotics;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
