@@ -110,8 +110,8 @@ public class CodeDrone extends AbstractRobotEntity implements FlyingAnimal, IAni
 	}
 
 	@Override
-	public boolean hasInventory() {
-		return true;
+	public SimpleContainer getInventory() {
+		return this.inventory;
 	}
 
 	@Override

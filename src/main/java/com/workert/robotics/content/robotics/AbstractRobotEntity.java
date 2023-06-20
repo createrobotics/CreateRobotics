@@ -110,12 +110,10 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 		return false;
 	}
 
-	public abstract boolean hasInventory();
-
 	@Override
 	public void addAdditionalSaveData(CompoundTag pCompound) {
 		pCompound.putInt("Air", this.air);
-		if (this.hasInventory()) pCompound.put("Inventory", this.inventory.createTag());
+		if (this.getInventory() != null) pCompound.put("Inventory", this.inventory.createTag());
 		pCompound.putString("Script", this.script);
 		pCompound.putString("Terminal", this.terminal.getString());
 		if (this.isProgrammable()) {
@@ -129,7 +127,7 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 	public void readAdditionalSaveData(CompoundTag pCompound) {
 		try {
 			this.air = pCompound.getInt("Air");
-			if (this.hasInventory()) this.inventory.fromTag(pCompound.getList("Inventory", 10));
+			if (this.getInventory() != null) this.inventory.fromTag(pCompound.getList("Inventory", 10));
 			this.script = pCompound.getString("Script");
 			this.terminal = new LineLimitedString(TERMINAL_LINE_LIMIT, pCompound.getString("Terminal"));
 			if (this.isProgrammable()) {
@@ -207,7 +205,7 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 			});
 			this.code = this.code.replace("{\"text\":\"", "").replace("\"}", "\n").replace("\\n", "\n").trim();
 			return InteractionResult.SUCCESS;
-		}*/ else if (this.hasInventory() && !pPlayer.isCrouching()) {
+		}*/ else if (this.getInventory() != null && !pPlayer.isCrouching()) {
 			pPlayer.openMenu(new SimpleMenuProvider(
 					(id, playerInventory, player) -> new ChestMenu(MenuType.GENERIC_3x3, id, playerInventory,
 							AbstractRobotEntity.this.inventory, 1), this.getDisplayName()));
@@ -248,17 +246,17 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 
 	@Override
 	public SimpleContainer getInventory() {
-		return this.hasInventory() ? this.inventory : null;
+		return null;
 	}
 
 	@Override
 	public boolean wantsToPickUp(ItemStack pStack) {
-		return this.hasInventory() && this.inventory.canAddItem(pStack);
+		return this.getInventory() != null && this.inventory.canAddItem(pStack);
 	}
 
 	@Override
 	public boolean canPickUpLoot() {
-		return this.hasInventory();
+		return this.getInventory() != null;
 	}
 
 	@Override

@@ -56,7 +56,7 @@ public class Miner extends AbstractRobotEntity {
 	}
 
 	@Override
-	public boolean hasInventory() {
-		return true;
+	public SimpleContainer getInventory() {
+		return this.inventory;
 	}
 }

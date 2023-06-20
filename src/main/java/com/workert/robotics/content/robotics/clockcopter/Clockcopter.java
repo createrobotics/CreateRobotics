@@ -3,6 +3,7 @@ package com.workert.robotics.content.robotics.clockcopter;
 import com.workert.robotics.base.registries.ItemRegistry;
 import com.workert.robotics.content.robotics.AbstractRobotEntity;
 import com.workert.robotics.content.robotics.clockcopter.goals.MineBlockAndDropGoal;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.control.FlyingMoveControl;
@@ -15,6 +16,8 @@ import net.minecraftforge.common.Tags;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class Clockcopter extends AbstractRobotEntity implements FlyingAnimal {
+
+	private final SimpleContainer inventory = new SimpleContainer(9);
 
 	public Clockcopter(EntityType<? extends AbstractRobotEntity> entity, Level world) {
 		super(entity, world);
@@ -59,7 +62,7 @@ public class Clockcopter extends AbstractRobotEntity implements FlyingAnimal {
 	}
 
 	@Override
-	public boolean hasInventory() {
-		return true;
+	public SimpleContainer getInventory() {
+		return this.inventory;
 	}
 }
