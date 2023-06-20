@@ -1,4 +1,4 @@
-package com.workert.robotics.content.robotics.codedrone;
+package com.workert.robotics.unused.codedrone;
 
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;

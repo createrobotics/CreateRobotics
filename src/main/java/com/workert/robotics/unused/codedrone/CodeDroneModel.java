@@ -1,4 +1,4 @@
-package com.workert.robotics.content.robotics.codedrone;
+package com.workert.robotics.unused.codedrone;
 
 import com.workert.robotics.Robotics;
 import net.minecraft.resources.ResourceLocation;
