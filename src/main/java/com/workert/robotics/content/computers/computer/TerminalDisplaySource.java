@@ -12,11 +12,11 @@ public class TerminalDisplaySource extends SingleLineDisplaySource {
 	@Override
 	protected MutableComponent provideLine(DisplayLinkContext context, DisplayTargetStats stats) {
 		if (context.level().isClientSide)
-			return Component.empty();
+			return EMPTY_LINE;
 		if (!(context.getSourceTE() instanceof ComputerBlockEntity computer))
-			return Component.empty();
+			return EMPTY_LINE;
 		if (!computer.isSpeedRequirementFulfilled())
-			return Component.empty();
+			return EMPTY_LINE;
 		String[] lines = computer.getTerminal().getString().split("\n");
 		return Component.literal(lines[lines.length - 1]);
 	}
@@ -28,7 +28,7 @@ public class TerminalDisplaySource extends SingleLineDisplaySource {
 
 	@Override
 	public int getPassiveRefreshTicks() {
-		return 2;
+		return 10;
 	}
 
 	@Override

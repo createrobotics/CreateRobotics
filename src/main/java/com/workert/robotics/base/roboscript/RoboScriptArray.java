@@ -1,4 +1,5 @@
 package com.workert.robotics.base.roboscript;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,5 +45,18 @@ public class RoboScriptArray extends RoboScriptGettable {
 			return this.elements.get((int) (float) (double) objects.get(0));
 		})), this.fields);
 
+	}
+
+	public static List<String> stringifyAllElements(List<Object> elements) {
+		List<String> stringList = new ArrayList<>();
+		for (Object o : elements) {
+			stringList.add(Interpreter.stringify(o));
+		}
+		return stringList;
+	}
+
+	@Override
+	public String toString() {
+		return stringifyAllElements(this.elements).toString();
 	}
 }

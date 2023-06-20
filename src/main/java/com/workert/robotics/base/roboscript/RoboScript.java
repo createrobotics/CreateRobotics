@@ -24,7 +24,7 @@ public abstract class RoboScript {
 	 * @param function a {@link BiFunction} with two arguments: the Interpreter and a {@link List} with all
 	 *                 provided arguments to the command. May return an object.
 	 */
-	public void defineFunction(String name, int expectedArgumentSize, BiFunction<Interpreter, List<Object>, Object> function) {
+	public final void defineFunction(String name, int expectedArgumentSize, BiFunction<Interpreter, List<Object>, Object> function) {
 		this.interpreter.environment.define(name, new RoboScriptCallable() {
 			@Override
 			public int expectedArgumentSize() {

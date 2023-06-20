@@ -310,8 +310,7 @@ public final class Interpreter implements Expression.Visitor<Object>, Statement.
 			case DOUBLE -> value instanceof Double;
 			case BOOLEAN -> value instanceof Boolean;
 			case ARRAY -> value instanceof RoboScriptArray;
-			case OBJECT ->
-					value instanceof RoboScriptVariable || value instanceof RoboScriptFunction || value instanceof RoboScriptClassInstance;
+			case OBJECT -> value instanceof RoboScriptVariable || value instanceof RoboScriptFunction || value instanceof RoboScriptClassInstance;
 			case IDENTIFIER -> {
 				if (this.environment.get(expr.right) instanceof RoboScriptClass clazz) {
 					if (value instanceof RoboScriptClassInstance classInstance)
@@ -441,7 +440,7 @@ public final class Interpreter implements Expression.Visitor<Object>, Statement.
 			case BANG -> !this.isTruthy(right);
 			case MINUS -> -(double) right;
 			default ->
-				// Unreachable.
+					// Unreachable.
 					null;
 		};
 	}
@@ -516,7 +515,7 @@ public final class Interpreter implements Expression.Visitor<Object>, Statement.
 		return a.equals(b);
 	}
 
-	static String stringify(Object object) {
+	public static String stringify(Object object) {
 		if (object == null) return "null";
 
 		if (object instanceof Double) {
