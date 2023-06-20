@@ -26,6 +26,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
+import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.common.Tags;
 
 import static com.simibubi.create.foundation.data.TagGen.tagBlockAndItem;
@@ -136,6 +137,9 @@ public class BlockRegistry {
 
 	public static final BlockEntry<ComputerBlock> COMPUTER = Robotics.REGISTRATE
 			.block("computer", ComputerBlock::new)
+			.lang("Computer")
+			.blockstate((dataGenContext, provider) -> provider.simpleBlock(dataGenContext.get(),
+					provider.models().getExistingFile(provider.modLoc("block/computer"))))
 			.initialProperties(() -> Blocks.STONE)
 			.transform(TagGen.pickaxeOnly())
 			.transform(BlockStressDefaults.setImpact(12))
@@ -146,6 +150,12 @@ public class BlockRegistry {
 
 	public static final BlockEntry<RedstoneDetectorBlock> REDSTONE_DETECTOR = Robotics.REGISTRATE
 			.block("redstone_detector", RedstoneDetectorBlock::new)
+			.lang("Redstone Detector")
+			.blockstate((dataGenContext, provider) -> provider.getVariantBuilder(dataGenContext.get()).partialState()
+					.with(dataGenContext.get().LIT, true).addModels(new ConfiguredModel(
+							provider.models().getExistingFile(provider.modLoc("block/redstone_detector_on"))))
+					.partialState().with(dataGenContext.get().LIT, false).addModels(new ConfiguredModel(
+							provider.models().getExistingFile(provider.modLoc("block/redstone_detector")))))
 			.initialProperties(() -> Blocks.STONE)
 			.transform(TagGen.pickaxeOnly())
 			.item(InputBlockItem::new)
@@ -154,6 +164,8 @@ public class BlockRegistry {
 			.register();
 	public static final BlockEntry<ScannerBlock> SCANNER = Robotics.REGISTRATE
 			.block("scanner", ScannerBlock::new)
+			.lang("Scanner")
+			
 			.initialProperties(() -> Blocks.STONE)
 			.transform(TagGen.pickaxeOnly())
 			.properties(BlockBehaviour.Properties::noOcclusion)
