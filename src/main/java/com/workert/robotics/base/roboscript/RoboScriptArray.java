@@ -36,14 +36,20 @@ public class RoboScriptArray extends RoboScriptGettable {
 	}
 
 	public void register() {
-		this.defineFunction("append", 1, ((interpreter, objects) -> {
+		this.defineFunction("append", 1, (interpreter, objects) -> {
 			this.elements.add(objects.get(0));
 			return null;
-		}), this.fields);
-
-		this.defineFunction("get", 1, (((interpreter, objects) -> {
-			return this.elements.get((int) (float) (double) objects.get(0));
-		})), this.fields);
+		}, this.fields);
+		this.defineFunction("add", 1, (interpreter, objects) -> {
+			this.elements.add(objects.get(0));
+			return null;
+		}, this.fields);
+		this.defineFunction("size", 0, (interpreter, objects) -> this.elements.size(), this.fields);
+		this.defineFunction("length", 0, (interpreter, objects) -> this.elements.size(), this.fields);
+		this.defineFunction("clear", 0, (interpreter, objects) -> {
+			this.elements.clear();
+			return null;
+		}, this.fields);
 
 	}
 
