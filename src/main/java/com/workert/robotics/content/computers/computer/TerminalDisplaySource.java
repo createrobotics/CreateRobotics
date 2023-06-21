@@ -44,6 +44,6 @@ public class TerminalDisplaySource extends SingleLineDisplaySource {
 
 	@Override
 	protected String getTranslationKey() {
-		return "stop_watch";
+		return "terminal";
 	}
 }
