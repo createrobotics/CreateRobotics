@@ -10,7 +10,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -80,7 +79,7 @@ public class ComputerBlockEntity extends KineticTileEntity {
 		this.script = compound.getString("Script");
 		this.terminal = new LineLimitedString(TERMINAL_LINE_LIMIT, compound.getString("Terminal"));
 		this.running = compound.getBoolean("Running");
-		this.outputDisplay = getOutputDisplayFromTag(compound.getList("OutputDisplay", Tag.TAG_STRING));
+		//this.outputDisplay = getOutputDisplayFromTag(compound.getList("OutputDisplay", Tag.TAG_STRING));
 		this.roboScript.putVariables(
 				CompoundTagEnvironmentConversionHelper.valuesFromCompoundTag(
 						compound.getCompound("Memory")));
@@ -92,7 +91,7 @@ public class ComputerBlockEntity extends KineticTileEntity {
 		compound.putString("Script", this.script);
 		compound.putString("Terminal", this.terminal.getString());
 		compound.putBoolean("Running", this.running);
-		compound.put("OutputDisplay", getOutputDisplayToTag(this.outputDisplay));
+		//compound.put("OutputDisplay", getOutputDisplayToTag(this.outputDisplay));
 		compound.put("Memory",
 				CompoundTagEnvironmentConversionHelper.valuesToTag(this.roboScript.getVariables()));
 
