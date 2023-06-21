@@ -51,6 +51,7 @@ public class ComputerDisplaySource extends DisplaySource {
 	}
 
 	private static List<MutableComponent> stringListToComponentList(List<String> stringList) {
+		if (stringList == null) return EMPTY;
 		List<MutableComponent> componentList = new ArrayList<>();
 		for (String s : stringList) {
 			componentList.add(Component.literal(s));
