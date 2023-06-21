@@ -15,7 +15,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ComputerBlockEntity extends KineticTileEntity {
@@ -137,7 +136,7 @@ public class ComputerBlockEntity extends KineticTileEntity {
 
 	private static List<String> getOutputDisplayFromTag(ListTag listTag) {
 		List<String> stringList = new ArrayList<>();
-		for (Object o : Arrays.stream(listTag.toArray()).toList()) {
+		for (Object o : listTag.toArray()) {
 			if (!(o instanceof String s)) return null;
 			stringList.add(s);
 		}
