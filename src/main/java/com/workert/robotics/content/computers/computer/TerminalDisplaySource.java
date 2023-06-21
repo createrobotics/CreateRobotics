@@ -15,20 +15,21 @@ public class TerminalDisplaySource extends SingleLineDisplaySource {
 			return EMPTY_LINE;
 		if (!(context.getSourceTE() instanceof ComputerBlockEntity computer))
 			return EMPTY_LINE;
-		if (!computer.isSpeedRequirementFulfilled())
+		if (computer.getSpeed() == 0)
 			return EMPTY_LINE;
 		String[] lines = computer.getTerminal().getString().split("\n");
 		return Component.literal(lines[lines.length - 1]);
 	}
 
-	@Override
-	protected boolean allowsLabeling(DisplayLinkContext context) {
-		return false;
-	}
 
 	@Override
 	public int getPassiveRefreshTicks() {
-		return 10;
+		return 5;
+	}
+
+	@Override
+	protected boolean allowsLabeling(DisplayLinkContext context) {
+		return false;
 	}
 
 	@Override
@@ -39,5 +40,10 @@ public class TerminalDisplaySource extends SingleLineDisplaySource {
 	@Override
 	protected FlapDisplaySection createSectionForValue(DisplayLinkContext context, int size) {
 		return new FlapDisplaySection(size * FlapDisplaySection.MONOSPACE, "instant", false, false);
+	}
+
+	@Override
+	protected String getTranslationKey() {
+		return "stop_watch";
 	}
 }
