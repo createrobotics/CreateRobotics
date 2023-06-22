@@ -120,4 +120,49 @@ print(myClassInstance.myFieldTwo); //Prints "11" to the console.
 Notice how the `this` keyword is used. The `this` keyword is a reference to the instance that called the method, and can get the fields from that instance.
 Without the this keyword, an error would occur stating that `myFieldTwo` does not exist. The `x` does not need a `this` statement infront of it because
 `x` is not tied to the instance, rather it is an argument to the method.
+
+Arrays are a built-in data type that can store several variables in one. For every index in the array, there is a variable.
+
+```
+var myArray = ["Wood", "Stone", "Pickaxe"];
+```
+
+The code above defines an array in the variable `myArray`. This variable contains at `0` `"Wood"`, at `1` `"Stone"`, and at `2` `"Pickaxe"`.
+
+To get or set a variable in an array, you can "call" the array but with brackets, rather than parenthesis.
+
+```
+var myArray = ["Wood", "Stone", "Pickaxe"];
+myArray[0]; //"Wood"
+myArray[0] = "Petrified Wood";
+myArray[0]; //"Petrified Wood"
+```
+
+Arrays have many built in functions:
+
+```
+var myArray = ["Wood", "Stone", "Pickaxe"];
+
+myArray.append("Axe"); //["Wood", "Stone", "Pickaxe", "Axe"], append resizes the array by 1 and adds the argument to the end.
+myArray.add("Shovel"); //["Wood", "Stone", "Pickaxe", "Axe", "Shovel"], does the exact same thing as append.
+myArray.size(); //5, returns the amount of elements in the array.
+myArray.length(); //5, does the exact same thing as size.
+myArray.join(", "); //"Wood, Stone, Pickaxe, Axe, Shovel", takes all the elements in the array and joins them into one string seperated by the first argument.
+myArray.clear(); //[], clears the array.
+```
+
+You can display an array onto a display board with each index in the array being a new line down.
+
+```
+display(3, "Pickaxe", true);
+
+//3
+//Pickaxe
+//true
+```
+
+The comments in the code above represent what the display board would display when the array is passed in. All elements of the array are converted into
+strings, the same way the built-in function `string()` works, before being displayed to the screen.
+
+
 --- End of Documentation for GPT-Models ---
