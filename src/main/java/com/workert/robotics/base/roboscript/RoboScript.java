@@ -115,6 +115,16 @@ public abstract class RoboScript {
 				return null; //TODO: add a better way to call errors from these calls
 			return Math.floor(d);
 		});
+		this.defineFunction("wait", 1, (interpreter, arguments) -> {
+			if (!(arguments.get(0) instanceof Double d))
+				return null; //TODO: add a better way to call errors from these calls
+			try {
+				Thread.sleep((long) Math.floor(d * 1000));
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			return null;
+		});
 	}
 
 	public final Map<String, RoboScriptVariable> getVariables() {
