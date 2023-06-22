@@ -503,7 +503,7 @@ final class Parser {
 
 	/**
 	 * Checks if next Token matches <code>expectedTokenType</code> and consumes it if so.
-	 * <br>
+	 * <p>
 	 * If the next Token doesn't match, throws an error with <code>errorMessage</code> as message.
 	 *
 	 * @param expectedTokenType The expectedTokenType next {@link Token.TokenType}.

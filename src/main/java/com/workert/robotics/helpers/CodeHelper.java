@@ -39,18 +39,18 @@ import java.util.regex.Pattern;
 
 public class CodeHelper {
 	/**
-	 * DO NOT USE!<br>See {@link CodeHelper#registerCommand} to register commands.
+	 * DO NOT USE!<p>See {@link CodeHelper#registerCommand} to register commands.
 	 */
 	public static final HashMap<String, BiConsumer<AbstractRobotEntity, List<String>>> commandMap = new HashMap<>();
 
 	/**
-	 * DO NOT USE!<br>See {@link CodeHelper#registerInternalVariableLookup} to register variable lookups.
+	 * DO NOT USE!<p>See {@link CodeHelper#registerInternalVariableLookup} to register variable lookups.
 	 */
 	public static final HashMap<String, Function<AbstractRobotEntity, String>> internalVariableLookupMap = new HashMap<>();
 	private static final HashMap<String, Function<AbstractRobotEntity, String>> publicVariableLookupMap = new HashMap<>();
 
 	/**
-	 * Registers a command for use by the Coding Mechanics.<br> The provided arguments from the {@link BiConsumer} may
+	 * Registers a command for use by the Coding Mechanics.<p> The provided arguments from the {@link BiConsumer} may
 	 * be an empty array if no arguments are provided. To cast an argument to a number (<code>Double</code>) please use
 	 * the {@link CodeHelper#eval} function. IMPORTANT: The <code>function</code> {@link BiConsumer} will be run on a
 	 * different Thread than the main Minecraft Thread!
@@ -65,13 +65,13 @@ public class CodeHelper {
 	}
 
 	/**
-	 * Registers a variable lookup for use by the Coding Mechanics.<br> The provided arguments from the
-	 * <code>BiConsumer</code> may be an empty array if no arguments are provided.<br> To cast an argument to a number
+	 * Registers a variable lookup for use by the Coding Mechanics.<p> The provided arguments from the
+	 * <code>BiConsumer</code> may be an empty array if no arguments are provided.<p> To cast an argument to a number
 	 * (<code>Double</code>) please use the {@link CodeHelper#eval} function as the argument may contain variables.
 	 *
 	 * @param name  the name of the variable, like <code>xPos</code> for
 	 *              <code>$xPos</code>. May only contain a-Z and should start with a lowercase letter
-	 * @param value a {@link Function} with the Robot Entity as argument.<br> Should return a String that will get
+	 * @param value a {@link Function} with the Robot Entity as argument.<p> Should return a String that will get
 	 *              replaced with the variable.
 	 */
 	public static void registerInternalVariableLookup(String name, Function<AbstractRobotEntity, String> value) {

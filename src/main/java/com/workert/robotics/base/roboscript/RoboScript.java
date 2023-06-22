@@ -16,7 +16,7 @@ public abstract class RoboScript {
 	}
 
 	/**
-	 * Registers a function for use by this RoboScript instance.<br> The provided arguments from the {@link BiFunction} may
+	 * Registers a function for use by this RoboScript instance.<p> The provided arguments from the {@link BiFunction} may
 	 * be an empty array if no arguments are provided.
 	 *
 	 * @param name     the name of the command, like <code>goTo</code> for
@@ -44,7 +44,7 @@ public abstract class RoboScript {
 	}
 
 	/**
-	 * Scans, parses, resolves and interprets a string <i>asynchronously</i>.<br>
+	 * Scans, parses, resolves and interprets a string <i>asynchronously</i>.<p>
 	 * This method won't block the thread and can be called from the main game thread.
 	 *
 	 * @param source the string to execute. May contain multiple statements.
@@ -74,8 +74,8 @@ public abstract class RoboScript {
 	}
 
 	/**
-	 * Interprets a function call <i>asynchronously</i>.<br>
-	 * This method won't block the thread and can be called from the main game thread.<br>
+	 * Interprets a function call <i>asynchronously</i>.<p>
+	 * This method won't block the thread and can be called from the main game thread.<p>
 	 * It will be called from a new thread and <i>not</i> the same as the already running program!
 	 *
 	 * @param function the function identifier to execute.
