@@ -44,11 +44,16 @@ public class RoboScriptArray extends RoboScriptGettable {
 			this.elements.add(objects.get(0));
 			return null;
 		}, this.fields);
-		this.defineFunction("size", 0, (interpreter, objects) -> this.elements.size(), this.fields);
-		this.defineFunction("length", 0, (interpreter, objects) -> this.elements.size(), this.fields);
+		this.defineFunction("size", 0, (interpreter, objects) -> (double) this.elements.size(), this.fields);
+		this.defineFunction("length", 0, (interpreter, objects) -> (double) this.elements.size(), this.fields);
 		this.defineFunction("clear", 0, (interpreter, objects) -> {
 			this.elements.clear();
 			return null;
+		}, this.fields);
+		this.defineFunction("join", 2, (interpreter, objects) -> {
+			if (!(objects.get(1) instanceof RoboScriptArray array))
+				return null; //TODO: add better runtime error support right here
+			return String.join(Interpreter.stringify(objects.get(0)), stringifyAllElements(this.elements));
 		}, this.fields);
 
 	}

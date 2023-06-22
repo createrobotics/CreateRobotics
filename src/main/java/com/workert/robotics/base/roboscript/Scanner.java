@@ -103,6 +103,9 @@ final class Scanner {
 				}
 				this.addToken(this.consumeIfNextCharMatches('=') ? PLUS_EQUAL : PLUS);
 				break;
+			case '%':
+				this.addToken(PERCENT);
+				break;
 			case ';':
 				this.addToken(SEMICOLON);
 				break;

@@ -29,6 +29,7 @@ public final class Token {
 		DOT,
 		MINUS,
 		PLUS,
+		PERCENT,
 		CARET,
 		SEMICOLON,
 		SLASH,

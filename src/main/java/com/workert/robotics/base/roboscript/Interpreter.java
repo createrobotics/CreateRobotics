@@ -346,7 +346,7 @@ public final class Interpreter implements Expression.Visitor<Object>, Statement.
 
 		switch (expr.operator.type) {
 			case PLUS -> {
-				if (left instanceof Number && right instanceof Number) {
+				if (left instanceof Double && right instanceof Double) {
 					return (double) left + (double) right;
 				} else if (left instanceof String && right instanceof String) {
 					return (String) left + (String) right;
@@ -369,12 +369,27 @@ public final class Interpreter implements Expression.Visitor<Object>, Statement.
 			}
 			case SLASH -> {
 				this.checkNumberOperands(expr.operator, left, right);
-				if (((Double) right).equals(0d)) throw new RuntimeError(expr.operator, "Can't divide by zero.");
+				if (right.equals(0d)) throw new RuntimeError(expr.operator, "Can't divide by zero.");
 				return (double) left / (double) right;
 			}
 			case STAR -> {
+				if (left instanceof RoboScriptArray array) {
+					this.checkNumberOperand(expr.operator, right);
+					List<Object> newList = new ArrayList<>();
+					for (int i = 0; i < (double) right; i++) {
+						newList.addAll(array.elements);
+					}
+					array.elements.clear();
+					array.elements.addAll(newList);
+					return array;
+				}
 				this.checkNumberOperands(expr.operator, left, right);
 				return (double) left * (double) right;
+			}
+
+			case PERCENT -> {
+				this.checkNumberOperands(expr.operator, left, right);
+				return (double) left % (double) right;
 			}
 
 			case CARET -> {

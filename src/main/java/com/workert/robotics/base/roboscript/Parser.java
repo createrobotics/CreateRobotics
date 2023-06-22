@@ -329,16 +329,26 @@ final class Parser {
 	}
 
 	private Expression comparison() {
-		Expression expression = this.term();
+		Expression expression = this.modulo();
 
 		while (this.advanceIfNextTokenMatches(
 				Token.TokenType.GREATER, Token.TokenType.GREATER_EQUAL, Token.TokenType.LESS,
 				Token.TokenType.LESS_EQUAL)) {
 			Token operator = this.getPreviousToken();
-			Expression right = this.term();
+			Expression right = this.modulo();
 			expression = new Expression.Binary(expression, operator, right);
 		}
 
+		return expression;
+	}
+
+	private Expression modulo() {
+		Expression expression = this.term();
+		while (this.advanceIfNextTokenMatches(Token.TokenType.PERCENT)) {
+			Token operator = this.getPreviousToken();
+			Expression right = this.term();
+			expression = new Expression.Binary(expression, operator, right);
+		}
 		return expression;
 	}
 

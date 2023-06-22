@@ -100,6 +100,21 @@ public abstract class RoboScript {
 			this.print(Interpreter.stringify(arguments.get(0)));
 			return null;
 		});
+		this.defineFunction("sin", 1, (interpreter, arguments) -> {
+			if (!(arguments.get(0) instanceof Double d))
+				return null; //TODO: add a better way to call errors from these calls
+			return Math.sin(d);
+		});
+		this.defineFunction("cos", 1, (interpreter, arguments) -> {
+			if (!(arguments.get(0) instanceof Double d))
+				return null; //TODO: add a better way to call errors from these calls
+			return Math.cos(d);
+		});
+		this.defineFunction("floor", 1, (interpreter, arguments) -> {
+			if (!(arguments.get(0) instanceof Double d))
+				return null; //TODO: add a better way to call errors from these calls
+			return Math.floor(d);
+		});
 	}
 
 	public final Map<String, RoboScriptVariable> getVariables() {
