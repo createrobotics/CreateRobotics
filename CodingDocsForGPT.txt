@@ -17,7 +17,7 @@ var a = 11;
 
 Strings can only be declared using `""`.
 
-Math has perfect order of operations, going from modulo (%), addition and subtraction (+,-), multiplication and division (*,/), and grouping (()).
+Math has perfect order of operations, going from modulo (%), addition and subtraction (+,-), multiplication and division (*,/), exponents (^), and grouping (()).
 
 ```
 150 % 4; //2, Modulo
@@ -28,19 +28,24 @@ Math has perfect order of operations, going from modulo (%), addition and subtra
 13 * 2; //26, Multiplication
 21 / 3; //7, Division
 
+3 ^ 2; //9, Exponents
+
 2 * (3 + 2); //10, with grouping symbols
 2 * 3 + 2; //8, without grouping symbols
 ```
+
+The operators `+=`, `-=`, `*=`, `/=`, `^=` all exist to instantly assign the end value to a variable.
+The operators `++` and `--` are used after a variable name and increment or decrement a value by one.
 
 There are also some built-in math functions:
 ```
 max(2,3); //3, max returns the higher number.
 min(2,3); //2, min returns the lower number.
-sin(3); //0.14112..., runs Math.sin() java function with the number inside.
-cos(3); //-0.98999..., runs Math.cos() java function with the number inside.
-tan(3); //-0.14254..., runs Math.tan() java function with the number inside.
-floor(3.5); //3, floor runs Math.floor() java function with the number inside, rounding down to the largest whole number less than the number inputted.
-ciel(3.5); //4, ciel runs Math.ciel() java function with the number inside, rounding up to the smallest whole number larger than the number inputted.
+sin(3); //0.14112..., sin runs a sine function with the number inside.
+cos(3); //-0.98999..., cos runs a cosine function with the number inside.
+tan(3); //-0.14254..., tan runs a tangent function with the number inside.
+floor(3.5); //3, floor rounds down to the largest whole number less than the number inputted.
+ciel(3.5); //4, ciel rounds up to the smallest whole number larger than the number inputted.
 ```
 
 Strings can be added together as well. There is a `string()` built-in function that turns the first and only argument into a string.
@@ -154,7 +159,7 @@ myArray.clear(); //[], clears the array.
 You can display an array onto a display board with each index in the array being a new line down.
 
 ```
-display(3, "Pickaxe", true);
+display([3, "Pickaxe", true]);
 
 //3
 //Pickaxe
