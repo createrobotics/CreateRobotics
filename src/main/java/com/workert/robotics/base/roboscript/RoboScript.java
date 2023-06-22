@@ -115,7 +115,7 @@ public abstract class RoboScript {
 				return null; //TODO: add a better way to call errors from these calls
 			return Math.floor(d);
 		});
-		this.defineFunction("wait", 1, (interpreter, arguments) -> {
+		this.defineFunction("sleep", 1, (interpreter, arguments) -> {
 			if (!(arguments.get(0) instanceof Double d))
 				return null; //TODO: add a better way to call errors from these calls
 			try {
