@@ -96,35 +96,7 @@ public abstract class RoboScript {
 	 * If you override this method to define own functions <b>do not forget</b> to call <code>super.defineDefaultFunctions()</code> at the end of your code!
 	 */
 	public void defineDefaultFunctions() {
-		this.defineFunction("print", 1, (interpreter, arguments) -> {
-			this.print(Interpreter.stringify(arguments.get(0)));
-			return null;
-		});
-		this.defineFunction("sin", 1, (interpreter, arguments) -> {
-			if (!(arguments.get(0) instanceof Double d))
-				return null; //TODO: add a better way to call errors from these calls
-			return Math.sin(d);
-		});
-		this.defineFunction("cos", 1, (interpreter, arguments) -> {
-			if (!(arguments.get(0) instanceof Double d))
-				return null; //TODO: add a better way to call errors from these calls
-			return Math.cos(d);
-		});
-		this.defineFunction("floor", 1, (interpreter, arguments) -> {
-			if (!(arguments.get(0) instanceof Double d))
-				return null; //TODO: add a better way to call errors from these calls
-			return Math.floor(d);
-		});
-		this.defineFunction("sleep", 1, (interpreter, arguments) -> {
-			if (!(arguments.get(0) instanceof Double d))
-				return null; //TODO: add a better way to call errors from these calls
-			try {
-				Thread.sleep((long) Math.floor(d * 1000));
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			return null;
-		});
+		DefaultFunctionHelper.defineDefaultFunctions(this);
 	}
 
 	public final Map<String, RoboScriptVariable> getVariables() {
