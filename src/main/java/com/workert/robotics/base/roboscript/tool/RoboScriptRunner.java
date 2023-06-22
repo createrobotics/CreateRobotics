@@ -9,9 +9,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class RoboScriptRunner {
-	private static String sourcePath = "src/main/java/com/workert/robotics/base/roboscript/tool/script.robo";
+	private static final String sourcePath = "src/main/java/com/workert/robotics/base/roboscript/tool/script.robo";
 
-	private static RoboScript program = new RoboScript() {
+	private static final RoboScript program = new RoboScript() {
 		@Override
 		public void print(String message) {
 			System.out.println(message);
