@@ -260,6 +260,10 @@ public final class Interpreter implements Expression.Visitor<Object>, Statement.
 	public Void visitWhileStmt(Statement.While stmt) {
 		try {
 			while (this.isTruthy(this.evaluate(stmt.condition))) {
+				if (this.stopRequested) {
+					this.stopRequested = false;
+					break;
+				}
 				this.execute(stmt.body);
 			}
 		} catch (Break breakValue) {
@@ -274,12 +278,20 @@ public final class Interpreter implements Expression.Visitor<Object>, Statement.
 		if (iterator instanceof Double d) {
 			environment.define(stmt.variable, 0.0d, false);
 			for (double i = 0; i < d; i++) {
+				if (this.stopRequested) {
+					this.stopRequested = false;
+					break;
+				}
 				environment.assign(stmt.variable, i);
 				this.execute(stmt.body, environment);
 			}
 		} else if (iterator instanceof RoboScriptArray array) {
 			environment.define(stmt.variable, null, false);
 			for (Object i : array.elements) {
+				if (this.stopRequested) {
+					this.stopRequested = false;
+					break;
+				}
 				environment.assign(stmt.variable, i);
 				this.execute(stmt.body, environment);
 			}
