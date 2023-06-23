@@ -4,7 +4,6 @@ import com.simibubi.create.content.contraptions.base.KineticTileEntity;
 import com.workert.robotics.base.roboscript.Interpreter;
 import com.workert.robotics.base.roboscript.RoboScript;
 import com.workert.robotics.base.roboscript.RoboScriptArray;
-import com.workert.robotics.base.roboscript.ingame.CompoundTagEnvironmentConversionHelper;
 import com.workert.robotics.base.roboscript.ingame.LineLimitedString;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -80,9 +79,7 @@ public class ComputerBlockEntity extends KineticTileEntity {
 		this.terminal = new LineLimitedString(TERMINAL_LINE_LIMIT, compound.getString("Terminal"));
 		this.running = compound.getBoolean("Running");
 		//this.outputDisplay = getOutputDisplayFromTag(compound.getList("OutputDisplay", Tag.TAG_STRING));
-		this.roboScript.putVariables(
-				CompoundTagEnvironmentConversionHelper.valuesFromCompoundTag(
-						compound.getCompound("Memory")));
+		//this.roboScript.putVariables(CompoundTagEnvironmentConversionHelper.valuesFromCompoundTag(compound.getCompound("Memory")));
 	}
 
 	@Override
@@ -92,8 +89,7 @@ public class ComputerBlockEntity extends KineticTileEntity {
 		compound.putString("Terminal", this.terminal.getString());
 		compound.putBoolean("Running", this.running);
 		//compound.put("OutputDisplay", getOutputDisplayToTag(this.outputDisplay));
-		compound.put("Memory",
-				CompoundTagEnvironmentConversionHelper.valuesToTag(this.roboScript.getVariables()));
+		//compound.put("Memory", CompoundTagEnvironmentConversionHelper.valuesToTag(this.roboScript.getPersistentVariables()));
 
 	}
 

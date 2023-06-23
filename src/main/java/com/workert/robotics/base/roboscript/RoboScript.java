@@ -1,6 +1,7 @@
 package com.workert.robotics.base.roboscript;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -99,8 +100,12 @@ public abstract class RoboScript {
 		DefaultFunctionHelper.defineDefaultFunctions(this);
 	}
 
-	public final Map<String, RoboScriptVariable> getVariables() {
-		return this.interpreter.getValues();
+	public final Map<String, RoboScriptVariable> getPersistentVariables() {
+		Map<String, RoboScriptVariable> persistentVariables = new HashMap<>();
+		for (Map.Entry<String, RoboScriptVariable> entry : this.interpreter.getValues().entrySet()) {
+			if (entry.getValue().staticc) persistentVariables.put(entry.getKey(), entry.getValue());
+		}
+		return persistentVariables;
 	}
 
 	public final void putVariables(Map<String, RoboScriptVariable> values) {

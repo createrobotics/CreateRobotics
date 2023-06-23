@@ -118,7 +118,7 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 		pCompound.putString("Terminal", this.terminal.getString());
 		if (this.isProgrammable()) {
 			pCompound.put("Memory",
-					CompoundTagEnvironmentConversionHelper.valuesToTag(this.roboScript.getVariables()));
+					CompoundTagEnvironmentConversionHelper.valuesToTag(this.roboScript.getPersistentVariables()));
 		}
 		super.addAdditionalSaveData(pCompound);
 	}

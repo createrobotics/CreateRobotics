@@ -17,8 +17,6 @@ public class CompoundTagEnvironmentConversionHelper {
 	public static CompoundTag valuesToTag(Map<String, RoboScriptVariable> values) {
 		CompoundTag compoundTag = new CompoundTag();
 		for (Map.Entry<String, RoboScriptVariable> entry : values.entrySet()) {
-			if (!entry.getValue().staticc) continue;
-
 			Object value = entry.getValue().value;
 			if (value instanceof Double doubleValue) {
 				compoundTag.putDouble(entry.getKey(), doubleValue);
