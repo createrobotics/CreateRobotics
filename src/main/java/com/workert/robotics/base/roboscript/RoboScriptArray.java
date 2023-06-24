@@ -60,8 +60,8 @@ public class RoboScriptArray extends RoboScriptGettable {
 
 	public static List<String> stringifyAllElements(List<Object> elements) {
 		List<String> stringList = new ArrayList<>();
-		for (Object o : elements) {
-			stringList.add(Interpreter.stringify(o));
+		for (Object object : elements) {
+			stringList.add(Interpreter.stringify(object));
 		}
 		return stringList;
 	}

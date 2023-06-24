@@ -19,26 +19,34 @@ final class Scanner {
 
 	static {
 		keywords = new HashMap<>();
-		keywords.put("and", AND);
+
 		keywords.put("class", CLASS);
-		keywords.put("else", ELSE);
-		keywords.put("false", FALSE);
+		keywords.put("function", FUNCTION);
+
 		keywords.put("for", FOR);
 		keywords.put("foreach", FOREACH);
-		keywords.put("function", FUNCTION);
+
 		keywords.put("if", IF);
-		keywords.put("null", NULL);
+		keywords.put("else", ELSE);
+		keywords.put("while", WHILE);
+
+		keywords.put("true", TRUE);
+		keywords.put("false", FALSE);
+
+		keywords.put("and", AND);
 		keywords.put("or", OR);
+
+		keywords.put("null", NULL);
+
+		keywords.put("extends", EXTENDS);
+		keywords.put("super", SUPER);
+		keywords.put("this", THIS);
 		keywords.put("return", RETURN);
 		keywords.put("break", BREAK);
-		keywords.put("super", SUPER);
-		keywords.put("extends", EXTENDS);
-		keywords.put("this", THIS);
-		keywords.put("true", TRUE);
 		keywords.put("var", VAR);
-		keywords.put("while", WHILE);
 		keywords.put("persistent", PERSISTENT);
 		keywords.put("instanceof", INSTANCEOF);
+
 		keywords.put("String", STRING);
 		keywords.put("double", DOUBLE);
 		keywords.put("boolean", BOOLEAN);
@@ -89,13 +97,6 @@ final class Scanner {
 			case '.':
 				this.addToken(DOT);
 				break;
-			case '-':
-				if (this.consumeIfNextCharMatches('-')) {
-					this.addToken(MINUS_MINUS);
-					break;
-				}
-				this.addToken(this.consumeIfNextCharMatches('=') ? MINUS_EQUAL : MINUS);
-				break;
 			case '+':
 				if (this.consumeIfNextCharMatches('+')) {
 					this.addToken(PLUS_PLUS);
@@ -103,21 +104,40 @@ final class Scanner {
 				}
 				this.addToken(this.consumeIfNextCharMatches('=') ? PLUS_EQUAL : PLUS);
 				break;
-			case '%':
-				this.addToken(PERCENT);
-				break;
-			case ';':
-				this.addToken(SEMICOLON);
-				break;
-			case ':':
-				this.addToken(COLON);
+			case '-':
+				if (this.consumeIfNextCharMatches('-')) {
+					this.addToken(MINUS_MINUS);
+					break;
+				}
+				this.addToken(this.consumeIfNextCharMatches('=') ? MINUS_EQUAL : MINUS);
 				break;
 			case '*':
 				this.addToken(this.consumeIfNextCharMatches('=') ? STAR_EQUAL : STAR);
 				break;
+			case '/':
+				if (this.consumeIfNextCharMatches('/')) {
+					// Comments
+					while (this.getCurrentChar() != '\n' && !this.isAtEnd()) {
+						this.consumeNextChar();
+					}
+				} else {
+					this.addToken(this.consumeIfNextCharMatches('=') ? SLASH_EQUAL : SLASH);
+				}
+				break;
+			case '%':
+				this.addToken(PERCENT);
+				break;
 			case '^':
 				this.addToken(this.consumeIfNextCharMatches('=') ? CARET_EQUAL : CARET);
 				break;
+			case ':':
+				this.addToken(COLON);
+				break;
+			case ';':
+				this.addToken(SEMICOLON);
+				break;
+
+
 			case '!':
 				this.addToken(this.consumeIfNextCharMatches('=') ? BANG_EQUAL : BANG);
 				break;
@@ -130,15 +150,7 @@ final class Scanner {
 			case '>':
 				this.addToken(this.consumeIfNextCharMatches('=') ? GREATER_EQUAL : GREATER);
 				break;
-			case '/':
-				if (this.consumeIfNextCharMatches('/')) {
-					while (this.getCurrentChar() != '\n' && !this.isAtEnd()) {
-						this.consumeNextChar();
-					}
-				} else {
-					this.addToken(this.consumeIfNextCharMatches('=') ? SLASH_EQUAL : SLASH);
-				}
-				break;
+
 
 			case ' ':
 			case '\r':

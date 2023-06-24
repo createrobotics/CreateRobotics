@@ -27,14 +27,14 @@ public final class Token {
 		RIGHT_BRACKET,
 		COMMA,
 		DOT,
-		MINUS,
 		PLUS,
+		MINUS,
+		STAR,
+		SLASH,
 		PERCENT,
 		CARET,
-		SEMICOLON,
-		SLASH,
-		STAR,
 		COLON,
+		SEMICOLON,
 
 		// One or two character tokens.
 		BANG,
@@ -59,35 +59,42 @@ public final class Token {
 		DOUBLE_VALUE,
 
 		// Keywords.
-		AND,
 		CLASS,
-		ELSE,
-		FALSE,
 		FUNCTION,
+
 		FOR,
 		FOREACH,
+
 		IF,
-		NULL,
+		ELSE,
+		WHILE,
+
+		TRUE,
+		FALSE,
+
+		AND,
 		OR,
-		RETURN,
+
+		NULL,
+
+
 		EXTENDS,
-		BREAK,
 		SUPER,
 		THIS,
-		TRUE,
+		RETURN,
+		BREAK,
 		VAR,
-		WHILE,
+
 		PERSISTENT,
 		INSTANCEOF,
 
-		// Types
 		STRING,
 		DOUBLE,
 		BOOLEAN,
 		ARRAY,
 		OBJECT,
 
-
+		// End of File
 		EOF
 	}
 }
