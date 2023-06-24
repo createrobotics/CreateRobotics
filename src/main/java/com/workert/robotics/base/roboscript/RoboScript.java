@@ -130,7 +130,7 @@ public abstract class RoboScript {
 		this.report(line, "", message);
 	}
 
-	final void runtimeError(RuntimeError error) {
+	final void runtimeError(RoboScriptRuntimeError error) {
 		if (error.token.line == 0) {
 			this.reportCompileError("An external error occurred (possibly a Signal): " + error.getMessage());
 		} else {

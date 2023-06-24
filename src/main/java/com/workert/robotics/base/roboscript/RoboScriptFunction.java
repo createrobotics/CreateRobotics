@@ -30,7 +30,7 @@ public class RoboScriptFunction implements RoboScriptCallable {
 			interpreter.executeBlock(this.declaration.body, environment);
 		} catch (Return returnValue) {
 			if (this.isInitializer)
-				throw new RuntimeError(this.declaration.name, "Cannot return from class initializer.");
+				throw new RoboScriptRuntimeError(this.declaration.name, "Cannot return from class initializer.");
 			return returnValue.value;
 		}
 

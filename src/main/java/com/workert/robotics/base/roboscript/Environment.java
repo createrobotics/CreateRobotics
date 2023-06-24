@@ -19,7 +19,7 @@ final class Environment {
 	}
 
 	void define(Token name, Object value, boolean staticc) {
-		if (this.checkAccessibleVariable(name)) throw new RuntimeError(name,
+		if (this.checkAccessibleVariable(name)) throw new RoboScriptRuntimeError(name,
 				"Variable with the name '" + name.lexeme + "' already shares this environment");
 		this.variableMap.put(name.lexeme, new RoboScriptVariable(staticc, value));
 	}
@@ -49,7 +49,7 @@ final class Environment {
 
 		if (this.enclosing != null) return this.enclosing.getVariable(name);
 
-		throw new RuntimeError(name, "Undefined variable or function '" + name.lexeme + "'.");
+		throw new RoboScriptRuntimeError(name, "Undefined variable or function '" + name.lexeme + "'.");
 	}
 
 	private boolean checkAccessibleVariable(Token name) {
@@ -78,6 +78,6 @@ final class Environment {
 			return;
 		}
 
-		throw new RuntimeError(name, "Undefined variable '" + name.lexeme + "'.");
+		throw new RoboScriptRuntimeError(name, "Undefined variable '" + name.lexeme + "'.");
 	}
 }

@@ -19,19 +19,20 @@ public class RoboScriptArray extends RoboScriptGettable {
 		if (this.fields.containsKey(name.lexeme))
 			return this.fields.get(name.lexeme);
 
-		throw new RuntimeError(name, "Undefined property in Array '" + name.lexeme + "'.");
+		throw new RoboScriptRuntimeError(name, "Undefined property in Array '" + name.lexeme + "'.");
 	}
 
 	public Object get(double a, Token bracket) {
-		if (Math.round(a) != a || a < 0) throw new RuntimeError(bracket, "Index must be a positive whole number.");
+		if (Math.round(a) != a || a < 0)
+			throw new RoboScriptRuntimeError(bracket, "Index must be a positive whole number.");
 		if (this.elements.size() - 1 >= a) return this.elements.get((int) (float) a);
-		throw new RuntimeError(bracket, "Index out of array bounds.");
+		throw new RoboScriptRuntimeError(bracket, "Index out of array bounds.");
 	}
 
 	public void set(double index, Object value, Token token) {
 		if (Math.round(index) != index || index < 0)
-			throw new RuntimeError(token, "Index must be a positive whole number.");
-		if (this.elements.size() - 1 < index) throw new RuntimeError(token, "Index out of array bounds.");
+			throw new RoboScriptRuntimeError(token, "Index must be a positive whole number.");
+		if (this.elements.size() - 1 < index) throw new RoboScriptRuntimeError(token, "Index out of array bounds.");
 		this.elements.set((int) (float) index, value);
 	}
 

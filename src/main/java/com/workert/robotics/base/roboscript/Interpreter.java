@@ -30,7 +30,7 @@ public final class Interpreter implements Expression.Visitor<Object>, Statement.
 				}
 				this.execute(statement);
 			}
-		} catch (RuntimeError error) {
+		} catch (RoboScriptRuntimeError error) {
 			this.roboScriptInstance.runtimeError(error);
 		}
 	}
@@ -71,7 +71,7 @@ public final class Interpreter implements Expression.Visitor<Object>, Statement.
 		if (stmt.superclass != null) {
 			superclass = this.evaluate(stmt.superclass);
 			if (!(superclass instanceof RoboScriptClass)) {
-				throw new RuntimeError(stmt.superclass.name, "Superclass must be a class.");
+				throw new RoboScriptRuntimeError(stmt.superclass.name, "Superclass must be a class.");
 			}
 		}
 
@@ -94,7 +94,7 @@ public final class Interpreter implements Expression.Visitor<Object>, Statement.
 		Map<String, Object> fields = (superclass != null) ? new HashMap<>(
 				((RoboScriptClass) superclass).fields) : new HashMap<>();
 		for (Statement.Var var : stmt.fields) {
-			if (fields.containsKey(var.name.lexeme)) throw new RuntimeError(var.name,
+			if (fields.containsKey(var.name.lexeme)) throw new RoboScriptRuntimeError(var.name,
 					"Class already contains the field '" + var.name.lexeme + "' in either a superclass or itself");
 			Object value = null;
 			if (var.initializer != null) {
@@ -131,7 +131,7 @@ public final class Interpreter implements Expression.Visitor<Object>, Statement.
 		}
 
 
-		throw new RuntimeError(expr.name, "Only classes, arrays, and strings have properties.");
+		throw new RoboScriptRuntimeError(expr.name, "Only classes, arrays, and strings have properties.");
 	}
 
 	@Override
@@ -139,7 +139,7 @@ public final class Interpreter implements Expression.Visitor<Object>, Statement.
 		Object object = this.evaluate(expr.object);
 
 		if (!(object instanceof RoboScriptClassInstance)) {
-			throw new RuntimeError(expr.name, "Only class instances have fields.");
+			throw new RoboScriptRuntimeError(expr.name, "Only class instances have fields.");
 		}
 		Object value = this.evaluate(expr.value);
 		((RoboScriptClassInstance) object).set(expr.name, value);
@@ -335,7 +335,7 @@ public final class Interpreter implements Expression.Visitor<Object>, Statement.
 					else
 						yield false;
 				} else
-					throw new RuntimeError(expr.right, "No valid class name.");
+					throw new RoboScriptRuntimeError(expr.right, "No valid class name.");
 			}
 
 			default -> throw new IllegalArgumentException();
@@ -368,7 +368,7 @@ public final class Interpreter implements Expression.Visitor<Object>, Statement.
 				} else if (left instanceof String && right instanceof String) {
 					return (String) left + (String) right;
 				} else {
-					throw new RuntimeError(expr.operator, "Operands must be two numbers or two strings.");
+					throw new RoboScriptRuntimeError(expr.operator, "Operands must be two numbers or two strings.");
 				}
 			}
 			case PLUS_PLUS -> {
@@ -386,7 +386,7 @@ public final class Interpreter implements Expression.Visitor<Object>, Statement.
 			}
 			case SLASH -> {
 				this.checkNumberOperands(expr.operator, left, right);
-				if (right.equals(0d)) throw new RuntimeError(expr.operator, "Can't divide by zero.");
+				if (right.equals(0d)) throw new RoboScriptRuntimeError(expr.operator, "Can't divide by zero.");
 				return (double) left / (double) right;
 			}
 			case STAR -> {
@@ -460,11 +460,11 @@ public final class Interpreter implements Expression.Visitor<Object>, Statement.
 		}
 
 		if (!(callee instanceof RoboScriptCallable function)) {
-			throw new RuntimeError(expr.paren, "Can only call functions and classes.");
+			throw new RoboScriptRuntimeError(expr.paren, "Can only call functions and classes.");
 		}
 
 		if (arguments.size() != function.expectedArgumentSize()) {
-			throw new RuntimeError(expr.paren,
+			throw new RoboScriptRuntimeError(expr.paren,
 					"Expected " + function.expectedArgumentSize() + " arguments but got " + arguments.size() + ".");
 		}
 
@@ -500,9 +500,9 @@ public final class Interpreter implements Expression.Visitor<Object>, Statement.
 		Object index = this.evaluate(expr.index);
 
 		if (!(index instanceof Double d))
-			throw new RuntimeError(expr.bracket, "Index must be a positive whole number.");
+			throw new RoboScriptRuntimeError(expr.bracket, "Index must be a positive whole number.");
 		if (!(array instanceof RoboScriptArray arrayObject))
-			throw new RuntimeError(expr.bracket, "Object is not an array");
+			throw new RoboScriptRuntimeError(expr.bracket, "Object is not an array");
 
 		return arrayObject.get(d, expr.bracket);
 	}
@@ -515,9 +515,9 @@ public final class Interpreter implements Expression.Visitor<Object>, Statement.
 		Object value = this.evaluate(expr.value);
 
 		if (!(index instanceof Double d))
-			throw new RuntimeError(expr.bracket, "Index must be a positive whole number.");
+			throw new RoboScriptRuntimeError(expr.bracket, "Index must be a positive whole number.");
 		if (!(array instanceof RoboScriptArray arrayObject))
-			throw new RuntimeError(expr.bracket, "Object is not an array.");
+			throw new RoboScriptRuntimeError(expr.bracket, "Object is not an array.");
 
 		arrayObject.set(d, value, expr.bracket);
 		return null;
@@ -534,7 +534,7 @@ public final class Interpreter implements Expression.Visitor<Object>, Statement.
 
 	private void checkNumberOperand(Token operator, Object operand) {
 		if (operand instanceof Double) return;
-		throw new RuntimeError(operator, "Operand must be a number.");
+		throw new RoboScriptRuntimeError(operator, "Operand must be a number.");
 	}
 
 	private void checkNumberOperands(Token operator, Object left, Object right) {

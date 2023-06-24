@@ -15,7 +15,7 @@ public class RoboScriptClassInstance extends RoboScriptGettable implements RoboS
 	@Override
 	public Object get(Token name) {
 		if (name.lexeme.equals(this.clazz.name))
-			throw new RuntimeError(name, "Can't re-initialize a class instance.");
+			throw new RoboScriptRuntimeError(name, "Can't re-initialize a class instance.");
 		if (this.fields.containsKey(name.lexeme)) {
 			return this.fields.get(name.lexeme);
 		}
@@ -23,7 +23,7 @@ public class RoboScriptClassInstance extends RoboScriptGettable implements RoboS
 		RoboScriptFunction method = this.clazz.findMethod(name.lexeme);
 		if (method != null) return method.bind(this);
 
-		throw new RuntimeError(name,
+		throw new RoboScriptRuntimeError(name,
 				"Class '" + this.clazz.name + "' does not contain the field or method '" + name.lexeme + "'.");
 	}
 
@@ -31,7 +31,7 @@ public class RoboScriptClassInstance extends RoboScriptGettable implements RoboS
 	public void set(Token name, Object value) {
 		if (this.fields.containsKey(name.lexeme))
 			this.fields.put(name.lexeme, value);
-		else throw new RuntimeError(name,
+		else throw new RoboScriptRuntimeError(name,
 				"Class '" + this.clazz.name + "' does not contain the field '" + name.lexeme + "'.");
 	}
 

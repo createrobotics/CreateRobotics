@@ -48,8 +48,9 @@ class DefaultFunctionHelper {
 								return mathMethod.invoke(null, arguments.toArray());
 							} catch (InvocationTargetException exception) {
 								exception.printStackTrace();
-								throw new RuntimeError(errorToken, exception.getCause() != null ? exception.getCause()
-										.getMessage() : "An internal Java exception occurred. Please take a look at the game logs to learn more.");
+								throw new RoboScriptRuntimeError(errorToken,
+										exception.getCause() != null ? exception.getCause()
+												.getMessage() : "An internal Java exception occurred. Please take a look at the game logs to learn more.");
 							} catch (IllegalAccessException e) {
 								throw new RuntimeException(e);
 							}
