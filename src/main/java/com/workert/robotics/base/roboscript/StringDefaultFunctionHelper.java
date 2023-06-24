@@ -16,7 +16,7 @@ public class StringDefaultFunctionHelper {
 					return null; //throw new RuntimeError(bracket, "Index out of array bounds.");
 				});
 			}
-			case "setCharAt" -> {
+			case "withCharAt" -> {
 				return RoboScript.defineCallable("setCharAt", 2, (interpreter, objects) -> {
 					if (!(objects.get(0) instanceof Double d))
 						return null; //TODO: add better runtime error support right here
