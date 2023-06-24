@@ -19,7 +19,7 @@ public class RoboScriptArray extends RoboScriptGettable {
 		if (this.fields.containsKey(name.lexeme))
 			return this.fields.get(name.lexeme);
 
-		throw new RuntimeError(name, "Undefined property '" + name.lexeme + "'.");
+		throw new RuntimeError(name, "Undefined property in Array '" + name.lexeme + "'.");
 	}
 
 	public Object get(double a, Token bracket) {

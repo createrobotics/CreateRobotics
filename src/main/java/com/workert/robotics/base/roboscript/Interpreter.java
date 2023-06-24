@@ -126,8 +126,12 @@ public final class Interpreter implements Expression.Visitor<Object>, Statement.
 		if (object instanceof RoboScriptGettable gettable) {
 			return gettable.get(expr.name);
 		}
+		if (object instanceof String s) {
+			return StringDefaultFunctionHelper.get(s, expr.name);
+		}
 
-		throw new RuntimeError(expr.name, "Only class instances have properties.");
+
+		throw new RuntimeError(expr.name, "Only classes, arrays, and strings have properties.");
 	}
 
 	@Override
