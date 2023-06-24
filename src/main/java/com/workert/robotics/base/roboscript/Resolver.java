@@ -119,7 +119,6 @@ public final class Resolver implements Expression.Visitor<Void>, Statement.Visit
 
 		this.declare(stmt.name);
 		this.define(stmt.name);
-
 		if (stmt.superclass != null) {
 			if (stmt.name.lexeme.equals(stmt.superclass.name.lexeme))
 				this.interpreter.roboScriptInstance.reportCompileError(stmt.superclass.name,
@@ -139,7 +138,7 @@ public final class Resolver implements Expression.Visitor<Void>, Statement.Visit
 		if (stmt.initializer != null)
 			this.resolveFunction(stmt.initializer, FunctionType.INITIALIZER);
 		for (Statement.Var field : stmt.fields) {
-			this.resolve(field.initializer);
+			this.resolve(field);
 		}
 		for (Statement.Function method : stmt.methods) {
 			this.resolveFunction(method, FunctionType.METHOD);
