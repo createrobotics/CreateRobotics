@@ -34,7 +34,7 @@ final class Environment {
 	}
 
 	Object getAt(int distance, Token name) {
-		return this.ancestor(distance).variableMap.get(name.lexeme).value;
+		return this.ancestor(distance).get(name);
 	}
 
 	Object get(Token name) {

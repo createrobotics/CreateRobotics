@@ -399,6 +399,14 @@ public final class Interpreter implements Expression.Visitor<Object>, Statement.
 					array.elements.addAll(newList);
 					return array;
 				}
+				if (left instanceof String string) {
+					this.checkNumberOperand(expr.operator, right);
+					String newString = "";
+					for (int i = 0; i < (double) right; i++) {
+						newString += string;
+					}
+					return newString;
+				}
 				this.checkNumberOperands(expr.operator, left, right);
 				return (double) left * (double) right;
 			}
