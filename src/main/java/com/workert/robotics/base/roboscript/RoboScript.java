@@ -26,7 +26,11 @@ public abstract class RoboScript {
 	 *                 provided arguments to the command. May return an object.
 	 */
 	public final void defineFunction(String name, int expectedArgumentSize, BiFunction<Interpreter, List<Object>, Object> function) {
-		this.interpreter.environment.define(name, new RoboScriptCallable() {
+		this.interpreter.environment.define(name, defineCallable(name, expectedArgumentSize, function), false);
+	}
+
+	public static RoboScriptCallable defineCallable(String name, int expectedArgumentSize, BiFunction<Interpreter, List<Object>, Object> function) {
+		return new RoboScriptCallable() {
 			@Override
 			public int expectedArgumentSize() {
 				return expectedArgumentSize;
@@ -41,7 +45,7 @@ public abstract class RoboScript {
 			public String toString() {
 				return "<native function " + name + ">";
 			}
-		}, false);
+		};
 	}
 
 	/**

@@ -35,7 +35,7 @@ public class RoboScriptFunction implements RoboScriptCallable {
 		}
 
 		if (this.isInitializer) {
-			return this.parent.getAt(0, new Token(Token.TokenType.THIS, "this", "this", 0));
+			return this.parent.getVariableAt(0, new Token(Token.TokenType.THIS, "this", "this", 0));
 		}
 		return null;
 	}

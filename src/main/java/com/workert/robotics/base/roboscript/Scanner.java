@@ -39,7 +39,7 @@ final class Scanner {
 		keywords.put("while", WHILE);
 		keywords.put("persistent", PERSISTENT);
 		keywords.put("instanceof", INSTANCEOF);
-		keywords.put("string", STRING);
+		keywords.put("String", STRING);
 		keywords.put("double", DOUBLE);
 		keywords.put("boolean", BOOLEAN);
 		keywords.put("Array", ARRAY);

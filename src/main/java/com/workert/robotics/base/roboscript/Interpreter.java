@@ -149,10 +149,10 @@ public final class Interpreter implements Expression.Visitor<Object>, Statement.
 	@Override
 	public Object visitSuperExpr(Expression.Super expr) {
 		int distance = this.locals.get(expr);
-		RoboScriptClass superclass = (RoboScriptClass) this.environment.getAt(distance,
+		RoboScriptClass superclass = (RoboScriptClass) this.environment.getVariableAt(distance,
 				new Token(Token.TokenType.SUPER, "super", "super", expr.keyword.line));
 
-		RoboScriptClassInstance instance = (RoboScriptClassInstance) this.environment.getAt(distance - 1,
+		RoboScriptClassInstance instance = (RoboScriptClassInstance) this.environment.getVariableAt(distance - 1,
 				new Token(Token.TokenType.THIS, "this", "this", expr.keyword.line));
 
 		if (expr.method != null) {
@@ -326,9 +326,10 @@ public final class Interpreter implements Expression.Visitor<Object>, Statement.
 			case DOUBLE -> value instanceof Double;
 			case BOOLEAN -> value instanceof Boolean;
 			case ARRAY -> value instanceof RoboScriptArray;
-			case OBJECT -> value instanceof RoboScriptVariable || value instanceof RoboScriptFunction || value instanceof RoboScriptClassInstance;
+			case OBJECT ->
+					value instanceof RoboScriptVariable || value instanceof RoboScriptFunction || value instanceof RoboScriptClassInstance;
 			case IDENTIFIER -> {
-				if (this.environment.get(expr.right) instanceof RoboScriptClass clazz) {
+				if (this.lookUpVariable(expr.right, expr) instanceof RoboScriptClass clazz) {
 					if (value instanceof RoboScriptClassInstance classInstance)
 						yield isInstanceOfClass(clazz, classInstance);
 					else
@@ -479,7 +480,7 @@ public final class Interpreter implements Expression.Visitor<Object>, Statement.
 			case BANG -> !this.isTruthy(right);
 			case MINUS -> -(double) right;
 			default ->
-					// Unreachable.
+				// Unreachable.
 					null;
 		};
 	}
@@ -523,12 +524,12 @@ public final class Interpreter implements Expression.Visitor<Object>, Statement.
 		return null;
 	}
 
-	private Object lookUpVariable(Token name, Expression expression) {
+	Object lookUpVariable(Token name, Expression expression) {
 		Integer distance = this.locals.get(expression);
 		if (distance != null) {
-			return this.environment.getAt(distance, name);
+			return this.environment.getVariableAt(distance, name);
 		} else {
-			return this.environment.get(name);
+			return this.environment.getVariable(name);
 		}
 	}
 

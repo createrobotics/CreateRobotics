@@ -24,7 +24,7 @@ final class Environment {
 		this.variableMap.put(name.lexeme, new RoboScriptVariable(staticc, value));
 	}
 
-	private Environment ancestor(int distance) {
+	private Environment getAncestor(int distance) {
 		Environment environment = this;
 		for (int i = 0; i < distance; i++) {
 			environment = environment.enclosing;
@@ -33,16 +33,21 @@ final class Environment {
 		return environment;
 	}
 
-	Object getAt(int distance, Token name) {
-		return this.ancestor(distance).get(name);
+	Object getVariableAt(int distance, Token name) {
+		return this.getAncestor(distance).getVariable(name);
 	}
 
-	Object get(Token name) {
+	/**
+	 * <b>Do not use this method except when not otherwise possible!</b>
+	 * <p>
+	 * If you're in the {@link Interpreter} class use {@link Interpreter#lookUpVariable} instead!
+	 */
+	Object getVariable(Token name) {
 		if (this.variableMap.containsKey(name.lexeme)) {
 			return this.variableMap.get(name.lexeme).value;
 		}
 
-		if (this.enclosing != null) return this.enclosing.get(name);
+		if (this.enclosing != null) return this.enclosing.getVariable(name);
 
 		throw new RuntimeError(name, "Undefined variable or function '" + name.lexeme + "'.");
 	}
@@ -58,7 +63,7 @@ final class Environment {
 	}
 
 	void assignAt(int distance, Token name, Object value) {
-		this.ancestor(distance).variableMap.put(name.lexeme,
+		this.getAncestor(distance).variableMap.put(name.lexeme,
 				new RoboScriptVariable(false, value));
 	}
 
