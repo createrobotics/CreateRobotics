@@ -69,16 +69,17 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 				@Override
 				public void defineDefaultFunctions() {
 					this.defineFunction("getXPos", 0,
-							(interpreter, arguments) -> AbstractRobotEntity.this.position().x);
+							(interpreter, arguments, errorToken) -> AbstractRobotEntity.this.position().x);
 					this.defineFunction("getYPos", 0,
-							(interpreter, arguments) -> AbstractRobotEntity.this.position().y);
+							(interpreter, arguments, errorToken) -> AbstractRobotEntity.this.position().y);
 					this.defineFunction("getZPos", 0,
-							(interpreter, arguments) -> AbstractRobotEntity.this.position().z);
-					this.defineFunction("getAirSupply", 0, (interpreter, arguments) -> AbstractRobotEntity.this.air);
+							(interpreter, arguments, errorToken) -> AbstractRobotEntity.this.position().z);
+					this.defineFunction("getAirSupply", 0,
+							(interpreter, arguments, errorToken) -> AbstractRobotEntity.this.air);
 					this.defineFunction("getMaxAirSupply", 0,
-							(interpreter, arguments) -> AbstractRobotEntity.this.getMaxAirSupply());
+							(interpreter, arguments, errorToken) -> AbstractRobotEntity.this.getMaxAirSupply());
 					this.defineFunction("getInventorySupply", 0,
-							(interpreter, arguments) -> {
+							(interpreter, arguments, errorToken) -> {
 								List<Object> itemList = new ArrayList<>();
 								for (int inventoryIndex = 0; inventoryIndex < AbstractRobotEntity.this.inventory.getContainerSize(); inventoryIndex++) {
 									ItemStack itemStack = AbstractRobotEntity.this.inventory.getItem(inventoryIndex);

@@ -20,7 +20,7 @@ public class RoboScriptFunction implements RoboScriptCallable {
 	}
 
 	@Override
-	public Object call(Interpreter interpreter, List<Object> arguments) {
+	public Object call(Interpreter interpreter, List<Object> arguments, Token errorToken) {
 		Environment environment = new Environment(this.parent);
 		for (int i = 0; i < this.declaration.params.size(); i++) {
 			environment.define(this.declaration.params.get(i), arguments.get(i), false);

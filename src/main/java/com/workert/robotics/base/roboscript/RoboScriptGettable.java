@@ -15,7 +15,7 @@ public abstract class RoboScriptGettable {
 			}
 
 			@Override
-			public Object call(Interpreter interpreter, List<Object> arguments) {
+			public Object call(Interpreter interpreter, List<Object> arguments, Token errorToken) {
 				return function.apply(interpreter, arguments);
 			}
 

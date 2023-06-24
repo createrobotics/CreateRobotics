@@ -25,11 +25,11 @@ public abstract class RoboScript {
 	 * @param function a {@link BiFunction} with two arguments: the Interpreter and a {@link List} with all
 	 *                 provided arguments to the command. May return an object.
 	 */
-	public final void defineFunction(String name, int expectedArgumentSize, BiFunction<Interpreter, List<Object>, Object> function) {
+	public final void defineFunction(String name, int expectedArgumentSize, RoboScriptCallableFunction function) {
 		this.interpreter.environment.define(name, defineCallable(name, expectedArgumentSize, function), false);
 	}
 
-	public static RoboScriptCallable defineCallable(String name, int expectedArgumentSize, BiFunction<Interpreter, List<Object>, Object> function) {
+	public static RoboScriptCallable defineCallable(String name, int expectedArgumentSize, RoboScriptCallableFunction function) {
 		return new RoboScriptCallable() {
 			@Override
 			public int expectedArgumentSize() {
@@ -37,8 +37,8 @@ public abstract class RoboScript {
 			}
 
 			@Override
-			public Object call(Interpreter interpreter, List<Object> arguments) {
-				return function.apply(interpreter, arguments);
+			public Object call(Interpreter interpreter, List<Object> arguments, Token errorToken) {
+				return function.apply(interpreter, arguments, errorToken);
 			}
 
 			@Override

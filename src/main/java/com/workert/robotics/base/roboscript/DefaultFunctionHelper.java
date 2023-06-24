@@ -7,12 +7,12 @@ import java.util.List;
 
 class DefaultFunctionHelper {
 	public static void defineDefaultFunctions(RoboScript roboScript) {
-		roboScript.defineFunction("print", 1, (interpreter, arguments) -> {
+		roboScript.defineFunction("print", 1, (interpreter, arguments, errorToken) -> {
 			roboScript.print(Interpreter.stringify(arguments.get(0)));
 			return null;
 		});
 
-		roboScript.defineFunction("sleep", 1, (interpreter, arguments) -> {
+		roboScript.defineFunction("sleep", 1, (interpreter, arguments, errorToken) -> {
 			if (!(arguments.get(0) instanceof Double d))
 				return null;
 			try {
@@ -42,18 +42,19 @@ class DefaultFunctionHelper {
 			}
 
 			for (Method mathMethod : usableMathMethods) {
-				System.out.println(mathMethod.getName());
 				roboScript.defineFunction(mathMethod.getName(), mathMethod.getParameterCount(),
-						(interpreter, arguments) -> {
+						(interpreter, arguments, errorToken) -> {
 							try {
 								return mathMethod.invoke(null, arguments.toArray());
-							} catch (IllegalAccessException | InvocationTargetException e) {
-								return null;
+							} catch (InvocationTargetException exception) {
+								exception.printStackTrace();
+								throw new RuntimeError(errorToken, exception.getCause() != null ? exception.getCause()
+										.getMessage() : "An internal Java exception occurred. Please take a look at the game logs to learn more.");
+							} catch (IllegalAccessException e) {
+								throw new RuntimeException(e);
 							}
 						});
 			}
-
-
 		} catch (Throwable e) {
 			e.printStackTrace();
 		}

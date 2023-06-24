@@ -46,7 +46,7 @@ public class ComputerBlockEntity extends KineticTileEntity {
 			@Override
 			public void defineDefaultFunctions() {
 				super.defineDefaultFunctions();
-				this.defineFunction("display", 1, (interpreter, objects) -> {
+				this.defineFunction("display", 1, (interpreter, objects, errorToken) -> {
 					if (objects.get(0) instanceof RoboScriptArray array) {
 						ComputerBlockEntity.this.outputDisplay = RoboScriptArray.stringifyAllElements(array.elements);
 						return null;

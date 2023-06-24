@@ -163,7 +163,7 @@ public final class Interpreter implements Expression.Visitor<Object>, Statement.
 			for (Expression argument : expr.arguments) {
 				arguments.add(this.evaluate(argument));
 			}
-			return instance.getBaseClass().callSuperInitializer(this, arguments, instance);
+			return instance.getBaseClass().callSuperInitializer(this, arguments, expr.keyword, instance);
 		}
 
 	}
@@ -459,17 +459,16 @@ public final class Interpreter implements Expression.Visitor<Object>, Statement.
 			arguments.add(this.evaluate(argument));
 		}
 
-		if (!(callee instanceof RoboScriptCallable)) {
+		if (!(callee instanceof RoboScriptCallable function)) {
 			throw new RuntimeError(expr.paren, "Can only call functions and classes.");
 		}
-		RoboScriptCallable function = (RoboScriptCallable) callee;
 
 		if (arguments.size() != function.expectedArgumentSize()) {
 			throw new RuntimeError(expr.paren,
 					"Expected " + function.expectedArgumentSize() + " arguments but got " + arguments.size() + ".");
 		}
 
-		return function.call(this, arguments);
+		return function.call(this, arguments, expr.paren);
 	}
 
 	@Override

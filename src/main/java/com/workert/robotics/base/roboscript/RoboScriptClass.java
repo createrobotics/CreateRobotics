@@ -18,17 +18,17 @@ public class RoboScriptClass implements RoboScriptCallable {
 	}
 
 	@Override
-	public Object call(Interpreter interpreter, List<Object> arguments) {
+	public Object call(Interpreter interpreter, List<Object> arguments, Token errorToken) {
 		RoboScriptClassInstance instance = new RoboScriptClassInstance(this);
 		if (this.initializer != null) {
-			this.initializer.bind(instance).call(interpreter, arguments);
+			this.initializer.bind(instance).call(interpreter, arguments, errorToken);
 		}
 		return instance;
 	}
 
-	Object callSuperInitializer(Interpreter interpreter, List<Object> arguments, RoboScriptClassInstance instance) {
+	Object callSuperInitializer(Interpreter interpreter, List<Object> arguments, Token paren, RoboScriptClassInstance instance) {
 		RoboScriptClassInstance superInstance = new RoboScriptClassInstance(this.superclass);
-		this.superclass.initializer.bind(instance).call(interpreter, arguments);
+		this.superclass.initializer.bind(instance).call(interpreter, arguments, paren);
 		return superInstance;
 	}
 
