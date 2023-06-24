@@ -17,7 +17,7 @@ public class StringDefaultFunctionHelper {
 				});
 			}
 			case "withCharAt" -> {
-				return RoboScript.defineCallable("setCharAt", 2, (interpreter, objects, errorToken) -> {
+				return RoboScript.defineCallable("withCharAt", 2, (interpreter, objects, errorToken) -> {
 					if (!(objects.get(0) instanceof Double d))
 						throw new RuntimeError(errorToken, "Index must be a number.");
 					if (Math.round(d) != d || d < 0)
