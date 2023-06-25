@@ -5,30 +5,43 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.BiFunction;
 
+/**
+ * The RoboScript class represents an abstract base class for executing and interpreting RoboScript code.
+ * <p>
+ * It provides methods for defining functions, running code asynchronously, and managing variables.
+ */
 public abstract class RoboScript {
-	private final Interpreter interpreter = new Interpreter(this);
 
+	private final Interpreter interpreter = new Interpreter(this);
 	private boolean hadError = false;
 
+	/**
+	 * Creates a new instance of the RoboScript class and defines default functions.
+	 */
 	public RoboScript() {
 		this.defineDefaultFunctions();
 	}
 
 	/**
-	 * Registers a function for use by this RoboScript instance.<p> The provided arguments from the {@link BiFunction} may
-	 * be an empty array if no arguments are provided.
+	 * Registers a function for use by this RoboScript instance.
 	 *
-	 * @param name     the name of the command, like <code>goTo</code> for
-	 *                 <code>robot.goTo(x, y, z)</code>. May only contain a-Z and should start with a lowercase letter.
-	 * @param function a {@link BiFunction} with two arguments: the Interpreter and a {@link List} with all
-	 *                 provided arguments to the command. May return an object.
+	 * @param name                 the name of the command. Must contain only alphabetic characters (a-Z) and start with a lowercase letter.
+	 * @param expectedArgumentSize the expected number of arguments for the function.
+	 * @param function             a BiFunction representing the function to be executed. It takes the Interpreter and a List of arguments and returns an object.
 	 */
 	public final void defineFunction(String name, int expectedArgumentSize, RoboScriptCallableFunction function) {
 		this.interpreter.environment.define(name, defineCallable(name, expectedArgumentSize, function), false);
 	}
 
+	/**
+	 * Creates a RoboScriptCallable object for a function.
+	 *
+	 * @param name                 the name of the function.
+	 * @param expectedArgumentSize the expected number of arguments for the function.
+	 * @param function             a RoboScriptCallableFunction representing the function to be executed.
+	 * @return a RoboScriptCallable object.
+	 */
 	public static RoboScriptCallable defineCallable(String name, int expectedArgumentSize, RoboScriptCallableFunction function) {
 		return new RoboScriptCallable() {
 			@Override
@@ -49,10 +62,9 @@ public abstract class RoboScript {
 	}
 
 	/**
-	 * Scans, parses, resolves and interprets a string <i>asynchronously</i>.<p>
-	 * This method won't block the thread and can be called from the main game thread.
+	 * Runs a string of RoboScript code asynchronously.
 	 *
-	 * @param source the string to execute. May contain multiple statements.
+	 * @param source the string to execute, which may contain multiple statements.
 	 */
 	public final void runString(String source) {
 		this.interpreter.reset();
@@ -65,7 +77,6 @@ public abstract class RoboScript {
 			Parser parser = new Parser(this, tokens);
 			List<Statement> statements = parser.parse();
 
-			// Stop if there was a syntax error.
 			if (this.hadError) return;
 
 			Resolver resolver = new Resolver(this.interpreter);
@@ -79,11 +90,10 @@ public abstract class RoboScript {
 	}
 
 	/**
-	 * Interprets a function call <i>asynchronously</i>.<p>
-	 * This method won't block the thread and can be called from the main game thread.<p>
-	 * It will be called from a new thread and <i>not</i> the same as the already running program!
+	 * Runs a function asynchronously.
 	 *
-	 * @param function the function identifier to execute.
+	 * @param function  the function identifier to execute.
+	 * @param arguments a List of arguments to be passed to the function.
 	 */
 	public final void runFunction(String function, List<Object> arguments) {
 		CompletableFuture.runAsync(() -> {
@@ -98,12 +108,18 @@ public abstract class RoboScript {
 	}
 
 	/**
-	 * If you override this method to define own functions <b>do not forget</b> to call <code>super.defineDefaultFunctions()</code> at the end of your code!
+	 * Defines default functions for the RoboScript instance.
+	 * If overriding this method, make sure to call super.defineDefaultFunctions() at the end of the implementation.
 	 */
 	public void defineDefaultFunctions() {
 		DefaultFunctionHelper.defineDefaultFunctions(this);
 	}
 
+	/**
+	 * Retrieves the persistent variables from the interpreter.
+	 *
+	 * @return a Map containing the persistent variables.
+	 */
 	public final Map<String, RoboScriptVariable> getPersistentVariables() {
 		Map<String, RoboScriptVariable> persistentVariables = new HashMap<>();
 		for (Map.Entry<String, RoboScriptVariable> entry : this.interpreter.getValues().entrySet()) {
@@ -112,6 +128,11 @@ public abstract class RoboScript {
 		return persistentVariables;
 	}
 
+	/**
+	 * Puts the given variables into the interpreter's environment.
+	 *
+	 * @param values a Map containing the variables to be put.
+	 */
 	public final void putVariables(Map<String, RoboScriptVariable> values) {
 		for (Map.Entry<String, RoboScriptVariable> entry : values.entrySet()) {
 			this.interpreter.environment.define(entry.getKey(), entry.getValue(), false);
@@ -143,10 +164,23 @@ public abstract class RoboScript {
 		this.hadError = true;
 	}
 
+	/**
+	 * Prints the given message.
+	 *
+	 * @param message the message to print.
+	 */
 	public abstract void print(String message);
 
+	/**
+	 * Reports a compile error.
+	 *
+	 * @param error the compile error message.
+	 */
 	public abstract void reportCompileError(String error);
 
+	/**
+	 * Requests the interpreter to stop execution.
+	 */
 	public final void requestStop() {
 		this.interpreter.requestStop();
 	}

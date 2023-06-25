@@ -6,6 +6,10 @@ import java.util.Map;
 
 import static com.workert.robotics.base.roboscript.Token.TokenType.*;
 
+/**
+ * The Scanner class is responsible for tokenizing the source code of a RoboScript program.
+ * It scans the source code character by character and converts it into a list of tokens.
+ */
 final class Scanner {
 	private final RoboScript roboScriptInstance;
 	private final String source;
@@ -15,10 +19,15 @@ final class Scanner {
 	private int current = 0;
 	private int line = 1;
 
-	private static final Map<String, Token.TokenType> keywords;
+	private static final Map<String, Token.TokenType> keywords = initializeKeywords();
 
-	static {
-		keywords = new HashMap<>();
+	/**
+	 * Initializes the keyword map.
+	 *
+	 * @return The map of keywords and their corresponding token types.
+	 */
+	private static Map<String, Token.TokenType> initializeKeywords() {
+		Map<String, Token.TokenType> keywords = new HashMap<>();
 
 		keywords.put("class", CLASS);
 		keywords.put("function", FUNCTION);
@@ -52,24 +61,38 @@ final class Scanner {
 		keywords.put("boolean", BOOLEAN);
 		keywords.put("Array", ARRAY);
 		keywords.put("Object", OBJECT);
+
+		return keywords;
 	}
 
+	/**
+	 * Constructs a new Scanner object.
+	 *
+	 * @param roboScriptInstance The instance of the RoboScript interpreter.
+	 * @param source             The source code of the RoboScript program.
+	 */
 	Scanner(RoboScript roboScriptInstance, String source) {
 		this.roboScriptInstance = roboScriptInstance;
 		this.source = source;
 	}
 
+	/**
+	 * Scans the source code and returns the list of tokens.
+	 *
+	 * @return The list of tokens.
+	 */
 	List<Token> scanTokens() {
 		while (!this.isAtEnd()) {
-			// Beginning of the next lexeme.
 			this.start = this.current;
 			this.scanToken();
 		}
-
 		this.tokens.add(new Token(EOF, "", null, this.line));
 		return this.tokens;
 	}
 
+	/**
+	 * Scans the next token from the source code.
+	 */
 	private void scanToken() {
 		char c = this.consumeNextChar();
 		switch (c) {
@@ -116,12 +139,12 @@ final class Scanner {
 				break;
 			case '/':
 				if (this.consumeIfNextCharMatches('/')) {
-					// Comments
 					while (this.getCurrentChar() != '\n' && !this.isAtEnd()) {
 						this.consumeNextChar();
 					}
 				} else {
-					this.addToken(this.consumeIfNextCharMatches('=') ? SLASH_EQUAL : SLASH);
+					this.addToken(
+							this.consumeIfNextCharMatches('=') ? SLASH_EQUAL : SLASH);
 				}
 				break;
 			case '%':
@@ -136,8 +159,6 @@ final class Scanner {
 			case ';':
 				this.addToken(SEMICOLON);
 				break;
-
-
 			case '!':
 				this.addToken(this.consumeIfNextCharMatches('=') ? BANG_EQUAL : BANG);
 				break;
@@ -148,23 +169,19 @@ final class Scanner {
 				this.addToken(this.consumeIfNextCharMatches('=') ? LESS_EQUAL : LESS);
 				break;
 			case '>':
-				this.addToken(this.consumeIfNextCharMatches('=') ? GREATER_EQUAL : GREATER);
+				this.addToken(
+						this.consumeIfNextCharMatches('=') ? GREATER_EQUAL : GREATER);
 				break;
-
-
 			case ' ':
 			case '\r':
 			case '\t':
 				break;
-
 			case '\n':
 				this.line++;
 				break;
-
 			case '"':
 				this.string();
 				break;
-
 			default:
 				if (this.isDigit(c)) {
 					this.number();
@@ -177,38 +194,14 @@ final class Scanner {
 		}
 	}
 
-	private void identifier() {
-		while (this.isAlphaNumeric(this.getCurrentChar())) {
-			this.consumeNextChar();
-		}
-
-		String text = this.source.substring(this.start, this.current);
-		Token.TokenType type = keywords.get(text);
-		if (type == null) type = IDENTIFIER;
-		this.addToken(type);
-	}
-
-	private void number() {
-		while (this.isDigit(this.getCurrentChar())) {
-			this.consumeNextChar();
-		}
-
-		// Fractional part.
-		if (this.getCurrentChar() == '.' && this.isDigit(this.getNextChar())) {
-			// Consume the "."
-			this.consumeNextChar();
-
-			while (this.isDigit(this.getCurrentChar())) {
-				this.consumeNextChar();
-			}
-		}
-
-		this.addToken(DOUBLE_VALUE, Double.parseDouble(this.source.substring(this.start, this.current)));
-	}
-
+	/**
+	 * Scans a string literal from the source code.
+	 */
 	private void string() {
 		while (this.getCurrentChar() != '"' && !this.isAtEnd()) {
-			if (this.getCurrentChar() == '\n') this.line++;
+			if (this.getCurrentChar() == '\n') {
+				this.line++;
+			}
 			this.consumeNextChar();
 		}
 
@@ -217,64 +210,152 @@ final class Scanner {
 			return;
 		}
 
-		// The closing ".
 		this.consumeNextChar();
 
-		// Trim the surrounding quotes.
 		String value = this.source.substring(this.start + 1, this.current - 1);
 		this.addToken(STRING_VALUE, value);
 	}
 
 	/**
-	 * Checks if next character matches <code>expected</code> and consumes it if so.
+	 * Scans a number literal from the source code.
+	 */
+	private void number() {
+		while (this.isDigit(this.getCurrentChar())) {
+			this.consumeNextChar();
+		}
+
+		if (this.getCurrentChar() == '.' && this.isDigit(this.getNextChar())) {
+			this.consumeNextChar();
+			while (this.isDigit(this.getCurrentChar())) {
+				this.consumeNextChar();
+			}
+		}
+
+		String value = this.source.substring(this.start, this.current);
+		this.addToken(DOUBLE_VALUE, Double.parseDouble(value));
+	}
+
+	/**
+	 * Scans an identifier or keyword from the source code.
+	 */
+	private void identifier() {
+		while (this.isAlphaNumeric(this.getCurrentChar())) {
+			this.consumeNextChar();
+		}
+
+		String text = this.source.substring(this.start, this.current);
+		Token.TokenType type = keywords.getOrDefault(text, IDENTIFIER);
+		this.addToken(type);
+	}
+
+	/**
+	 * Adds a token with the given type to the token list.
 	 *
-	 * @param expected The expected next character.
-	 * @return If the next character matches the expected one.
-	 **/
+	 * @param type The type of the token.
+	 */
+	private void addToken(Token.TokenType type) {
+		this.addToken(type, null);
+	}
+
+	/**
+	 * Adds a token with the given type and literal value to the token list.
+	 *
+	 * @param type    The type of the token.
+	 * @param literal The literal value of the token.
+	 */
+	private void addToken(Token.TokenType type, Object literal) {
+		String lexeme = this.source.substring(this.start, this.current);
+		this.tokens.add(new Token(type, lexeme, literal, this.line));
+	}
+
+	/**
+	 * Consumes and returns the next character in the source code.
+	 *
+	 * @return The next character.
+	 */
+	private char consumeNextChar() {
+		return this.source.charAt(this.current++);
+	}
+
+	/**
+	 * Checks if the next character matches the given expected character and consumes it if true.
+	 *
+	 * @param expected The expected character.
+	 * @return True if the next character matches the expected character, false otherwise.
+	 */
 	private boolean consumeIfNextCharMatches(char expected) {
-		if (this.isAtEnd()) return false;
-		if (this.source.charAt(this.current) != expected) return false;
+		if (this.isAtEnd()) {
+			return false;
+		}
+
+		if (this.source.charAt(this.current) != expected) {
+			return false;
+		}
 
 		this.current++;
 		return true;
 	}
 
-	private boolean isAtEnd() {
-		return this.current >= this.source.length();
-	}
-
-	private char consumeNextChar() {
-		return this.source.charAt(this.current++);
-	}
-
+	/**
+	 * Returns the current character in the source code.
+	 *
+	 * @return The current character.
+	 */
 	private char getCurrentChar() {
-		if (this.isAtEnd()) return '\0';
+		if (this.isAtEnd()) {
+			return '\0';
+		}
 		return this.source.charAt(this.current);
 	}
 
-	private char getNextChar() { // getNextChar
-		if (this.current + 1 >= this.source.length()) return '\0';
+	/**
+	 * Returns the next character in the source code.
+	 *
+	 * @return The next character.
+	 */
+	private char getNextChar() {
+		if (this.current + 1 >= this.source.length()) {
+			return '\0';
+		}
 		return this.source.charAt(this.current + 1);
 	}
 
-	private boolean isAlpha(char c) {
-		return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_';
-	}
-
-	private boolean isAlphaNumeric(char c) {
-		return this.isAlpha(c) || this.isDigit(c);
-	}
-
+	/**
+	 * Checks if the given character is a digit.
+	 *
+	 * @param c The character to check.
+	 * @return True if the character is a digit, false otherwise.
+	 */
 	private boolean isDigit(char c) {
 		return c >= '0' && c <= '9';
 	}
 
-	private void addToken(Token.TokenType type) {
-		this.addToken(type, null);
+	/**
+	 * Checks if the given character is an alphabetic character or an underscore.
+	 *
+	 * @param c The character to check.
+	 * @return True if the character is alphabetic or an underscore, false otherwise.
+	 */
+	private boolean isAlpha(char c) {
+		return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_';
 	}
 
-	private void addToken(Token.TokenType type, Object literal) {
-		String text = this.source.substring(this.start, this.current);
-		this.tokens.add(new Token(type, text, literal, this.line));
+	/**
+	 * Checks if the given character is alphanumeric or an underscore.
+	 *
+	 * @param c The character to check.
+	 * @return True if the character is alphanumeric or an underscore, false otherwise.
+	 */
+	private boolean isAlphaNumeric(char c) {
+		return this.isAlpha(c) || this.isDigit(c);
+	}
+
+	/**
+	 * Checks if the scanner has reached the end of the source code.
+	 *
+	 * @return True if at the end of the source code, false otherwise.
+	 */
+	private boolean isAtEnd() {
+		return this.current >= this.source.length();
 	}
 }
