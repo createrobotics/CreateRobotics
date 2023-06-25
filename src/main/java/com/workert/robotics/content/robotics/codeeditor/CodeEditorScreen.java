@@ -8,7 +8,7 @@ import com.simibubi.create.foundation.gui.AllGuiTextures;
 import com.simibubi.create.foundation.gui.AllIcons;
 import com.simibubi.create.foundation.gui.widget.IconButton;
 import com.workert.robotics.base.registries.PacketRegistry;
-import com.workert.robotics.helpers.CodeHelper;
+import com.workert.robotics.unused.CodeHelper;
 import net.minecraft.Util;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.network.chat.Component;

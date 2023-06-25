@@ -1,4 +1,4 @@
-package com.workert.robotics.helpers;
+package com.workert.robotics.unused;
 
 import com.simibubi.create.Create;
 import com.simibubi.create.content.contraptions.components.deployer.DeployerFakePlayer;
@@ -382,11 +382,7 @@ public class CodeHelper {
 	}
 
 	public static Item getItemById(String id) {
-		Item item = Registry.ITEM.get(new ResourceLocation(id.trim().split(":")[0], id.trim().split(":")[1]));
-
-		if (item.equals(Items.AIR)) throw new IllegalArgumentException("Unknown item: \"" + id.trim() + "\"");
-
-		return item;
+		return Registry.ITEM.get(new ResourceLocation(id.trim().split(":")[0], id.trim().split(":")[1]));
 	}
 
 	public static void click(AbstractRobotEntity robot, BlockPos posToClick, Direction direction, boolean use, @Nullable Item itemToClickWith) throws ClassNotFoundException, NoSuchMethodException, InterruptedException, InvocationTargetException, IllegalAccessException {

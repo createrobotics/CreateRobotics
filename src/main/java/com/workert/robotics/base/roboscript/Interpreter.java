@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public final class Interpreter implements Expression.Visitor<Object>, Statement.Visitor<Void> {
-	final RoboScript roboScriptInstance;
+	public final RoboScript roboScriptInstance;
 	Environment environment = new Environment();
 	private final Map<Expression, Integer> locals = new HashMap<>();
 
