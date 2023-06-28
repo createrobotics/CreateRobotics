@@ -8,6 +8,7 @@ import com.simibubi.create.content.logistics.RedstoneLinkNetworkHandler;
 import com.simibubi.create.foundation.utility.Couple;
 import com.workert.robotics.base.registries.ItemRegistry;
 import com.workert.robotics.base.roboscript.RoboScript;
+import com.workert.robotics.base.roboscript.RoboScriptArgumentPredicates;
 import com.workert.robotics.base.roboscript.RoboScriptArray;
 import com.workert.robotics.base.roboscript.RoboScriptRuntimeError;
 import com.workert.robotics.base.roboscript.ingame.CompoundTagEnvironmentConversionHelper;
@@ -15,9 +16,7 @@ import com.workert.robotics.base.roboscript.ingame.LineLimitedString;
 import com.workert.robotics.unused.CodeHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.*;
 import net.minecraft.world.damagesource.DamageSource;
@@ -110,12 +109,9 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 					this.defineFunction("goTo", 3, (interpreter, arguments, errorToken) -> {
 						AbstractRobotEntity robot = AbstractRobotEntity.this;
 
-						if (!(arguments.get(0) instanceof Double xPos && arguments.get(
-								1) instanceof Double yPos && arguments.get(2) instanceof Double zPos))
-							throw new RoboScriptRuntimeError(errorToken,
-									"The xPos, yPos and zPos arguments must be a number.");
+						BlockPos blockPos = new RoboScriptArgumentPredicates(errorToken).asBlockPos(arguments, 0);
 
-						robot.getNavigation().moveTo(xPos, yPos, zPos, 1);
+						robot.getNavigation().moveTo(blockPos.getX(), blockPos.getY(), blockPos.getZ(), 1);
 
 						int tryTimer = 0;
 						while (robot.getNavigation().isInProgress()) {
@@ -142,16 +138,9 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 					this.defineFunction("getItems", 4, (interpreter, arguments, errorToken) -> {
 						AbstractRobotEntity robot = AbstractRobotEntity.this;
 
-						if (!(arguments.get(0) instanceof Double xPos && arguments.get(
-								1) instanceof Double yPos && arguments.get(2) instanceof Double zPos))
-							throw new RoboScriptRuntimeError(errorToken,
-									"The xPos, yPos and zPos arguments must be a number.");
-
-						if (!(arguments.get(3) == null || arguments.get(3) instanceof String))
-							throw new RoboScriptRuntimeError(errorToken,
-									"The itemId argument must be a String or null.");
-
-						BlockPos pos = new BlockPos(xPos, yPos, zPos);
+						RoboScriptArgumentPredicates predicates = new RoboScriptArgumentPredicates(errorToken);
+						BlockPos pos = predicates.asBlockPos(arguments, 0);
+						Item itemToGet = predicates.asItem(arguments.get(3));
 
 						if (!pos.closerToCenterThan(robot.position(), 5))
 							interpreter.roboScriptInstance.print("The container is too far away. Ignored the command.");
@@ -159,10 +148,6 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 						if (robot.getLevel().getExistingBlockEntity(pos) == null)
 							interpreter.roboScriptInstance.print(
 									"The block at the specified coordinates has no tile entity (is no container). Ignored the command.");
-
-						Item itemToGet = arguments.get(3) == null ? Items.AIR : Registry.ITEM.get(
-								new ResourceLocation(((String) arguments.get(3)).split(":")[0],
-										((String) arguments.get(3)).trim().split(":")[1]));
 
 						robot.getLevel().getExistingBlockEntity(pos).getCapability(ForgeCapabilities.ITEM_HANDLER)
 								.ifPresent(handler -> {
@@ -178,19 +163,12 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 						robot.getLevel().blockUpdated(pos, robot.getLevel().getBlockState(pos).getBlock());
 						return null;
 					});
-					this.defineFunction("getItems", 4, (interpreter, arguments, errorToken) -> {
+					this.defineFunction("pushItems", 4, (interpreter, arguments, errorToken) -> {
 						AbstractRobotEntity robot = AbstractRobotEntity.this;
 
-						if (!(arguments.get(0) instanceof Double xPos && arguments.get(
-								1) instanceof Double yPos && arguments.get(2) instanceof Double zPos))
-							throw new RoboScriptRuntimeError(errorToken,
-									"The xPos, yPos and zPos arguments must be a number.");
-
-						if (!(arguments.get(3) == null || arguments.get(3) instanceof String))
-							throw new RoboScriptRuntimeError(errorToken,
-									"The itemId argument must be a String or null.");
-
-						BlockPos pos = new BlockPos(xPos, yPos, zPos);
+						RoboScriptArgumentPredicates predicates = new RoboScriptArgumentPredicates(errorToken);
+						BlockPos pos = predicates.asBlockPos(arguments, 0);
+						Item itemToPush = predicates.asItem(arguments.get(3));
 
 						if (!pos.closerToCenterThan(robot.position(), 5))
 							interpreter.roboScriptInstance.print("The container is too far away. Ignored the command.");
@@ -198,10 +176,6 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 						if (robot.getLevel().getExistingBlockEntity(pos) == null)
 							interpreter.roboScriptInstance.print(
 									"The block at the specified coordinates has no tile entity (is no container). Ignored the command.");
-
-						Item itemToPush = arguments.get(3) == null ? Items.AIR : Registry.ITEM.get(
-								new ResourceLocation(((String) arguments.get(3)).split(":")[0],
-										((String) arguments.get(3)).trim().split(":")[1]));
 
 						robot.getLevel().getExistingBlockEntity(pos).getCapability(ForgeCapabilities.ITEM_HANDLER)
 								.ifPresent(handler -> {
@@ -225,32 +199,23 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 					this.defineFunction("punch", 5, (interpreter, arguments, errorToken) -> {
 						AbstractRobotEntity robot = AbstractRobotEntity.this;
 
-						if (!(arguments.get(0) instanceof Double xPos && arguments.get(
-								1) instanceof Double yPos && arguments.get(2) instanceof Double zPos))
-							throw new RoboScriptRuntimeError(errorToken,
-									"The xPos, yPos and zPos arguments must be a number.");
-
-						if (!(arguments.get(3) == null || arguments.get(3) instanceof String))
-							throw new RoboScriptRuntimeError(errorToken,
-									"The itemId argument must be a String or null.");
-
-						if (!(arguments.get(4) == null || arguments.get(4) instanceof String))
-							throw new RoboScriptRuntimeError(errorToken,
-									"The direction argument must be a String or null.");
-
-						BlockPos clickPos = new BlockPos(xPos, yPos, zPos);
+						RoboScriptArgumentPredicates predicates = new RoboScriptArgumentPredicates(errorToken);
+						BlockPos clickPos = predicates.asBlockPos(arguments, 0);
+						Item item = predicates.optional(arguments.get(3), predicates::asItem);
+						String directionString = predicates.optional(arguments.get(4), predicates::asString);
 
 						if (!clickPos.closerToCenterThan(robot.position(), 5))
 							interpreter.roboScriptInstance.print(
 									"The click position is too far away. Ignored the command.");
 
-						Item item = arguments.get(3) == null ? Items.AIR : Registry.ITEM.get(
-								new ResourceLocation(((String) arguments.get(3)).split(":")[0],
-										((String) arguments.get(3)).trim().split(":")[1]));
-
 						Direction direction = null;
-						if (arguments.get(4) instanceof String directionString)
-							direction = Direction.valueOf(directionString);
+						try {
+							if (directionString != null)
+								direction = Direction.valueOf(directionString);
+						} catch (IllegalArgumentException exception) {
+							interpreter.roboScriptInstance.print(
+									"Invalid Direction value (only allowed are \"up\", \"east\", etc). Ignored the argument.");
+						}
 
 						try {
 							click(robot, clickPos, direction, false, item);
@@ -262,32 +227,23 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 					this.defineFunction("use", 5, (interpreter, arguments, errorToken) -> {
 						AbstractRobotEntity robot = AbstractRobotEntity.this;
 
-						if (!(arguments.get(0) instanceof Double xPos && arguments.get(
-								1) instanceof Double yPos && arguments.get(2) instanceof Double zPos))
-							throw new RoboScriptRuntimeError(errorToken,
-									"The xPos, yPos and zPos arguments must be a number.");
-
-						if (!(arguments.get(3) == null || arguments.get(3) instanceof String))
-							throw new RoboScriptRuntimeError(errorToken,
-									"The itemId argument must be a String or null.");
-
-						if (!(arguments.get(4) == null || arguments.get(4) instanceof String))
-							throw new RoboScriptRuntimeError(errorToken,
-									"The direction argument must be a String or null.");
-
-						BlockPos clickPos = new BlockPos(xPos, yPos, zPos);
+						RoboScriptArgumentPredicates predicates = new RoboScriptArgumentPredicates(errorToken);
+						BlockPos clickPos = predicates.asBlockPos(arguments, 0);
+						Item item = predicates.optional(arguments.get(3), predicates::asItem);
+						String directionString = predicates.optional(arguments.get(4), predicates::asString);
 
 						if (!clickPos.closerToCenterThan(robot.position(), 5))
 							interpreter.roboScriptInstance.print(
 									"The click position is too far away. Ignored the command.");
 
-						Item item = arguments.get(3) == null ? Items.AIR : Registry.ITEM.get(
-								new ResourceLocation(((String) arguments.get(3)).split(":")[0],
-										((String) arguments.get(3)).trim().split(":")[1]));
-
 						Direction direction = null;
-						if (arguments.get(4) instanceof String directionString)
-							direction = Direction.valueOf(directionString);
+						try {
+							if (directionString != null)
+								direction = Direction.valueOf(directionString);
+						} catch (IllegalArgumentException exception) {
+							interpreter.roboScriptInstance.print(
+									"Invalid Direction value (only allowed are \"up\", \"east\", etc). Ignored the argument.");
+						}
 
 						try {
 							click(robot, clickPos, direction, true, item);
@@ -298,30 +254,16 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 					});
 
 					this.defineFunction("waitForRedstoneLink", 2, (interpreter, arguments, errorToken) -> {
-						if (!(arguments.get(0) instanceof String itemId1))
-							throw new RoboScriptRuntimeError(errorToken,
-									"The first itemId argument must be a String.");
+						RoboScriptArgumentPredicates predicates = new RoboScriptArgumentPredicates(errorToken);
 
-						if (!(arguments.get(1) == null || arguments.get(1) instanceof String))
-							throw new RoboScriptRuntimeError(errorToken,
-									"The second itemId argument must be a String or null.");
-
-						Item item1 = Registry.ITEM.get(
-								new ResourceLocation(((String) arguments.get(3)).split(":")[0],
-										((String) arguments.get(3)).trim().split(":")[1]));
+						Item item1 = predicates.asItem(arguments.get(0));
+						Item item2 = predicates.optional(arguments.get(1), predicates::asItem);
 
 						if (item1 == Items.AIR)
 							throw new RoboScriptRuntimeError(errorToken, "Invalid first itemId.");
 
-						Item item2 = null;
-						if (arguments.get(1) != null)
-							item2 = Registry.ITEM.get(
-									new ResourceLocation(((String) arguments.get(3)).split(":")[0],
-											((String) arguments.get(3)).trim().split(":")[1]));
-
 						if (item2 == Items.AIR)
 							throw new RoboScriptRuntimeError(errorToken, "Invalid second itemId.");
-
 
 						RedstoneLinkNetworkHandler.Frequency secondFrequency = RedstoneLinkNetworkHandler.Frequency.EMPTY;
 						if (item2 != null)
@@ -346,7 +288,7 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 		}
 	}
 
-	public static void click(AbstractRobotEntity robot, BlockPos posToClick, Direction direction, boolean use, @javax.annotation.Nullable Item itemToClickWith) throws ClassNotFoundException, NoSuchMethodException, InterruptedException, InvocationTargetException, IllegalAccessException {
+	public static void click(AbstractRobotEntity robot, BlockPos posToClick, @Nullable Direction direction, boolean use, @Nullable Item itemToClickWith) throws ClassNotFoundException, NoSuchMethodException, InterruptedException, InvocationTargetException, IllegalAccessException {
 		DeployerFakePlayer fakePlayer = new DeployerFakePlayer((ServerLevel) robot.getLevel());
 
 		if (itemToClickWith != null) {
