@@ -5,7 +5,7 @@
 	<br><br>
 </h1>
 
-<a href="https://discord.gg/PbBt4PQhpe"><img src="https://discordapp.com/api/guilds/865321790347018241/widget.png?style=banner3" alt="Discord Banner" align="right"/></a>
+<a href="https://discord.gg/jvVbwBYMU9"><img src="https://discordapp.com/api/guilds/865321790347018241/widget.png?style=banner3" alt="Discord Banner" align="right"/></a>
 
 **Create Robotics** is a create addon that adds robotics and their automation to Minecraft. 
 
