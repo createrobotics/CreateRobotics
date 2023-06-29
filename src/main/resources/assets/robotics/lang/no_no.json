@@ -1,0 +1,76 @@
+{
+  "_": "->------------------------]  Spill Elementer  [------------------------<-",
+
+  "block.robotics.bronze_block": "Bronseblokk",
+  "block.robotics.code_editor": "Koderedigerer",
+  "block.robotics.deepslate_tin_ore": "Tinnmalm i dypskifer",
+  "block.robotics.smasher": "Knuser",
+  "block.robotics.tin_block": "Tinnblokk",
+  "block.robotics.tin_ore": "Tinnmalm",
+
+  "entity.robotics.clockcopter": "Klokkekopter",
+  "entity.robotics.code_drone": "Kodedrone",
+  "entity.robotics.extend_o_boots": "Ekstend O Støvler",
+  "entity.robotics.miner": "Gruvearbeider",
+
+  "item.robotics.bronze_ingot": "Bronsebarre",
+  "item.robotics.bronze_nugget": "Bronseklump",
+  "item.robotics.clockcopter": "Klokkekopter",
+  "item.robotics.code_drone": "Juan",
+  "item.robotics.extend_o_boots": "Ekstend-O-Støvler",
+  "item.robotics.program": "Programm",
+  "item.robotics.raw_tin": "Tinnerts",
+  "item.robotics.tin_ingot": "Tinnbarre",
+  "item.robotics.tin_nugget": "Tinnklump",
+
+  "itemGroup.robotics": "Create Robotikk",
+
+  "item.robotics.extend_o_boots.tooltip": "EKSTEND-O-STØVLER",
+  "item.robotics.extend_o_boots.tooltip.summary": "Ditt _utrustbare Stillas_! Tillater deg å skape et _uttrekkbart midlertidig stillas_ under deg.",
+  "item.robotics.extend_o_boots.tooltip.control1": "Hold Ctrl mens brukes",
+  "item.robotics.extend_o_boots.tooltip.action1": "Tillater deg å _aktiverer_ EkstendOStøvlene gjennom å _scrolle opp eller ned_",
+
+  "item.robotics.program.tooltip": "PROGRAMM",
+  "item.robotics.program.tooltip.summary": "Et _programm som holder på kode_! Tillater deg å _programmere roboter_.",
+  "item.robotics.program.tooltip.control1": "Høyre-Klikk på Koderedigerer",
+  "item.robotics.program.tooltip.action1": "Tillater deg å _redigerer_ programmets _innhold_",
+  "item.robotics.program.tooltip.control2": "Høyre-Klikk på programmerbar robot",
+  "item.robotics.program.tooltip.action2": "Tillater deg å _kopiere_ programmets _kode_ til _roboten_",
+
+  "block.robotics.code_editor.tooltip": "KODEREDIGERER",
+  "block.robotics.code_editor.tooltip.summary": "En blokk som tillater deg å _redigere_ et programms _innhold_!",
+  "block.robotics.code_editor.tooltip.condition1": "Når Høyre-Klikket med Programm",
+  "block.robotics.code_editor.tooltip.behaviour1": "Tillater deg å _redigere_ _programmet_",
+
+  "robotics.ponder.programming.header": "Programmering ved bruk av Koderedigerer.",
+  "robotics.ponder.programming.text_1": "For å endre innholdet av et Programm, behøver du en Koderedigerer.",
+  "robotics.ponder.programming.text_2": "Høyre-klikk koderedigereren med programmet for å begynne!",
+  "robotics.ponder.programming.text_3": "Når du har fullført koding, høyre-klikk med programmet på en programmerbar robot for å kopiere koden din til den.",
+
+  "_": "->------------------------]  Gjenstand Beskrivelser  [------------------------<-",
+
+  "item.robotics.extend_o_boots.tooltip": "EKSTEND-O-STØVLER",
+  "item.robotics.extend_o_boots.tooltip.summary": "Ditt _utrustbare Stillas_! Tillater deg å skape et _uttrekkbart midlertidig stillas_ under deg.",
+  "item.robotics.extend_o_boots.tooltip.control1": "Hold Ctrl mens brukes",
+  "item.robotics.extend_o_boots.tooltip.action1": "Tillater deg å _aktiverer_ EkstendOStøvlene gjennom å _scrolle opp eller ned_",
+
+  "item.robotics.program.tooltip": "PROGRAMM",
+  "item.robotics.program.tooltip.summary": "Et _programm som holder på kode_! Tillater deg å _programmere roboter_.",
+  "item.robotics.program.tooltip.control1": "Høyre-Klikk på Koderedigerer",
+  "item.robotics.program.tooltip.action1": "Tillater deg å _redigerer_ programmets _innhold_",
+  "item.robotics.program.tooltip.control2": "Høyre-Klikk på programmerbar robot",
+  "item.robotics.program.tooltip.action2": "Tillater deg å _kopiere_ programmets _kode_ til _roboten_",
+
+  "block.robotics.code_editor.tooltip": "KODEREDIGERER",
+  "block.robotics.code_editor.tooltip.summary": "En blokk som tillater deg å _redigere_ et programms _innhold_!",
+  "block.robotics.code_editor.tooltip.condition1": "Når Høyre-Klikket med Programm",
+  "block.robotics.code_editor.tooltip.behaviour1": "Tillater deg å _redigere_ _programmet_",
+
+  "robotics.ponder.programming.header": "Programmering ved bruk av Koderedigerer.",
+  "robotics.ponder.programming.text_1": "For å endre innholdet av et Programm, behøver du en Koderedigerer.",
+  "robotics.ponder.programming.text_2": "Høyre-klikk koderedigereren med programmet for å begynne!",
+  "robotics.ponder.programming.text_3": "Når du har fullført koding, høyre-klikk med programmet på en programmerbar robot for å kopiere koden din til den.",
+
+  "_": "Takk for at du oversatt Create Robotikk!"
+
+}
