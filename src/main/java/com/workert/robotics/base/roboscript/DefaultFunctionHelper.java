@@ -35,6 +35,7 @@ class DefaultFunctionHelper {
 			usableMathMethodTest:
 			for (Method method : methods) {
 				if (!Modifier.isStatic(method.getModifiers())) continue;
+				if (Number.class.isAssignableFrom(method.getReturnType())) continue;
 				for (Class<?> parameterClass : method.getParameterTypes()) {
 					if (!parameterClass.equals(double.class)) continue usableMathMethodTest;
 				}
@@ -45,7 +46,7 @@ class DefaultFunctionHelper {
 				roboScript.defineFunction(mathMethod.getName(), mathMethod.getParameterCount(),
 						(interpreter, arguments, errorToken) -> {
 							try {
-								return mathMethod.invoke(null, arguments.toArray());
+								return ((Number) mathMethod.invoke(null, arguments.toArray())).doubleValue();
 							} catch (InvocationTargetException exception) {
 								exception.printStackTrace();
 								throw new RoboScriptRuntimeError(errorToken,
@@ -59,34 +60,6 @@ class DefaultFunctionHelper {
 		} catch (Throwable e) {
 			e.printStackTrace();
 		}
-
-
-		/*roboScript.defineFunction("sin", 1, (interpreter, arguments) -> {
-			if (!(arguments.get(0) instanceof Double d))
-				return null;
-			return Math.sin(d);
-		});
-		roboScript.defineFunction("cos", 1, (interpreter, arguments) -> {
-			if (!(arguments.get(0) instanceof Double d))
-				return null;
-			return Math.cos(d);
-		});
-		roboScript.defineFunction("tan", 1, (interpreter, arguments) -> {
-			if (!(arguments.get(0) instanceof Double d))
-				return null;
-			return Math.tan(d);
-		});
-
-		roboScript.defineFunction("ceil", 1, (interpreter, arguments) -> {
-			if (!(arguments.get(0) instanceof Double d))
-				return null;
-			return Math.ceil(d);
-		});
-		roboScript.defineFunction("floor", 1, (interpreter, arguments) -> {
-			if (!(arguments.get(0) instanceof Double d))
-				return null;
-			return Math.floor(d);
-		});*/
 	}
 
 	private static List<Method> getPublicMethods(Class clazz) {
