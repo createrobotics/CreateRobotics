@@ -20,10 +20,10 @@ public class Printer {
 			System.out.printf("%4d ", chunk.readLine(offset));
 		byte instruction = chunk.readCode(offset);
 		switch (instruction) {
-			case Chunk.OpCode.CONSTANT -> {
+			case OpCode.OP_CONSTANT -> {
 				return constantInstruction("OP_CONSTANT", chunk, offset);
 			}
-			case Chunk.OpCode.RETURN -> {
+			case OpCode.OP_RETURN -> {
 				return simpleInstruction("OP_RETURN", offset);
 			}
 

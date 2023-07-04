@@ -8,12 +8,7 @@ public class Chunk {
 	private ByteArrayOutputStream code = new ByteArrayOutputStream();
 	private List<Object> constants = new ArrayList<>();
 	private List<Integer> lines = new ArrayList<>();
-
-	// These are similar to TokenTypes, and represent different instructions for the VM
-	protected interface OpCode {
-		byte CONSTANT = 0; // 0000
-		byte RETURN = 1; // 0001
-	}
+	
 
 	// Add code to the chunk
 	protected void writeCode(byte code, int line) {
