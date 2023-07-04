@@ -11,6 +11,9 @@ public class Printer {
 		System.out.printf("%04d ", offset);
 		byte instruction = chunk.read(offset);
 		switch (instruction) {
+			case Chunk.OpCode.OP_CONSTANT -> {
+				return this.constantInstruction("OP_CONSTANT", chunk, offset);
+			}
 			case Chunk.OpCode.OP_RETURN -> {
 				return this.simpleInstruction("OP_RETURN", offset);
 			}
@@ -24,6 +27,13 @@ public class Printer {
 	private int simpleInstruction(String name, int offset) {
 		System.out.println(name);
 		return offset + 1;
+	}
+
+	private int constantInstruction(String name, Chunk chunk, int offset) {
+		byte constant = chunk.read(offset + 1);
+		System.out.printf("%-16s %4d '", name, constant);
+		System.out.println(chunk.readConstant(constant) + "'");
+		return offset + 2;
 	}
 
 
