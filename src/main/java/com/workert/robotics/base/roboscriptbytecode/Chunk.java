@@ -4,33 +4,44 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Chunk {
-	protected interface OpCode {
-		/* 0000 0000 */ byte OP_CONSTANT = 0;
-		/* 0000 0001 */ byte OP_RETURN = 1;
-	}
-
+	// Dynamic array of bytes, Crafting Interpreters used a custom system as C does not have something like this.
 	private ByteArrayOutputStream code = new ByteArrayOutputStream();
 	private List<Object> constants = new ArrayList<>();
+	private List<Integer> lines = new ArrayList<>();
 
-
-	protected void write(byte b) {
-		this.code.write(b);
+	// These are similar to TokenTypes, and represent different instructions for the VM
+	protected interface OpCode {
+		byte CONSTANT = 0; // 0000
+		byte RETURN = 1; // 0001
 	}
 
-	protected byte read(int i) {
+	// Add code to the chunk
+	protected void writeCode(byte code, int line) {
+		this.code.write(code);
+		this.lines.add(line);
+	}
+
+	protected byte readCode(int i) {
 		return this.code.toByteArray()[i];
 	}
 
-	protected int addConstant(Object constant) {
-		this.constants.add(constant);
-		return this.getCodeCount() - 1;
+	protected int getCodeSize() {
+		return this.code.size();
+	}
+
+
+	// Add a value to the chunk
+	protected int addConstant(Object value) {
+		this.constants.add(value);
+		return this.constants.size() - 1;
 	}
 
 	protected Object readConstant(int i) {
 		return this.constants.get(i);
 	}
 
-	protected int getCodeCount() {
-		return this.code.size();
+
+	protected int readLine(int i) {
+		return this.lines.get(i);
 	}
 }

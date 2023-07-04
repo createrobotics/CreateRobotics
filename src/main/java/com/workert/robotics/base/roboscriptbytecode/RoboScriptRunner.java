@@ -2,11 +2,11 @@ package com.workert.robotics.base.roboscriptbytecode;
 public class RoboScriptRunner {
 	public static void main(String[] args) {
 		Chunk chunk = new Chunk();
-		byte constant = (byte) chunk.addConstant(1.2);
-		chunk.write(Chunk.OpCode.OP_CONSTANT);
-		chunk.write(constant);
-		chunk.write(Chunk.OpCode.OP_RETURN);
-		Printer p = new Printer();
-		p.disassembleChunk(chunk, "test chunk");
+		int constant = chunk.addConstant(1.14);
+		chunk.writeCode(Chunk.OpCode.CONSTANT, 1);
+		chunk.writeCode((byte) constant, 1);
+		chunk.writeCode(Chunk.OpCode.RETURN, 1);
+		Printer printer = new Printer();
+		printer.disassembleChunk(chunk, "test chunk");
 	}
 }
