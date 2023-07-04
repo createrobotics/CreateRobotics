@@ -8,5 +8,7 @@ public class RoboScriptRunner {
 		chunk.writeCode(Chunk.OpCode.RETURN, 1);
 		Printer printer = new Printer();
 		printer.disassembleChunk(chunk, "test chunk");
+		VirtualMachine vm = new VirtualMachine();
+		vm.interpret(chunk);
 	}
 }
