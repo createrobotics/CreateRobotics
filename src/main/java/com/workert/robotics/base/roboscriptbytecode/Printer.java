@@ -13,7 +13,7 @@ public class Printer {
 	}
 
 
-	private static int disassembleInstruction(Chunk chunk, int offset) {
+	protected static int disassembleInstruction(Chunk chunk, int offset) {
 		System.out.printf("%04d", offset);
 		if (offset > 0 && chunk.readLine(offset) == chunk.readLine(offset - 1)) System.out.printf("   | ");
 		else
