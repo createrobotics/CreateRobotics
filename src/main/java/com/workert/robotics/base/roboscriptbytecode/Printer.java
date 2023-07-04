@@ -1,5 +1,7 @@
 package com.workert.robotics.base.roboscriptbytecode;
 
+import static com.workert.robotics.base.roboscriptbytecode.OpCode.*;
+
 public class Printer {
 	// The printer is the bytecode version of the AstPrinter
 
@@ -20,10 +22,13 @@ public class Printer {
 			System.out.printf("%4d ", chunk.readLine(offset));
 		byte instruction = chunk.readCode(offset);
 		switch (instruction) {
-			case OpCode.OP_CONSTANT -> {
+			case OP_CONSTANT -> {
 				return constantInstruction("OP_CONSTANT", chunk, offset);
 			}
-			case OpCode.OP_RETURN -> {
+			case OP_NEGATE -> {
+				return simpleInstruction("OP_NEGATE", offset);
+			}
+			case OP_RETURN -> {
 				return simpleInstruction("OP_RETURN", offset);
 			}
 

@@ -2,6 +2,8 @@ package com.workert.robotics.base.roboscriptbytecode;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.workert.robotics.base.roboscriptbytecode.OpCode.*;
+
 public class VirtualMachine {
 	private Chunk chunk;
 	private List<Object> stack = new ArrayList<>(256);
@@ -19,12 +21,16 @@ public class VirtualMachine {
 		while (true) {
 			byte instruction;
 			switch (instruction = this.readByte()) {
-				case OpCode.OP_CONSTANT -> {
+				case OP_CONSTANT -> {
 					Object constant = this.readConstant();
 					this.addStack(constant);
 					System.out.println(constant);
 				}
-				case OpCode.OP_RETURN -> {
+				case OP_NEGATE -> {
+					if (this.peekStack() instanceof Double) this.addStack(-(double) this.popStack());
+					break;
+				}
+				case OP_RETURN -> {
 					System.out.println(this.popStack());
 					return;
 				}
@@ -63,8 +69,12 @@ public class VirtualMachine {
 	}
 
 	protected Object popStack() {
-		Object lastElement = this.stack.get(this.stack.size() - 1);
+		Object lastElement = this.peekStack();
 		this.stack.remove(this.stack.size() - 1);
 		return lastElement;
+	}
+
+	protected Object peekStack() {
+		return this.stack.get(this.stack.size() - 1);
 	}
 }
