@@ -1,9 +1,11 @@
 package com.workert.robotics.base.roboscriptbytecode;
 public abstract class RoboScript {
+	VirtualMachine vm = new VirtualMachine(this);
 	private boolean hadError = false;
 
 	public final void runString(String source) {
 		this.hadError = false;
+		this.vm.interpret(source);
 	}
 
 	public final void runASMString(String source) {
@@ -21,16 +23,17 @@ public abstract class RoboScript {
 		System.out.println();
 		System.out.println("== From VM ==");
 		try {
-			new VirtualMachine().interpret(c);
+			this.vm.interpret(c);
 		} catch (RuntimeError e) {
 			this.handleErrorMessage(e.message);
 		}
 	}
 
-	protected void reportScanError(int line, String message) {
+	protected void reportCompileError(int line, String message) {
 		this.hadError = true;
 		System.err.println("[line " + line + "] Error: " + message);
 	}
+
 
 	protected abstract void handlePrintMessage(String message);
 

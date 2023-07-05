@@ -1,19 +1,37 @@
 package com.workert.robotics.base.roboscriptbytecode;
+import java.util.List;
 import java.util.Stack;
 
 import static com.workert.robotics.base.roboscriptbytecode.OpCode.*;
 
 public class VirtualMachine {
+	private RoboScript roboScriptInstance;
 	private Chunk chunk;
 	private Stack<Object> stack = new Stack<>();
-	private int stackPointer = 0;
 	private int instructionPointer = 0;
 
-	// this is the function that will be called when the computer or drone or whatever actually needs to run
+
+	VirtualMachine(RoboScript instance) {
+		this.roboScriptInstance = instance;
+	}
+
+
+	// this is the function that will be called when the computer or drone or whatever actually needs to run, and it will pass in a string
+	protected void interpret(String source) {
+		try {
+			this.chunk = this.compile(source);
+		} catch (CompileError e) {
+			// TODO: change this to actually correctly match information
+			this.roboScriptInstance.reportCompileError(0, e.toString());
+		}
+		this.instructionPointer = 0;
+		this.run();
+	}
+
+	// use this function for assembly testing
 	protected void interpret(Chunk chunk) {
 		this.chunk = chunk;
 		this.instructionPointer = 0;
-		this.stackPointer = 0;
 		this.run();
 	}
 
@@ -45,6 +63,14 @@ public class VirtualMachine {
 				}
 			}
 		}
+	}
+
+	private Chunk compile(String source) {
+		Scanner scanner = new Scanner(this.roboScriptInstance, source);
+		List<Token> tokens = scanner.scanTokens();
+		
+
+		return null;
 	}
 
 
