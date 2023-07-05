@@ -61,8 +61,7 @@ public class Assembler {
 				}
 			}
 
-			this.consumeWhiteSpace(lineString);
-			if (!this.isAtEnd(lineString))
+			if (lineString.substring(0, this.current).isBlank())
 				throw new AssembleError("Instruction already complete; may not have anymore arguments", this.line);
 		}
 
@@ -105,12 +104,16 @@ public class Assembler {
 			String text = line.substring(this.start, this.current);
 			switch (text) {
 				case "true":
+					this.start = this.current;
 					return true;
 				case "false":
+					this.start = this.current;
 					return false;
 				case "null":
+					this.start = this.current;
 					return null;
 				default:
+					this.start = this.current;
 					throw new AssembleError("Not a valid literal.", this.line);
 			}
 		}
