@@ -75,6 +75,7 @@ public class VirtualMachine {
 	}
 
 	protected Object peekStack() {
+		if (this.stack.size() == 0) return null;
 		return this.stack.get(this.stack.size() - 1);
 	}
 }

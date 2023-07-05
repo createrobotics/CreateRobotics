@@ -17,9 +17,9 @@ public class Assembler {
 	private static Map<String, Byte> initializeMnemonics() {
 		Map<String, Byte> mnemonics = new HashMap<>();
 
-		mnemonics.put("CONST", OP_CONSTANT);
-		mnemonics.put("NEG", OP_NEGATE);
-		mnemonics.put("RET", OP_RETURN);
+		mnemonics.put("push", OP_CONSTANT);
+		mnemonics.put("neg", OP_NEGATE);
+		mnemonics.put("ret", OP_RETURN);
 
 		return mnemonics;
 	}
