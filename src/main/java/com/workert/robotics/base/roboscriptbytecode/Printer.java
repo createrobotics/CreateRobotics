@@ -37,6 +37,9 @@ final class Printer {
 			case OP_DIVIDE -> {
 				return simpleInstruction("OP_DIVIDE", offset);
 			}
+			case OP_NOT -> {
+				return simpleInstruction("OP_NOT", offset);
+			}
 			case OP_NEGATE -> {
 				return simpleInstruction("OP_NEGATE", offset);
 			}

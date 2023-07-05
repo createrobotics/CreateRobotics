@@ -22,6 +22,7 @@ final class Assembler {
 		mnemonics.put("sub", OP_SUBTRACT);
 		mnemonics.put("mul", OP_MULTIPLY);
 		mnemonics.put("div", OP_DIVIDE);
+		mnemonics.put("not", OP_NOT);
 		mnemonics.put("neg", OP_NEGATE);
 		mnemonics.put("ret", OP_RETURN);
 

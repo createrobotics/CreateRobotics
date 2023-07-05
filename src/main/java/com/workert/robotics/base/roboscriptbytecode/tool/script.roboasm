@@ -1,3 +1,6 @@
-push 3
-neg
+push 2
+push 4
+add
+push 5
+mul
 ret

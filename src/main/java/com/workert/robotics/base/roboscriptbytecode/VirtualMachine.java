@@ -50,6 +50,13 @@ final class VirtualMachine {
 				case OP_SUBTRACT -> this.binaryOperation('-');
 				case OP_MULTIPLY -> this.binaryOperation('*');
 				case OP_DIVIDE -> this.binaryOperation('/');
+				case OP_NOT -> {
+					try {
+						this.stack.set(this.stack.size() - 1, !(boolean) this.stack.peek());
+					} catch (ClassCastException e) {
+						throw new RuntimeError("Can only toggle booleans.");
+					}
+				}
 				case OP_NEGATE -> {
 					try {
 						this.stack.set(this.stack.size() - 1, -(double) this.stack.peek());
