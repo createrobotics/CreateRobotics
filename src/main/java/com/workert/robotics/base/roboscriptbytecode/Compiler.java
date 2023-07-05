@@ -1,6 +1,8 @@
 package com.workert.robotics.base.roboscriptbytecode;
-public class Parser {
+public final class Compiler {
 	// ⚠️⚠️⚠️⚠️i have no idea what im doing        ⚠️⚠️⚠️⚠️
+
+	Chunk chunk = new Chunk();
 
 
 }

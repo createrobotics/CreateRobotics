@@ -4,7 +4,7 @@ import java.util.Stack;
 
 import static com.workert.robotics.base.roboscriptbytecode.OpCode.*;
 
-public class VirtualMachine {
+final class VirtualMachine {
 	private RoboScript roboScriptInstance;
 	private Chunk chunk;
 	private Stack<Object> stack = new Stack<>();
@@ -68,7 +68,7 @@ public class VirtualMachine {
 	private Chunk compile(String source) {
 		Scanner scanner = new Scanner(this.roboScriptInstance, source);
 		List<Token> tokens = scanner.scanTokens();
-		
+
 
 		return null;
 	}

@@ -1,5 +1,5 @@
 package com.workert.robotics.base.roboscriptbytecode;
-public final class Token {
+final class Token {
 	final TokenType type;
 	final String lexeme;
 	final Object literal;

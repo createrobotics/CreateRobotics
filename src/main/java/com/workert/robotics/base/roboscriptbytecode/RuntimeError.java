@@ -1,5 +1,5 @@
 package com.workert.robotics.base.roboscriptbytecode;
-public class RuntimeError extends RuntimeException {
+final class RuntimeError extends RuntimeException {
 	String message;
 
 	RuntimeError(String message) {

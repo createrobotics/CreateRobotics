@@ -3,7 +3,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Chunk {
+final class Chunk {
 	// Dynamic array of bytes, Crafting Interpreters used a custom system as C does not have something like this.
 	protected ByteArrayOutputStream code = new ByteArrayOutputStream();
 	private List<Object> constants = new ArrayList<>();

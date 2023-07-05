@@ -6,7 +6,7 @@ import java.util.Map;
 
 import static com.workert.robotics.base.roboscriptbytecode.OpCode.*;
 
-public class Assembler {
+final class Assembler {
 	private static final Map<String, Byte> mnemonics = initializeMnemonics();
 	private String source;
 

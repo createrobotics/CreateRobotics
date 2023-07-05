@@ -2,7 +2,7 @@ package com.workert.robotics.base.roboscriptbytecode;
 
 import static com.workert.robotics.base.roboscriptbytecode.OpCode.*;
 
-public class Printer {
+final class Printer {
 	// The printer is the bytecode version of the AstPrinter
 
 	void disassembleChunk(Chunk chunk, String name) {

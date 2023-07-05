@@ -1,3 +1,3 @@
 package com.workert.robotics.base.roboscriptbytecode;
-public class CompileError extends RuntimeException {
+final class CompileError extends RuntimeException {
 }
