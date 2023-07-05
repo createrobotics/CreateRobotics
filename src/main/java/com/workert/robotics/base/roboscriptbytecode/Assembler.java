@@ -61,7 +61,9 @@ public class Assembler {
 				}
 			}
 
-
+			this.consumeWhiteSpace(lineString);
+			if (!this.isAtEnd(lineString))
+				throw new AssembleError("Instruction already complete; may not have anymore arguments", this.line);
 		}
 
 		return chunk;
