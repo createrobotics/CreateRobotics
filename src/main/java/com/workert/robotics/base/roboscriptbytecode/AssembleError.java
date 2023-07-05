@@ -4,7 +4,9 @@ public class AssembleError extends RuntimeException {
 	protected int line;
 
 	protected AssembleError(String message, int line) {
+		super(message);
 		this.message = message;
 		this.line = line;
+
 	}
 }

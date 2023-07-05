@@ -48,8 +48,7 @@ public class Printer {
 	private static int constantInstruction(String name, Chunk chunk, int offset) {
 		byte constant = chunk.readCode(offset + 1);
 		System.out.printf("%-16s %4d '", name, constant);
-		System.out.printf("%s", chunk.readConstant(offset).toString());
-		System.out.printf("'\n");
+		System.out.println(chunk.readConstant(offset) + "'");
 		return offset + 2;
 	}
 }

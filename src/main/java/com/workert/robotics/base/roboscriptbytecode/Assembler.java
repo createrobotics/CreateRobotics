@@ -25,7 +25,7 @@ public class Assembler {
 	}
 
 
-	protected Chunk assemble(String asm) throws AssembleError {
+	protected Chunk assemble(String asm) {
 		this.source = asm;
 		Chunk chunk = new Chunk();
 
@@ -34,30 +34,30 @@ public class Assembler {
 		for (int i = 0; i < lines.size(); i++) {
 			this.start = this.current = 0;
 			this.line = i + 1;
-			if (lines.get(this.line).isBlank()) continue;
-			this.consumeWhiteSpace(lines.get(this.line));
-			if (this.getCurrentChar(lines.get(this.line)) == ';' || this.isAtEnd(lines.get(this.line))) continue;
-			while (isAlphaNumeric(this.getCurrentChar(lines.get(this.line))) && !this.isAtEnd(lines.get(this.line))) {
-				if (isDigit(this.getCurrentChar(lines.get(this.line))))
+			String lineString = lines.get(this.line - 1);
+			if (lineString.isBlank()) continue;
+			this.consumeWhiteSpace(lineString);
+			if (this.getCurrentChar(lineString) == ';' || this.isAtEnd(lineString)) continue;
+			while (isAlphaNumeric(this.getCurrentChar(lineString)) && !this.isAtEnd(lineString)) {
+				if (isDigit(this.getCurrentChar(lineString)))
 					throw new AssembleError("Cannot have digit inside or before mnemonic.", this.line);
-				this.consumeNextChar(lines.get(this.line));
+				this.consumeNextChar(lineString);
 			}
-			String mnemonic = lines.get(this.line).substring(this.start, this.current);
+			String mnemonic = lineString.substring(this.start, this.current);
 			this.start = this.current;
 			if (!mnemonics.containsKey(mnemonic)) throw new AssembleError("Invalid mnemonic.", this.line);
 			byte instruction = mnemonics.get(mnemonic);
 			chunk.writeCode(instruction, this.line);
-			this.consumeWhiteSpace(lines.get(this.line));
-			if (this.isAtEnd(lines.get(this.line))) continue;
+			this.consumeWhiteSpace(lineString);
 			switch (instruction) {
 				case OP_CONSTANT -> {
-					this.consumeWhiteSpace(lines.get(this.line));
-					if (this.isAtEnd(lines.get(this.line)))
+					//this.consumeWhiteSpace(lineString);
+					if (this.isAtEnd(lineString))
 						throw new AssembleError("Expected a literal after 'CONST'.", this.line);
-					Object constant = this.getLiteral(lines.get(this.line));
-				}
-				default -> {
-					continue;
+					Object constant = this.getLiteral(lineString);
+					int lookUp = chunk.addConstant(constant);
+					chunk.writeCode((byte) lookUp, this.line);
+					break;
 				}
 			}
 
@@ -79,6 +79,7 @@ public class Assembler {
 		this.start = this.current;
 		if (this.getCurrentChar(line) == '"') {
 			this.consumeNextChar(line);
+			this.start = this.current;
 			while (this.getCurrentChar(line) != '"' && !this.isAtEnd(line)) {
 				this.consumeNextChar(line);
 			}

@@ -5,10 +5,10 @@ import java.util.List;
 
 public class Chunk {
 	// Dynamic array of bytes, Crafting Interpreters used a custom system as C does not have something like this.
-	private ByteArrayOutputStream code = new ByteArrayOutputStream();
+	protected ByteArrayOutputStream code = new ByteArrayOutputStream();
 	private List<Object> constants = new ArrayList<>();
 	private List<Integer> lines = new ArrayList<>();
-	
+
 
 	// Add code to the chunk
 	protected void writeCode(byte code, int line) {
