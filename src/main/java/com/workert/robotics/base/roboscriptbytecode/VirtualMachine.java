@@ -1,5 +1,4 @@
 package com.workert.robotics.base.roboscriptbytecode;
-import java.util.List;
 import java.util.Stack;
 
 import static com.workert.robotics.base.roboscriptbytecode.OpCode.*;
@@ -73,8 +72,8 @@ final class VirtualMachine {
 	}
 
 	private Chunk compile(String source) {
-		Scanner scanner = new Scanner(this.roboScriptInstance, source);
-		List<Token> tokens = scanner.scanTokens();
+		// Scanner scanner = new Scanner(this.roboScriptInstance, source);
+		// List<Token> tokens = scanner.scanTokens();
 
 
 		return null;
