@@ -33,8 +33,11 @@ public class VirtualMachine {
 				case OP_MULTIPLY -> this.binaryOperation('*');
 				case OP_DIVIDE -> this.binaryOperation('/');
 				case OP_NEGATE -> {
-					if (this.peekStack() instanceof Double) this.pushStack(-(double) this.popStack());
-					break;
+					try {
+						this.stack.set(this.stack.size() - 1, -(double) this.stack.peek());
+					} catch (ClassCastException e) {
+						throw new RuntimeError("Can only negate numbers");
+					}
 				}
 				case OP_RETURN -> {
 					System.out.println(this.popStack());
@@ -66,9 +69,6 @@ public class VirtualMachine {
 		this.stack.push(object);
 	}
 
-	protected Object readStack(int index) {
-		return this.stack.get(index);
-	}
 
 	protected Object popStack() {
 		return this.stack.pop();
@@ -86,9 +86,11 @@ public class VirtualMachine {
 			this.pushStack(a.toString() + b.toString());
 			return;
 		}
-		if (!(a instanceof Double ad && b instanceof Double bd))
-			throw new RuntimeError("Addition must be between two numbers or string concatenation.");
-		this.pushStack(ad + bd);
+		try {
+			this.pushStack((double) a + (double) b);
+		} catch (ClassCastException e) {
+			throw new RuntimeError("Addition must be between two numbers or a string.");
+		}
 	}
 
 	private void binaryOperation(char operand) {
@@ -97,24 +99,29 @@ public class VirtualMachine {
 			case '-' -> {
 				Object a = this.popStack();
 				Object b = this.popStack();
-				if (!(a instanceof Double ad && b instanceof Double bd))
+				try {
+					this.pushStack((double) a + (double) b);
+				} catch (ClassCastException e) {
 					throw new RuntimeError("Subtraction must be between two numbers.");
-				this.pushStack(ad - bd);
+				}
 			}
 			case '*' -> {
 				Object a = this.popStack();
 				Object b = this.popStack();
-				if (!(a instanceof Double ad && b instanceof Double bd))
+				try {
+					this.pushStack((double) a * (double) b);
+				} catch (ClassCastException e) {
 					throw new RuntimeError("Multiplication must be between two numbers.");
-				this.pushStack(ad * bd);
+				}
 			}
 			case '/' -> {
 				Object a = this.popStack();
 				Object b = this.popStack();
-				if (!(a instanceof Double ad && b instanceof Double bd))
+				try {
+					this.pushStack((double) a / (double) b);
+				} catch (ClassCastException e) {
 					throw new RuntimeError("Division must be between two numbers.");
-				if (bd == 0d) throw new RuntimeError("Cannot divide by 0.");
-				this.pushStack(ad / bd);
+				}
 			}
 		}
 	}

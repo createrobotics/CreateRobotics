@@ -1,6 +1,3 @@
-push 1
-push 2
-add
-push 4
-mul
+push 3
+neg
 ret
