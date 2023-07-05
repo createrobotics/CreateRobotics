@@ -79,9 +79,7 @@ public class VirtualMachine {
 	}
 
 
-	private void binaryAdd() {
-		Object a = this.popStack();
-		Object b = this.popStack();
+	private void binaryAdd(Object a, Object b) {
 		if (a instanceof String || b instanceof String) {
 			this.pushStack(a.toString() + b.toString());
 			return;
@@ -94,11 +92,12 @@ public class VirtualMachine {
 	}
 
 	private void binaryOperation(char operand) {
+		Object a = this.popStack();
+		Object b = this.popStack();
 		switch (operand) {
-			case '+' -> this.binaryAdd();
+			case '+' -> this.binaryAdd(a, b);
 			case '-' -> {
-				Object a = this.popStack();
-				Object b = this.popStack();
+
 				try {
 					this.pushStack((double) a + (double) b);
 				} catch (ClassCastException e) {
@@ -106,8 +105,6 @@ public class VirtualMachine {
 				}
 			}
 			case '*' -> {
-				Object a = this.popStack();
-				Object b = this.popStack();
 				try {
 					this.pushStack((double) a * (double) b);
 				} catch (ClassCastException e) {
@@ -115,8 +112,6 @@ public class VirtualMachine {
 				}
 			}
 			case '/' -> {
-				Object a = this.popStack();
-				Object b = this.popStack();
 				try {
 					this.pushStack((double) a / (double) b);
 				} catch (ClassCastException e) {
