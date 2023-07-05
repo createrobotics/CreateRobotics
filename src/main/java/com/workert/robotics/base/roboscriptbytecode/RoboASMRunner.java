@@ -16,13 +16,21 @@ public class RoboASMRunner {
 	public static void main(String[] args) throws IOException {
 		Assembler assembler = new Assembler();
 		String source = readFile();
-		try {
-			Chunk c = assembler.assemble(source);
-			new Printer().disassembleChunk(c, "From ASM");
-			new VirtualMachine().interpret(c);
+		Chunk c;
 
+		try {
+			c = assembler.assemble(source);
 		} catch (AssembleError e) {
 			System.err.println("[line " + e.line + "] " + e.message);
+			return;
+		}
+
+		new Printer().disassembleChunk(c, "From ASM");
+
+		try {
+			new VirtualMachine().interpret(c);
+		} catch (RuntimeError e) {
+			System.err.println(e.message);
 			return;
 		}
 	}
