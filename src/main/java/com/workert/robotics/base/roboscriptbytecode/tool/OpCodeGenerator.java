@@ -11,6 +11,10 @@ public class OpCodeGenerator {
 
 	private static void defineOpCodes() {
 		opCodes.add("OP_CONSTANT");
+		opCodes.add("OP_ADD");
+		opCodes.add("OP_SUBTRACT");
+		opCodes.add("OP_MULTIPLY");
+		opCodes.add("OP_DIVIDE");
 		opCodes.add("OP_NEGATE");
 		opCodes.add("OP_RETURN");
 	}

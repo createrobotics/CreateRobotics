@@ -26,7 +26,12 @@ public class VirtualMachine {
 					Object constant = this.readConstant();
 					this.pushStack(constant);
 					System.out.println(constant);
+					break;
 				}
+				case OP_ADD -> this.binaryOperation('+');
+				case OP_SUBTRACT -> this.binaryOperation('-');
+				case OP_MULTIPLY -> this.binaryOperation('*');
+				case OP_DIVIDE -> this.binaryOperation('/');
 				case OP_NEGATE -> {
 					if (this.peekStack() instanceof Double) this.pushStack(-(double) this.popStack());
 					break;
@@ -71,5 +76,46 @@ public class VirtualMachine {
 
 	protected Object peekStack() {
 		return this.stack.peek();
+	}
+
+
+	private void binaryAdd() {
+		Object a = this.popStack();
+		Object b = this.popStack();
+		if (a instanceof String || b instanceof String) {
+			this.pushStack(a.toString() + b.toString());
+			return;
+		}
+		if (!(a instanceof Double ad && b instanceof Double bd))
+			throw new RuntimeError("Addition must be between two numbers or string concatenation.");
+		this.pushStack(ad + bd);
+	}
+
+	private void binaryOperation(char operand) {
+		switch (operand) {
+			case '+' -> this.binaryAdd();
+			case '-' -> {
+				Object a = this.popStack();
+				Object b = this.popStack();
+				if (!(a instanceof Double ad && b instanceof Double bd))
+					throw new RuntimeError("Subtraction must be between two numbers.");
+				this.pushStack(ad - bd);
+			}
+			case '*' -> {
+				Object a = this.popStack();
+				Object b = this.popStack();
+				if (!(a instanceof Double ad && b instanceof Double bd))
+					throw new RuntimeError("Multiplication must be between two numbers.");
+				this.pushStack(ad * bd);
+			}
+			case '/' -> {
+				Object a = this.popStack();
+				Object b = this.popStack();
+				if (!(a instanceof Double ad && b instanceof Double bd))
+					throw new RuntimeError("Division must be between two numbers.");
+				if (bd == 0d) throw new RuntimeError("Cannot divide by 0.");
+				this.pushStack(ad / bd);
+			}
+		}
 	}
 }
