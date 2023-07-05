@@ -52,7 +52,7 @@ final class VirtualMachine {
 				case OP_DIVIDE -> this.binaryOperation('/');
 				case OP_NOT -> {
 					try {
-						this.stack.set(this.stack.size() - 1, !(boolean) this.stack.peek());
+						this.stack.set(this.stack.size() - 1, !isTruthy(this.stack.peek()));
 					} catch (ClassCastException e) {
 						throw new RuntimeError("Can only toggle booleans.");
 					}
@@ -152,5 +152,11 @@ final class VirtualMachine {
 				}
 			}
 		}
+	}
+
+	private static boolean isTruthy(Object o) {
+		if (o == null) return false;
+		if (o instanceof Boolean b) return b;
+		return true;
 	}
 }

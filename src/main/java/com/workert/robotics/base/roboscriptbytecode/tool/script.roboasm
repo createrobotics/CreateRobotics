@@ -3,4 +3,5 @@ push 4
 add
 push 5
 mul
+not
 ret
