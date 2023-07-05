@@ -1,5 +1,5 @@
-package com.workert.robotics.base.roboscript.tool;
-import com.workert.robotics.base.roboscript.RoboScript;
+package com.workert.robotics.base.roboscriptast.tool;
+import com.workert.robotics.base.roboscriptast.RoboScript;
 
 import java.io.IOException;
 import java.nio.charset.Charset;

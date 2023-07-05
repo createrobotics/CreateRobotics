@@ -1,4 +1,4 @@
-package com.workert.robotics.base.roboscript;
+package com.workert.robotics.base.roboscriptast;
 
 public class RoboScriptVariable {
 	public final boolean staticc;

@@ -1,4 +1,4 @@
-package com.workert.robotics.base.roboscript;
+package com.workert.robotics.base.roboscriptast;
 import java.util.List;
 
 interface RoboScriptCallable {

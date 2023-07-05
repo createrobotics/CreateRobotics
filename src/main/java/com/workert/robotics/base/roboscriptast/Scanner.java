@@ -1,10 +1,10 @@
-package com.workert.robotics.base.roboscript;
+package com.workert.robotics.base.roboscriptast;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.workert.robotics.base.roboscript.Token.TokenType.*;
+import static com.workert.robotics.base.roboscriptast.Token.TokenType.*;
 
 /**
  * The Scanner class is responsible for tokenizing the source code of a RoboScript program.

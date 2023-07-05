@@ -1,4 +1,4 @@
-package com.workert.robotics.base.roboscript;
+package com.workert.robotics.base.roboscriptast;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;

@@ -1,4 +1,4 @@
-package com.workert.robotics.base.roboscript;
+package com.workert.robotics.base.roboscriptast;
 public class StringDefaultFunctionHelper {
 	public static Object get(String string, Token name) {
 		switch (name.lexeme) {

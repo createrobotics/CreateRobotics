@@ -1,4 +1,4 @@
-package com.workert.robotics.base.roboscript.ingame;
+package com.workert.robotics.base.roboscriptast.ingame;
 import java.util.ArrayList;
 import java.util.List;
 

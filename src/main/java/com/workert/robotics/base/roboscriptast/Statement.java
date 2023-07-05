@@ -1,4 +1,4 @@
-package com.workert.robotics.base.roboscript;
+package com.workert.robotics.base.roboscriptast;
 
 import java.util.List;
 
@@ -41,7 +41,7 @@ abstract class Statement {
 
 
 	static class Class extends Statement {
-		Class(Token name, com.workert.robotics.base.roboscript.Expression.Variable superclass, List<Statement.Function> methods, List<Statement.Var> fields, Statement.Function initializer) {
+		Class(Token name, com.workert.robotics.base.roboscriptast.Expression.Variable superclass, List<Statement.Function> methods, List<Statement.Var> fields, Statement.Function initializer) {
 			this.name = name;
 			this.superclass = superclass;
 			this.methods = methods;
@@ -55,7 +55,7 @@ abstract class Statement {
 		}
 
 		final Token name;
-		final com.workert.robotics.base.roboscript.Expression.Variable superclass;
+		final com.workert.robotics.base.roboscriptast.Expression.Variable superclass;
 		final List<Statement.Function> methods;
 		final List<Statement.Var> fields;
 		final Statement.Function initializer;
@@ -63,7 +63,7 @@ abstract class Statement {
 
 
 	static class Expression extends Statement {
-		Expression(com.workert.robotics.base.roboscript.Expression expression) {
+		Expression(com.workert.robotics.base.roboscriptast.Expression expression) {
 			this.expression = expression;
 		}
 
@@ -72,7 +72,7 @@ abstract class Statement {
 			return visitor.visitExpressionStmt(this);
 		}
 
-		final com.workert.robotics.base.roboscript.Expression expression;
+		final com.workert.robotics.base.roboscriptast.Expression expression;
 	}
 
 
@@ -95,7 +95,7 @@ abstract class Statement {
 
 
 	static class If extends Statement {
-		If(com.workert.robotics.base.roboscript.Expression condition, Statement thenBranch, Statement elseBranch) {
+		If(com.workert.robotics.base.roboscriptast.Expression condition, Statement thenBranch, Statement elseBranch) {
 			this.condition = condition;
 			this.thenBranch = thenBranch;
 			this.elseBranch = elseBranch;
@@ -106,14 +106,14 @@ abstract class Statement {
 			return visitor.visitIfStmt(this);
 		}
 
-		final com.workert.robotics.base.roboscript.Expression condition;
+		final com.workert.robotics.base.roboscriptast.Expression condition;
 		final Statement thenBranch;
 		final Statement elseBranch;
 	}
 
 
 	static class Return extends Statement {
-		Return(Token keyword, com.workert.robotics.base.roboscript.Expression value) {
+		Return(Token keyword, com.workert.robotics.base.roboscriptast.Expression value) {
 			this.keyword = keyword;
 			this.value = value;
 		}
@@ -124,7 +124,7 @@ abstract class Statement {
 		}
 
 		final Token keyword;
-		final com.workert.robotics.base.roboscript.Expression value;
+		final com.workert.robotics.base.roboscriptast.Expression value;
 	}
 
 
@@ -143,7 +143,7 @@ abstract class Statement {
 
 
 	static class Var extends Statement {
-		Var(Token name, com.workert.robotics.base.roboscript.Expression initializer, boolean staticc) {
+		Var(Token name, com.workert.robotics.base.roboscriptast.Expression initializer, boolean staticc) {
 			this.name = name;
 			this.initializer = initializer;
 			this.staticc = staticc;
@@ -155,13 +155,13 @@ abstract class Statement {
 		}
 
 		final Token name;
-		final com.workert.robotics.base.roboscript.Expression initializer;
+		final com.workert.robotics.base.roboscriptast.Expression initializer;
 		final boolean staticc;
 	}
 
 
 	static class While extends Statement {
-		While(com.workert.robotics.base.roboscript.Expression condition, Statement body) {
+		While(com.workert.robotics.base.roboscriptast.Expression condition, Statement body) {
 			this.condition = condition;
 			this.body = body;
 		}
@@ -171,12 +171,12 @@ abstract class Statement {
 			return visitor.visitWhileStmt(this);
 		}
 
-		final com.workert.robotics.base.roboscript.Expression condition;
+		final com.workert.robotics.base.roboscriptast.Expression condition;
 		final Statement body;
 	}
 
 	static class Foreach extends Statement {
-		Foreach(Token variable, Token colon, com.workert.robotics.base.roboscript.Expression right, Statement body) {
+		Foreach(Token variable, Token colon, com.workert.robotics.base.roboscriptast.Expression right, Statement body) {
 			this.variable = variable;
 			this.colon = colon;
 			this.right = right;
@@ -190,7 +190,7 @@ abstract class Statement {
 
 		final Token variable;
 		final Token colon;
-		final com.workert.robotics.base.roboscript.Expression right;
+		final com.workert.robotics.base.roboscriptast.Expression right;
 		final Statement body;
 	}
 
