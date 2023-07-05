@@ -1,18 +1,19 @@
 package com.workert.robotics.base.roboscriptbytecode;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Stack;
 
 import static com.workert.robotics.base.roboscriptbytecode.OpCode.*;
 
 public class VirtualMachine {
 	private Chunk chunk;
-	private List<Object> stack = new ArrayList<>(256);
-	private int instructionPointer;
+	private Stack<Object> stack = new Stack<>();
+	private int stackPointer = 0;
+	private int instructionPointer = 0;
 
 	// this is the function that will be called when the computer or drone or whatever actually needs to run
 	protected void interpret(Chunk chunk) {
 		this.chunk = chunk;
 		this.instructionPointer = 0;
+		this.stackPointer = 0;
 		this.run();
 	}
 
@@ -23,11 +24,11 @@ public class VirtualMachine {
 			switch (instruction = this.readByte()) {
 				case OP_CONSTANT -> {
 					Object constant = this.readConstant();
-					this.addStack(constant);
+					this.pushStack(constant);
 					System.out.println(constant);
 				}
 				case OP_NEGATE -> {
-					if (this.peekStack() instanceof Double) this.addStack(-(double) this.popStack());
+					if (this.peekStack() instanceof Double) this.pushStack(-(double) this.popStack());
 					break;
 				}
 				case OP_RETURN -> {
@@ -56,12 +57,8 @@ public class VirtualMachine {
 		Printer.disassembleInstruction(this.chunk, this.instructionPointer);
 	}
 
-	protected void addStack(Object object) {
-		this.stack.add(object);
-	}
-
-	protected void addStack(int index, Object object) {
-		this.stack.set(index, object);
+	protected void pushStack(Object object) {
+		this.stack.push(object);
 	}
 
 	protected Object readStack(int index) {
@@ -69,13 +66,10 @@ public class VirtualMachine {
 	}
 
 	protected Object popStack() {
-		Object lastElement = this.peekStack();
-		this.stack.remove(this.stack.size() - 1);
-		return lastElement;
+		return this.stack.pop();
 	}
 
 	protected Object peekStack() {
-		if (this.stack.size() == 0) return null;
-		return this.stack.get(this.stack.size() - 1);
+		return this.stack.peek();
 	}
 }

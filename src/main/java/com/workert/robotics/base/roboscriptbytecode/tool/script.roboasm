@@ -1,3 +1,3 @@
-CONST 3
-NEG
-RET
+push 3
+neg
+ret

@@ -28,9 +28,7 @@ public class Assembler {
 	protected Chunk assemble(String asm) {
 		this.source = asm;
 		Chunk chunk = new Chunk();
-
 		List<String> lines = Arrays.asList(this.source.split("\n"));
-
 		for (int i = 0; i < lines.size(); i++) {
 			this.start = this.current = 0;
 			this.line = i + 1;
@@ -51,7 +49,6 @@ public class Assembler {
 			this.consumeWhiteSpace(lineString);
 			switch (instruction) {
 				case OP_CONSTANT -> {
-					//this.consumeWhiteSpace(lineString);
 					if (this.isAtEnd(lineString))
 						throw new AssembleError("Expected a literal after 'CONST'.", this.line);
 					Object constant = this.getLiteral(lineString);
@@ -60,7 +57,6 @@ public class Assembler {
 					break;
 				}
 			}
-
 			if (lineString.substring(0, this.current).isBlank())
 				throw new AssembleError("Instruction already complete; may not have anymore arguments", this.line);
 		}
@@ -117,7 +113,6 @@ public class Assembler {
 					throw new AssembleError("Not a valid literal.", this.line);
 			}
 		}
-
 		throw new AssembleError("Expected literal.", this.line);
 	}
 
