@@ -1,4 +1,6 @@
-package com.workert.robotics.base.roboscriptbytecode;
+package com.workert.robotics.base.roboscriptbytecode.tool;
+import com.workert.robotics.base.roboscriptbytecode.RoboScript;
+
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -14,25 +16,18 @@ public class RoboASMRunner {
 	}
 
 	public static void main(String[] args) throws IOException {
-		Assembler assembler = new Assembler();
 		String source = readFile();
-		Chunk c;
+		new RoboScript() {
+			@Override
+			protected void handleErrorMessage(String message) {
+				System.err.println(message);
+			}
 
-		try {
-			c = assembler.assemble(source);
-		} catch (AssembleError e) {
-			System.err.println("[line " + e.line + "] " + e.message);
-			return;
-		}
-
-		new Printer().disassembleChunk(c, "From ASM");
-
-		try {
-			new VirtualMachine().interpret(c);
-		} catch (RuntimeError e) {
-			System.err.println(e.message);
-			return;
-		}
+			@Override
+			protected void handlePrintMessage(String message) {
+				System.out.println(message);
+			}
+		}.runASMString(source);
 	}
 
 }
