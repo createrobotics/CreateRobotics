@@ -22,7 +22,7 @@ final class Printer {
 			System.out.printf("%4d ", chunk.readLine(offset));
 		byte instruction = chunk.readCode(offset);
 		String segmentedByte = String.format("%8s", Integer.toBinaryString(instruction & 0xFF)).replace(' ', '0');
-		System.out.print('[' + segmentedByte.substring(0, 4) + ' ' + segmentedByte.substring(3, 7) + "] ");
+		System.out.print('[' + segmentedByte.substring(0, 4) + ' ' + segmentedByte.substring(4, 8) + "] ");
 		switch (instruction) {
 			case OP_CONSTANT -> {
 				return constantInstruction("OP_CONSTANT", chunk, offset);
