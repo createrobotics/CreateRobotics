@@ -272,7 +272,7 @@ final class Scanner {
 
 			case 'f':
 				if (this.current - this.start > 1)
-					switch (this.start + 1) {
+					switch (this.source.charAt(this.start + 1)) {
 						case 'a':
 							return this.checkKeyword(2, 3, "lse", FALSE);
 						case 'o':
@@ -283,7 +283,7 @@ final class Scanner {
 				break;
 			case 't':
 				if (this.current - this.start > 1)
-					switch (this.start + 1) {
+					switch (this.source.charAt(this.start + 1)) {
 						case 'h':
 							return this.checkKeyword(2, 2, "is", THIS);
 						case 'r':
