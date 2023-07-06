@@ -2,19 +2,12 @@ package com.workert.robotics.base.roboscriptbytecode;
 final class Token {
 	final TokenType type;
 	final String lexeme;
-	final Object literal;
 	final int line;
 
-	Token(TokenType type, String lexeme, Object literal, int line) {
+	Token(TokenType type, String lexeme, int line) {
 		this.type = type;
 		this.lexeme = lexeme;
-		this.literal = literal;
 		this.line = line;
-	}
-
-	@Override
-	public String toString() {
-		return this.type + " " + this.lexeme + " " + this.literal;
 	}
 
 	public enum TokenType {
@@ -94,7 +87,8 @@ final class Token {
 		ARRAY,
 		OBJECT,
 
-		// End of File
-		EOF
+
+		EOF,
+		ERROR
 	}
 }
