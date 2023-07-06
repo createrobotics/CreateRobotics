@@ -12,6 +12,8 @@ final class Printer {
 		for (int offset = 0; offset < chunk.getCodeSize(); ) {
 			offset = disassembleInstruction(chunk, offset);
 		}
+		System.out.println();
+		printHexadecimalCompiledOutput(chunk);
 	}
 
 
@@ -54,6 +56,14 @@ final class Printer {
 				System.err.println("Unknown opcode '" + offset + "'.");
 				return offset + 1;
 			}
+		}
+	}
+
+	private static void printHexadecimalCompiledOutput(Chunk c) {
+		System.out.println("Hex reading of compiled code: ");
+		for (int i = 0; i < c.getCodeSize(); i++) {
+			byte instruction = c.readCode(i);
+			System.out.printf("%4s ", Integer.toHexString(instruction & 0xFF));
 		}
 	}
 
