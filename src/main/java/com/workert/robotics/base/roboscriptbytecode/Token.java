@@ -91,4 +91,9 @@ final class Token {
 		EOF,
 		ERROR
 	}
+
+	@Override
+	public String toString() {
+		return "Token: " + this.type;
+	}
 }
