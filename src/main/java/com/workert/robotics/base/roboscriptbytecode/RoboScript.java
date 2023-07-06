@@ -5,7 +5,10 @@ public abstract class RoboScript {
 
 	public final void runString(String source) {
 		this.hadError = false;
-		this.vm.interpret(source);
+		Scanner scanner = new Scanner(source);
+
+		System.out.println(scanner.scanTokens());
+		// this.vm.interpret(source);
 	}
 
 	public final void runASMString(String source) {
