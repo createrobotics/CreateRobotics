@@ -65,6 +65,7 @@ final class Printer {
 			byte instruction = c.readCode(i);
 			System.out.printf("%4s ", Integer.toHexString(instruction & 0xFF));
 		}
+		System.out.print('\n');
 	}
 
 	private static int simpleInstruction(String name, int offset) {
