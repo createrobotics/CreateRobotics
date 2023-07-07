@@ -28,7 +28,6 @@ public final class Compiler {
 
 
 	protected void compile(String source) {
-		Scanner scanner = new Scanner(source);
 		this.scanner = new Scanner(source);
 		this.advance();
 		this.expression();
