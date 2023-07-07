@@ -1,11 +1,10 @@
 package com.workert.robotics.base.roboscriptbytecode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
-import static com.workert.robotics.base.roboscriptbytecode.OpCode.OP_CONSTANT;
-import static com.workert.robotics.base.roboscriptbytecode.OpCode.OP_RETURN;
-import static com.workert.robotics.base.roboscriptbytecode.Token.TokenType.EOF;
-import static com.workert.robotics.base.roboscriptbytecode.Token.TokenType.ERROR;
+import static com.workert.robotics.base.roboscriptbytecode.OpCode.*;
+import static com.workert.robotics.base.roboscriptbytecode.Token.TokenType.*;
 
 public final class Compiler {
 	// ⚠️⚠️⚠️⚠️i have no idea what im doing        ⚠️⚠️⚠️⚠️
@@ -38,13 +37,63 @@ public final class Compiler {
 		this.emitReturn();
 	}
 
+	protected void binary() {
+		Token.TokenType operatorType = this.previous.type;
+		ParseRule rule = operatorType.getParseRule();
+		this.parsePrecedence((byte) (rule.precedence + 1));
+
+		switch (operatorType) {
+			case PLUS -> this.emitByte(OP_ADD);
+			case MINUS -> this.emitByte(OP_SUBTRACT);
+			case STAR -> this.emitByte(OP_MULTIPLY);
+			case SLASH -> this.emitByte(OP_DIVIDE);
+			default -> {
+				return;
+			}
+		}
+	}
+
 	private void expression() {
+		this.parsePrecedence(Precedence.ASSIGNMENT);
+	}
+
+	protected void number() {
+		double value = Double.parseDouble(this.previous.lexeme);
+		this.emitConstant(value);
+	}
+
+	protected void grouping() {
+		this.expression();
+		this.consumeIfMatches(RIGHT_PAREN, "Expect ')' after expression.");
 
 	}
 
-	private void number() {
-		double value = Double.parseDouble(this.previous.lexeme);
 
+	protected void unary() {
+		Token.TokenType operatorType = this.previous.type;
+		this.parsePrecedence(Precedence.UNARY);
+		switch (operatorType) {
+			case MINUS -> this.emitByte(OP_NEGATE);
+			default -> {
+				return; // unreachable
+			}
+		}
+	}
+
+
+	private void parsePrecedence(byte precedence) {
+		this.advance();
+		Function<Compiler, Void> prefixRule = this.previous.type.getParseRule().prefix;
+		if (prefixRule == null) {
+			this.error("Expect expression.");
+			return;
+		}
+		prefixRule.apply(this);
+		while (precedence <= this.previous.type.getParseRule().precedence) {
+			this.advance();
+			Function<Compiler, Void> infixRule = this.previous.type.getParseRule().infix;
+			infixRule.apply(this);
+		}
 	}
 
 
@@ -116,6 +165,33 @@ public final class Compiler {
 
 
 	private static class CompileError extends RuntimeException {
+	}
+
+	protected static class ParseRule {
+		Function<Compiler, Void> prefix;
+		Function<Compiler, Void> infix;
+		byte precedence;
+
+
+		ParseRule(Function<Compiler, Void> prefix, Function<Compiler, Void> infix, byte precedence) {
+			this.prefix = prefix;
+			this.infix = infix;
+			this.precedence = precedence;
+		}
+	}
+
+	protected interface Precedence {
+		byte NONE = 0;
+		byte ASSIGNMENT = 1; // =
+		byte OR = 2; // or
+		byte AND = 3; // and
+		byte EQUALITY = 4; // == !=
+		byte COMPARISON = 5; // < > <= >=
+		byte TERM = 6; // + -
+		byte FACTOR = 7; // * /
+		byte UNARY = 8; // ! -
+		byte CALL = 9; // . ()
+		byte PRIMARY = 10;
 	}
 
 
