@@ -1,8 +1,6 @@
 package com.workert.robotics.base.roboscriptbytecode;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static com.workert.robotics.base.roboscriptbytecode.Token.TokenType.*;
 
@@ -13,63 +11,15 @@ import static com.workert.robotics.base.roboscriptbytecode.Token.TokenType.*;
 final class Scanner {
 	// private final com.workert.robotics.base.roboscriptast.RoboScript roboScriptInstance;
 	private final String source;
-	private final List<Token> tokens = new ArrayList<>();
 
 	private int start = 0;
 	private int current = 0;
 	private int line = 1;
 
-	private static final Map<String, Token.TokenType> keywords = initializeKeywords();
-
-	/**
-	 * Initializes the keyword map.
-	 *
-	 * @return The map of keywords and their corresponding token types.
-	 */
-	private static Map<String, Token.TokenType> initializeKeywords() {
-		Map<String, Token.TokenType> keywords = new HashMap<>();
-
-		keywords.put("class", CLASS);
-		keywords.put("function", FUNCTION);
-
-		keywords.put("for", FOR);
-		keywords.put("foreach", FOREACH);
-
-		keywords.put("if", IF);
-		keywords.put("else", ELSE);
-		keywords.put("while", WHILE);
-
-		keywords.put("true", TRUE);
-		keywords.put("false", FALSE);
-
-		keywords.put("and", AND);
-		keywords.put("or", OR);
-
-		keywords.put("null", NULL);
-
-		keywords.put("extends", EXTENDS);
-		keywords.put("super", SUPER);
-		keywords.put("this", THIS);
-		keywords.put("return", RETURN);
-		keywords.put("break", BREAK);
-		keywords.put("var", VAR);
-		keywords.put("persistent", PERSISTENT);
-		keywords.put("instanceof", INSTANCEOF);
-
-		keywords.put("String", STRING);
-		keywords.put("double", DOUBLE);
-		keywords.put("boolean", BOOLEAN);
-		keywords.put("Array", ARRAY);
-		keywords.put("Object", OBJECT);
-
-		return keywords;
-	}
-
 	/**
 	 * Constructs a new Scanner object.
 	 *
-	 * @param roboScriptInstance The instance of the RoboScript interpreter.
-	 * @param source             The source code of the RoboScript program.
+	 * @param source The source code of the RoboScript program.
 	 */
 	Scanner(/*RoboScript roboScriptInstance,*/ String source) {
 		// this.roboScriptInstance = roboScriptInstance;
@@ -82,122 +32,114 @@ final class Scanner {
 	 * @return The list of tokens.
 	 */
 	List<Token> scanTokens() {
+		List<Token> tokens = new ArrayList<>();
 		while (!this.isAtEnd()) {
 			this.start = this.current;
-			this.scanToken();
+			Token t = this.scanToken();
+			System.out.println(t);
+			tokens.add(t);
+			if (t.type == EOF) break;
 		}
-		this.tokens.add(new Token(EOF, "", this.line));
-		return this.tokens;
+		return tokens;
 	}
 
 	/**
 	 * Scans the next token from the source code.
 	 */
-	private void scanToken() {
+	protected Token scanToken() {
+		this.skipWhiteSpace();
 		char c = this.consumeNextChar();
+		if (this.isAtEnd()) return new Token(EOF, "", this.line);
 		switch (c) {
 			case '(':
-				this.addToken(LEFT_PAREN);
-				break;
+				return this.addToken(LEFT_PAREN);
 			case ')':
-				this.addToken(RIGHT_PAREN);
-				break;
+				return this.addToken(RIGHT_PAREN);
 			case '{':
-				this.addToken(LEFT_BRACE);
-				break;
+				return this.addToken(LEFT_BRACE);
 			case '}':
-				this.addToken(RIGHT_BRACE);
-				break;
+				return this.addToken(RIGHT_BRACE);
 			case '[':
-				this.addToken(LEFT_BRACKET);
-				break;
+				return this.addToken(LEFT_BRACKET);
 			case ']':
-				this.addToken(RIGHT_BRACKET);
-				break;
+				return this.addToken(RIGHT_BRACKET);
 			case ',':
-				this.addToken(COMMA);
-				break;
+				return this.addToken(COMMA);
 			case '.':
-				this.addToken(DOT);
-				break;
+				return this.addToken(DOT);
 			case '+':
 				if (this.consumeIfNextCharMatches('+')) {
-					this.addToken(PLUS_PLUS);
-					break;
+					return this.addToken(PLUS_PLUS);
 				}
-				this.addToken(this.consumeIfNextCharMatches('=') ? PLUS_EQUAL : PLUS);
-				break;
+				return this.addToken(this.consumeIfNextCharMatches('=') ? PLUS_EQUAL : PLUS);
 			case '-':
 				if (this.consumeIfNextCharMatches('-')) {
-					this.addToken(MINUS_MINUS);
-					break;
+					return this.addToken(MINUS_MINUS);
 				}
-				this.addToken(this.consumeIfNextCharMatches('=') ? MINUS_EQUAL : MINUS);
-				break;
+				return this.addToken(this.consumeIfNextCharMatches('=') ? MINUS_EQUAL : MINUS);
 			case '*':
-				this.addToken(this.consumeIfNextCharMatches('=') ? STAR_EQUAL : STAR);
-				break;
+				return this.addToken(this.consumeIfNextCharMatches('=') ? STAR_EQUAL : STAR);
 			case '/':
 				if (this.consumeIfNextCharMatches('/')) {
 					while (this.getCurrentChar() != '\n' && !this.isAtEnd()) {
 						this.consumeNextChar();
 					}
 				} else {
-					this.addToken(
+					return this.addToken(
 							this.consumeIfNextCharMatches('=') ? SLASH_EQUAL : SLASH);
 				}
-				break;
 			case '%':
-				this.addToken(PERCENT);
-				break;
+				return this.addToken(PERCENT);
 			case '^':
-				this.addToken(this.consumeIfNextCharMatches('=') ? CARET_EQUAL : CARET);
-				break;
+				return this.addToken(this.consumeIfNextCharMatches('=') ? CARET_EQUAL : CARET);
 			case ':':
-				this.addToken(COLON);
-				break;
+				return this.addToken(COLON);
 			case ';':
-				this.addToken(SEMICOLON);
-				break;
+				return this.addToken(SEMICOLON);
 			case '!':
-				this.addToken(this.consumeIfNextCharMatches('=') ? BANG_EQUAL : BANG);
-				break;
+				return this.addToken(this.consumeIfNextCharMatches('=') ? BANG_EQUAL : BANG);
 			case '=':
-				this.addToken(this.consumeIfNextCharMatches('=') ? EQUAL_EQUAL : EQUAL);
-				break;
+				return this.addToken(this.consumeIfNextCharMatches('=') ? EQUAL_EQUAL : EQUAL);
 			case '<':
-				this.addToken(this.consumeIfNextCharMatches('=') ? LESS_EQUAL : LESS);
-				break;
+				return this.addToken(this.consumeIfNextCharMatches('=') ? LESS_EQUAL : LESS);
 			case '>':
-				this.addToken(
+				return this.addToken(
 						this.consumeIfNextCharMatches('=') ? GREATER_EQUAL : GREATER);
-				break;
-			case ' ':
-			case '\r':
-			case '\t':
-				break;
-			case '\n':
-				this.line++;
-				break;
 			case '"':
-				this.string();
-				break;
+				return this.string();
 			default:
 				if (this.isDigit(c)) {
-					this.number();
+					return this.number();
 				} else if (this.isAlpha(c)) {
-					this.identifier();
+					return this.identifier();
 				} else {
 					// this.roboScriptInstance.reportCompileError(this.line, "Unexpected character.");
+					return this.errorToken("Unexpected character.");
 				}
-				break;
+		}
+	}
+
+	private void skipWhiteSpace() {
+		while (true) {
+			char c = this.consumeNextChar();
+			switch (c) {
+				case ' ':
+				case '\r':
+				case '\t':
+					break;
+				case '\n':
+					this.line++;
+					break;
+				default:
+					return;
+			}
 		}
 	}
 
 	/**
 	 * Scans a string literal from the source code.
 	 */
-	private void string() {
+	private Token string() {
 		while (this.getCurrentChar() != '"' && !this.isAtEnd()) {
 			if (this.getCurrentChar() == '\n') {
 				this.line++;
@@ -207,17 +149,18 @@ final class Scanner {
 
 		if (this.isAtEnd()) {
 			// this.roboScriptInstance.reportCompileError(this.line, "Unclosed string.");
-			return;
+
+			return this.errorToken("Unterminated string.");
 		}
 
 		this.consumeNextChar();
-		this.addToken(STRING_VALUE);
+		return this.addToken(STRING_VALUE);
 	}
 
 	/**
 	 * Scans a number literal from the source code.
 	 */
-	private void number() {
+	private Token number() {
 		while (this.isDigit(this.getCurrentChar())) {
 			this.consumeNextChar();
 		}
@@ -230,17 +173,17 @@ final class Scanner {
 		}
 
 		String value = this.source.substring(this.start, this.current);
-		this.addToken(DOUBLE_VALUE);
+		return this.addToken(DOUBLE_VALUE);
 	}
 
 	/**
 	 * Scans an identifier or keyword from the source code.
 	 */
-	private void identifier() {
+	private Token identifier() {
 		while (this.isAlphaNumeric(this.getCurrentChar())) {
 			this.consumeNextChar();
 		}
-		this.addToken(this.identifierToken());
+		return this.addToken(this.identifierToken());
 	}
 
 	private Token.TokenType identifierToken() {
@@ -306,10 +249,15 @@ final class Scanner {
 	 *
 	 * @param type The type of the token.
 	 */
-	private void addToken(Token.TokenType type) {
+	private Token addToken(Token.TokenType type) {
 		String lexeme = this.source.substring(this.start, this.current);
 		this.start = this.current;
-		this.tokens.add(new Token(type, lexeme, this.line));
+		return new Token(type, lexeme, this.line);
+	}
+
+	private Token errorToken(String message) {
+		this.start = this.current;
+		return new Token(ERROR, message, this.line);
 	}
 
 	/**

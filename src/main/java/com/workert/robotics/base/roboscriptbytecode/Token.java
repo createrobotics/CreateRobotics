@@ -94,6 +94,6 @@ final class Token {
 
 	@Override
 	public String toString() {
-		return "Token: " + this.type;
+		return "Token: " + this.type + ' ' + '"' + this.lexeme + '"';
 	}
 }

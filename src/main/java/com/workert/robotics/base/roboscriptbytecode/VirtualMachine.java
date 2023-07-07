@@ -17,12 +17,6 @@ final class VirtualMachine {
 
 	// this is the function that will be called when the computer or drone or whatever actually needs to run, and it will pass in a string
 	protected void interpret(String source) {
-		try {
-			this.chunk = this.compile(source);
-		} catch (CompileError e) {
-			// TODO: change this to actually correctly match information
-			this.roboScriptInstance.reportCompileError(0, e.toString());
-		}
 		this.instructionPointer = 0;
 		this.run();
 	}
@@ -76,7 +70,7 @@ final class VirtualMachine {
 		// List<Token> tokens = scanner.scanTokens();
 
 		Scanner scanner = new Scanner(source);
-		Compiler compiler = new Compiler(scanner.scanTokens(), this.roboScriptInstance);
+		// Compiler compiler = new Compiler(scanner.scanTokens(), this.roboScriptInstance);
 		return null;
 	}
 
