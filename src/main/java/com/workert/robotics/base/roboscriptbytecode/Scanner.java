@@ -33,10 +33,9 @@ final class Scanner {
 	 */
 	List<Token> scanTokens() {
 		List<Token> tokens = new ArrayList<>();
-		while (!this.isAtEnd()) {
+		while (true) {
 			this.start = this.current;
 			Token t = this.scanToken();
-			System.out.println(t);
 			tokens.add(t);
 			if (t.type == EOF) break;
 		}
@@ -48,8 +47,8 @@ final class Scanner {
 	 */
 	protected Token scanToken() {
 		this.skipWhiteSpace();
-		char c = this.consumeNextChar();
 		if (this.isAtEnd()) return new Token(EOF, "", this.line);
+		char c = this.consumeCurrentChar();
 		switch (c) {
 			case '(':
 				return this.addToken(LEFT_PAREN);
@@ -82,7 +81,7 @@ final class Scanner {
 			case '/':
 				if (this.consumeIfNextCharMatches('/')) {
 					while (this.getCurrentChar() != '\n' && !this.isAtEnd()) {
-						this.consumeNextChar();
+						this.consumeCurrentChar();
 					}
 				} else {
 					return this.addToken(
@@ -121,13 +120,16 @@ final class Scanner {
 
 	private void skipWhiteSpace() {
 		while (true) {
-			char c = this.consumeNextChar();
+			if (this.isAtEnd()) return;
+			char c = this.getCurrentChar();
 			switch (c) {
 				case ' ':
 				case '\r':
 				case '\t':
+					this.consumeCurrentChar();
 					break;
 				case '\n':
+					this.consumeCurrentChar();
 					this.line++;
 					break;
 				default:
@@ -144,7 +146,7 @@ final class Scanner {
 			if (this.getCurrentChar() == '\n') {
 				this.line++;
 			}
-			this.consumeNextChar();
+			this.consumeCurrentChar();
 		}
 
 		if (this.isAtEnd()) {
@@ -153,7 +155,7 @@ final class Scanner {
 			return this.errorToken("Unterminated string.");
 		}
 
-		this.consumeNextChar();
+		this.consumeCurrentChar();
 		return this.addToken(STRING_VALUE);
 	}
 
@@ -162,13 +164,13 @@ final class Scanner {
 	 */
 	private Token number() {
 		while (this.isDigit(this.getCurrentChar())) {
-			this.consumeNextChar();
+			this.consumeCurrentChar();
 		}
 
 		if (this.getCurrentChar() == '.' && this.isDigit(this.getNextChar())) {
-			this.consumeNextChar();
+			this.consumeCurrentChar();
 			while (this.isDigit(this.getCurrentChar())) {
-				this.consumeNextChar();
+				this.consumeCurrentChar();
 			}
 		}
 
@@ -181,7 +183,7 @@ final class Scanner {
 	 */
 	private Token identifier() {
 		while (this.isAlphaNumeric(this.getCurrentChar())) {
-			this.consumeNextChar();
+			this.consumeCurrentChar();
 		}
 		return this.addToken(this.identifierToken());
 	}
@@ -261,11 +263,11 @@ final class Scanner {
 	}
 
 	/**
-	 * Consumes and returns the next character in the source code.
+	 * Consumes and returns the consumed character.
 	 *
-	 * @return The next character.
+	 * @return The consumed char.
 	 */
-	private char consumeNextChar() {
+	private char consumeCurrentChar() {
 		return this.source.charAt(this.current++);
 	}
 
