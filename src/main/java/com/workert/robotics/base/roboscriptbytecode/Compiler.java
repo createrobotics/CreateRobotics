@@ -1,10 +1,9 @@
 package com.workert.robotics.base.roboscriptbytecode;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Function;
 
 import static com.workert.robotics.base.roboscriptbytecode.OpCode.*;
-import static com.workert.robotics.base.roboscriptbytecode.Token.TokenType.*;
+import static com.workert.robotics.base.roboscriptbytecode.Token.TokenType.ERROR;
+import static com.workert.robotics.base.roboscriptbytecode.Token.TokenType.RIGHT_PAREN;
 
 public final class Compiler {
 	// ⚠️⚠️⚠️⚠️i have no idea what im doing        ⚠️⚠️⚠️⚠️
@@ -14,7 +13,6 @@ public final class Compiler {
 	Chunk chunk = new Chunk();
 	Token current;
 	Token previous;
-	List<Token> tokens = new ArrayList<>();
 
 
 	Compiler(RoboScript roboScriptInstance) {
@@ -27,10 +25,16 @@ public final class Compiler {
 
 
 	protected void compile(String source) {
-		this.scanner = new Scanner(source);
-		this.advance();
-		this.expression();
-		this.consumeIfMatches(EOF, "Expect end of expression.");
+		try {
+			this.scanner = new Scanner(source);
+			this.advance();
+			this.expression();
+			// this.consumeIfMatches(EOF, "Expect end of expression.");
+			this.endCompiler();
+		} catch (CompileError e) {
+			// synchronize eventually
+		}
+
 	}
 
 	private void endCompiler() {
@@ -40,7 +44,7 @@ public final class Compiler {
 	protected void binary() {
 		Token.TokenType operatorType = this.previous.type;
 		ParseRule rule = operatorType.getParseRule();
-		this.parsePrecedence((byte) (rule.precedence + 1));
+		this.parsePrecedence(rule.precedence + 1);
 
 		switch (operatorType) {
 			case PLUS -> this.emitByte(OP_ADD);
@@ -74,6 +78,7 @@ public final class Compiler {
 		this.parsePrecedence(Precedence.UNARY);
 		switch (operatorType) {
 			case MINUS -> this.emitByte(OP_NEGATE);
+			case BANG -> this.emitByte(OP_NOT);
 			default -> {
 				return; // unreachable
 			}
@@ -81,12 +86,11 @@ public final class Compiler {
 	}
 
 
-	private void parsePrecedence(byte precedence) {
+	private void parsePrecedence(int precedence) {
 		this.advance();
 		Function<Compiler, Void> prefixRule = this.previous.type.getParseRule().prefix;
 		if (prefixRule == null) {
-			this.error("Expect expression.");
-			return;
+			throw this.error("Expect expression.");
 		}
 		prefixRule.apply(this);
 		while (precedence <= this.previous.type.getParseRule().precedence) {
@@ -114,8 +118,7 @@ public final class Compiler {
 	private void emitConstant(Object value) {
 		int constant = this.getCurrentChunk().addConstant(value);
 		if (constant > 255) {
-			this.error("Too many constants in one chunk.");
-			return;
+			throw this.error("Too many constants in one chunk.");
 		}
 		this.emitBytes(OP_CONSTANT, (byte) constant);
 	}
@@ -164,7 +167,7 @@ public final class Compiler {
 	}
 
 
-	private static class CompileError extends RuntimeException {
+	protected static class CompileError extends RuntimeException {
 	}
 
 	protected static class ParseRule {

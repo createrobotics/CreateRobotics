@@ -37,7 +37,7 @@ final class Token {
 		SEMICOLON(empty()),
 
 		// One or two character tokens.
-		BANG(empty()),
+		BANG(new Compiler.ParseRule(unary(), null, NONE)),
 		BANG_EQUAL(empty()),
 		EQUAL(empty()),
 		EQUAL_EQUAL(empty()),

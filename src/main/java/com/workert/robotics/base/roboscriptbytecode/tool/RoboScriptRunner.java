@@ -11,7 +11,7 @@ public class RoboScriptRunner {
 	// credit to Crafting Interpreters and the cLox language for most of the understanding of bytecode interpreters.
 	// check it out at https://craftinginterpreters.com.
 
-	// credit to @jakslxpwrm on discord for helping with optimizations and a lot of C to Java conversions
+	// credit to jakslxpwrm on discord for helping with optimizations and a lot of C to Java conversions
 
 	private static final String sourcePath = "src/main/java/com/workert/robotics/base/roboscriptbytecode/tool/script.robo";
 

@@ -5,10 +5,16 @@ public abstract class RoboScript {
 
 	public final void runString(String source) {
 		this.hadError = false;
-		Scanner scanner = new Scanner(source);
-
-		System.out.println(scanner.scanTokens());
-		// this.vm.interpret(source);
+		Scanner s = new Scanner(source);
+		System.out.println(s.scanTokens());
+		Compiler c = new Compiler(this);
+		c.compile(source);
+		if (this.hadError) {
+			return;
+		}
+		Printer p = new Printer();
+		p.disassembleChunk(c.chunk, "From source");
+		this.vm.interpret(c.chunk);
 	}
 
 	public final void runASMString(String source) {
@@ -34,7 +40,7 @@ public abstract class RoboScript {
 
 	protected void reportCompileError(int line, String message) {
 		this.hadError = true;
-		System.err.println("[line " + line + "] Error: " + message);
+		this.handleErrorMessage("[line " + line + "] Error: " + message);
 	}
 
 
