@@ -36,6 +36,45 @@ public final class Compiler {
 		this.emitReturn();
 	}
 
+
+	private void expression() {
+		this.parsePrecedence(Precedence.ASSIGNMENT);
+	}
+
+	void grouping() {
+		this.expression();
+		this.consumeIfMatches(RIGHT_PAREN, "Expect ')' after expression.");
+
+	}
+
+	void number() {
+		double value = Double.parseDouble(this.previous.lexeme);
+		this.emitConstant(value);
+	}
+
+	void literal() {
+		switch (this.previous.type) {
+			case FALSE -> this.emitConstant(false);
+			case TRUE -> this.emitConstant(true);
+			case NULL -> this.emitConstant(null);
+			default -> {
+				return; // unreachable
+			}
+		}
+	}
+
+	void unary() {
+		Token.TokenType operatorType = this.previous.type;
+		this.parsePrecedence(Precedence.UNARY);
+		switch (operatorType) {
+			case MINUS -> this.emitByte(OP_NEGATE);
+			case BANG -> this.emitByte(OP_NOT);
+			default -> {
+				return; // unreachable
+			}
+		}
+	}
+
 	void binary() {
 		Token.TokenType operatorType = this.previous.type;
 		ParseRule rule = operatorType.getParseRule();
@@ -48,34 +87,6 @@ public final class Compiler {
 			case SLASH -> this.emitByte(OP_DIVIDE);
 			default -> {
 				return;
-			}
-		}
-	}
-
-	private void expression() {
-		this.parsePrecedence(Precedence.ASSIGNMENT);
-	}
-
-	void number() {
-		double value = Double.parseDouble(this.previous.lexeme);
-		this.emitConstant(value);
-	}
-
-	void grouping() {
-		this.expression();
-		this.consumeIfMatches(RIGHT_PAREN, "Expect ')' after expression.");
-
-	}
-
-
-	void unary() {
-		Token.TokenType operatorType = this.previous.type;
-		this.parsePrecedence(Precedence.UNARY);
-		switch (operatorType) {
-			case MINUS -> this.emitByte(OP_NEGATE);
-			case BANG -> this.emitByte(OP_NOT);
-			default -> {
-				return; // unreachable
 			}
 		}
 	}

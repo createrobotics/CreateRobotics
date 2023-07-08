@@ -14,7 +14,7 @@ final class Token {
 
 	public enum TokenType {
 		// Single-character tokens.
-		LEFT_PAREN(new Compiler.ParseRule(grouping(), null, NONE)),
+		LEFT_PAREN(new Compiler.ParseRule(Compiler::unary, null, NONE)),
 		RIGHT_PAREN(empty()),
 		LEFT_BRACE(empty()),
 		RIGHT_BRACE(empty()),
@@ -22,20 +22,20 @@ final class Token {
 		RIGHT_BRACKET(empty()),
 		COMMA(empty()),
 		DOT(empty()),
-		PLUS(new Compiler.ParseRule(null, binary(), TERM)),
-		MINUS(new Compiler.ParseRule(unary(), binary(), TERM)),
-		STAR(new Compiler.ParseRule(null, binary(), FACTOR)),
-		SLASH(new Compiler.ParseRule(null, binary(), FACTOR)),
+		PLUS(new Compiler.ParseRule(null, Compiler::binary, TERM)),
+		MINUS(new Compiler.ParseRule(Compiler::unary, Compiler::binary, TERM)),
+		STAR(new Compiler.ParseRule(null, Compiler::binary, FACTOR)),
+		SLASH(new Compiler.ParseRule(null, Compiler::binary, FACTOR)),
 
 		// these two need to be changed when i figure out where they are actually supposed to go in the order of operations
-		PERCENT(new Compiler.ParseRule(null, binary(), FACTOR)),
-		CARET(new Compiler.ParseRule(null, binary(), FACTOR)),
+		PERCENT(new Compiler.ParseRule(null, Compiler::binary, FACTOR)),
+		CARET(new Compiler.ParseRule(null, Compiler::binary, FACTOR)),
 
 		COLON(empty()),
 		SEMICOLON(empty()),
 
 		// One or two character tokens.
-		BANG(new Compiler.ParseRule(unary(), null, NONE)),
+		BANG(new Compiler.ParseRule(Compiler::unary, null, NONE)),
 		BANG_EQUAL(empty()),
 		EQUAL(empty()),
 		EQUAL_EQUAL(empty()),
@@ -54,7 +54,7 @@ final class Token {
 		// Literals.
 		IDENTIFIER(empty()),
 		STRING_VALUE(empty()),
-		DOUBLE_VALUE(new Compiler.ParseRule(number(), null, NONE)),
+		DOUBLE_VALUE(new Compiler.ParseRule(Compiler::number, null, NONE)),
 
 		// Keywords.
 		CLASS(empty()),
@@ -67,7 +67,7 @@ final class Token {
 		ELSE(empty()),
 		WHILE(empty()),
 
-		TRUE(empty()),
+		TRUE(new Compiler.ParseRule(Compiler::literal, null, NONE)),
 		FALSE(empty()),
 
 		AND(empty()),
@@ -115,30 +115,6 @@ final class Token {
 
 	private static Compiler.ParseRule empty() {
 		return new Compiler.ParseRule(null, null, NONE);
-	}
-
-	private static ParseFunction grouping() {
-		return compiler -> {
-			compiler.grouping();
-		};
-	}
-
-	private static ParseFunction number() {
-		return compiler -> {
-			compiler.number();
-		};
-	}
-
-	private static ParseFunction unary() {
-		return compiler -> {
-			compiler.unary();
-		};
-	}
-
-	private static ParseFunction binary() {
-		return compiler -> {
-			compiler.binary();
-		};
 	}
 
 }
