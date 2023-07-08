@@ -48,7 +48,7 @@ final class VirtualMachine {
 					try {
 						this.stack.set(this.stack.size() - 1, -(double) this.stack.peek());
 					} catch (ClassCastException e) {
-						throw new RuntimeError("Can only negate numbers");
+						throw new RuntimeError("Can only negate numbers.");
 					}
 				}
 				case OP_RETURN -> {
@@ -68,14 +68,6 @@ final class VirtualMachine {
 		return this.chunk.readConstant(this.readByte());
 	}
 
-	private void debugTraceExecution() {
-		System.out.print("          ");
-		for (Object slot : this.stack) {
-			System.out.print("[ " + slot + " ]");
-		}
-		System.out.println();
-		Printer.disassembleInstruction(this.chunk, this.instructionPointer);
-	}
 
 	void pushStack(Object object) {
 		this.stack.push(object);
