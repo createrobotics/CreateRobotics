@@ -45,7 +45,7 @@ final class Scanner {
 	/**
 	 * Scans the next token from the source code.
 	 */
-	protected Token scanToken() {
+	Token scanToken() {
 		this.skipWhiteSpace();
 		this.start = this.current;
 		if (this.isAtEnd()) return new Token(EOF, "", this.line);
@@ -124,17 +124,14 @@ final class Scanner {
 			if (this.isAtEnd()) return;
 			char c = this.getCurrentChar();
 			switch (c) {
-				case ' ':
-				case '\r':
-				case '\t':
-					this.consumeCurrentChar();
-					break;
-				case '\n':
+				case ' ', '\r', '\t' -> this.consumeCurrentChar();
+				case '\n' -> {
 					this.consumeCurrentChar();
 					this.line++;
-					break;
-				default:
+				}
+				default -> {
 					return;
+				}
 			}
 		}
 	}
@@ -189,53 +186,66 @@ final class Scanner {
 		return this.addToken(this.identifierToken());
 	}
 
+	// TODO find a cleaner and faster method to detect the Identifier Token
 	private Token.TokenType identifierToken() {
 		switch (this.source.charAt(this.start)) {
-
 			// one path keywords ; initial characters that only share on keyword
 
-			case 'a':
+			case 'a' -> {
 				return this.checkKeyword(1, 2, "nd", AND);
-			case 'c':
+			}
+			case 'c' -> {
 				return this.checkKeyword(1, 4, "lass", CLASS);
-			case 'e':
+			}
+			case 'e' -> {
 				return this.checkKeyword(1, 3, "lse", ELSE);
-			case 'i':
+			}
+			case 'i' -> {
 				return this.checkKeyword(1, 1, "f", IF);
-			case 'n':
+			}
+			case 'n' -> {
 				return this.checkKeyword(1, 3, "ull", NULL);
-			case 'o':
+			}
+			case 'o' -> {
 				return this.checkKeyword(1, 1, "r", OR);
-			case 'r':
+			}
+			case 'r' -> {
 				return this.checkKeyword(1, 5, "eturn", RETURN);
-			case 's':
+			}
+			case 's' -> {
 				return this.checkKeyword(1, 4, "uper", SUPER);
-			case 'v':
+			}
+			case 'v' -> {
 				return this.checkKeyword(1, 2, "ar", VAR);
-			case 'w':
+			}
+			case 'w' -> {
 				return this.checkKeyword(1, 4, "hile", WHILE);
-
-
-			case 'f':
+			}
+			case 'f' -> {
 				if (this.current - this.start > 1)
 					switch (this.source.charAt(this.start + 1)) {
-						case 'a':
+						case 'a' -> {
 							return this.checkKeyword(2, 3, "lse", FALSE);
-						case 'o':
+						}
+						case 'o' -> {
 							return this.checkKeyword(2, 1, "r", FOR);
-						case 'u':
+						}
+						case 'u' -> {
 							return this.checkKeyword(2, 6, "nction", FUNCTION);
+						}
 					}
-				break;
-			case 't':
+			}
+			case 't' -> {
 				if (this.current - this.start > 1)
 					switch (this.source.charAt(this.start + 1)) {
-						case 'h':
+						case 'h' -> {
 							return this.checkKeyword(2, 2, "is", THIS);
-						case 'r':
+						}
+						case 'r' -> {
 							return this.checkKeyword(2, 2, "ue", TRUE);
+						}
 					}
-				break;
+			}
 		}
 
 		return IDENTIFIER;

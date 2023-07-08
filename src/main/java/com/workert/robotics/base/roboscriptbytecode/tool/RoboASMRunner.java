@@ -29,5 +29,4 @@ public class RoboASMRunner {
 			}
 		}.runASMString(source);
 	}
-
 }

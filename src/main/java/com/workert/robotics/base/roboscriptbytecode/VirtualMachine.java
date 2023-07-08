@@ -4,9 +4,9 @@ import java.util.Stack;
 import static com.workert.robotics.base.roboscriptbytecode.OpCode.*;
 
 final class VirtualMachine {
-	private RoboScript roboScriptInstance;
+	private final RoboScript roboScriptInstance;
 	private Chunk chunk;
-	private Stack<Object> stack = new Stack<>();
+	private final Stack<Object> stack = new Stack<>();
 	private int instructionPointer = 0;
 
 
@@ -16,13 +16,13 @@ final class VirtualMachine {
 
 
 	// this is the function that will be called when the computer or drone or whatever actually needs to run, and it will pass in a string
-	protected void interpret(String source) {
+	void interpret(String source) {
 		this.instructionPointer = 0;
 		this.run();
 	}
 
 	// use this function for assembly testing
-	protected void interpret(Chunk chunk) {
+	void interpret(Chunk chunk) {
 		this.chunk = chunk;
 		this.instructionPointer = 0;
 		this.run();
@@ -92,16 +92,16 @@ final class VirtualMachine {
 		Printer.disassembleInstruction(this.chunk, this.instructionPointer);
 	}
 
-	protected void pushStack(Object object) {
+	void pushStack(Object object) {
 		this.stack.push(object);
 	}
 
 
-	protected Object popStack() {
+	Object popStack() {
 		return this.stack.pop();
 	}
 
-	protected Object peekStack() {
+	Object peekStack() {
 		return this.stack.peek();
 	}
 
@@ -124,7 +124,6 @@ final class VirtualMachine {
 		switch (operand) {
 			case '+' -> this.binaryAdd(a, b);
 			case '-' -> {
-
 				try {
 					this.pushStack((double) a + (double) b);
 				} catch (ClassCastException e) {

@@ -30,7 +30,7 @@ final class Assembler {
 	}
 
 
-	protected Chunk assemble(String asm) {
+	Chunk assemble(String asm) {
 		this.source = asm;
 		Chunk chunk = new Chunk();
 		List<String> lines = Arrays.asList(this.source.split("\n"));
@@ -104,18 +104,22 @@ final class Assembler {
 			}
 			String text = line.substring(this.start, this.current);
 			switch (text) {
-				case "true":
+				case "true" -> {
 					this.start = this.current;
 					return true;
-				case "false":
+				}
+				case "false" -> {
 					this.start = this.current;
 					return false;
-				case "null":
+				}
+				case "null" -> {
 					this.start = this.current;
 					return null;
-				default:
+				}
+				default -> {
 					this.start = this.current;
 					throw new AssembleError("Not a valid literal.", this.line);
+				}
 			}
 		}
 		throw new AssembleError("Expected literal.", this.line);

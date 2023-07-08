@@ -4,8 +4,6 @@ import static com.workert.robotics.base.roboscriptbytecode.Token.TokenType.ERROR
 import static com.workert.robotics.base.roboscriptbytecode.Token.TokenType.RIGHT_PAREN;
 
 public final class Compiler {
-	// ⚠️⚠️⚠️⚠️i have no idea what im doing        ⚠️⚠️⚠️⚠️
-
 	final RoboScript roboScriptInstance;
 	Scanner scanner;
 	Chunk chunk = new Chunk();
@@ -22,7 +20,7 @@ public final class Compiler {
 	}
 
 
-	protected void compile(String source) {
+	void compile(String source) {
 		try {
 			this.scanner = new Scanner(source);
 			this.advance();
@@ -39,7 +37,7 @@ public final class Compiler {
 		this.emitReturn();
 	}
 
-	protected void binary() {
+	void binary() {
 		Token.TokenType operatorType = this.previous.type;
 		ParseRule rule = operatorType.getParseRule();
 		this.parsePrecedence(rule.precedence + 1);
@@ -59,19 +57,19 @@ public final class Compiler {
 		this.parsePrecedence(Precedence.ASSIGNMENT);
 	}
 
-	protected void number() {
+	void number() {
 		double value = Double.parseDouble(this.previous.lexeme);
 		this.emitConstant(value);
 	}
 
-	protected void grouping() {
+	void grouping() {
 		this.expression();
 		this.consumeIfMatches(RIGHT_PAREN, "Expect ')' after expression.");
 
 	}
 
 
-	protected void unary() {
+	void unary() {
 		Token.TokenType operatorType = this.previous.type;
 		this.parsePrecedence(Precedence.UNARY);
 		switch (operatorType) {
