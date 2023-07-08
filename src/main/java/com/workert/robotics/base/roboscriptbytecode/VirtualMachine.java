@@ -65,15 +65,6 @@ final class VirtualMachine {
 		}
 	}
 
-	private Chunk compile(String source) {
-		// Scanner scanner = new Scanner(this.roboScriptInstance, source);
-		// List<Token> tokens = scanner.scanTokens();
-
-		Scanner scanner = new Scanner(source);
-		// Compiler compiler = new Compiler(scanner.scanTokens(), this.roboScriptInstance);
-		return null;
-	}
-
 
 	private byte readByte() {
 		return this.chunk.readCode(this.instructionPointer++);
