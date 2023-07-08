@@ -1,6 +1,4 @@
 package com.workert.robotics.base.roboscriptbytecode;
-import java.util.function.Function;
-
 import static com.workert.robotics.base.roboscriptbytecode.Compiler.Precedence.*;
 
 final class Token {
@@ -119,31 +117,27 @@ final class Token {
 		return new Compiler.ParseRule(null, null, NONE);
 	}
 
-	private static Function<Compiler, Void> grouping() {
+	private static ParseFunction grouping() {
 		return compiler -> {
 			compiler.grouping();
-			return null;
 		};
 	}
 
-	private static Function<Compiler, Void> number() {
+	private static ParseFunction number() {
 		return compiler -> {
 			compiler.number();
-			return null;
 		};
 	}
 
-	private static Function<Compiler, Void> unary() {
+	private static ParseFunction unary() {
 		return compiler -> {
 			compiler.unary();
-			return null;
 		};
 	}
 
-	private static Function<Compiler, Void> binary() {
+	private static ParseFunction binary() {
 		return compiler -> {
 			compiler.binary();
-			return null;
 		};
 	}
 

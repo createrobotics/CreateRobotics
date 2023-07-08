@@ -1,6 +1,4 @@
 package com.workert.robotics.base.roboscriptbytecode;
-import java.util.function.Function;
-
 import static com.workert.robotics.base.roboscriptbytecode.OpCode.*;
 import static com.workert.robotics.base.roboscriptbytecode.Token.TokenType.ERROR;
 import static com.workert.robotics.base.roboscriptbytecode.Token.TokenType.RIGHT_PAREN;
@@ -88,14 +86,14 @@ public final class Compiler {
 
 	private void parsePrecedence(int precedence) {
 		this.advance();
-		Function<Compiler, Void> prefixRule = this.previous.type.getParseRule().prefix;
+		ParseFunction prefixRule = this.previous.type.getParseRule().prefix;
 		if (prefixRule == null) {
 			throw this.error("Expect expression.");
 		}
 		prefixRule.apply(this);
 		while (precedence <= this.previous.type.getParseRule().precedence) {
 			this.advance();
-			Function<Compiler, Void> infixRule = this.previous.type.getParseRule().infix;
+			ParseFunction infixRule = this.previous.type.getParseRule().infix;
 			infixRule.apply(this);
 		}
 	}
@@ -171,12 +169,12 @@ public final class Compiler {
 	}
 
 	protected static class ParseRule {
-		Function<Compiler, Void> prefix;
-		Function<Compiler, Void> infix;
+		ParseFunction prefix;
+		ParseFunction infix;
 		byte precedence;
 
 
-		ParseRule(Function<Compiler, Void> prefix, Function<Compiler, Void> infix, byte precedence) {
+		ParseRule(ParseFunction prefix, ParseFunction infix, byte precedence) {
 			this.prefix = prefix;
 			this.infix = infix;
 			this.precedence = precedence;
