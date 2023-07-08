@@ -4,7 +4,6 @@ import static com.workert.robotics.base.roboscriptbytecode.Token.TokenType.ERROR
 import static com.workert.robotics.base.roboscriptbytecode.Token.TokenType.RIGHT_PAREN;
 
 public final class Compiler {
-	// ⚠️⚠️⚠️⚠️i have no idea what im doing        ⚠️⚠️⚠️⚠️
 
 	final RoboScript roboScriptInstance;
 	Scanner scanner;
@@ -17,28 +16,50 @@ public final class Compiler {
 		this.roboScriptInstance = roboScriptInstance;
 	}
 
+
+	/**
+	 * The current chunk the compiler is writing to.
+	 *
+	 * @return The current chunk the compiler is writing to.
+	 */
 	private Chunk getCurrentChunk() {
 		return this.chunk;
 	}
 
 
+	/**
+	 * Scans tokens and writes to a chunk.
+	 *
+	 * @param source The source code of the program.
+	 */
 	protected void compile(String source) {
 		try {
 			this.scanner = new Scanner(source);
+
+			// Get a chunk value for current. Previous is still 'null'.
 			this.advance();
+
+			// Looks for a single expression and ends the compiler. Temporary
 			this.expression();
-			// this.consumeIfMatches(EOF, "Expect end of expression.");
 			this.endCompiler();
+
 		} catch (CompileError e) {
 			// synchronize eventually
 		}
-
 	}
 
+
+	/**
+	 * Ends the compiler.
+	 */
 	private void endCompiler() {
 		this.emitReturn();
 	}
 
+	/**
+	 * Performs binary operations such as `+`, `-`, `*`, `/`, `^`, and `%`.
+	 * Called externally through a parse rule.
+	 */
 	protected void binary() {
 		Token.TokenType operatorType = this.previous.type;
 		ParseRule rule = operatorType.getParseRule();
@@ -55,15 +76,25 @@ public final class Compiler {
 		}
 	}
 
+	/**
+	 * Parses an expression
+	 */
 	private void expression() {
 		this.parsePrecedence(Precedence.ASSIGNMENT);
 	}
 
+	/**
+	 * Parses a constant and writes it to the current chunk
+	 */
 	protected void number() {
 		double value = Double.parseDouble(this.previous.lexeme);
 		this.emitConstant(value);
 	}
 
+	/**
+	 * Parses an expression starting from when the `(` has already been consumed.
+	 * Expects a `)` after an expression.
+	 */
 	protected void grouping() {
 		this.expression();
 		this.consumeIfMatches(RIGHT_PAREN, "Expect ')' after expression.");
@@ -71,6 +102,9 @@ public final class Compiler {
 	}
 
 
+	/**
+	 * Performs unary operations such as negation (`-`) and not (`!`).
+	 */
 	protected void unary() {
 		Token.TokenType operatorType = this.previous.type;
 		this.parsePrecedence(Precedence.UNARY);
@@ -91,7 +125,7 @@ public final class Compiler {
 			throw this.error("Expect expression.");
 		}
 		prefixRule.apply(this);
-		while (precedence <= this.previous.type.getParseRule().precedence) {
+		while (precedence <= this.current.type.getParseRule().precedence) {
 			this.advance();
 			ParseFunction infixRule = this.previous.type.getParseRule().infix;
 			infixRule.apply(this);
@@ -125,7 +159,7 @@ public final class Compiler {
 	private void advance() {
 		this.previous = this.current;
 
-		while (true) {
+		for (; ; ) {
 			this.current = this.scanner.scanToken();
 			if (this.current.type != ERROR) break;
 
