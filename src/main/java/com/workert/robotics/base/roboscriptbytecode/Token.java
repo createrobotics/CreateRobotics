@@ -53,7 +53,7 @@ final class Token {
 
 		// Literals.
 		IDENTIFIER(empty()),
-		STRING_VALUE(empty()),
+		STRING_VALUE(new Compiler.ParseRule(Compiler::literal, null, NONE)),
 		DOUBLE_VALUE(new Compiler.ParseRule(Compiler::number, null, NONE)),
 
 		// Keywords.
@@ -68,12 +68,12 @@ final class Token {
 		WHILE(empty()),
 
 		TRUE(new Compiler.ParseRule(Compiler::literal, null, NONE)),
-		FALSE(empty()),
+		FALSE(new Compiler.ParseRule(Compiler::literal, null, NONE)),
 
 		AND(empty()),
 		OR(empty()),
 
-		NULL(empty()),
+		NULL(new Compiler.ParseRule(Compiler::literal, null, NONE)),
 
 
 		EXTENDS(empty()),

@@ -140,6 +140,7 @@ final class Scanner {
 	 * Scans a string literal from the source code.
 	 */
 	private Token string() {
+		this.start = this.current;
 		while (this.getCurrentChar() != '"' && !this.isAtEnd()) {
 			if (this.getCurrentChar() == '\n') {
 				this.line++;
@@ -152,9 +153,9 @@ final class Scanner {
 
 			return this.errorToken("Unterminated string.");
 		}
-
+		Token finalToken = this.addToken(STRING_VALUE);
 		this.consumeCurrentChar();
-		return this.addToken(STRING_VALUE);
+		return finalToken;
 	}
 
 	/**

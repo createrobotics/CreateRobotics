@@ -44,7 +44,6 @@ public final class Compiler {
 	void grouping() {
 		this.expression();
 		this.consumeIfMatches(RIGHT_PAREN, "Expect ')' after expression.");
-
 	}
 
 	void number() {
@@ -56,6 +55,7 @@ public final class Compiler {
 		switch (this.previous.type) {
 			case FALSE -> this.emitConstant(false);
 			case TRUE -> this.emitConstant(true);
+			case STRING_VALUE -> this.emitConstant(this.previous.lexeme);
 			case NULL -> this.emitConstant(null);
 			default -> {
 				return; // unreachable
