@@ -39,6 +39,12 @@ final class VirtualMachine {
 					System.out.println(constant);
 					break;
 				}
+				case OP_EQUAL -> this.binaryOperation('=');
+				case OP_NOT_EQUAL -> this.binaryOperation('n');
+				case OP_LESS -> this.binaryOperation('<');
+				case OP_LESS_EQUAL -> this.binaryOperation('l');
+				case OP_GREATER -> this.binaryOperation('>');
+				case OP_GREATER_EQUAL -> this.binaryOperation('g');
 				case OP_ADD -> this.binaryOperation('+');
 				case OP_SUBTRACT -> this.binaryOperation('-');
 				case OP_MULTIPLY -> this.binaryOperation('*');
@@ -121,6 +127,36 @@ final class VirtualMachine {
 					throw new RuntimeError("Division must be between two numbers.");
 				}
 			}
+			case '>' -> {
+				try {
+					this.pushStack((double) a > (double) b);
+				} catch (ClassCastException e) {
+					throw new RuntimeError("Comparison using '>' must be between two numbers.");
+				}
+			}
+			case '<' -> {
+				try {
+					this.pushStack((double) a < (double) b);
+				} catch (ClassCastException e) {
+					throw new RuntimeError("Comparison using '<' must be between two numbers.");
+				}
+			}
+			case 'g' -> { // >=
+				try {
+					this.pushStack((double) a >= (double) b);
+				} catch (ClassCastException e) {
+					throw new RuntimeError("Comparison using '>=' must be between two numbers.");
+				}
+			}
+			case 'l' -> { // <=
+				try {
+					this.pushStack((double) a <= (double) b);
+				} catch (ClassCastException e) {
+					throw new RuntimeError("Comparison using '<=' must be between two numbers.");
+				}
+			}
+			case '=' -> this.pushStack(a.equals(b)); // ==
+			case 'n' -> this.pushStack(!a.equals(b)); // !=
 		}
 	}
 

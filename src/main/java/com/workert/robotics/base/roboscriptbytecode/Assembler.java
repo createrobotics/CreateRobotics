@@ -18,6 +18,12 @@ final class Assembler {
 		Map<String, Byte> mnemonics = new HashMap<>();
 
 		mnemonics.put("push", OP_CONSTANT);
+		mnemonics.put("grt", OP_GREATER);
+		mnemonics.put("les", OP_LESS);
+		mnemonics.put("greq", OP_GREATER_EQUAL);
+		mnemonics.put("lseq", OP_LESS_EQUAL);
+		mnemonics.put("equ", OP_EQUAL);
+		mnemonics.put("nequ", OP_NOT_EQUAL);
 		mnemonics.put("add", OP_ADD);
 		mnemonics.put("sub", OP_SUBTRACT);
 		mnemonics.put("mul", OP_MULTIPLY);

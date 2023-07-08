@@ -36,9 +36,9 @@ final class Token {
 
 		// One or two character tokens.
 		BANG(new Compiler.ParseRule(Compiler::unary, null, NONE)),
-		BANG_EQUAL(empty()),
+		BANG_EQUAL(new Compiler.ParseRule(null, Compiler::binary, EQUALITY)),
 		EQUAL(empty()),
-		EQUAL_EQUAL(empty()),
+		EQUAL_EQUAL(new Compiler.ParseRule(null, Compiler::binary, EQUALITY)),
 		PLUS_EQUAL(empty()),
 		PLUS_PLUS(empty()),
 		MINUS_EQUAL(empty()),
@@ -46,10 +46,10 @@ final class Token {
 		STAR_EQUAL(empty()),
 		SLASH_EQUAL(empty()),
 		CARET_EQUAL(empty()),
-		GREATER(empty()),
-		GREATER_EQUAL(empty()),
-		LESS(empty()),
-		LESS_EQUAL(empty()),
+		GREATER(new Compiler.ParseRule(null, Compiler::binary, COMPARISON)),
+		GREATER_EQUAL(new Compiler.ParseRule(null, Compiler::binary, COMPARISON)),
+		LESS(new Compiler.ParseRule(null, Compiler::binary, COMPARISON)),
+		LESS_EQUAL(new Compiler.ParseRule(null, Compiler::binary, COMPARISON)),
 
 		// Literals.
 		IDENTIFIER(empty()),
