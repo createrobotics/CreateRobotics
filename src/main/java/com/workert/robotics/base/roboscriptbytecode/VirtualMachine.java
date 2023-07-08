@@ -119,13 +119,13 @@ final class VirtualMachine {
 	}
 
 	private void binaryOperation(char operand) {
-		Object a = this.popStack();
 		Object b = this.popStack();
+		Object a = this.popStack();
 		switch (operand) {
 			case '+' -> this.binaryAdd(a, b);
 			case '-' -> {
 				try {
-					this.pushStack((double) a + (double) b);
+					this.pushStack((double) a - (double) b);
 				} catch (ClassCastException e) {
 					throw new RuntimeError("Subtraction must be between two numbers.");
 				}
