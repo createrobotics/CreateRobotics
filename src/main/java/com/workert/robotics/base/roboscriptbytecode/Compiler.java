@@ -1,7 +1,6 @@
 package com.workert.robotics.base.roboscriptbytecode;
 import static com.workert.robotics.base.roboscriptbytecode.OpCode.*;
-import static com.workert.robotics.base.roboscriptbytecode.Token.TokenType.ERROR;
-import static com.workert.robotics.base.roboscriptbytecode.Token.TokenType.RIGHT_PAREN;
+import static com.workert.robotics.base.roboscriptbytecode.Token.TokenType.*;
 
 public final class Compiler {
 	final RoboScript roboScriptInstance;
@@ -25,7 +24,7 @@ public final class Compiler {
 			this.scanner = new Scanner(source);
 			this.advance();
 			this.expression();
-			// this.consumeIfMatches(EOF, "Expect end of expression.");
+			this.consumeIfMatches(EOF, "Expect end of expression.");
 			this.endCompiler();
 		} catch (CompileError e) {
 			// synchronize eventually
@@ -89,7 +88,7 @@ public final class Compiler {
 			throw this.error("Expect expression.");
 		}
 		prefixRule.apply(this);
-		while (precedence <= this.previous.type.getParseRule().precedence) {
+		while (precedence <= this.current.type.getParseRule().precedence) {
 			this.advance();
 			ParseFunction infixRule = this.previous.type.getParseRule().infix;
 			infixRule.apply(this);
@@ -150,7 +149,7 @@ public final class Compiler {
 
 	private CompileError errorAt(Token token, String message) {
 		String finalMessage = "Error";
-		if (token.type == Token.TokenType.EOF) {
+		if (token.type == EOF) {
 			finalMessage += " at end";
 		} else if (token.type == Token.TokenType.ERROR) {
 
