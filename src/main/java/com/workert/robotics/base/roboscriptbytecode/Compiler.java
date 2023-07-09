@@ -41,6 +41,48 @@ public final class Compiler {
 		this.parsePrecedence(Precedence.ASSIGNMENT);
 	}
 
+	private void expressionStatement() {
+		this.expression();
+		this.consumeIfMatches(SEMICOLON, "Expect ';' after expression.");
+		this.emitByte(OP_POP);
+	}
+
+
+	private void declaration() {
+		try {
+
+			if (this.checkIfMatches(VAR)) {
+				this.varDeclaration();
+			} else {
+				this.statement();
+			}
+
+		} catch (CompileError e) {
+			this.synchronize();
+		}
+
+	}
+
+	private void varDeclaration() {
+		byte global = this.parseVariable("Expect variable name.");
+
+		if (this.checkIfMatches(EQUAL)) {
+			this.expression();
+		} else {
+			this.emitByte(OP_NULL);
+		}
+		this.consumeIfMatches(SEMICOLON, "Expect ';' after variable declaration.");
+		// defineVariable(global);
+	}
+
+	private void statement() {
+		if (false) {
+
+		} else {
+			this.expressionStatement();
+		}
+	}
+
 	void grouping() {
 		this.expression();
 		this.consumeIfMatches(RIGHT_PAREN, "Expect ')' after expression.");
@@ -53,10 +95,10 @@ public final class Compiler {
 
 	void literal() {
 		switch (this.previous.type) {
-			case FALSE -> this.emitConstant(false);
-			case TRUE -> this.emitConstant(true);
+			case FALSE -> this.emitByte(OP_FALSE);
+			case TRUE -> this.emitByte(OP_TRUE);
 			case STRING_VALUE -> this.emitConstant(this.previous.lexeme);
-			case NULL -> this.emitConstant(null);
+			case NULL -> this.emitByte(OP_NULL);
 			default -> {
 				return; // unreachable
 			}
@@ -111,6 +153,11 @@ public final class Compiler {
 		}
 	}
 
+	private byte parseVariable(String message) {
+		this.consumeIfMatches(IDENTIFIER, message);
+		return (byte) this.getCurrentChunk().addConstant(this.previous.lexeme);
+	}
+
 
 	private void emitByte(byte b) {
 		this.getCurrentChunk().writeCode(b, this.previous.line);
@@ -154,6 +201,12 @@ public final class Compiler {
 		throw this.errorAtCurrent(message);
 	}
 
+	private boolean checkIfMatches(Token.TokenType type) {
+		if (this.previous.type != type) return false;
+		this.advance();
+		return true;
+	}
+
 
 	private CompileError error(String message) {
 		return this.errorAt(this.previous, message);
@@ -175,6 +228,18 @@ public final class Compiler {
 		finalMessage += ": '" + message + "'";
 		this.roboScriptInstance.reportCompileError(token.line, message);
 		return new CompileError();
+	}
+
+	private void synchronize() {
+		while (this.current.type != EOF) {
+			if (this.previous.type == SEMICOLON) return;
+			switch (this.current.type) {
+				case CLASS, FUNCTION, VAR, FOR, IF, WHILE, RETURN -> {
+					return;
+				}
+			}
+			this.advance();
+		}
 	}
 
 

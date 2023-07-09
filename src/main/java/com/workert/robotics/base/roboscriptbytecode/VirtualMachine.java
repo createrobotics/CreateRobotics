@@ -43,6 +43,9 @@ final class VirtualMachine {
 				case OP_TRUE -> this.pushStack(true);
 				case OP_FALSE -> this.pushStack(false);
 				case OP_POP -> this.popStack();
+				case OP_DEFINE_GLOBAL -> {
+					String name = this.readConstant().toString();
+				}
 				case OP_EQUAL -> this.binaryOperation('=');
 				case OP_NOT_EQUAL -> this.binaryOperation('n');
 				case OP_LESS -> this.binaryOperation('<');
