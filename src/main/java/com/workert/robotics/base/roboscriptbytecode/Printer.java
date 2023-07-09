@@ -81,7 +81,7 @@ final class Printer {
 		System.out.println("Hex reading of compiled code: ");
 		for (int i = 0; i < c.getCodeSize(); i++) {
 			byte instruction = c.readCode(i);
-			System.out.printf("%4s ", Integer.toHexString(instruction & 0xFF));
+			System.out.printf("%2s ", Integer.toHexString(instruction & 0xFF));
 		}
 		System.out.print('\n');
 	}
