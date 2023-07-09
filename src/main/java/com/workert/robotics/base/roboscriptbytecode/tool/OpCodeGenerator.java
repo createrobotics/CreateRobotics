@@ -11,6 +11,9 @@ public class OpCodeGenerator {
 
 	private static void defineOpCodes() {
 		opCodes.add("OP_CONSTANT");
+		opCodes.add("OP_NULL");
+		opCodes.add("OP_TRUE");
+		opCodes.add("OP_FALSE");
 		opCodes.add("OP_POP");
 		opCodes.add("OP_EQUAL");
 		opCodes.add("OP_NOT_EQUAL");

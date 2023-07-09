@@ -39,6 +39,9 @@ final class VirtualMachine {
 					System.out.println(constant);
 					break;
 				}
+				case OP_NULL -> this.pushStack(null);
+				case OP_TRUE -> this.pushStack(true);
+				case OP_FALSE -> this.pushStack(false);
 				case OP_POP -> this.popStack();
 				case OP_EQUAL -> this.binaryOperation('=');
 				case OP_NOT_EQUAL -> this.binaryOperation('n');
