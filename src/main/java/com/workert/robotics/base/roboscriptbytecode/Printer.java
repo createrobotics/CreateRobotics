@@ -29,6 +29,9 @@ final class Printer {
 			case OP_CONSTANT -> {
 				return constantInstruction("OP_CONSTANT", chunk, offset);
 			}
+			case OP_POP -> {
+				return simpleInstruction("OP_POP", offset);
+			}
 			case OP_EQUAL -> {
 				return simpleInstruction("OP_EQUAL", offset);
 			}
