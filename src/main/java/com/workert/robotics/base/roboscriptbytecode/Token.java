@@ -52,7 +52,7 @@ final class Token {
 		LESS_EQUAL(new Compiler.ParseRule(null, Compiler::binary, COMPARISON)),
 
 		// Literals.
-		IDENTIFIER(empty()),
+		IDENTIFIER(new Compiler.ParseRule(Compiler::variable, null, NONE)),
 		STRING_VALUE(new Compiler.ParseRule(Compiler::literal, null, NONE)),
 		DOUBLE_VALUE(new Compiler.ParseRule(Compiler::number, null, NONE)),
 

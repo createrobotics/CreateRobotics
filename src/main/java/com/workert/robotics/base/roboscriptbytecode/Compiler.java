@@ -1,4 +1,7 @@
 package com.workert.robotics.base.roboscriptbytecode;
+import java.util.HashMap;
+import java.util.Map;
+
 import static com.workert.robotics.base.roboscriptbytecode.OpCode.*;
 import static com.workert.robotics.base.roboscriptbytecode.Token.TokenType.*;
 
@@ -8,6 +11,8 @@ public final class Compiler {
 	Chunk chunk = new Chunk();
 	Token current;
 	Token previous;
+
+	private Map<String, Byte> globalVariableLookup = new HashMap<>();
 
 
 	Compiler(RoboScript roboScriptInstance) {
@@ -23,8 +28,9 @@ public final class Compiler {
 		try {
 			this.scanner = new Scanner(source);
 			this.advance();
-			this.expression();
-			this.consumeIfMatches(EOF, "Expect end of expression.");
+			while (!this.checkIfMatches(EOF)) {
+				this.declaration();
+			}
 			this.endCompiler();
 		} catch (CompileError e) {
 			// synchronize eventually
@@ -72,7 +78,7 @@ public final class Compiler {
 			this.emitByte(OP_NULL);
 		}
 		this.consumeIfMatches(SEMICOLON, "Expect ';' after variable declaration.");
-		// defineVariable(global);
+		this.emitBytes(OP_DEFINE_GLOBAL, global);
 	}
 
 	private void statement() {
@@ -81,6 +87,22 @@ public final class Compiler {
 		} else {
 			this.expressionStatement();
 		}
+	}
+
+	void variable() {
+		/*
+		this.consumeIfMatches(IDENTIFIER, message);
+		byte variable = (byte) this.globalVariableLookup.size();
+		this.globalVariableLookup.put(this.previous.lexeme, variable);
+		return variable;
+		 */
+		// this.consumeIfMatches(IDENTIFIER, "Expect variable name.");
+		byte variable;
+		if (this.globalVariableLookup.containsKey(this.previous.lexeme)) {
+			variable = this.globalVariableLookup.get(this.previous.lexeme);
+			this.emitBytes(OP_GET_GLOBAL, variable);
+		} else
+			throw this.error("Variable '" + this.previous.lexeme + "' has not been defined.");
 	}
 
 	void grouping() {
@@ -155,7 +177,9 @@ public final class Compiler {
 
 	private byte parseVariable(String message) {
 		this.consumeIfMatches(IDENTIFIER, message);
-		return (byte) this.getCurrentChunk().addConstant(this.previous.lexeme);
+		byte variable = (byte) this.globalVariableLookup.size();
+		this.globalVariableLookup.put(this.previous.lexeme, variable);
+		return variable;
 	}
 
 
@@ -202,7 +226,7 @@ public final class Compiler {
 	}
 
 	private boolean checkIfMatches(Token.TokenType type) {
-		if (this.previous.type != type) return false;
+		if (this.current.type != type) return false;
 		this.advance();
 		return true;
 	}

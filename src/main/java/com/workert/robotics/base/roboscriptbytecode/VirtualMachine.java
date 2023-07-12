@@ -9,6 +9,7 @@ final class VirtualMachine {
 	private final Stack<Object> stack = new Stack<>();
 	private int instructionPointer = 0;
 
+	private Object[] globalVariables = new Object[256];
 
 	VirtualMachine(RoboScript instance) {
 		this.roboScriptInstance = instance;
@@ -43,8 +44,17 @@ final class VirtualMachine {
 				case OP_TRUE -> this.pushStack(true);
 				case OP_FALSE -> this.pushStack(false);
 				case OP_POP -> this.popStack();
+				case OP_GET_GLOBAL -> {
+					try {
+						Object variable = this.readGlobalVariable();
+						this.pushStack(this.readGlobalVariable());
+					} catch (IndexOutOfBoundsException i) {
+						throw new RuntimeError("Undefined variable.");
+					}
+				}
 				case OP_DEFINE_GLOBAL -> {
-					String name = this.readConstant().toString();
+					this.globalVariables[this.readByte()] = this.popStack();
+					break;
 				}
 				case OP_EQUAL -> this.binaryOperation('=');
 				case OP_NOT_EQUAL -> this.binaryOperation('n');
@@ -65,7 +75,7 @@ final class VirtualMachine {
 					}
 				}
 				case OP_RETURN -> {
-					System.out.println(this.popStack());
+					if (!this.stack.isEmpty()) System.out.println(this.popStack());
 					return;
 				}
 			}
@@ -81,6 +91,10 @@ final class VirtualMachine {
 		return this.chunk.readConstant(this.readByte());
 	}
 
+
+	private Object readGlobalVariable() {
+		return this.globalVariables[this.readByte()];
+	}
 
 	void pushStack(Object object) {
 		this.stack.push(object);

@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 final class Chunk {
-	// Dynamic array of bytes, Crafting Interpreters used a custom system as C does not have something like this.
 	private ByteArrayOutputStream code = new ByteArrayOutputStream();
 	private List<Object> constants = new ArrayList<>();
+	private List<Object> variables = new ArrayList<>();
 	private List<Integer> lines = new ArrayList<>();
 
 
@@ -35,6 +35,10 @@ final class Chunk {
 		return this.constants.get(i);
 	}
 
+
+	Object readVariable(byte variable) {
+		return this.variables.get(variable);
+	}
 
 	int readLine(int i) {
 		return this.lines.get(i);

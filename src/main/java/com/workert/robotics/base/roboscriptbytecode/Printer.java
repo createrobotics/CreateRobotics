@@ -29,8 +29,23 @@ final class Printer {
 			case OP_CONSTANT -> {
 				return constantInstruction("OP_CONSTANT", chunk, offset);
 			}
+			case OP_NULL -> {
+				return simpleInstruction("NULL", offset);
+			}
+			case OP_TRUE -> {
+				return simpleInstruction("TRUE", offset);
+			}
+			case OP_FALSE -> {
+				return simpleInstruction("FALSE", offset);
+			}
 			case OP_POP -> {
 				return simpleInstruction("OP_POP", offset);
+			}
+			case OP_GET_GLOBAL -> {
+				return variableInstruction("OP_GET_GLOBAL", chunk, offset);
+			}
+			case OP_DEFINE_GLOBAL -> {
+				return variableInstruction("OP_DEFINE_GLOBAL", chunk, offset);
 			}
 			case OP_EQUAL -> {
 				return simpleInstruction("OP_EQUAL", offset);
@@ -98,6 +113,12 @@ final class Printer {
 		byte constant = chunk.readCode(offset + 1);
 		System.out.printf("%-16s %4d '", name, constant);
 		System.out.println(chunk.readConstant(constant) + "'");
+		return offset + 2;
+	}
+
+	private static int variableInstruction(String name, Chunk chunk, int offset) {
+		byte constant = chunk.readCode(offset + 1);
+		System.out.printf("%-16s %4d ", name, constant);
 		return offset + 2;
 	}
 }
