@@ -17,6 +17,7 @@ public class OpCodeGenerator {
 		opCodes.add("OP_POP");
 		opCodes.add("OP_GET_GLOBAL");
 		opCodes.add("OP_DEFINE_GLOBAL");
+		opCodes.add("OP_SET_GLOBAL");
 		opCodes.add("OP_EQUAL");
 		opCodes.add("OP_NOT_EQUAL");
 		opCodes.add("OP_GREATER");
@@ -38,7 +39,6 @@ public class OpCodeGenerator {
 		PrintWriter writer = new PrintWriter(path, "UTF-8");
 		writer.println("package com.workert.robotics.base.roboscriptbytecode;");
 		writer.println();
-		writer.println("// These are similar to TokenTypes, and represent different instructions for the VM");
 		writer.println("public interface OpCode {");
 		for (int i = 0; i < opCodes.size(); i++) {
 			writer.println("    byte " + opCodes.get(i) + " = " + i + ";");
