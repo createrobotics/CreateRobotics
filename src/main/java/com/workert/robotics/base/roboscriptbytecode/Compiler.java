@@ -89,33 +89,30 @@ public final class Compiler {
 		}
 	}
 
-	void variable() {
-		/*
-		this.consumeIfMatches(IDENTIFIER, message);
-		byte variable = (byte) this.globalVariableLookup.size();
-		this.globalVariableLookup.put(this.previous.lexeme, variable);
-		return variable;
-		 */
-		// this.consumeIfMatches(IDENTIFIER, "Expect variable name.");
+	void variable(boolean canAssign) {
 		byte variable;
 		if (this.globalVariableLookup.containsKey(this.previous.lexeme)) {
 			variable = this.globalVariableLookup.get(this.previous.lexeme);
-			this.emitBytes(OP_GET_GLOBAL, variable);
+			if (canAssign && this.checkIfMatches(EQUAL)) {
+				this.expression();
+				this.emitBytes(OP_SET_GLOBAL, variable);
+			} else
+				this.emitBytes(OP_GET_GLOBAL, variable);
 		} else
 			throw this.error("Variable '" + this.previous.lexeme + "' has not been defined.");
 	}
 
-	void grouping() {
+	void grouping(boolean canAssign) {
 		this.expression();
 		this.consumeIfMatches(RIGHT_PAREN, "Expect ')' after expression.");
 	}
 
-	void number() {
+	void number(boolean canAssign) {
 		double value = Double.parseDouble(this.previous.lexeme);
 		this.emitConstant(value);
 	}
 
-	void literal() {
+	void literal(boolean canAssign) {
 		switch (this.previous.type) {
 			case FALSE -> this.emitByte(OP_FALSE);
 			case TRUE -> this.emitByte(OP_TRUE);
@@ -127,7 +124,7 @@ public final class Compiler {
 		}
 	}
 
-	void unary() {
+	void unary(boolean canAssign) {
 		Token.TokenType operatorType = this.previous.type;
 		this.parsePrecedence(Precedence.UNARY);
 		switch (operatorType) {
@@ -139,7 +136,7 @@ public final class Compiler {
 		}
 	}
 
-	void binary() {
+	void binary(boolean canAssign) {
 		Token.TokenType operatorType = this.previous.type;
 		ParseRule rule = operatorType.getParseRule();
 		this.parsePrecedence(rule.precedence + 1);
@@ -167,11 +164,16 @@ public final class Compiler {
 		if (prefixRule == null) {
 			throw this.error("Expect expression.");
 		}
-		prefixRule.apply(this);
+		boolean canAssign = precedence <= Precedence.ASSIGNMENT;
+		prefixRule.apply(this, canAssign);
 		while (precedence <= this.current.type.getParseRule().precedence) {
 			this.advance();
 			ParseFunction infixRule = this.previous.type.getParseRule().infix;
-			infixRule.apply(this);
+			infixRule.apply(this, canAssign);
+		}
+
+		if (canAssign && this.checkIfMatches(EQUAL)) {
+			this.error("Invalid assignment target.");
 		}
 	}
 

@@ -117,8 +117,8 @@ final class Printer {
 	}
 
 	private static int variableInstruction(String name, Chunk chunk, int offset) {
-		byte constant = chunk.readCode(offset + 1);
-		System.out.printf("%-16s %4d ", name, constant);
+		byte variable = chunk.readCode(offset + 1);
+		System.out.printf("%-16s %4d\n", name, variable);
 		return offset + 2;
 	}
 }

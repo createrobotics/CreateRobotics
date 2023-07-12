@@ -46,15 +46,18 @@ final class VirtualMachine {
 				case OP_POP -> this.popStack();
 				case OP_GET_GLOBAL -> {
 					try {
-						Object variable = this.readGlobalVariable();
 						this.pushStack(this.readGlobalVariable());
 					} catch (IndexOutOfBoundsException i) {
 						throw new RuntimeError("Undefined variable.");
 					}
 				}
-				case OP_DEFINE_GLOBAL -> {
-					this.globalVariables[this.readByte()] = this.popStack();
-					break;
+				case OP_DEFINE_GLOBAL -> this.globalVariables[this.readByte()] = this.popStack();
+				case OP_SET_GLOBAL -> {
+					try {
+						this.setGlobalVariable();
+					} catch (IndexOutOfBoundsException i) {
+						throw new RuntimeError("Undefined variable.");
+					}
 				}
 				case OP_EQUAL -> this.binaryOperation('=');
 				case OP_NOT_EQUAL -> this.binaryOperation('n');
@@ -94,6 +97,10 @@ final class VirtualMachine {
 
 	private Object readGlobalVariable() {
 		return this.globalVariables[this.readByte()];
+	}
+
+	private Object setGlobalVariable() {
+		return this.globalVariables[this.readByte()] = this.peekStack();
 	}
 
 	void pushStack(Object object) {

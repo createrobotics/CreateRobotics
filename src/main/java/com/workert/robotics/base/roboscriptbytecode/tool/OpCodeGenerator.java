@@ -31,6 +31,8 @@ public class OpCodeGenerator {
 		opCodes.add("OP_NOT");
 		opCodes.add("OP_NEGATE");
 		opCodes.add("OP_RETURN");
+
+		opCodes.add("OP_LOG");
 	}
 
 
