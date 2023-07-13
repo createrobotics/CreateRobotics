@@ -16,17 +16,13 @@ final class VirtualMachine {
 	}
 
 
-	// this is the function that will be called when the computer or drone or whatever actually needs to run, and it will pass in a string
-	void interpret(String source) {
-		this.instructionPointer = 0;
-		this.run();
-	}
-
-	// use this function for assembly testing
 	void interpret(Chunk chunk) {
 		this.chunk = chunk;
 		this.instructionPointer = 0;
+		long currentTime = System.currentTimeMillis();
+		System.out.println("Started interpreting.");
 		this.run();
+		System.out.println("Completed in " + (System.currentTimeMillis() - currentTime) + "ms.");
 	}
 
 	// heart of the vm, most of the time spent running the program will live here

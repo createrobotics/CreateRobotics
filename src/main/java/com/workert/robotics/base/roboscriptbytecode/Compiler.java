@@ -28,6 +28,8 @@ public final class Compiler {
 
 
 	void compile(String source) {
+		long timeBefore = System.currentTimeMillis();
+		System.out.println("Started compiling.");
 		try {
 			this.scanner = new Scanner(source);
 			this.advance();
@@ -38,7 +40,7 @@ public final class Compiler {
 		} catch (CompileError e) {
 			this.synchronize();
 		}
-
+		System.out.println("Compiled in " + (System.currentTimeMillis() - timeBefore) + "ms.");
 	}
 
 	private void endCompiler() {
@@ -101,6 +103,19 @@ public final class Compiler {
 		this.addLocal(name);
 	}
 
+	void variable(boolean canAssign) {
+		byte variable = this.resolveLocal(this.previous);
+		if (variable != -1) { // inside a scope
+			this.emitVariable(OP_GET_LOCAL, OP_SET_LOCAL, variable, canAssign);
+		} else { // outside a scope; global
+			if (this.globalVariableLookup.containsKey(this.previous.lexeme)) {
+				variable = this.globalVariableLookup.get(this.previous.lexeme);
+				this.emitVariable(OP_GET_GLOBAL, OP_SET_GLOBAL, variable, canAssign);
+			} else
+				throw this.error("Variable '" + this.previous.lexeme + "' has not been defined.");
+		}
+	}
+
 	private void addLocal(Token name) {
 		if (this.locals.size() == 256)
 			throw this.error("Too many local variables in function.");
@@ -125,23 +140,46 @@ public final class Compiler {
 			this.beginScope();
 			this.block();
 			this.endScope();
+		} else if (this.checkAndConsumeIfMatches(IF)) {
+			this.ifStatement();
 		} else {
 			this.expressionStatement();
 		}
 	}
 
-	void variable(boolean canAssign) {
-		byte variable = this.resolveLocal(this.previous);
-		if (variable != -1) { // inside a scope
-			this.emitVariable(OP_GET_LOCAL, OP_SET_LOCAL, variable, canAssign);
-		} else { // outside a scope; global
-			if (this.globalVariableLookup.containsKey(this.previous.lexeme)) {
-				variable = this.globalVariableLookup.get(this.previous.lexeme);
-				this.emitVariable(OP_GET_GLOBAL, OP_SET_GLOBAL, variable, canAssign);
-			} else
-				throw this.error("Variable '" + this.previous.lexeme + "' has not been defined.");
+	private void block() {
+		while (!this.isNextToken(RIGHT_BRACE) && !this.isNextToken(EOF)) {
+			this.declaration();
 		}
+		this.consumeIfMatches(RIGHT_BRACE, "Expect '}' after block.");
+		System.out.println(this.current);
 	}
+
+	private void ifStatement() {
+		this.consumeIfMatches(LEFT_PAREN, "Expect '(' after 'if'.");
+		this.expression();
+		this.consumeIfMatches(RIGHT_PAREN, "Expect ')' after condition.");
+		// int thenJump = emitJump(OP_JUMP_IF_FALSE);
+		this.statement();
+		// this.patchJump(thenJump);
+	}
+
+	private int emitJump(byte instruction) {
+		this.emitByte(instruction);
+		this.emitByte((byte) 0xFF);
+		this.emitByte((byte) 0xFF);
+		return this.getCurrentChunk().getCodeSize() - 2;
+	}
+
+	private void patchJump(int offset) {
+		int jump = this.getCurrentChunk().getCodeSize() - offset - 2;
+		if (jump > 65535) {
+			throw this.error("Too much code to jump over.");
+		}
+
+		// this.getCurrentChunk().readCode(offset + 1) = jump
+	}
+
 
 	private void emitVariable(byte getOp, byte setOp, byte lookup, boolean canAssign) {
 		if (canAssign && this.checkAndConsumeIfMatches(EQUAL)) {
@@ -156,13 +194,6 @@ public final class Compiler {
 		this.consumeIfMatches(RIGHT_PAREN, "Expect ')' after expression.");
 	}
 
-	private void block() {
-		while (!this.isNextToken(RIGHT_BRACE) && !this.isNextToken(EOF)) {
-			this.declaration();
-		}
-		this.consumeIfMatches(RIGHT_BRACE, "Expect '}' after block.");
-		System.out.println(this.current);
-	}
 
 	void number(boolean canAssign) {
 		double value = Double.parseDouble(this.previous.lexeme);
