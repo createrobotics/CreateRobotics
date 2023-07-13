@@ -4,7 +4,6 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.ai.control.FlyingMoveControl;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.animal.FlyingAnimal;
@@ -22,7 +21,6 @@ public class DroneEntity extends AbstractRobotEntity implements FlyingAnimal {
 
 	public DroneEntity(EntityType<? extends PathfinderMob> entity, Level world) {
 		super(entity, world);
-		this.moveControl = new FlyingMoveControl(this, 128, true);
 		this.setNoGravity(true);
 		this.last_chunk_x = this.chunkPosition().x;
 		this.last_chunk_z = this.chunkPosition().z;
