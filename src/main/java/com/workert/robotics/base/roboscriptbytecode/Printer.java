@@ -41,11 +41,17 @@ final class Printer {
 			case OP_POP -> {
 				return simpleInstruction("OP_POP", offset);
 			}
+			case OP_GET_LOCAL -> {
+				return byteInstruction("OP_GET_LOCAL", chunk, offset);
+			}
+			case OP_SET_GLOBAL -> {
+				return byteInstruction("OP_SET_LOCAL", chunk, offset);
+			}
 			case OP_GET_GLOBAL -> {
-				return variableInstruction("OP_GET_GLOBAL", chunk, offset);
+				return byteInstruction("OP_GET_GLOBAL", chunk, offset);
 			}
 			case OP_DEFINE_GLOBAL -> {
-				return variableInstruction("OP_DEFINE_GLOBAL", chunk, offset);
+				return byteInstruction("OP_DEFINE_GLOBAL", chunk, offset);
 			}
 			case OP_EQUAL -> {
 				return simpleInstruction("OP_EQUAL", offset);
@@ -116,9 +122,10 @@ final class Printer {
 		return offset + 2;
 	}
 
-	private static int variableInstruction(String name, Chunk chunk, int offset) {
-		byte variable = chunk.readCode(offset + 1);
-		System.out.printf("%-16s %4d\n", name, variable);
+	private static int byteInstruction(String name, Chunk chunk, int offset) {
+		byte slot = chunk.readCode(offset + 1);
+		System.out.printf("%-16s %4d\n", name, slot);
 		return offset + 2;
 	}
+
 }
