@@ -85,6 +85,7 @@ public final class Compiler {
 			this.markInitialized();
 			return;
 		}
+		this.globalVariableLookup.put(this.previous.lexeme, global);
 		this.emitBytes(OP_DEFINE_GLOBAL, global);
 	}
 
@@ -238,7 +239,7 @@ public final class Compiler {
 		this.declareVariable();
 		if (this.scopeDepth > 0) return 0;
 		byte variable = (byte) this.globalVariableLookup.size();
-		this.globalVariableLookup.put(this.previous.lexeme, variable);
+		// this.globalVariableLookup.put(this.previous.lexeme, variable);
 		return variable;
 	}
 
