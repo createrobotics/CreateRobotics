@@ -37,7 +37,6 @@ final class VirtualMachine {
 				case OP_CONSTANT -> {
 					Object constant = this.readConstant();
 					this.pushStack(constant);
-					System.out.println(constant);
 					break;
 				}
 				case OP_NULL -> this.pushStack(null);
