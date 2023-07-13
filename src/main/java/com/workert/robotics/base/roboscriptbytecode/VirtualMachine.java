@@ -37,12 +37,19 @@ final class VirtualMachine {
 				case OP_CONSTANT -> {
 					Object constant = this.readConstant();
 					this.pushStack(constant);
-					break;
 				}
 				case OP_NULL -> this.pushStack(null);
 				case OP_TRUE -> this.pushStack(true);
 				case OP_FALSE -> this.pushStack(false);
 				case OP_POP -> this.popStack();
+				case OP_GET_LOCAL -> {
+					byte slot = this.readByte();
+					this.pushStack(this.stack.get(slot));
+				}
+				case OP_SET_LOCAL -> {
+					byte slot = this.readByte();
+					this.stack.set(slot, this.peekStack());
+				}
 				case OP_GET_GLOBAL -> {
 					try {
 						this.pushStack(this.readGlobalVariable());
@@ -113,6 +120,10 @@ final class VirtualMachine {
 
 	Object peekStack() {
 		return this.stack.peek();
+	}
+
+	Object peekStack(int distance) {
+		return this.stack.get(this.stack.size() - 1 - distance);
 	}
 
 

@@ -1,5 +1,7 @@
 package com.workert.robotics.base.roboscriptbytecode;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.workert.robotics.base.roboscriptbytecode.OpCode.*;
@@ -13,7 +15,8 @@ public final class Compiler {
 	Token previous;
 
 	private Map<String, Byte> globalVariableLookup = new HashMap<>();
-
+	private List<Local> locals = new ArrayList<>();
+	private int scopeDepth = 0;
 
 	Compiler(RoboScript roboScriptInstance) {
 		this.roboScriptInstance = roboScriptInstance;
@@ -33,7 +36,7 @@ public final class Compiler {
 			}
 			this.endCompiler();
 		} catch (CompileError e) {
-			// synchronize eventually
+			this.synchronize();
 		}
 
 	}
@@ -78,33 +81,86 @@ public final class Compiler {
 			this.emitByte(OP_NULL);
 		}
 		this.consumeIfMatches(SEMICOLON, "Expect ';' after variable declaration.");
+		if (this.scopeDepth > 0) {
+			this.markInitialized();
+			return;
+		}
 		this.emitBytes(OP_DEFINE_GLOBAL, global);
 	}
 
-	private void statement() {
-		if (false) {
+	private void declareVariable() {
+		if (this.scopeDepth == 0) return;
+		Token name = this.previous;
+		for (int i = this.locals.size() - 1; i >= 0; i--) {
+			Local local = this.locals.get(i);
+			if (local.depth != -1 && local.depth < this.scopeDepth) break;
+			if (name.lexeme.equals(local.name.lexeme))
+				throw this.error("A variable with the name '" + name.lexeme + "' already exists in the current scope");
+		}
+		this.addLocal(name);
+	}
 
+	private void addLocal(Token name) {
+		if (this.locals.size() == 256)
+			throw this.error("Too many local variables in function.");
+		this.locals.add(new Local(name, -1));
+	}
+
+	private byte resolveLocal(Token name) {
+		for (byte i = (byte) (this.locals.size() - 1); i >= 0; i--) {
+			Local local = this.locals.get(i);
+			if (name.lexeme.equals(local.name.lexeme)) {
+				if (local.depth == -1) {
+					throw this.error("Cannot read local variable in its own initializer.");
+				}
+				return i;
+			}
+		}
+		return -1;
+	}
+
+	private void statement() {
+		if (this.checkIfMatches(LEFT_BRACE)) {
+			this.beginScope();
+			this.block();
+			this.endScope();
 		} else {
 			this.expressionStatement();
 		}
 	}
 
 	void variable(boolean canAssign) {
-		byte variable;
-		if (this.globalVariableLookup.containsKey(this.previous.lexeme)) {
-			variable = this.globalVariableLookup.get(this.previous.lexeme);
-			if (canAssign && this.checkIfMatches(EQUAL)) {
-				this.expression();
-				this.emitBytes(OP_SET_GLOBAL, variable);
+		byte variable = this.resolveLocal(this.previous);
+		if (variable != -1) { // inside a scope
+			this.emitVariable(OP_GET_LOCAL, OP_SET_LOCAL, variable, canAssign);
+		} else { // outside a scope; global
+			if (this.globalVariableLookup.containsKey(this.previous.lexeme)) {
+				variable = this.globalVariableLookup.get(this.previous.lexeme);
+				this.emitVariable(OP_GET_GLOBAL, OP_SET_GLOBAL, variable, canAssign);
 			} else
-				this.emitBytes(OP_GET_GLOBAL, variable);
+				throw this.error("Variable '" + this.previous.lexeme + "' has not been defined.");
+		}
+	}
+
+	private void emitVariable(byte getOp, byte setOp, byte lookup, boolean canAssign) {
+		if (canAssign && this.checkIfMatches(EQUAL)) {
+			this.expression();
+			this.emitBytes(setOp, lookup);
 		} else
-			throw this.error("Variable '" + this.previous.lexeme + "' has not been defined.");
+			this.emitBytes(getOp, lookup);
 	}
 
 	void grouping(boolean canAssign) {
 		this.expression();
 		this.consumeIfMatches(RIGHT_PAREN, "Expect ')' after expression.");
+	}
+
+	private void block() {
+		while (!this.checkIfMatches(RIGHT_BRACE) && !this.checkIfMatches(EOF)) {
+			this.declaration();
+		}
+		System.out.println(this.current);
+		this.consumeIfMatches(RIGHT_BRACE, "Expect '}' after block.");
 	}
 
 	void number(boolean canAssign) {
@@ -179,9 +235,15 @@ public final class Compiler {
 
 	private byte parseVariable(String message) {
 		this.consumeIfMatches(IDENTIFIER, message);
+		this.declareVariable();
+		if (this.scopeDepth > 0) return 0;
 		byte variable = (byte) this.globalVariableLookup.size();
 		this.globalVariableLookup.put(this.previous.lexeme, variable);
 		return variable;
+	}
+
+	private void markInitialized() {
+		this.locals.get(this.locals.size() - 1).depth = this.scopeDepth;
 	}
 
 
@@ -268,6 +330,23 @@ public final class Compiler {
 		}
 	}
 
+	private void beginScope() {
+		this.scopeDepth++;
+	}
+
+	private void endScope() {
+		this.scopeDepth--;
+		while (this.locals.size() > 0 && this.locals.get(this.locals.size() - 1).depth > this.scopeDepth) {
+			this.emitByte(OP_POP);
+			this.locals.remove(this.locals.size() - 1);
+		}
+	}
+
+
+	private boolean isAtEnd() {
+		return this.checkIfMatches(EOF);
+	}
+
 
 	protected static class CompileError extends RuntimeException {
 	}
@@ -282,6 +361,16 @@ public final class Compiler {
 			this.prefix = prefix;
 			this.infix = infix;
 			this.precedence = precedence;
+		}
+	}
+
+	private static class Local {
+		Token name;
+		int depth;
+
+		Local(Token name, int depth) {
+			this.name = name;
+			this.depth = depth;
 		}
 	}
 
