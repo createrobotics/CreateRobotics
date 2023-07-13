@@ -31,7 +31,7 @@ public final class Compiler {
 		try {
 			this.scanner = new Scanner(source);
 			this.advance();
-			while (!this.checkIfMatches(EOF)) {
+			while (!this.checkAndConsumeIfMatches(EOF)) {
 				this.declaration();
 			}
 			this.endCompiler();
@@ -60,7 +60,7 @@ public final class Compiler {
 	private void declaration() {
 		try {
 
-			if (this.checkIfMatches(VAR)) {
+			if (this.checkAndConsumeIfMatches(VAR)) {
 				this.varDeclaration();
 			} else {
 				this.statement();
@@ -75,7 +75,7 @@ public final class Compiler {
 	private void varDeclaration() {
 		byte global = this.parseVariable("Expect variable name.");
 
-		if (this.checkIfMatches(EQUAL)) {
+		if (this.checkAndConsumeIfMatches(EQUAL)) {
 			this.expression();
 		} else {
 			this.emitByte(OP_NULL);
@@ -120,7 +120,7 @@ public final class Compiler {
 	}
 
 	private void statement() {
-		if (this.checkIfMatches(LEFT_BRACE)) {
+		if (this.checkAndConsumeIfMatches(LEFT_BRACE)) {
 			this.beginScope();
 			this.block();
 			this.endScope();
@@ -143,7 +143,7 @@ public final class Compiler {
 	}
 
 	private void emitVariable(byte getOp, byte setOp, byte lookup, boolean canAssign) {
-		if (canAssign && this.checkIfMatches(EQUAL)) {
+		if (canAssign && this.checkAndConsumeIfMatches(EQUAL)) {
 			this.expression();
 			this.emitBytes(setOp, lookup);
 		} else
@@ -156,11 +156,11 @@ public final class Compiler {
 	}
 
 	private void block() {
-		while (!this.checkIfMatches(RIGHT_BRACE) && !this.checkIfMatches(EOF)) {
+		while (!this.isNextToken(RIGHT_BRACE) && !this.isNextToken(EOF)) {
 			this.declaration();
 		}
-		System.out.println(this.current);
 		this.consumeIfMatches(RIGHT_BRACE, "Expect '}' after block.");
+		System.out.println(this.current);
 	}
 
 	void number(boolean canAssign) {
@@ -228,7 +228,7 @@ public final class Compiler {
 			infixRule.apply(this, canAssign);
 		}
 
-		if (canAssign && this.checkIfMatches(EQUAL)) {
+		if (canAssign && this.checkAndConsumeIfMatches(EQUAL)) {
 			this.error("Invalid assignment target.");
 		}
 	}
@@ -289,10 +289,14 @@ public final class Compiler {
 		throw this.errorAtCurrent(message);
 	}
 
-	private boolean checkIfMatches(Token.TokenType type) {
+	private boolean checkAndConsumeIfMatches(Token.TokenType type) {
 		if (this.current.type != type) return false;
 		this.advance();
 		return true;
+	}
+
+	private boolean isNextToken(Token.TokenType type) {
+		return this.current.type == type;
 	}
 
 
@@ -344,7 +348,7 @@ public final class Compiler {
 
 
 	private boolean isAtEnd() {
-		return this.checkIfMatches(EOF);
+		return this.checkAndConsumeIfMatches(EOF);
 	}
 
 
