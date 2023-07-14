@@ -44,8 +44,11 @@ final class Printer {
 			case OP_GET_LOCAL -> {
 				return byteInstruction("OP_GET_LOCAL", chunk, offset);
 			}
-			case OP_SET_GLOBAL -> {
+			case OP_SET_LOCAL -> {
 				return byteInstruction("OP_SET_LOCAL", chunk, offset);
+			}
+			case OP_SET_GLOBAL -> {
+				return byteInstruction("OP_SET_GLOBAL", chunk, offset);
 			}
 			case OP_GET_GLOBAL -> {
 				return byteInstruction("OP_GET_GLOBAL", chunk, offset);
@@ -89,6 +92,15 @@ final class Printer {
 			case OP_NEGATE -> {
 				return simpleInstruction("OP_NEGATE", offset);
 			}
+			case OP_JUMP -> {
+				return jumpInstruction("OP_JUMP", 1, chunk, offset);
+			}
+			case OP_JUMP_IF_FALSE -> {
+				return jumpInstruction("OP_JUMP_IF_FALSE", 1, chunk, offset);
+			}
+			case OP_LOOP -> {
+				return jumpInstruction("OP_LOOP", -1, chunk, offset);
+			}
 			case OP_RETURN -> {
 				return simpleInstruction("OP_RETURN", offset);
 			}
@@ -126,6 +138,13 @@ final class Printer {
 		byte slot = chunk.readCode(offset + 1);
 		System.out.printf("%-16s %4d\n", name, slot);
 		return offset + 2;
+	}
+
+	private static int jumpInstruction(String name, int sign, Chunk chunk, int offset) {
+		short jump = (short) (chunk.readCode(offset + 1) << 8);
+		jump |= chunk.readCode(offset + 2);
+		System.out.printf("%-16s %4d -> %d\n", name, offset, offset + 3 + sign * jump);
+		return offset + 3;
 	}
 
 }

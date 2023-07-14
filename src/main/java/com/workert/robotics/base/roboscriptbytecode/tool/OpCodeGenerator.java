@@ -32,6 +32,9 @@ public class OpCodeGenerator {
 		opCodes.add("OP_DIVIDE");
 		opCodes.add("OP_NOT");
 		opCodes.add("OP_NEGATE");
+		opCodes.add("OP_JUMP");
+		opCodes.add("OP_JUMP_IF_FALSE");
+		opCodes.add("OP_LOOP");
 		opCodes.add("OP_RETURN");
 
 		opCodes.add("OP_LOG");

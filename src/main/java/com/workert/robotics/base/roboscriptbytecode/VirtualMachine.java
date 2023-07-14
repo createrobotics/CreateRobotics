@@ -79,6 +79,18 @@ final class VirtualMachine {
 						throw new RuntimeError("Can only negate numbers.");
 					}
 				}
+				case OP_JUMP -> {
+					short offset = this.readShort();
+					this.instructionPointer += offset;
+				}
+				case OP_JUMP_IF_FALSE -> {
+					short offset = this.readShort();
+					if (!isTruthy(this.peekStack())) this.instructionPointer += offset;
+				}
+				case OP_LOOP -> {
+					short offset = this.readShort();
+					this.instructionPointer -= offset;
+				}
 				case OP_RETURN -> {
 					if (!this.stack.isEmpty()) System.out.println(this.popStack());
 					return;
@@ -90,6 +102,12 @@ final class VirtualMachine {
 
 	private byte readByte() {
 		return this.chunk.readCode(this.instructionPointer++);
+	}
+
+	private short readShort() {
+		this.instructionPointer += 2;
+		return (short) ((this.chunk.readCode(this.instructionPointer - 2) << 8) | this.chunk.readCode(
+				this.instructionPointer - 1));
 	}
 
 	private Object readConstant() {

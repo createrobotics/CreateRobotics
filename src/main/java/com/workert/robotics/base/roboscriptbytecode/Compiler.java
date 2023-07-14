@@ -54,7 +54,7 @@ public final class Compiler {
 
 	private void expressionStatement() {
 		this.expression();
-		this.consumeIfMatches(SEMICOLON, "Expect ';' after expression.");
+		this.consumeIfMatches(SEMICOLON, "Expected ';' after expression.");
 		this.emitByte(OP_POP);
 	}
 
@@ -75,19 +75,30 @@ public final class Compiler {
 	}
 
 	private void varDeclaration() {
-		byte global = this.parseVariable("Expect variable name.");
+		byte global = this.parseVariable("Expected variable name.");
+		String place = this.previous.lexeme;
+		if (this.globalVariableLookup.containsKey(place))
+			throw this.error("Variable '" + place + "' already declared in the public scope.");
 
 		if (this.checkAndConsumeIfMatches(EQUAL)) {
 			this.expression();
 		} else {
 			this.emitByte(OP_NULL);
 		}
-		this.consumeIfMatches(SEMICOLON, "Expect ';' after variable declaration.");
+
+		this.consumeIfMatches(SEMICOLON, "Expected ';' after variable declaration.");
+		this.globalVariableLookup.put(place, global);
+		this.defineVariable(global);
+
+	}
+
+	private void defineVariable(byte global) {
 		if (this.scopeDepth > 0) {
 			this.markInitialized();
 			return;
 		}
-		this.globalVariableLookup.put(this.previous.lexeme, global);
+
+		// this.globalVariableLookup.put(this.previous.lexeme, global);
 		this.emitBytes(OP_DEFINE_GLOBAL, global);
 	}
 
@@ -112,7 +123,7 @@ public final class Compiler {
 				variable = this.globalVariableLookup.get(this.previous.lexeme);
 				this.emitVariable(OP_GET_GLOBAL, OP_SET_GLOBAL, variable, canAssign);
 			} else
-				throw this.error("Variable '" + this.previous.lexeme + "' has not been defined.");
+				throw this.error("Variable '" + this.previous.lexeme + "' has not been declared.");
 		}
 	}
 
@@ -123,13 +134,13 @@ public final class Compiler {
 	}
 
 	private byte resolveLocal(Token name) {
-		for (byte i = (byte) (this.locals.size() - 1); i >= 0; i--) {
+		for (int i = (this.locals.size() - 1); i >= 0; i--) {
 			Local local = this.locals.get(i);
 			if (name.lexeme.equals(local.name.lexeme)) {
 				if (local.depth == -1) {
 					throw this.error("Cannot read local variable in its own initializer.");
 				}
-				return i;
+				return (byte) i;
 			}
 		}
 		return -1;
@@ -142,6 +153,10 @@ public final class Compiler {
 			this.endScope();
 		} else if (this.checkAndConsumeIfMatches(IF)) {
 			this.ifStatement();
+		} else if (this.checkAndConsumeIfMatches(WHILE)) {
+			this.whileStatement();
+		} else if (this.checkAndConsumeIfMatches(FOR)) {
+			this.forStatement();
 		} else {
 			this.expressionStatement();
 		}
@@ -151,17 +166,73 @@ public final class Compiler {
 		while (!this.isNextToken(RIGHT_BRACE) && !this.isNextToken(EOF)) {
 			this.declaration();
 		}
-		this.consumeIfMatches(RIGHT_BRACE, "Expect '}' after block.");
+		this.consumeIfMatches(RIGHT_BRACE, "Expected '}' after block.");
 		System.out.println(this.current);
 	}
 
 	private void ifStatement() {
-		this.consumeIfMatches(LEFT_PAREN, "Expect '(' after 'if'.");
+		this.consumeIfMatches(LEFT_PAREN, "Expected '(' after 'if'.");
 		this.expression();
-		this.consumeIfMatches(RIGHT_PAREN, "Expect ')' after condition.");
-		// int thenJump = emitJump(OP_JUMP_IF_FALSE);
+		this.consumeIfMatches(RIGHT_PAREN, "Expected ')' after condition.");
+		int thenJump = this.emitJump(OP_JUMP_IF_FALSE);
+		this.emitByte(OP_POP);
 		this.statement();
-		// this.patchJump(thenJump);
+		int elseJump = this.emitJump(OP_JUMP);
+		this.patchJump(thenJump);
+		this.emitByte(OP_POP);
+		if (this.checkAndConsumeIfMatches(ELSE)) this.statement();
+		this.patchJump(elseJump);
+	}
+
+	private void whileStatement() {
+		int loopStart = this.getCurrentChunk().getCodeSize();
+		this.consumeIfMatches(LEFT_PAREN, "Expected '(' after 'while'.");
+		this.expression();
+		this.consumeIfMatches(RIGHT_PAREN, "Expected ')' after condition.");
+		int exitJump = this.emitJump(OP_JUMP_IF_FALSE);
+		this.emitByte(OP_POP);
+		this.statement();
+		this.emitLoop(loopStart);
+		this.patchJump(exitJump);
+		this.emitByte(OP_POP);
+	}
+
+	private void forStatement() {
+		this.beginScope();
+		this.consumeIfMatches(LEFT_PAREN, "Expected '(' after 'for'.");
+		if (this.checkAndConsumeIfMatches(SEMICOLON)) {
+			// no initializer
+		} else if (this.checkAndConsumeIfMatches(VAR)) {
+			this.varDeclaration();
+		} else {
+			this.expressionStatement();
+		}
+
+		int loopStart = this.getCurrentChunk().getCodeSize();
+		int exitJump = -1;
+		if (!this.checkAndConsumeIfMatches(SEMICOLON)) {
+			this.expression();
+			this.consumeIfMatches(SEMICOLON, "Expected ';' after loop condition.");
+			exitJump = this.emitJump(OP_JUMP_IF_FALSE);
+			this.emitByte(OP_POP);
+		}
+		if (!this.checkAndConsumeIfMatches(RIGHT_PAREN)) {
+			int bodyJump = this.emitJump(OP_JUMP);
+			int incrementStart = this.getCurrentChunk().getCodeSize();
+			this.expression();
+			this.emitByte(OP_POP);
+			this.consumeIfMatches(RIGHT_PAREN, "Expect ')' after for clauses");
+			this.emitLoop(loopStart);
+			loopStart = incrementStart;
+			this.patchJump(bodyJump);
+		}
+		this.statement();
+		this.emitLoop(loopStart);
+		if (exitJump != -1) {
+			this.patchJump(exitJump);
+			this.emitByte(OP_POP);
+		}
+		this.endScope();
 	}
 
 	private int emitJump(byte instruction) {
@@ -171,13 +242,22 @@ public final class Compiler {
 		return this.getCurrentChunk().getCodeSize() - 2;
 	}
 
+	private void emitLoop(int loopStart) {
+		this.emitByte(OP_LOOP);
+		int offset = this.getCurrentChunk().getCodeSize() - loopStart + 2;
+		if (offset > 65535) throw this.error("Loop body too large.");
+		this.emitByte((byte) ((offset >> 8) & 0xff));
+		this.emitByte((byte) (offset & 0xFF));
+	}
+
 	private void patchJump(int offset) {
 		int jump = this.getCurrentChunk().getCodeSize() - offset - 2;
 		if (jump > 65535) {
 			throw this.error("Too much code to jump over.");
 		}
 
-		// this.getCurrentChunk().readCode(offset + 1) = jump
+		this.getCurrentChunk().setCode(offset, (byte) ((jump >> 8) & 0xff));
+		this.getCurrentChunk().setCode(offset + 1, (byte) (jump & 0xFF));
 	}
 
 
@@ -189,9 +269,10 @@ public final class Compiler {
 			this.emitBytes(getOp, lookup);
 	}
 
+
 	void grouping(boolean canAssign) {
 		this.expression();
-		this.consumeIfMatches(RIGHT_PAREN, "Expect ')' after expression.");
+		this.consumeIfMatches(RIGHT_PAREN, "Expected ')' after expression.");
 	}
 
 
@@ -245,12 +326,29 @@ public final class Compiler {
 		}
 	}
 
+	void and(boolean canAssign) {
+		int endJump = this.emitJump(OP_JUMP_IF_FALSE);
+		this.emitByte(OP_POP);
+		this.parsePrecedence(Precedence.AND);
+		this.patchJump(endJump);
+	}
+
+	void or(boolean canAssign) {
+		int elseJump = this.emitJump(OP_JUMP_IF_FALSE);
+		int endJump = this.emitJump(OP_JUMP);
+
+		this.patchJump(elseJump);
+		this.emitByte(OP_POP);
+		this.parsePrecedence(Precedence.OR);
+		this.patchJump(endJump);
+	}
+
 
 	private void parsePrecedence(int precedence) {
 		this.advance();
 		ParseFunction prefixRule = this.previous.type.getParseRule().prefix;
 		if (prefixRule == null) {
-			throw this.error("Expect expression.");
+			throw this.error("Expected expression.");
 		}
 		boolean canAssign = precedence <= Precedence.ASSIGNMENT;
 		prefixRule.apply(this, canAssign);
@@ -270,11 +368,11 @@ public final class Compiler {
 		this.declareVariable();
 		if (this.scopeDepth > 0) return 0;
 		byte variable = (byte) this.globalVariableLookup.size();
-		// this.globalVariableLookup.put(this.previous.lexeme, variable);
 		return variable;
 	}
 
 	private void markInitialized() {
+		if (this.scopeDepth == 0) return;
 		this.locals.get(this.locals.size() - 1).depth = this.scopeDepth;
 	}
 

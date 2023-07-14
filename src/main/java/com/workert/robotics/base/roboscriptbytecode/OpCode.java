@@ -23,6 +23,9 @@ public interface OpCode {
     byte OP_DIVIDE = 19;
     byte OP_NOT = 20;
     byte OP_NEGATE = 21;
-    byte OP_RETURN = 22;
-    byte OP_LOG = 23;
+    byte OP_JUMP = 22;
+    byte OP_JUMP_IF_FALSE = 23;
+    byte OP_LOOP = 24;
+    byte OP_RETURN = 25;
+    byte OP_LOG = 26;
 }

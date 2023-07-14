@@ -70,8 +70,8 @@ final class Token {
 		TRUE(new Compiler.ParseRule(Compiler::literal, null, NONE)),
 		FALSE(new Compiler.ParseRule(Compiler::literal, null, NONE)),
 
-		AND(empty()),
-		OR(empty()),
+		AND(new Compiler.ParseRule(null, Compiler::and, Compiler.Precedence.AND)),
+		OR(new Compiler.ParseRule(null, Compiler::or, Compiler.Precedence.OR)),
 
 		NULL(new Compiler.ParseRule(Compiler::literal, null, NONE)),
 
