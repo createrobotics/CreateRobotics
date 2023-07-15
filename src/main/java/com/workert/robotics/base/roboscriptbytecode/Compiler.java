@@ -14,8 +14,8 @@ public final class Compiler {
 	Token current;
 	Token previous;
 
-	private Map<String, Byte> globalVariableLookup = new HashMap<>();
-	private List<Local> locals = new ArrayList<>();
+	private final Map<String, Byte> globalVariableLookup = new HashMap<>();
+	private final List<Local> locals = new ArrayList<>();
 	private int scopeDepth = 0;
 
 	Compiler(RoboScript roboScriptInstance) {
@@ -28,8 +28,8 @@ public final class Compiler {
 
 
 	void compile(String source) {
-		long timeBefore = System.currentTimeMillis();
 		System.out.println("Started compiling.");
+		long timeBefore = System.currentTimeMillis();
 		try {
 			this.scanner = new Scanner(source);
 			this.advance();
@@ -54,7 +54,7 @@ public final class Compiler {
 
 	private void expressionStatement() {
 		this.expression();
-		this.consumeIfMatches(SEMICOLON, "Expected ';' after expression.");
+		this.consumeOrThrow(SEMICOLON, "Expected ';' after expression.");
 		this.emitByte(OP_POP);
 	}
 
@@ -86,7 +86,7 @@ public final class Compiler {
 			this.emitByte(OP_NULL);
 		}
 
-		this.consumeIfMatches(SEMICOLON, "Expected ';' after variable declaration.");
+		this.consumeOrThrow(SEMICOLON, "Expected ';' after variable declaration.");
 		this.globalVariableLookup.put(place, global);
 		this.defineVariable(global);
 
@@ -166,14 +166,14 @@ public final class Compiler {
 		while (!this.isNextToken(RIGHT_BRACE) && !this.isNextToken(EOF)) {
 			this.declaration();
 		}
-		this.consumeIfMatches(RIGHT_BRACE, "Expected '}' after block.");
+		this.consumeOrThrow(RIGHT_BRACE, "Expected '}' after block.");
 		System.out.println(this.current);
 	}
 
 	private void ifStatement() {
-		this.consumeIfMatches(LEFT_PAREN, "Expected '(' after 'if'.");
+		this.consumeOrThrow(LEFT_PAREN, "Expected '(' after 'if'.");
 		this.expression();
-		this.consumeIfMatches(RIGHT_PAREN, "Expected ')' after condition.");
+		this.consumeOrThrow(RIGHT_PAREN, "Expected ')' after condition.");
 		int thenJump = this.emitJump(OP_JUMP_IF_FALSE);
 		this.emitByte(OP_POP);
 		this.statement();
@@ -186,9 +186,9 @@ public final class Compiler {
 
 	private void whileStatement() {
 		int loopStart = this.getCurrentChunk().getCodeSize();
-		this.consumeIfMatches(LEFT_PAREN, "Expected '(' after 'while'.");
+		this.consumeOrThrow(LEFT_PAREN, "Expected '(' after 'while'.");
 		this.expression();
-		this.consumeIfMatches(RIGHT_PAREN, "Expected ')' after condition.");
+		this.consumeOrThrow(RIGHT_PAREN, "Expected ')' after condition.");
 		int exitJump = this.emitJump(OP_JUMP_IF_FALSE);
 		this.emitByte(OP_POP);
 		this.statement();
@@ -199,20 +199,20 @@ public final class Compiler {
 
 	private void forStatement() {
 		this.beginScope();
-		this.consumeIfMatches(LEFT_PAREN, "Expected '(' after 'for'.");
-		if (this.checkAndConsumeIfMatches(SEMICOLON)) {
-			// no initializer
-		} else if (this.checkAndConsumeIfMatches(VAR)) {
-			this.varDeclaration();
-		} else {
-			this.expressionStatement();
+		this.consumeOrThrow(LEFT_PAREN, "Expected '(' after 'for'.");
+		if (!this.checkAndConsumeIfMatches(SEMICOLON)) {
+			if (this.checkAndConsumeIfMatches(VAR)) {
+				this.varDeclaration();
+			} else {
+				this.expressionStatement();
+			}
 		}
 
 		int loopStart = this.getCurrentChunk().getCodeSize();
 		int exitJump = -1;
 		if (!this.checkAndConsumeIfMatches(SEMICOLON)) {
 			this.expression();
-			this.consumeIfMatches(SEMICOLON, "Expected ';' after loop condition.");
+			this.consumeOrThrow(SEMICOLON, "Expected ';' after loop condition.");
 			exitJump = this.emitJump(OP_JUMP_IF_FALSE);
 			this.emitByte(OP_POP);
 		}
@@ -221,7 +221,7 @@ public final class Compiler {
 			int incrementStart = this.getCurrentChunk().getCodeSize();
 			this.expression();
 			this.emitByte(OP_POP);
-			this.consumeIfMatches(RIGHT_PAREN, "Expect ')' after for clauses");
+			this.consumeOrThrow(RIGHT_PAREN, "Expect ')' after for clauses");
 			this.emitLoop(loopStart);
 			loopStart = incrementStart;
 			this.patchJump(bodyJump);
@@ -272,7 +272,7 @@ public final class Compiler {
 
 	void grouping(boolean canAssign) {
 		this.expression();
-		this.consumeIfMatches(RIGHT_PAREN, "Expected ')' after expression.");
+		this.consumeOrThrow(RIGHT_PAREN, "Expected ')' after expression.");
 	}
 
 
@@ -287,9 +287,7 @@ public final class Compiler {
 			case TRUE -> this.emitByte(OP_TRUE);
 			case STRING_VALUE -> this.emitConstant(this.previous.lexeme);
 			case NULL -> this.emitByte(OP_NULL);
-			default -> {
-				return; // unreachable
-			}
+			default -> throw new IllegalArgumentException("Invalid literal operator type");
 		}
 	}
 
@@ -299,9 +297,7 @@ public final class Compiler {
 		switch (operatorType) {
 			case MINUS -> this.emitByte(OP_NEGATE);
 			case BANG -> this.emitByte(OP_NOT);
-			default -> {
-				return; // unreachable
-			}
+			default -> throw new IllegalArgumentException("Invalid unary operator type");
 		}
 	}
 
@@ -320,9 +316,7 @@ public final class Compiler {
 			case LESS -> this.emitByte(OP_LESS_EQUAL);
 			case EQUAL_EQUAL -> this.emitByte(OP_EQUAL);
 			case BANG_EQUAL -> this.emitByte(OP_NOT_EQUAL);
-			default -> {
-				return;
-			}
+			default -> throw new IllegalArgumentException("Invalid binary operator type");
 		}
 	}
 
@@ -359,12 +353,12 @@ public final class Compiler {
 		}
 
 		if (canAssign && this.checkAndConsumeIfMatches(EQUAL)) {
-			this.error("Invalid assignment target.");
+			throw this.error("Invalid assignment target.");
 		}
 	}
 
 	private byte parseVariable(String message) {
-		this.consumeIfMatches(IDENTIFIER, message);
+		this.consumeOrThrow(IDENTIFIER, message);
 		this.declareVariable();
 		if (this.scopeDepth > 0) return 0;
 		byte variable = (byte) this.globalVariableLookup.size();
@@ -403,15 +397,13 @@ public final class Compiler {
 	private void advance() {
 		this.previous = this.current;
 
-		while (true) {
-			this.current = this.scanner.scanToken();
-			if (this.current.type != ERROR) break;
-
+		this.current = this.scanner.scanToken();
+		if (this.current.type == ERROR)
 			throw this.errorAtCurrent(this.current.lexeme);
-		}
+
 	}
 
-	private void consumeIfMatches(Token.TokenType type, String message) {
+	private void consumeOrThrow(Token.TokenType type, String message) {
 		if (this.current.type == type) {
 			this.advance();
 			return;
@@ -442,13 +434,11 @@ public final class Compiler {
 		String finalMessage = "Error";
 		if (token.type == EOF) {
 			finalMessage += " at end";
-		} else if (token.type == Token.TokenType.ERROR) {
-
-		} else {
+		} else /*if (token.type != ERROR)*/ {
 			finalMessage += " at " + token.lexeme;
 		}
 		finalMessage += ": '" + message + "'";
-		this.roboScriptInstance.reportCompileError(token.line, message);
+		this.roboScriptInstance.reportCompileError(token.line, finalMessage);
 		return new CompileError();
 	}
 
