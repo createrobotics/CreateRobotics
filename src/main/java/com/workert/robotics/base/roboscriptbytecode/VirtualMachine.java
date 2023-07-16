@@ -44,7 +44,7 @@ final class VirtualMachine {
 				}
 				case OP_SET_LOCAL -> {
 					byte slot = this.readByte();
-					this.stack.set(slot, this.peekStack());
+					this.stack.set(slot, this.popStack());
 				}
 				case OP_GET_GLOBAL -> {
 					try {
@@ -56,7 +56,7 @@ final class VirtualMachine {
 				case OP_DEFINE_GLOBAL -> this.globalVariables[this.readByte()] = this.popStack();
 				case OP_SET_GLOBAL -> {
 					try {
-						this.setGlobalVariable();
+						this.globalVariables[this.readByte()] = this.peekStack();
 					} catch (IndexOutOfBoundsException i) {
 						throw new RuntimeError("Undefined variable.");
 					}
@@ -117,10 +117,6 @@ final class VirtualMachine {
 
 	private Object readGlobalVariable() {
 		return this.globalVariables[this.readByte()];
-	}
-
-	private Object setGlobalVariable() {
-		return this.globalVariables[this.readByte()] = this.peekStack();
 	}
 
 	void pushStack(Object object) {
