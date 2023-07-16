@@ -8,6 +8,7 @@ final class VirtualMachine {
 	private Chunk chunk;
 	private final Stack<Object> stack = new Stack<>();
 	private int instructionPointer = 0;
+	private int basePointer = 0;
 
 	private Object[] globalVariables = new Object[256];
 
@@ -19,6 +20,10 @@ final class VirtualMachine {
 	void interpret(Chunk chunk) {
 		this.chunk = chunk;
 		this.instructionPointer = 0;
+		this.basePointer = 1;
+		this.pushStack((Object)(int) -1); // top-level stack frame.
+		this.pushStack((Object)(int) -1);
+
 		long currentTime = System.currentTimeMillis();
 		System.out.println("Started interpreting.");
 		this.run();
@@ -27,6 +32,7 @@ final class VirtualMachine {
 
 	// heart of the vm, most of the time spent running the program will live here
 	private void run() {
+
 		while (true) {
 			byte instruction;
 			switch (instruction = this.readByte()) {
@@ -40,11 +46,11 @@ final class VirtualMachine {
 				case OP_POP -> this.popStack();
 				case OP_GET_LOCAL -> {
 					byte slot = this.readByte();
-					this.pushStack(this.stack.get(slot));
+					this.pushStack(this.stack.get(basePointer + slot));
 				}
 				case OP_SET_LOCAL -> {
 					byte slot = this.readByte();
-					this.stack.set(slot, this.peekStack());
+					this.stack.set(basePointer + slot, this.popStack());
 				}
 				case OP_GET_GLOBAL -> {
 					try {
@@ -91,9 +97,25 @@ final class VirtualMachine {
 					short offset = this.readShort();
 					this.instructionPointer -= offset;
 				}
+
+				case OP_CALL -> {
+					Integer addr = (Integer)this.readConstant();
+					this.pushStack(this.instructionPointer);
+					this.pushStack(this.basePointer);
+					this.basePointer = this.stack.size() - 1;
+					this.instructionPointer = addr;
+				}
 				case OP_RETURN -> {
-					if (!this.stack.isEmpty()) System.out.println(this.popStack());
-					return;
+					Object retval = this.popStack();
+					this.stack.setSize(this.basePointer + 1);
+					this.basePointer = (int)this.stack.pop();
+					Object retaddr = this.popStack();
+					this.instructionPointer = (int)retaddr;
+					if (this.instructionPointer < 0) {
+						System.out.println(retval);
+						return;
+					}
+					this.pushStack(retval);
 				}
 			}
 		}

@@ -1,4 +1,7 @@
-push 1
+call 3  ;2 bytes
+ret     ;1 byte
+; function
 push 2
-greq
+push 2
+add
 ret

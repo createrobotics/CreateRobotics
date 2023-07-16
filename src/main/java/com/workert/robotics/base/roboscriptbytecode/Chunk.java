@@ -15,6 +15,11 @@ final class Chunk {
 		this.lines.add(line);
 	}
 
+	void writeConstant(int b, int line) {
+		//this.writeCode((byte)(b >> 8	), line);
+		this.writeCode((byte)(b & 0xFF  ), line);
+	}
+
 	void setCode(int index, byte code) {
 		this.code.set(index, code);
 	}
