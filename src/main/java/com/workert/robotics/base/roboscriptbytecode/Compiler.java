@@ -77,8 +77,6 @@ public final class Compiler {
 	private void varDeclaration() {
 		byte global = this.parseVariable("Expected variable name.");
 		String place = this.previous.lexeme;
-		if (this.globalVariableLookup.containsKey(place))
-			throw this.error("Variable '" + place + "' already declared in the public scope.");
 
 		if (this.checkAndConsumeIfMatches(EQUAL)) {
 			this.expression();
@@ -87,18 +85,19 @@ public final class Compiler {
 		}
 
 		this.consumeOrThrow(SEMICOLON, "Expected ';' after variable declaration.");
-		this.globalVariableLookup.put(place, global);
-		this.defineVariable(global);
+
+		this.defineVariable(global, place);
 
 	}
 
-	private void defineVariable(byte global) {
+	private void defineVariable(byte global, String name) {
 		if (this.scopeDepth > 0) {
 			this.markInitialized();
 			return;
 		}
-
-		// this.globalVariableLookup.put(this.previous.lexeme, global);
+		if (this.globalVariableLookup.containsKey(name))
+			throw this.error("Variable '" + name + "' already declared in the public scope.");
+		this.globalVariableLookup.put(name, global);
 		this.emitBytes(OP_DEFINE_GLOBAL, global);
 	}
 
