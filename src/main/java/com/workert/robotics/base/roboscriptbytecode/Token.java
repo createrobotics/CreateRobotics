@@ -92,6 +92,7 @@ final class Token {
 		ARRAY(empty()),
 		OBJECT(empty()),
 
+		LOG(empty()),
 
 		EOF(empty()),
 		ERROR(empty());

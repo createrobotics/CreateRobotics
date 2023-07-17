@@ -67,7 +67,7 @@ final class VirtualMachine {
 	 * The main part of the VM,
 	 */
 	private void run() {
-
+		this.pushStack(this.basePointer);
 		while (true) {
 			byte instruction;
 			switch (instruction = this.readByte()) {
@@ -134,7 +134,7 @@ final class VirtualMachine {
 				}
 
 				case OP_CALL -> {
-					short functionAddress = this.readShort();
+					int functionAddress = (int) this.popStack();
 					this.pushStack(this.instructionPointer);
 					this.pushStack(this.basePointer);
 					this.basePointer = this.stack.size() - 1;
@@ -147,10 +147,23 @@ final class VirtualMachine {
 					this.stack.setSize(this.basePointer + 1);
 
 					this.basePointer = (int) this.stack.pop();
-					short returnAddress = (short) this.popStack();
+					int returnAddress = (int) this.popStack();
 					this.instructionPointer = returnAddress;
+
+					// test code to check for invalid return address, already placed here.
+					if (this.instructionPointer < 0) {
+						System.out.println(returnValue);
+						return;
+					}
 					this.pushStack(returnValue);
 					return;
+				}
+				case OP_END -> {
+					return;
+				}
+
+				case OP_LOG -> {
+					System.out.println(this.popStack());
 				}
 			}
 		}

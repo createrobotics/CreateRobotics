@@ -28,5 +28,6 @@ public interface OpCode {
     byte OP_LOOP = 24;
     byte OP_CALL = 25;
     byte OP_RETURN = 26;
-    byte OP_LOG = 27;
+    byte OP_END = 27;
+    byte OP_LOG = 28;
 }

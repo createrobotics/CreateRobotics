@@ -44,7 +44,7 @@ public final class Compiler {
 	}
 
 	private void endCompiler() {
-		this.emitReturn();
+		this.emitEnd();
 	}
 
 
@@ -156,6 +156,10 @@ public final class Compiler {
 			this.whileStatement();
 		} else if (this.checkAndConsumeIfMatches(FOR)) {
 			this.forStatement();
+		} else if (this.checkAndConsumeIfMatches(LOG)) {
+			this.expression();
+			this.consumeOrThrow(SEMICOLON, "Expected ';' after expression.");
+			this.emitByte(OP_LOG);
 		} else {
 			this.expressionStatement();
 		}
@@ -382,6 +386,10 @@ public final class Compiler {
 
 	private void emitReturn() {
 		this.emitByte(OP_RETURN);
+	}
+
+	private void emitEnd() {
+		this.emitByte(OP_END);
 	}
 
 	private void emitConstant(Object value) {
