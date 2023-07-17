@@ -24,7 +24,6 @@ final class VirtualMachine {
 	 * The index of the current instruction.
 	 */
 	private int instructionPointer = 0;
-	private int basePointer = 0;
 
 	/**
 	 * The size of the stack when a new function is entered.
@@ -55,8 +54,8 @@ final class VirtualMachine {
 		this.chunk = chunk;
 		this.instructionPointer = 0;
 		this.basePointer = 1;
-		this.pushStack((Object)(int) -1); // top-level stack frame.
-		this.pushStack((Object)(int) -1);
+		this.pushStack((Object) (int) -1); // top-level stack frame.
+		this.pushStack((Object) (int) -1);
 
 		long currentTime = System.currentTimeMillis();
 		System.out.println("Started interpreting.");
@@ -82,11 +81,11 @@ final class VirtualMachine {
 				case OP_POP -> this.popStack();
 				case OP_GET_LOCAL -> {
 					byte slot = this.readByte();
-					this.pushStack(this.stack.get(basePointer + slot));
+					this.pushStack(this.stack.get(this.basePointer + slot));
 				}
 				case OP_SET_LOCAL -> {
 					byte slot = this.readByte();
-					this.stack.set(basePointer + slot, this.popStack());
+					this.stack.set(this.basePointer + slot, this.popStack());
 				}
 				case OP_GET_GLOBAL -> {
 					try {
@@ -135,32 +134,23 @@ final class VirtualMachine {
 				}
 
 				case OP_CALL -> {
-					Integer addr = (Integer)this.readConstant();
+					short functionAddress = this.readShort();
 					this.pushStack(this.instructionPointer);
 					this.pushStack(this.basePointer);
 					this.basePointer = this.stack.size() - 1;
-					this.instructionPointer = addr;
+					this.instructionPointer = functionAddress;
 				}
 				case OP_RETURN -> {
-<<<<<<< HEAD
-					Object retval = this.popStack();
+					Object returnValue = this.popStack();
+
+					// clear everything except the return address
 					this.stack.setSize(this.basePointer + 1);
-					this.basePointer = (int)this.stack.pop();
-					Object retaddr = this.popStack();
-					this.instructionPointer = (int)retaddr;
-					if (this.instructionPointer < 0) {
-						System.out.println(retval);
-						return;
-					}
-					this.pushStack(retval);
-=======
-					if (!this.stack.isEmpty()) {
-						System.out.println(this.popStack());
-						return;
-					}
-					System.out.println("Empty stack. Unable to pop.");
+
+					this.basePointer = (int) this.stack.pop();
+					short returnAddress = (short) this.popStack();
+					this.instructionPointer = returnAddress;
+					this.pushStack(returnValue);
 					return;
->>>>>>> 64e6dbd80a6b63037dcb2b5205b0abfe415094fc
 				}
 			}
 		}
