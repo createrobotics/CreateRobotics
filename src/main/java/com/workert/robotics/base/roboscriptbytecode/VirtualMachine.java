@@ -53,9 +53,9 @@ final class VirtualMachine {
 	void interpret(Chunk chunk) {
 		this.chunk = chunk;
 		this.instructionPointer = 0;
-		this.basePointer = 1;
-		this.pushStack((Object) (int) -1); // top-level stack frame.
-		this.pushStack((Object) (int) -1);
+		this.basePointer = 0;
+		// this.pushStack((Object) (int) -1); // top-level stack frame.
+		// this.pushStack((Object) (int) -1);
 
 		long currentTime = System.currentTimeMillis();
 		System.out.println("Started interpreting.");
@@ -67,7 +67,6 @@ final class VirtualMachine {
 	 * The main part of the VM,
 	 */
 	private void run() {
-		this.pushStack(this.basePointer);
 		while (true) {
 			byte instruction;
 			switch (instruction = this.readByte()) {
