@@ -30,6 +30,8 @@ final class Assembler {
 		mnemonics.put("div", OP_DIVIDE);
 		mnemonics.put("not", OP_NOT);
 		mnemonics.put("neg", OP_NEGATE);
+		mnemonics.put("pop", OP_POP);
+		mnemonics.put("call", OP_CALL);
 		mnemonics.put("ret", OP_RETURN);
 
 		return mnemonics;
@@ -64,7 +66,23 @@ final class Assembler {
 						throw new AssembleError("Expected a literal after 'CONST'.", this.line);
 					Object constant = this.getLiteral(lineString);
 					int lookUp = chunk.addConstant(constant);
-					chunk.writeCode((byte) lookUp, this.line);
+					chunk.writeConstant(lookUp, this.line);
+					break;
+				}
+				case OP_CALL -> {
+					this.start = this.current;
+					while (isDigit(this.getCurrentChar(lineString))) {
+						this.consumeNextChar(lineString);
+					}
+					System.out.println(lineString.substring(this.start, this.current));
+					try {
+						Integer constant = Integer.parseInt(lineString.substring(this.start, this.current));
+						int lookUp = chunk.addConstant(constant);
+						chunk.writeConstant(lookUp, this.line);
+					}
+					catch (Exception e) {
+						throw new AssembleError("Expected an address after 'CALL'.", this.line);
+					}
 					break;
 				}
 			}
