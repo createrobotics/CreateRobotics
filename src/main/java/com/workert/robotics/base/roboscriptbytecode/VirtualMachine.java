@@ -4,19 +4,53 @@ import java.util.Stack;
 import static com.workert.robotics.base.roboscriptbytecode.OpCode.*;
 
 final class VirtualMachine {
+
+	/**
+	 * The instance of RoboScript running the virtual machine.
+	 */
 	private final RoboScript roboScriptInstance;
+
+	/**
+	 * The current chunk being interpreted.
+	 */
 	private Chunk chunk;
+
+	/**
+	 * The main stack of the program.
+	 */
 	private final Stack<Object> stack = new Stack<>();
+
+	/**
+	 * The index of the current instruction.
+	 */
 	private int instructionPointer = 0;
 	private int basePointer = 0;
 
-	private Object[] globalVariables = new Object[256];
+	/**
+	 * The size of the stack when a new function is entered.
+	 */
+	private int basePointer = 0;
 
+	/**
+	 * Variables defined in the global scope; Can be accessed from anywhere.
+	 */
+	private final Object[] globalVariables = new Object[256];
+
+
+	/**
+	 * Creates a static virtual machine.
+	 *
+	 * @param instance The instance of RoboScript running the virtual machine.
+	 */
 	VirtualMachine(RoboScript instance) {
 		this.roboScriptInstance = instance;
 	}
 
-
+	/**
+	 * Starts the virtual machine and interprets the chunk.
+	 *
+	 * @param chunk The chunk being interpreted.
+	 */
 	void interpret(Chunk chunk) {
 		this.chunk = chunk;
 		this.instructionPointer = 0;
@@ -30,7 +64,9 @@ final class VirtualMachine {
 		System.out.println("Completed in " + (System.currentTimeMillis() - currentTime) + "ms.");
 	}
 
-	// heart of the vm, most of the time spent running the program will live here
+	/**
+	 * The main part of the VM,
+	 */
 	private void run() {
 
 		while (true) {
@@ -106,6 +142,7 @@ final class VirtualMachine {
 					this.instructionPointer = addr;
 				}
 				case OP_RETURN -> {
+<<<<<<< HEAD
 					Object retval = this.popStack();
 					this.stack.setSize(this.basePointer + 1);
 					this.basePointer = (int)this.stack.pop();
@@ -116,49 +153,102 @@ final class VirtualMachine {
 						return;
 					}
 					this.pushStack(retval);
+=======
+					if (!this.stack.isEmpty()) {
+						System.out.println(this.popStack());
+						return;
+					}
+					System.out.println("Empty stack. Unable to pop.");
+					return;
+>>>>>>> 64e6dbd80a6b63037dcb2b5205b0abfe415094fc
 				}
 			}
 		}
 	}
 
-
+	/**
+	 * Reads the byte at the current index of instructionPointer.
+	 *
+	 * @return The byte at the current index of instructionPointer.
+	 */
 	private byte readByte() {
 		return this.chunk.readCode(this.instructionPointer++);
 	}
 
+	/**
+	 * Reads the current and next bytes from instructionPointer and combines them into a short
+	 *
+	 * @return The short value of the current and next byte.
+	 */
 	private short readShort() {
 		this.instructionPointer += 2;
 		return (short) ((this.chunk.readCode(this.instructionPointer - 2) << 8) | this.chunk.readCode(
 				this.instructionPointer - 1));
 	}
 
+	/**
+	 * Reads the current byte and finds the constant in the current chunk at the index of that byte.
+	 *
+	 * @return The constant in the current chunk at the index of the current byte.
+	 */
 	private Object readConstant() {
 		return this.chunk.readConstant(this.readByte());
 	}
 
-
+	/**
+	 * Reads the current byte and finds the global variable at the index of that byte.
+	 *
+	 * @return The global variable at the index of the current byte.
+	 */
 	private Object readGlobalVariable() {
 		return this.globalVariables[this.readByte()];
 	}
 
+	/**
+	 * Pushes a value to the stack.
+	 *
+	 * @param object The value pushed to the stack.
+	 */
 	void pushStack(Object object) {
 		this.stack.push(object);
 	}
 
-
+	/**
+	 * Returns the value at the top of the stack and removes it.
+	 *
+	 * @return The value at the top of the stack.
+	 */
 	Object popStack() {
 		return this.stack.pop();
 	}
 
+	/**
+	 * Returns the value at the top of the stack without removing it.
+	 *
+	 * @return The value at the top of the stack.
+	 */
 	Object peekStack() {
 		return this.stack.peek();
 	}
 
+
+	/**
+	 * Returns the value at the top of the stack minus the distance without removing it.
+	 *
+	 * @param distance The distance from the top of the stack.
+	 * @return The value at the top of the stack minus the distance without removing it.
+	 */
 	Object peekStack(int distance) {
 		return this.stack.get(this.stack.size() - 1 - distance);
 	}
 
 
+	/**
+	 * Adds two numbers.
+	 *
+	 * @param a Addend 'a'.
+	 * @param b Addend 'b'.
+	 */
 	private void binaryAdd(Object a, Object b) {
 		if (a instanceof String || b instanceof String) {
 			this.pushStack(a.toString() + b.toString());
@@ -171,6 +261,11 @@ final class VirtualMachine {
 		}
 	}
 
+	/**
+	 * Handles all operations with their given operand.
+	 *
+	 * @param operand The operand used to perform an operation.
+	 */
 	private void binaryOperation(char operand) {
 		Object b = this.popStack();
 		Object a = this.popStack();
@@ -230,6 +325,12 @@ final class VirtualMachine {
 		}
 	}
 
+	/**
+	 * Returns the truthy value of the passed in object.
+	 *
+	 * @param o The object being evaluated.
+	 * @return The truthy value of the passed in object.
+	 */
 	private static boolean isTruthy(Object o) {
 		if (o == null) return false;
 		if (o instanceof Boolean b) return b;
