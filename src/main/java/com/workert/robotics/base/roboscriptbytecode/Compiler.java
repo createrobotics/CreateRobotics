@@ -64,6 +64,8 @@ public final class Compiler {
 
 			if (this.checkAndConsumeIfMatches(VAR)) {
 				this.varDeclaration();
+			} else if (this.checkAndConsumeIfMatches(FUNCTION)) {
+				this.funcDeclaration();
 			} else {
 				this.statement();
 			}
@@ -72,6 +74,33 @@ public final class Compiler {
 			this.synchronize();
 		}
 
+	}
+
+	private void funcDeclaration() {
+		byte global = this.parseVariable("Expected function name.");
+		String name = this.previous.lexeme;
+		List<Token> arguments = new ArrayList<>();
+		this.consumeOrThrow(LEFT_PAREN, "Expected '(' after function name.");
+		if (!this.isNextToken(RIGHT_PAREN)) {
+			do {
+				this.consumeOrThrow(IDENTIFIER, "Expected parameter name.");
+				arguments.add(this.previous);
+			} while (!this.checkAndConsumeIfMatches(COMMA));
+		}
+		this.consumeOrThrow(RIGHT_PAREN,
+				arguments.isEmpty() ? "Expected ')' after '('." : "Expected ')' after function parameters.");
+		this.consumeOrThrow(LEFT_BRACE, "Expected '{' before function body");
+
+
+		Chunk previousChunk = this.getCurrentChunk();
+		this.chunk = new Chunk();
+		this.beginScope();
+		this.block();
+		this.endScope();
+		RoboScriptFunction function = new RoboScriptFunction(arguments.size(), this.getCurrentChunk());
+		this.chunk = previousChunk;
+		this.emitConstant(function);
+		this.defineVariable(global, name);
 	}
 
 	private void varDeclaration() {
@@ -104,6 +133,17 @@ public final class Compiler {
 	private void declareVariable() {
 		if (this.scopeDepth == 0) return;
 		Token name = this.previous;
+		for (int i = this.locals.size() - 1; i >= 0; i--) {
+			Local local = this.locals.get(i);
+			if (local.depth != -1 && local.depth < this.scopeDepth) break;
+			if (name.lexeme.equals(local.name.lexeme))
+				throw this.error("A variable with the name '" + name.lexeme + "' already exists in the current scope");
+		}
+		this.addLocal(name);
+	}
+
+	private void declareVariable(Token name) {
+		if (this.scopeDepth == 0) return;
 		for (int i = this.locals.size() - 1; i >= 0; i--) {
 			Local local = this.locals.get(i);
 			if (local.depth != -1 && local.depth < this.scopeDepth) break;
@@ -170,7 +210,6 @@ public final class Compiler {
 			this.declaration();
 		}
 		this.consumeOrThrow(RIGHT_BRACE, "Expected '}' after block.");
-		System.out.println(this.current);
 	}
 
 	private void ifStatement() {
@@ -321,6 +360,23 @@ public final class Compiler {
 			case BANG_EQUAL -> this.emitByte(OP_NOT_EQUAL);
 			default -> throw new IllegalArgumentException("Invalid binary operator type");
 		}
+	}
+
+	void call(boolean canAssign) {
+		byte argumentCount = 0;
+
+		if (!this.isNextToken(RIGHT_PAREN)) {
+			do {
+				this.expression();
+				if (argumentCount == 255) {
+					this.error("Cannot have more than 255 arguments.");
+				}
+				argumentCount++;
+			} while (this.checkAndConsumeIfMatches(COMMA));
+		}
+		this.consumeOrThrow(RIGHT_PAREN,
+				argumentCount == 0 ? "Expected ')' after '('." : "Expected ')' after arguments.");
+		this.emitBytes(OP_CALL, argumentCount);
 	}
 
 	void and(boolean canAssign) {

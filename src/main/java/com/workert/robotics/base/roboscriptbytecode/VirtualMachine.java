@@ -133,11 +133,22 @@ final class VirtualMachine {
 				}
 
 				case OP_CALL -> {
-					int functionAddress = (int) this.popStack();
+					byte arity = this.readByte();
+					Object callable = this.popStack();
+
+					if (!(callable instanceof RoboScriptFunction function))
+						throw new RuntimeError("Can only call functions.");
+					if (arity != function.arity)
+						throw new RuntimeError("Expected '" + function.arity + "' arguments but got '" + arity + "'.");
+
+					// push return address
 					this.pushStack(this.instructionPointer);
-					this.pushStack(this.basePointer);
-					this.basePointer = this.stack.size() - 1;
-					this.instructionPointer = functionAddress;
+
+					// i think this is what im supposed to be doing i have no idea
+					Chunk previousChunk = this.chunk;
+					this.instructionPointer = 0;
+					this.basePointer = this.stack.size();
+					this.chunk = function.chunk;
 				}
 				case OP_RETURN -> {
 					Object returnValue = this.popStack();
