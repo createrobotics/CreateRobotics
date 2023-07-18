@@ -97,6 +97,7 @@ public final class Compiler {
 		this.beginScope();
 		this.block();
 		this.endScope();
+		this.consumeOrThrow(LEFT_BRACE, "Expected '}' after function body");
 		RoboScriptFunction function = new RoboScriptFunction(arguments.size(), this.getCurrentChunk());
 		this.chunk = previousChunk;
 		this.emitConstant(function);
