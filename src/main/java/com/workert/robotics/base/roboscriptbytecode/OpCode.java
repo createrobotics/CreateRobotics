@@ -26,9 +26,8 @@ public interface OpCode {
     byte OP_JUMP = 22;
     byte OP_JUMP_IF_FALSE = 23;
     byte OP_LOOP = 24;
-    byte OP_FUNCTION_ENTRY = 25;
-    byte OP_CALL = 26;
-    byte OP_RETURN = 27;
-    byte OP_END = 28;
-    byte OP_LOG = 29;
+    byte OP_CALL = 25;
+    byte OP_RETURN = 26;
+    byte OP_END = 27;
+    byte OP_LOG = 28;
 }

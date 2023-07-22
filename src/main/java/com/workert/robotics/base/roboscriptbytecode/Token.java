@@ -14,7 +14,7 @@ final class Token {
 
 	public enum TokenType {
 		// Single-character tokens.
-		LEFT_PAREN(new Compiler.ParseRule(Compiler::grouping, Compiler::call, NONE)),
+		LEFT_PAREN(new Compiler.ParseRule(Compiler::grouping, Compiler::call, CALL)),
 		RIGHT_PAREN(empty()),
 		LEFT_BRACE(empty()),
 		RIGHT_BRACE(empty()),

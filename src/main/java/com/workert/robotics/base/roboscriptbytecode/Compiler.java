@@ -11,6 +11,12 @@ public final class Compiler {
 	final RoboScript roboScriptInstance;
 	Scanner scanner;
 	Chunk chunk = new Chunk();
+
+	List<Byte> currentCodeList = new ArrayList<>();
+	List<Integer> currentLineList = new ArrayList<>();
+
+	List<Integer> functions = new ArrayList<>();
+
 	Token current;
 	Token previous;
 
@@ -20,10 +26,6 @@ public final class Compiler {
 
 	Compiler(RoboScript roboScriptInstance) {
 		this.roboScriptInstance = roboScriptInstance;
-	}
-
-	private Chunk getCurrentChunk() {
-		return this.chunk;
 	}
 
 
@@ -37,6 +39,7 @@ public final class Compiler {
 				this.declaration();
 			}
 			this.endCompiler();
+			this.createFinalChunk();
 		} catch (CompileError e) {
 			this.synchronize();
 		}
@@ -61,7 +64,6 @@ public final class Compiler {
 
 	private void declaration() {
 		try {
-
 			if (this.checkAndConsumeIfMatches(VAR)) {
 				this.varDeclaration();
 			} else if (this.checkAndConsumeIfMatches(FUNCTION)) {
@@ -73,40 +75,52 @@ public final class Compiler {
 		} catch (CompileError e) {
 			this.synchronize();
 		}
-
 	}
 
 	private void funcDeclaration() {
 		byte global = this.parseVariable("Expected function name.");
 		String name = this.previous.lexeme;
-		List<Token> arguments = new ArrayList<>();
+		int arity = 0;
+		int constantIndex = this.emitConstant(null);
+		this.defineVariable(global, name);
+
+
+		List<Byte> previousCodeList = this.currentCodeList;
+		this.currentCodeList = new ArrayList<>();
+		List<Integer> previousLineList = this.currentLineList;
+		this.currentLineList = new ArrayList<>();
+
+		this.beginScope();
 		this.consumeOrThrow(LEFT_PAREN, "Expected '(' after function name.");
+
 		if (!this.isNextToken(RIGHT_PAREN)) {
 			do {
-				this.consumeOrThrow(IDENTIFIER, "Expected parameter name.");
-				arguments.add(this.previous);
-			} while (!this.checkAndConsumeIfMatches(COMMA));
+				// this.consumeOrThrow(IDENTIFIER, "Expected parameter name.");
+				byte constant = this.parseVariable("Expected parameter name.");
+				this.defineVariable(constant, this.previous.lexeme);
+				arity++;
+			} while (this.checkAndConsumeIfMatches(COMMA));
 		}
-		this.consumeOrThrow(RIGHT_PAREN,
-				arguments.isEmpty() ? "Expected ')' after '('." : "Expected ')' after function parameters.");
+
+		this.consumeOrThrow(RIGHT_PAREN, "Expected ')' after function parameters.");
+
 		this.consumeOrThrow(LEFT_BRACE, "Expected '{' before function body");
-
-
-		Chunk previousChunk = this.getCurrentChunk();
-		this.chunk = new Chunk();
-		this.beginScope();
 		this.block();
 		this.endScope();
-		this.consumeOrThrow(LEFT_BRACE, "Expected '}' after function body");
-		RoboScriptFunction function = new RoboScriptFunction(arguments.size(), this.getCurrentChunk());
-		this.chunk = previousChunk;
-		this.emitConstant(function);
-		this.defineVariable(global, name);
+		this.emitBytes(OP_NULL, OP_RETURN);
+
+		CompilerFunction function = new CompilerFunction(this.currentCodeList, this.currentLineList, arity);
+
+		this.currentCodeList = previousCodeList;
+		this.currentLineList = previousLineList;
+
+		this.chunk.setConstant(constantIndex, function);
+		this.functions.add(constantIndex);
 	}
 
 	private void varDeclaration() {
 		byte global = this.parseVariable("Expected variable name.");
-		String place = this.previous.lexeme;
+		String name = this.previous.lexeme;
 
 		if (this.checkAndConsumeIfMatches(EQUAL)) {
 			this.expression();
@@ -116,7 +130,7 @@ public final class Compiler {
 
 		this.consumeOrThrow(SEMICOLON, "Expected ';' after variable declaration.");
 
-		this.defineVariable(global, place);
+		this.defineVariable(global, name);
 
 	}
 
@@ -201,6 +215,8 @@ public final class Compiler {
 			this.expression();
 			this.consumeOrThrow(SEMICOLON, "Expected ';' after expression.");
 			this.emitByte(OP_LOG);
+		} else if (this.checkAndConsumeIfMatches(RETURN)) {
+			this.returnStatement();
 		} else {
 			this.expressionStatement();
 		}
@@ -228,7 +244,7 @@ public final class Compiler {
 	}
 
 	private void whileStatement() {
-		int loopStart = this.getCurrentChunk().getCodeSize();
+		int loopStart = this.currentCodeList.size();
 		this.consumeOrThrow(LEFT_PAREN, "Expected '(' after 'while'.");
 		this.expression();
 		this.consumeOrThrow(RIGHT_PAREN, "Expected ')' after condition.");
@@ -251,7 +267,7 @@ public final class Compiler {
 			}
 		}
 
-		int loopStart = this.getCurrentChunk().getCodeSize();
+		int loopStart = this.currentCodeList.size();
 		int exitJump = -1;
 		if (!this.checkAndConsumeIfMatches(SEMICOLON)) {
 			this.expression();
@@ -261,7 +277,7 @@ public final class Compiler {
 		}
 		if (!this.checkAndConsumeIfMatches(RIGHT_PAREN)) {
 			int bodyJump = this.emitJump(OP_JUMP);
-			int incrementStart = this.getCurrentChunk().getCodeSize();
+			int incrementStart = this.currentCodeList.size();
 			this.expression();
 			this.emitByte(OP_POP);
 			this.consumeOrThrow(RIGHT_PAREN, "Expect ')' after for clauses");
@@ -278,29 +294,38 @@ public final class Compiler {
 		this.endScope();
 	}
 
+	private void returnStatement() {
+		if (this.checkAndConsumeIfMatches(SEMICOLON)) {
+			this.emitBytes(OP_NULL, OP_RETURN);
+			return;
+		}
+		this.expression();
+		this.consumeOrThrow(SEMICOLON, "Expected semicolon after return expression.");
+		this.emitByte(OP_RETURN);
+	}
+
 	private int emitJump(byte instruction) {
 		this.emitByte(instruction);
 		this.emitByte((byte) 0xFF);
 		this.emitByte((byte) 0xFF);
-		return this.getCurrentChunk().getCodeSize() - 2;
+		return this.currentCodeList.size() - 2;
 	}
 
 	private void emitLoop(int loopStart) {
 		this.emitByte(OP_LOOP);
-		int offset = this.getCurrentChunk().getCodeSize() - loopStart + 2;
+		int offset = this.currentCodeList.size() - loopStart + 2;
 		if (offset > 65535) throw this.error("Loop body too large.");
 		this.emitByte((byte) ((offset >> 8) & 0xff));
 		this.emitByte((byte) (offset & 0xFF));
 	}
 
 	private void patchJump(int offset) {
-		int jump = this.getCurrentChunk().getCodeSize() - offset - 2;
+		int jump = this.currentCodeList.size() - offset - 2;
 		if (jump > 65535) {
 			throw this.error("Too much code to jump over.");
 		}
-
-		this.getCurrentChunk().setCode(offset, (byte) ((jump >> 8) & 0xff));
-		this.getCurrentChunk().setCode(offset + 1, (byte) (jump & 0xFF));
+		this.currentCodeList.set(offset, (byte) ((jump >> 8) & 0xff));
+		this.currentCodeList.set(offset + 1, (byte) (jump & 0xFF));
 	}
 
 
@@ -364,20 +389,19 @@ public final class Compiler {
 	}
 
 	void call(boolean canAssign) {
-		byte argumentCount = 0;
+		byte arity = 0;
 
 		if (!this.isNextToken(RIGHT_PAREN)) {
 			do {
 				this.expression();
-				if (argumentCount == 255) {
+				if (arity == 255) {
 					this.error("Cannot have more than 255 arguments.");
 				}
-				argumentCount++;
+				arity++;
 			} while (this.checkAndConsumeIfMatches(COMMA));
 		}
-		this.consumeOrThrow(RIGHT_PAREN,
-				argumentCount == 0 ? "Expected ')' after '('." : "Expected ')' after arguments.");
-		this.emitBytes(OP_CALL, argumentCount);
+		this.consumeOrThrow(RIGHT_PAREN, "Expected ')' after arguments.");
+		this.emitBytes(OP_CALL, arity);
 	}
 
 	void and(boolean canAssign) {
@@ -432,7 +456,8 @@ public final class Compiler {
 
 
 	private void emitByte(byte b) {
-		this.getCurrentChunk().writeCode(b, this.previous.line);
+		this.currentCodeList.add(b);
+		this.currentLineList.add(this.previous.line);
 	}
 
 	private void emitBytes(byte... b) {
@@ -441,20 +466,17 @@ public final class Compiler {
 		}
 	}
 
-	private void emitReturn() {
-		this.emitByte(OP_RETURN);
-	}
-
 	private void emitEnd() {
 		this.emitByte(OP_END);
 	}
 
-	private void emitConstant(Object value) {
-		int constant = this.getCurrentChunk().addConstant(value);
+	private int emitConstant(Object value) {
+		int constant = this.chunk.addConstant(value);
 		if (constant > 255) {
 			throw this.error("Too many constants in one chunk.");
 		}
 		this.emitBytes(OP_CONSTANT, (byte) constant);
+		return constant;
 	}
 
 
@@ -530,11 +552,30 @@ public final class Compiler {
 		}
 	}
 
+	private void createFinalChunk() {
+		this.chunk.setCode(this.currentCodeList);
+		this.chunk.setLines(this.currentLineList);
 
-	private boolean isAtEnd() {
-		return this.checkAndConsumeIfMatches(EOF);
+		for (int i : this.functions) {
+			CompilerFunction function = (CompilerFunction) this.chunk.readConstant(i);
+			RoboScriptFunction runtimeFunction = new RoboScriptFunction(this.chunk.getCodeSize(), function.arity);
+			this.chunk.setConstant(i, runtimeFunction);
+			this.chunk.combineCode(function.code);
+			this.chunk.combineLines(function.lines);
+		}
 	}
 
+	private static class CompilerFunction {
+		List<Byte> code;
+		List<Integer> lines;
+		int arity;
+
+		CompilerFunction(List<Byte> code, List<Integer> lines, int arity) {
+			this.code = code;
+			this.lines = lines;
+			this.arity = arity;
+		}
+	}
 
 	protected static class CompileError extends RuntimeException {
 	}

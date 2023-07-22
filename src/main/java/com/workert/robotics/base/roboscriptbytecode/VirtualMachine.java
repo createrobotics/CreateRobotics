@@ -54,7 +54,7 @@ final class VirtualMachine {
 		this.chunk = chunk;
 		this.instructionPointer = 0;
 		this.basePointer = 0;
-		// this.pushStack((Object) (int) -1); // top-level stack frame.
+		// this.pushStack((Object) (int) -1);   , top-level stack frame.
 		// this.pushStack((Object) (int) -1);
 
 		long currentTime = System.currentTimeMillis();
@@ -64,7 +64,7 @@ final class VirtualMachine {
 	}
 
 	/**
-	 * The main part of the VM,
+	 * The main part of the VM
 	 */
 	private void run() {
 		while (true) {
@@ -111,7 +111,7 @@ final class VirtualMachine {
 				case OP_SUBTRACT -> this.binaryOperation('-');
 				case OP_MULTIPLY -> this.binaryOperation('*');
 				case OP_DIVIDE -> this.binaryOperation('/');
-				case OP_NOT -> this.stack.set(this.stack.size() - 1, !isTruthy(this.stack.peek()));
+				case OP_NOT -> this.stack.set(this.stack.size() - 1, !truthy(this.stack.peek()));
 				case OP_NEGATE -> {
 					try {
 						this.stack.set(this.stack.size() - 1, -(double) this.stack.peek());
@@ -125,7 +125,7 @@ final class VirtualMachine {
 				}
 				case OP_JUMP_IF_FALSE -> {
 					short offset = this.readShort();
-					if (!isTruthy(this.peekStack())) this.instructionPointer += offset;
+					if (!truthy(this.peekStack())) this.instructionPointer += offset;
 				}
 				case OP_LOOP -> {
 					short offset = this.readShort();
@@ -134,39 +134,31 @@ final class VirtualMachine {
 
 				case OP_CALL -> {
 					byte arity = this.readByte();
-					Object callable = this.popStack();
+
+					// how does this work and not give a "Can only call functions" error when having an incorrect arity???
+					Object callable = this.peekStack(arity);
 
 					if (!(callable instanceof RoboScriptFunction function))
 						throw new RuntimeError("Can only call functions.");
 					if (arity != function.arity)
 						throw new RuntimeError("Expected '" + function.arity + "' arguments but got '" + arity + "'.");
 
-					// push return address
+					// push return address and base pointer
 					this.pushStack(this.instructionPointer);
+					this.pushStack(this.basePointer);
 
-					// i think this is what im supposed to be doing i have no idea
-					Chunk previousChunk = this.chunk;
-					this.instructionPointer = 0;
+					this.instructionPointer = function.address;
 					this.basePointer = this.stack.size();
-					this.chunk = function.chunk;
 				}
 				case OP_RETURN -> {
 					Object returnValue = this.popStack();
 
-					// clear everything except the return address
-					this.stack.setSize(this.basePointer + 1);
+					// clear everything except the return address and base pointer
+					this.stack.setSize(this.basePointer);
 
-					this.basePointer = (int) this.stack.pop();
-					int returnAddress = (int) this.popStack();
-					this.instructionPointer = returnAddress;
-
-					// test code to check for invalid return address, already placed here.
-					if (this.instructionPointer < 0) {
-						System.out.println(returnValue);
-						return;
-					}
+					this.basePointer = (int) this.popStack();
+					this.instructionPointer = (int) this.popStack();
 					this.pushStack(returnValue);
-					return;
 				}
 				case OP_END -> {
 					return;
@@ -344,7 +336,7 @@ final class VirtualMachine {
 	 * @param o The object being evaluated.
 	 * @return The truthy value of the passed in object.
 	 */
-	private static boolean isTruthy(Object o) {
+	private static boolean truthy(Object o) {
 		if (o == null) return false;
 		if (o instanceof Boolean b) return b;
 		return true;

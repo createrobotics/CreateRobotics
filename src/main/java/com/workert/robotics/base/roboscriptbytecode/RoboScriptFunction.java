@@ -1,10 +1,15 @@
 package com.workert.robotics.base.roboscriptbytecode;
 public class RoboScriptFunction {
+	int address;
 	int arity;
-	Chunk chunk;
 
-	RoboScriptFunction(int arity, Chunk chunk) {
+	RoboScriptFunction(int address, int arity) {
+		this.address = address;
 		this.arity = arity;
-		this.chunk = chunk;
+	}
+
+	@Override
+	public String toString() {
+		return "RoboScriptFunction (adr: " + this.address + ", arity: " + this.arity + ")";
 	}
 }

@@ -102,7 +102,7 @@ final class Printer {
 				return jumpInstruction("OP_LOOP", -1, chunk, offset);
 			}
 			case OP_CALL -> {
-				return constantInstruction("OP_CALL", chunk, offset);
+				return byteInstruction("OP_CALL", chunk, offset);
 			}
 			case OP_RETURN -> {
 				return simpleInstruction("OP_RETURN", offset);

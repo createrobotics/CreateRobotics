@@ -17,7 +17,7 @@ final class Chunk {
 
 	void writeConstant(int b, int line) {
 		//this.writeCode((byte)(b >> 8	), line);
-		this.writeCode((byte)(b & 0xFF  ), line);
+		this.writeCode((byte) (b & 0xFF), line);
 	}
 
 	void setCode(int index, byte code) {
@@ -37,6 +37,27 @@ final class Chunk {
 	int addConstant(Object value) {
 		this.constants.add(value);
 		return this.constants.size() - 1;
+	}
+
+	void setConstant(int index, Object value) {
+		this.constants.set(index, value);
+	}
+
+
+	void setCode(List<Byte> b) {
+		this.code = b;
+	}
+
+	void combineCode(List<Byte> b) {
+		this.code.addAll(b);
+	}
+
+	void setLines(List<Integer> i) {
+		this.lines = i;
+	}
+
+	void combineLines(List<Integer> i) {
+		this.lines.addAll(i);
 	}
 
 
