@@ -14,6 +14,7 @@ public final class Compiler {
 
 	List<Byte> currentCodeList = new ArrayList<>();
 	List<Integer> currentLineList = new ArrayList<>();
+	boolean inFunction = false;
 
 	List<Integer> functions = new ArrayList<>();
 
@@ -89,6 +90,8 @@ public final class Compiler {
 		this.currentCodeList = new ArrayList<>();
 		List<Integer> previousLineList = this.currentLineList;
 		this.currentLineList = new ArrayList<>();
+		boolean wasInFunction = this.inFunction;
+		this.inFunction = true;
 
 		this.beginScope();
 		this.consumeOrThrow(LEFT_PAREN, "Expected '(' after function name.");
@@ -113,6 +116,7 @@ public final class Compiler {
 
 		this.currentCodeList = previousCodeList;
 		this.currentLineList = previousLineList;
+		this.inFunction = wasInFunction;
 
 		this.chunk.setConstant(constantIndex, function);
 		this.functions.add(constantIndex);
@@ -295,6 +299,7 @@ public final class Compiler {
 	}
 
 	private void returnStatement() {
+		if (!this.inFunction) throw this.error("Can only return inside of functions.");
 		if (this.checkAndConsumeIfMatches(SEMICOLON)) {
 			this.emitBytes(OP_NULL, OP_RETURN);
 			return;
