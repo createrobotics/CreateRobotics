@@ -386,7 +386,8 @@ public final class Compiler {
 			case SLASH -> this.emitByte(OP_DIVIDE);
 			case GREATER -> this.emitByte(OP_GREATER);
 			case GREATER_EQUAL -> this.emitByte(OP_GREATER_EQUAL);
-			case LESS -> this.emitByte(OP_LESS_EQUAL);
+			case LESS -> this.emitByte(OP_LESS);
+			case LESS_EQUAL -> this.emitByte(OP_LESS_EQUAL);
 			case EQUAL_EQUAL -> this.emitByte(OP_EQUAL);
 			case BANG_EQUAL -> this.emitByte(OP_NOT_EQUAL);
 			default -> throw new IllegalArgumentException("Invalid binary operator type");

@@ -22,6 +22,7 @@ public final class Interpreter implements Expression.Visitor<Object>, Statement.
 	}
 
 	void interpret(List<Statement> statements) {
+		long previous = System.currentTimeMillis();
 		try {
 			for (Statement statement : statements) {
 				if (this.stopRequested) {
@@ -33,6 +34,7 @@ public final class Interpreter implements Expression.Visitor<Object>, Statement.
 		} catch (RoboScriptRuntimeError error) {
 			this.roboScriptInstance.runtimeError(error);
 		}
+		System.out.println("Took " + (System.currentTimeMillis() - previous) + "ms to interpret.");
 	}
 
 	void reset() {

@@ -148,16 +148,17 @@ final class VirtualMachine {
 					this.pushStack(this.basePointer);
 
 					this.instructionPointer = function.address;
-					this.basePointer = this.stack.size();
+					this.basePointer = this.stack.size() - arity - 2;
 				}
 				case OP_RETURN -> {
 					Object returnValue = this.popStack();
-
-					// clear everything except the return address and base pointer
-					this.stack.setSize(this.basePointer);
-
+					
 					this.basePointer = (int) this.popStack();
 					this.instructionPointer = (int) this.popStack();
+					while (!(this.peekStack() instanceof RoboScriptFunction)) {
+						this.popStack();
+					}
+					this.popStack();
 					this.pushStack(returnValue);
 				}
 				case OP_END -> {

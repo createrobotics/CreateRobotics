@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class RoboScriptRunner {
-	private static final String sourcePath = "src/main/java/com/workert/robotics/base/roboscript/tool/script.robo";
+	private static final String sourcePath = "src/main/java/com/workert/robotics/base/roboscriptast/tool/script.robo";
 
 	private static final RoboScript program = new RoboScript() {
 		@Override
