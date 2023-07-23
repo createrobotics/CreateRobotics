@@ -1,6 +1,4 @@
 package com.workert.robotics.base.roboscriptbytecode;
-import java.util.Stack;
-
 import static com.workert.robotics.base.roboscriptbytecode.OpCode.*;
 
 final class VirtualMachine {
@@ -18,7 +16,12 @@ final class VirtualMachine {
 	/**
 	 * The main stack of the program.
 	 */
-	private final Stack<Object> stack = new Stack<>();
+	private final Object[] stack = new Object[256];
+
+	/**
+	 * The current stack size
+	 */
+	private int stackSize = 0;
 
 	/**
 	 * The index of the current instruction.
@@ -80,11 +83,11 @@ final class VirtualMachine {
 				case OP_POP -> this.popStack();
 				case OP_GET_LOCAL -> {
 					byte slot = this.readByte();
-					this.pushStack(this.stack.get(this.basePointer + slot));
+					this.pushStack(this.stack[this.basePointer + slot]);
 				}
 				case OP_SET_LOCAL -> {
 					byte slot = this.readByte();
-					this.stack.set(this.basePointer + slot, this.popStack());
+					this.stack[this.basePointer + slot] = this.popStack();
 				}
 				case OP_GET_GLOBAL -> {
 					try {
@@ -111,10 +114,10 @@ final class VirtualMachine {
 				case OP_SUBTRACT -> this.binaryOperation('-');
 				case OP_MULTIPLY -> this.binaryOperation('*');
 				case OP_DIVIDE -> this.binaryOperation('/');
-				case OP_NOT -> this.stack.set(this.stack.size() - 1, !truthy(this.stack.peek()));
+				case OP_NOT -> this.stack[this.stackSize - 1] = !truthy(this.peekStack());
 				case OP_NEGATE -> {
 					try {
-						this.stack.set(this.stack.size() - 1, -(double) this.stack.peek());
+						this.stack[this.stackSize - 1] = -(double) this.peekStack();
 					} catch (ClassCastException e) {
 						throw new RuntimeError("Can only negate numbers.");
 					}
@@ -148,11 +151,11 @@ final class VirtualMachine {
 					this.pushStack(this.basePointer);
 
 					this.instructionPointer = function.address;
-					this.basePointer = this.stack.size() - arity - 2;
+					this.basePointer = this.stackSize - arity - 2;
 				}
 				case OP_RETURN -> {
 					Object returnValue = this.popStack();
-					
+
 					this.basePointer = (int) this.popStack();
 					this.instructionPointer = (int) this.popStack();
 					while (!(this.peekStack() instanceof RoboScriptFunction)) {
@@ -216,7 +219,7 @@ final class VirtualMachine {
 	 * @param object The value pushed to the stack.
 	 */
 	void pushStack(Object object) {
-		this.stack.push(object);
+		this.stack[this.stackSize++] = object;
 	}
 
 	/**
@@ -225,7 +228,7 @@ final class VirtualMachine {
 	 * @return The value at the top of the stack.
 	 */
 	Object popStack() {
-		return this.stack.pop();
+		return this.stack[--this.stackSize];
 	}
 
 	/**
@@ -234,7 +237,7 @@ final class VirtualMachine {
 	 * @return The value at the top of the stack.
 	 */
 	Object peekStack() {
-		return this.stack.peek();
+		return this.stack[this.stackSize - 1];
 	}
 
 
@@ -245,7 +248,7 @@ final class VirtualMachine {
 	 * @return The value at the top of the stack minus the distance without removing it.
 	 */
 	Object peekStack(int distance) {
-		return this.stack.get(this.stack.size() - 1 - distance);
+		return this.stack[this.stackSize - 1 - distance];
 	}
 
 
