@@ -7,9 +7,4 @@ public class RoboScriptFunction {
 		this.address = address;
 		this.arity = arity;
 	}
-
-	@Override
-	public String toString() {
-		return "RoboScriptFunction (adr: " + this.address + ", arity: " + this.arity + ")";
-	}
 }

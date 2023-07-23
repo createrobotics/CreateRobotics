@@ -17,27 +17,6 @@ public abstract class RoboScript {
 		this.vm.interpret(c.chunk);
 	}
 
-	public final void runASMString(String source) {
-		this.hadError = false;
-		Assembler assembler = new Assembler();
-		Chunk c;
-		try {
-			c = assembler.assemble(source);
-		} catch (AssembleError e) {
-			this.handleErrorMessage("[line " + e.line + "] " + e.message);
-			return;
-		}
-		if (this.hadError) return;
-		new Printer().disassembleChunk(c, "From ASM");
-		System.out.println();
-		System.out.println("== From VM ==");
-		try {
-			this.vm.interpret(c);
-		} catch (RuntimeError e) {
-			this.handleErrorMessage(e.message);
-		}
-	}
-
 	protected void reportCompileError(int line, String message) {
 		this.hadError = true;
 		this.handleErrorMessage("[line " + line + "] Error: " + message);

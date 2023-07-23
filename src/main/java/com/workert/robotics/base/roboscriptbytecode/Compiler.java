@@ -478,10 +478,11 @@ public final class Compiler {
 
 	private int emitConstant(Object value) {
 		int constant = this.chunk.addConstant(value);
-		if (constant > 255) {
+		if (constant > 511) {
 			throw this.error("Too many constants in one chunk.");
 		}
-		this.emitBytes(OP_CONSTANT, (byte) constant);
+		// emit constant as short
+		this.emitBytes(OP_CONSTANT, (byte) ((constant >> 8) & 0xFF), (byte) (constant & 0xFF));
 		return constant;
 	}
 

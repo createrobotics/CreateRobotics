@@ -5,24 +5,12 @@ import java.util.List;
 
 final class Chunk {
 	private List<Byte> code = new ArrayList<>();
-	private List<Object> constants = new ArrayList<>();
+
+
+	private Object[] constants = new Object[512];
+	private int constantsSize = 0;
+
 	private List<Integer> lines = new ArrayList<>();
-
-
-	// Add code to the chunk
-	void writeCode(byte code, int line) {
-		this.code.add(code);
-		this.lines.add(line);
-	}
-
-	void writeConstant(int b, int line) {
-		//this.writeCode((byte)(b >> 8	), line);
-		this.writeCode((byte) (b & 0xFF), line);
-	}
-
-	void setCode(int index, byte code) {
-		this.code.set(index, code);
-	}
 
 	byte readCode(int i) {
 		return this.code.get(i);
@@ -35,12 +23,12 @@ final class Chunk {
 
 	// Add a value to the chunk
 	int addConstant(Object value) {
-		this.constants.add(value);
-		return this.constants.size() - 1;
+		this.constants[this.constantsSize++] = value;
+		return this.constantsSize - 1;
 	}
 
 	void setConstant(int index, Object value) {
-		this.constants.set(index, value);
+		this.constants[index] = value;
 	}
 
 
@@ -62,7 +50,7 @@ final class Chunk {
 
 
 	Object readConstant(int i) {
-		return this.constants.get(Math.abs(i));
+		return this.constants[i & 0xFF];
 	}
 
 
