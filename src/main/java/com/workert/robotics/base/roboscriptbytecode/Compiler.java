@@ -109,7 +109,7 @@ public final class Compiler {
 
 		this.consumeOrThrow(LEFT_BRACE, "Expected '{' before function body");
 		this.block();
-		this.endScope();
+		this.endFunctionScope();
 		this.emitBytes(OP_NULL, OP_RETURN);
 
 		CompilerFunction function = new CompilerFunction(this.currentCodeList, this.currentLineList, arity);
@@ -555,6 +555,13 @@ public final class Compiler {
 		this.scopeDepth--;
 		while (this.locals.size() > 0 && this.locals.get(this.locals.size() - 1).depth > this.scopeDepth) {
 			this.emitByte(OP_POP);
+			this.locals.remove(this.locals.size() - 1);
+		}
+	}
+
+	private void endFunctionScope() {
+		this.scopeDepth--;
+		while (this.locals.size() > 0 && this.locals.get(this.locals.size() - 1).depth > this.scopeDepth) {
 			this.locals.remove(this.locals.size() - 1);
 		}
 	}

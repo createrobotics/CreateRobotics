@@ -138,7 +138,6 @@ final class VirtualMachine {
 				case OP_CALL -> {
 					byte arity = this.readByte();
 
-					// how does this work and not give a "Can only call functions" error when having an incorrect arity???
 					Object callable = this.peekStack(arity);
 
 					if (!(callable instanceof RoboScriptFunction function))
