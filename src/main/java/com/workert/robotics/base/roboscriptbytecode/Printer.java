@@ -138,10 +138,11 @@ final class Printer {
 	}
 
 	private static int constantInstruction(String name, Chunk chunk, int offset) {
-		byte constant = chunk.readCode(offset + 1);
+		short constant = (short) (chunk.readCode(offset + 1) << 8);
+		constant |= chunk.readCode(offset + 2);
 		System.out.printf("%-16s %4d '", name, constant);
 		System.out.println(chunk.readConstant(constant) + "'");
-		return offset + 2;
+		return offset + 3;
 	}
 
 	private static int byteInstruction(String name, Chunk chunk, int offset) {
