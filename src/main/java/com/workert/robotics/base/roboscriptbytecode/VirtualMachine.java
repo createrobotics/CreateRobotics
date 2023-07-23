@@ -201,7 +201,7 @@ final class VirtualMachine {
 	 * @return The constant in the current chunk at the index of the current byte.
 	 */
 	private Object readConstant() {
-		return this.chunk.readConstant(this.readByte());
+		return this.chunk.readConstant(this.readShort());
 	}
 
 	/**
@@ -284,49 +284,56 @@ final class VirtualMachine {
 				try {
 					this.pushStack((double) a - (double) b);
 				} catch (ClassCastException e) {
-					throw new RuntimeError("Subtraction must be between two numbers.");
+					throw new RuntimeError(
+							"Subtraction must be between two numbers, instead got '" + a.getClass() + "' and '" + b.getClass() + "'.");
 				}
 			}
 			case '*' -> {
 				try {
 					this.pushStack((double) a * (double) b);
 				} catch (ClassCastException e) {
-					throw new RuntimeError("Multiplication must be between two numbers.");
+					throw new RuntimeError(
+							"Multiplication must be between two numbers, instead got '" + a.getClass() + "' and '" + b.getClass() + "'.");
 				}
 			}
 			case '/' -> {
 				try {
 					this.pushStack((double) a / (double) b);
 				} catch (ClassCastException e) {
-					throw new RuntimeError("Division must be between two numbers.");
+					throw new RuntimeError(
+							"Division must be between two numbers, instead got '" + a.getClass() + "' and '" + b.getClass() + "'.");
 				}
 			}
 			case '>' -> {
 				try {
 					this.pushStack((double) a > (double) b);
 				} catch (ClassCastException e) {
-					throw new RuntimeError("Comparison using '>' must be between two numbers.");
+					throw new RuntimeError(
+							"Comparison using '>' must be between two numbers, instead got '" + a.getClass() + "' and '" + b.getClass() + "'.");
 				}
 			}
 			case '<' -> {
 				try {
 					this.pushStack((double) a < (double) b);
 				} catch (ClassCastException e) {
-					throw new RuntimeError("Comparison using '<' must be between two numbers.");
+					throw new RuntimeError(
+							"Comparison using '<' must be between two numbers, instead got '" + a.getClass() + "' and '" + b.getClass() + "'.");
 				}
 			}
 			case 'g' -> { // >=
 				try {
 					this.pushStack((double) a >= (double) b);
 				} catch (ClassCastException e) {
-					throw new RuntimeError("Comparison using '>=' must be between two numbers.");
+					throw new RuntimeError(
+							"Comparison using '>=' must be between two numbers, instead got '" + a.getClass() + "' and '" + b.getClass() + "'.");
 				}
 			}
 			case 'l' -> { // <=
 				try {
 					this.pushStack((double) a <= (double) b);
 				} catch (ClassCastException e) {
-					throw new RuntimeError("Comparison using '<=' must be between two numbers.");
+					throw new RuntimeError(
+							"Comparison using '<=' must be between two numbers, instead got '" + a.getClass() + "' and '" + b.getClass() + "'.");
 				}
 			}
 			case '=' -> this.pushStack(a.equals(b)); // ==
