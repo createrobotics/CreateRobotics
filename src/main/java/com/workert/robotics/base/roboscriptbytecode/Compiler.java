@@ -15,6 +15,7 @@ public final class Compiler {
 	List<Byte> currentCodeList = new ArrayList<>();
 	List<Integer> currentLineList = new ArrayList<>();
 	boolean inFunction = false;
+	boolean emitPop = true;
 
 	List<Integer> functions = new ArrayList<>();
 
@@ -22,6 +23,7 @@ public final class Compiler {
 	Token previous;
 
 	private final Map<String, Byte> globalVariableLookup = new HashMap<>();
+	final Map<String, Byte> nativeFunctionLookup = new HashMap<>();
 	private final List<Local> locals = new ArrayList<>();
 	private int scopeDepth = 0;
 
@@ -29,6 +31,10 @@ public final class Compiler {
 		this.roboScriptInstance = roboScriptInstance;
 	}
 
+
+	private void initializeNativeFunctionLookup() {
+
+	}
 
 	void compile(String source) {
 		System.out.println("Started compiling.");
@@ -59,7 +65,9 @@ public final class Compiler {
 	private void expressionStatement() {
 		this.expression();
 		this.consumeOrThrow(SEMICOLON, "Expected ';' after expression.");
-		this.emitByte(OP_POP);
+		if (this.emitPop)
+			this.emitByte(OP_POP);
+		this.emitPop = true;
 	}
 
 
@@ -180,6 +188,9 @@ public final class Compiler {
 			if (this.globalVariableLookup.containsKey(this.previous.lexeme)) {
 				variable = this.globalVariableLookup.get(this.previous.lexeme);
 				this.emitVariable(OP_GET_GLOBAL, OP_SET_GLOBAL, variable, canAssign);
+			} else if (this.nativeFunctionLookup.containsKey(this.previous.lexeme)) {
+				variable = this.nativeFunctionLookup.get(this.previous.lexeme);
+				this.emitNativeFunction(this.previous, variable, canAssign);
 			} else
 				throw this.error("Variable '" + this.previous.lexeme + "' has not been declared.");
 		}
@@ -342,6 +353,15 @@ public final class Compiler {
 			this.emitBytes(getOp, lookup);
 	}
 
+	private void emitNativeFunction(Token name, byte lookup, boolean canAssign) {
+		if (canAssign && this.checkAndConsumeIfMatches(EQUAL)) {
+			this.expression();
+			this.globalVariableLookup.put(name.lexeme, (byte) this.globalVariableLookup.size());
+			this.emitBytes(OP_DEFINE_GLOBAL, (byte) (this.globalVariableLookup.size() - 1));
+			this.emitPop = false;
+		} else
+			this.emitBytes(OP_GET_NATIVE, lookup);
+	}
 
 	void grouping(boolean canAssign) {
 		this.expression();

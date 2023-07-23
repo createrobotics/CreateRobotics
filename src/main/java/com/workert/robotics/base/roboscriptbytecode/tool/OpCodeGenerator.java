@@ -36,6 +36,7 @@ public class OpCodeGenerator {
 		opCodes.add("OP_JUMP_IF_FALSE");
 		opCodes.add("OP_LOOP");
 		opCodes.add("OP_CALL");
+		opCodes.add("OP_GET_NATIVE");
 		opCodes.add("OP_RETURN");
 		opCodes.add("OP_END");
 

@@ -47,6 +47,9 @@ final class Printer {
 			case OP_SET_LOCAL -> {
 				return byteInstruction("OP_SET_LOCAL", chunk, offset);
 			}
+			case OP_GET_NATIVE -> {
+				return byteInstruction("OP_GET_NATIVE", chunk, offset);
+			}
 			case OP_SET_GLOBAL -> {
 				return byteInstruction("OP_SET_GLOBAL", chunk, offset);
 			}

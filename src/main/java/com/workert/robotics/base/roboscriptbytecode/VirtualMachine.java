@@ -16,12 +16,12 @@ final class VirtualMachine {
 	/**
 	 * The main stack of the program.
 	 */
-	private final Object[] stack = new Object[256];
+	final Object[] stack = new Object[256];
 
 	/**
 	 * The current stack size
 	 */
-	private int stackSize = 0;
+	int stackSize = 0;
 
 	/**
 	 * The index of the current instruction.
@@ -38,6 +38,10 @@ final class VirtualMachine {
 	 */
 	private final Object[] globalVariables = new Object[256];
 
+	/**
+	 * Global functions that are defined natively and use Java code.
+	 */
+	RoboScript.NativeFunction[] nativeFunctions = new RoboScript.NativeFunction[32];
 
 	/**
 	 * Creates a static virtual machine.
@@ -88,6 +92,10 @@ final class VirtualMachine {
 				case OP_SET_LOCAL -> {
 					byte slot = this.readByte();
 					this.stack[this.basePointer + slot] = this.popStack();
+				}
+				case OP_GET_NATIVE -> {
+					byte slot = this.readByte();
+					this.pushStack(this.nativeFunctions[slot]);
 				}
 				case OP_GET_GLOBAL -> {
 					try {
@@ -140,8 +148,23 @@ final class VirtualMachine {
 
 					Object callable = this.peekStack(arity);
 
+
+					if (callable instanceof RoboScript.NativeFunction function) {
+						if (function.arity != arity) {
+							throw new RuntimeError(
+									"Expected '" + function.arity + "' arguments but got '" + arity + "'.");
+						}
+						Object returnValue = function.call(this);
+						while (!(this.peekStack() instanceof RoboScript.NativeFunction)) {
+							this.popStack();
+						}
+						this.popStack();
+						this.pushStack(returnValue);
+						break;
+					}
+
 					if (!(callable instanceof RoboScriptFunction function))
-						throw new RuntimeError("Can only call functions.");
+						throw new RuntimeError("Can only call functions, instead got '" + callable.getClass() + "'.");
 					if (arity != function.arity)
 						throw new RuntimeError("Expected '" + function.arity + "' arguments but got '" + arity + "'.");
 
@@ -350,5 +373,19 @@ final class VirtualMachine {
 		if (o == null) return false;
 		if (o instanceof Boolean b) return b;
 		return true;
+	}
+
+	public static String stringify(Object object) {
+		if (object == null) return "null";
+
+		if (object instanceof Double) {
+			String text = object.toString();
+			if (text.endsWith(".0")) {
+				text = text.substring(0, text.length() - 2);
+			}
+			return text;
+		}
+
+		return object.toString();
 	}
 }
