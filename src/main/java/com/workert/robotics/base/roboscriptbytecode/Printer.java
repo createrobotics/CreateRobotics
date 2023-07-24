@@ -122,6 +122,12 @@ final class Printer {
 			case OP_RETURN -> {
 				return simpleInstruction("OP_RETURN", offset);
 			}
+			case OP_PUT -> {
+				return simpleInstruction("OP_PUT", offset);
+			}
+			case OP_GET -> {
+				return simpleInstruction("OP_GET", offset);
+			}
 			case OP_END -> {
 				return simpleInstruction("OP_END", offset);
 			}

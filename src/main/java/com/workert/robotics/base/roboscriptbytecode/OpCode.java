@@ -33,5 +33,7 @@ public interface OpCode {
     byte OP_CALL = 29;
     byte OP_GET_NATIVE = 30;
     byte OP_RETURN = 31;
-    byte OP_END = 32;
+    byte OP_PUT = 32;
+    byte OP_GET = 33;
+    byte OP_END = 34;
 }

@@ -1,4 +1,6 @@
 package com.workert.robotics.base.roboscriptbytecode;
+import java.util.Map;
+
 import static com.workert.robotics.base.roboscriptbytecode.OpCode.*;
 
 final class VirtualMachine {
@@ -218,6 +220,28 @@ final class VirtualMachine {
 					}
 					this.popStack();
 					this.pushStack(returnValue);
+				}
+				case OP_PUT -> {
+					Object puttable = this.peekStack(2);
+					Object value = this.popStack();
+					Object key = this.popStack();
+
+					if (puttable instanceof Map map) {
+						map.put(key, value);
+					} else {
+						throw new RuntimeError("Can only put a key and value into a map.");
+					}
+
+				}
+				case OP_GET -> {
+					Object key = this.popStack();
+					Object gettable = this.popStack();
+
+					if (gettable instanceof Map map) {
+						this.pushStack(map.get(key));
+					} else {
+						throw new RuntimeError("Can only get objects from maps.");
+					}
 				}
 				case OP_END -> {
 					return;

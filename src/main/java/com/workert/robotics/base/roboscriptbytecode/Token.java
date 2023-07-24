@@ -16,9 +16,9 @@ final class Token {
 		// Single-character tokens.
 		LEFT_PAREN(new Compiler.ParseRule(Compiler::grouping, Compiler::call, CALL)),
 		RIGHT_PAREN(empty()),
-		LEFT_BRACE(empty()),
+		LEFT_BRACE(new Compiler.ParseRule(Compiler::map, null, NONE)),
 		RIGHT_BRACE(empty()),
-		LEFT_BRACKET(empty()),
+		LEFT_BRACKET(new Compiler.ParseRule(null, Compiler::index, CALL)),
 		RIGHT_BRACKET(empty()),
 		COMMA(empty()),
 		DOT(empty()),

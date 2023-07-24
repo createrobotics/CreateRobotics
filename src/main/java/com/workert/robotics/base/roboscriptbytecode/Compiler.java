@@ -180,6 +180,20 @@ public final class Compiler {
 		}
 	}
 
+	void map(boolean canAssign) {
+		Map<Object, Object> map = new HashMap<>();
+		this.emitConstant(map);
+		if (!this.isNextToken(RIGHT_BRACE)) {
+			do {
+				this.expression();
+				this.consumeOrThrow(COLON, "Expect ':' after map key.");
+				this.expression();
+				this.emitByte(OP_PUT);
+			} while (this.checkAndConsumeIfMatches(COMMA));
+		}
+		this.consumeOrThrow(RIGHT_BRACE, "Expected '}' after map expression.");
+	}
+
 	private void addLocal(Token name) {
 		if (this.locals.size() == 256)
 			throw this.error("Too many local variables in function.");
@@ -229,6 +243,7 @@ public final class Compiler {
 			this.statement();
 		}
 	}
+
 
 	private void ifStatement() {
 		this.consumeOrThrow(LEFT_PAREN, "Expected '(' after 'if'.");
@@ -449,6 +464,12 @@ public final class Compiler {
 		}
 		this.consumeOrThrow(RIGHT_PAREN, "Expected ')' after arguments.");
 		this.emitBytes(OP_CALL, arity);
+	}
+
+	void index(boolean canAssign) {
+		this.expression();
+		this.consumeOrThrow(RIGHT_BRACKET, "Expected ']' after expression");
+		this.emitByte(OP_GET);
 	}
 
 	void and(boolean canAssign) {
