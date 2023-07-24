@@ -27,9 +27,13 @@ public class OpCodeGenerator {
 		opCodes.add("OP_LESS");
 		opCodes.add("OP_LESS_EQUAL");
 		opCodes.add("OP_ADD");
-		opCodes.add("OP_INCREMENT");
+		opCodes.add("OP_INCREMENT_GLOBAL");
+		opCodes.add("OP_INCREMENT_LOCAL");
+		opCodes.add("OP_INCREMENT_LIST_MAP");
 		opCodes.add("OP_SUBTRACT");
-		opCodes.add("OP_DECREMENT");
+		opCodes.add("OP_DECREMENT_GLOBAL");
+		opCodes.add("OP_DECREMENT_LOCAL");
+		opCodes.add("OP_DECREMENT_LIST_MAP");
 		opCodes.add("OP_MULTIPLY");
 		opCodes.add("OP_DIVIDE");
 		opCodes.add("OP_MODULO");
@@ -44,7 +48,8 @@ public class OpCodeGenerator {
 		opCodes.add("OP_RETURN");
 		opCodes.add("OP_PUT");
 		opCodes.add("OP_LIST_ADD");
-		opCodes.add("OP_GET");
+		opCodes.add("OP_LIST_MAP_GET");
+		opCodes.add("OP_LIST_MAP_SET");
 		opCodes.add("OP_END");
 	}
 

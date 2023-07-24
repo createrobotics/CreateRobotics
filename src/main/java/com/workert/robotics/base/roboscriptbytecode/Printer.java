@@ -80,14 +80,26 @@ final class Printer {
 			case OP_ADD -> {
 				return simpleInstruction("OP_ADD", offset);
 			}
-			case OP_INCREMENT -> {
-				return byteInstruction("OP_INCREMENT", chunk, offset);
+			case OP_INCREMENT_GLOBAL -> {
+				return byteInstruction("OP_INCREMENT_GLOBAL", chunk, offset);
+			}
+			case OP_INCREMENT_LOCAL -> {
+				return byteInstruction("OP_INCREMENT_LOCAL", chunk, offset);
+			}
+			case OP_INCREMENT_LIST_MAP -> {
+				return simpleInstruction("OP_INCREMENT_LIST_MAP", offset);
 			}
 			case OP_SUBTRACT -> {
 				return simpleInstruction("OP_SUBTRACT", offset);
 			}
-			case OP_DECREMENT -> {
-				return byteInstruction("OP_DECREMENT", chunk, offset);
+			case OP_DECREMENT_GLOBAL -> {
+				return byteInstruction("OP_DECREMENT_GLOBAL", chunk, offset);
+			}
+			case OP_DECREMENT_LOCAL -> {
+				return byteInstruction("OP_DECREMENT_LOCAL", chunk, offset);
+			}
+			case OP_DECREMENT_LIST_MAP -> {
+				return simpleInstruction("OP_DECREMENT_LIST_MAP", offset);
 			}
 			case OP_MULTIPLY -> {
 				return simpleInstruction("OP_MULTIPLY", offset);
@@ -128,8 +140,11 @@ final class Printer {
 			case OP_LIST_ADD -> {
 				return simpleInstruction("OP_LIST_ADD", offset);
 			}
-			case OP_GET -> {
+			case OP_LIST_MAP_GET -> {
 				return simpleInstruction("OP_GET", offset);
+			}
+			case OP_LIST_MAP_SET -> {
+				return simpleInstruction("OP_SET", offset);
 			}
 			case OP_END -> {
 				return simpleInstruction("OP_END", offset);

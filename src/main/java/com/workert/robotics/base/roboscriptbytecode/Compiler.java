@@ -167,11 +167,12 @@ public final class Compiler {
 	void variable(boolean canAssign) {
 		byte variable = this.resolveLocal(this.previous);
 		if (variable != -1) { // inside a scope
-			this.emitVariable(OP_GET_LOCAL, OP_SET_LOCAL, variable, canAssign);
+			this.emitVariable(OP_GET_LOCAL, OP_SET_LOCAL, OP_INCREMENT_LOCAL, OP_DECREMENT_LOCAL, variable, canAssign);
 		} else { // outside a scope; global
 			if (this.globalVariableLookup.containsKey(this.previous.lexeme)) {
 				variable = this.globalVariableLookup.get(this.previous.lexeme);
-				this.emitVariable(OP_GET_GLOBAL, OP_SET_GLOBAL, variable, canAssign);
+				this.emitVariable(OP_GET_GLOBAL, OP_SET_GLOBAL, OP_INCREMENT_GLOBAL, OP_DECREMENT_GLOBAL, variable,
+						canAssign);
 			} else if (this.nativeFunctionLookup.containsKey(this.previous.lexeme)) {
 				variable = this.nativeFunctionLookup.get(this.previous.lexeme);
 				this.emitNativeFunction(this.previous, variable, canAssign);
@@ -346,45 +347,76 @@ public final class Compiler {
 	}
 
 
-	private void emitVariable(byte getOp, byte setOp, byte lookup, boolean canAssign) {
+	private void emitVariable(byte getOp, byte setOp, byte incrementOp, byte decrementOp, byte lookup, boolean canAssign) {
 		if (!canAssign) {
 			this.emitBytes(getOp, lookup);
+			return;
+		}
+		if (this.checkAndConsumeIfMatches(EQUAL)) {
+			this.expression();
+			this.emitBytes(setOp, lookup);
+		} else if (this.checkAndConsumeIfMatches
+				(PLUS_EQUAL, MINUS_EQUAL, STAR_EQUAL, SLASH_EQUAL, CARET_EQUAL, PERCENT_EQUAL)) {
+			Token.TokenType previousType = this.previous.type;
+			this.emitBytes(getOp, lookup);
+			this.expression();
+			byte emit = getAssignmentOperatorByte(previousType);
+			this.emitBytes(emit, setOp, lookup);
+			return;
+		}
+		if (this.checkAndConsumeIfMatches(PLUS_PLUS)) {
+			this.emitBytes(incrementOp, lookup);
+			return;
+		} else if (this.checkAndConsumeIfMatches(MINUS_MINUS)) {
+			this.emitBytes(decrementOp, lookup);
+			return;
+		}
+		this.emitBytes(getOp, lookup);
+	}
+
+	private void emitGetVariable(byte getOp, boolean canAssign) {
+		if (!canAssign) {
+			this.emitByte(getOp);
 			return;
 		}
 
 		if (this.checkAndConsumeIfMatches(EQUAL)) {
 			this.expression();
-			this.emitBytes(setOp, lookup);
+			this.emitByte(OP_LIST_MAP_SET);
 			return;
 		}
 
 		if (this.checkAndConsumeIfMatches
 				(PLUS_EQUAL, MINUS_EQUAL, STAR_EQUAL, SLASH_EQUAL, CARET_EQUAL, PERCENT_EQUAL)) {
-			this.emitBytes(getOp, lookup);
+			Token.TokenType previousType = this.previous.type;
+			this.emitBytes(getOp);
 			this.expression();
-			byte emit;
-			emit = switch (this.previous.type) {
-				case PLUS_EQUAL -> OP_ADD;
-				case MINUS_EQUAL -> OP_SUBTRACT;
-				case STAR_EQUAL -> OP_MULTIPLY;
-				case SLASH_EQUAL -> OP_DIVIDE;
-				case CARET_EQUAL -> OP_POWER;
-				case PERCENT_EQUAL -> OP_MODULO;
-				default -> throw new IllegalStateException("Unexpected value: " + this.previous.type);
-			};
-			this.emitBytes(emit, setOp, lookup);
+			byte emit = getAssignmentOperatorByte(previousType);
+			this.emitBytes(emit, OP_LIST_MAP_SET);
 			return;
 		}
-
 
 		if (this.checkAndConsumeIfMatches(PLUS_PLUS)) {
-			this.emitBytes(OP_INCREMENT, lookup);
+			this.emitBytes(OP_INCREMENT_LIST_MAP);
 			return;
 		} else if (this.checkAndConsumeIfMatches(MINUS_MINUS)) {
-			this.emitBytes(OP_DECREMENT, lookup);
+			this.emitBytes(OP_DECREMENT_LIST_MAP);
 			return;
 		}
-		this.emitBytes(getOp, lookup);
+		this.emitBytes(getOp);
+	}
+
+	private static byte getAssignmentOperatorByte(Token.TokenType previousType) {
+		return switch (previousType) {
+			case PLUS_EQUAL -> OP_ADD;
+			case MINUS_EQUAL -> OP_SUBTRACT;
+			case STAR_EQUAL -> OP_MULTIPLY;
+			case SLASH_EQUAL -> OP_DIVIDE;
+			case CARET_EQUAL -> OP_POWER;
+			case PERCENT_EQUAL -> OP_MODULO;
+			default -> throw new IllegalStateException("Unexpected value: " + previousType);
+		};
+
 	}
 
 	private void emitNativeFunction(Token name, byte lookup, boolean canAssign) {
@@ -481,7 +513,7 @@ public final class Compiler {
 	void index(boolean canAssign) {
 		this.expression();
 		this.consumeOrThrow(RIGHT_BRACKET, "Expected ']' after expression");
-		this.emitByte(OP_GET);
+		this.emitGetVariable(OP_LIST_MAP_GET, canAssign);
 	}
 
 	void and(boolean canAssign) {
@@ -586,7 +618,10 @@ public final class Compiler {
 
 	private boolean checkAndConsumeIfMatches(Token.TokenType... types) {
 		for (Token.TokenType type : types) {
-			if (this.current.type == type) return true;
+			if (this.current.type == type) {
+				this.advance();
+				return true;
+			}
 		}
 		return false;
 	}

@@ -122,7 +122,7 @@ final class VirtualMachine {
 				case OP_GREATER -> this.binaryOperation('>');
 				case OP_GREATER_EQUAL -> this.binaryOperation('g');
 				case OP_ADD -> this.binaryOperation('+');
-				case OP_INCREMENT -> {
+				case OP_INCREMENT_GLOBAL -> {
 					try {
 						byte b = this.readByte();
 						double previous = (double) this.globalVariables[b];
@@ -136,7 +136,61 @@ final class VirtualMachine {
 						}
 					}
 				}
-				case OP_DECREMENT -> {
+				case OP_INCREMENT_LOCAL -> {
+					try {
+						byte b = this.readByte();
+						double previous = (double) this.stack[this.basePointer + b];
+						this.globalVariables[b] = previous + 1;
+						this.pushStack(previous);
+					} catch (Throwable t) {
+						if (t instanceof IndexOutOfBoundsException) {
+							throw new RuntimeError("Undefined variable.");
+						} else if (t instanceof ClassCastException e) {
+							throw new RuntimeError("Incrementing variable must be a number.");
+						}
+					}
+				}
+				case OP_INCREMENT_LIST_MAP -> {
+					Object key = this.popStack();
+					Object gettable = this.popStack();
+
+					if (gettable instanceof Map map) {
+						try {
+							double previous = ((double) map.get(key));
+							map.put(key, previous + 1);
+							this.pushStack(previous);
+						} catch (ClassCastException e) {
+							throw new RuntimeError("Incrementing variable must be a number.");
+						}
+					} else if (gettable instanceof List list) {
+						try {
+							// i am deeply sorry for all the nesting, i didnt really try to make it look nice
+							// this is another copy paste
+							double d = (double) key;
+							if (isWhole(d) && !isNegative(d)) {
+								if (d >= list.size())
+									throw new RuntimeError("List index out of range of '" + (list.size() - 1) + "'.");
+
+								try {
+									double previous = ((double) list.get((int) Math.round(d)));
+									list.set((int) Math.round(d), previous + 1);
+									this.pushStack(previous);
+								} catch (ClassCastException e) {
+									throw new RuntimeError("Incrementing variable must be a number.");
+								}
+							} else {
+								throw new RuntimeError(
+										"Index value for list must be a whole number greater or equal to 0.");
+							}
+						} catch (ClassCastException e) {
+							throw new RuntimeError(
+									"Index value for list must be a whole number greater or equal to 0.");
+						}
+					} else {
+						throw new RuntimeError("Can only get objects from maps.");
+					}
+				}
+				case OP_DECREMENT_GLOBAL -> {
 					try {
 						byte b = this.readByte();
 						double previous = (double) this.globalVariables[b];
@@ -149,6 +203,61 @@ final class VirtualMachine {
 							throw new RuntimeError("Decrementing variable must be a number.");
 
 						}
+					}
+				}
+				case OP_DECREMENT_LOCAL -> {
+					try {
+						byte b = this.readByte();
+						double previous = (double) this.stack[this.basePointer + b];
+						this.globalVariables[b] = previous - 1;
+						this.pushStack(previous);
+					} catch (Throwable t) {
+						if (t instanceof IndexOutOfBoundsException) {
+							throw new RuntimeError("Undefined variable.");
+						} else if (t instanceof ClassCastException e) {
+							throw new RuntimeError("Decrementing variable must be a number.");
+
+						}
+					}
+				}
+				case OP_DECREMENT_LIST_MAP -> {
+					Object key = this.popStack();
+					Object gettable = this.popStack();
+
+					if (gettable instanceof Map map) {
+						try {
+							double previous = ((double) map.get(key));
+							map.put(key, previous - 1);
+							this.pushStack(previous);
+						} catch (ClassCastException e) {
+							throw new RuntimeError("Incrementing variable must be a number.");
+						}
+					} else if (gettable instanceof List list) {
+						try {
+							// i am deeply sorry for all the nesting, i didnt really try to make it look nice
+							// this is another copy paste
+							double d = (double) key;
+							if (isWhole(d) && !isNegative(d)) {
+								if (d >= list.size())
+									throw new RuntimeError("List index out of range of '" + (list.size() - 1) + "'.");
+
+								try {
+									double previous = ((double) list.get((int) Math.round(d)));
+									list.set((int) Math.round(d), previous - 1);
+									this.pushStack(previous);
+								} catch (ClassCastException e) {
+									throw new RuntimeError("Decrementing variable must be a number.");
+								}
+							} else {
+								throw new RuntimeError(
+										"Index value for list must be a whole number greater or equal to 0.");
+							}
+						} catch (ClassCastException e) {
+							throw new RuntimeError(
+									"Index value for list must be a whole number greater or equal to 0.");
+						}
+					} else {
+						throw new RuntimeError("Can only get objects from maps.");
 					}
 				}
 				case OP_SUBTRACT -> this.binaryOperation('-');
@@ -245,7 +354,7 @@ final class VirtualMachine {
 								"Can only use 'OP_LIST_PUT' with a list being the second to top in the stack.");
 					}
 				}
-				case OP_GET -> {
+				case OP_LIST_MAP_GET -> {
 					Object key = this.popStack();
 					Object gettable = this.popStack();
 
@@ -271,6 +380,36 @@ final class VirtualMachine {
 						}
 					} else {
 						throw new RuntimeError("Can only get objects from maps.");
+					}
+				}
+				case OP_LIST_MAP_SET -> {
+					Object value = this.popStack();
+					Object key = this.popStack();
+					Object settable = this.popStack();
+
+					this.pushStack(value);
+
+					if (settable instanceof Map map) {
+						// different here
+						map.put(key, value);
+					} else if (settable instanceof List list) {
+						try {
+
+							// also if you didnt notice this is almost copy paste
+							double d = (double) key;
+							if (isWhole(d) && !isNegative(d)) {
+								if (d >= list.size())
+									throw new RuntimeError("List index out of range of '" + (list.size() - 1) + "'.");
+								// its different right here though dont worry
+								list.set((int) Math.round(d), value);
+							} else {
+								throw new RuntimeError(
+										"Index value for list must be a whole number greater or equal to 0.");
+							}
+						} catch (ClassCastException e) {
+							throw new RuntimeError(
+									"Index value for list must be a whole number greater or equal to 0.");
+						}
 					}
 				}
 				case OP_END -> {
