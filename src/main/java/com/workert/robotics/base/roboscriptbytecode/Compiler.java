@@ -358,6 +358,10 @@ public final class Compiler {
 			this.expression();
 			this.emitByte(OP_POWER);
 			this.emitBytes(setOp, lookup);
+		} else if (this.checkAndConsumeIfMatches(PERCENT_EQUAL)) {
+			this.expression();
+			this.emitByte(OP_MODULO);
+			this.emitBytes(setOp, lookup);
 		}
 
 
@@ -414,6 +418,7 @@ public final class Compiler {
 			case MINUS -> this.emitByte(OP_SUBTRACT);
 			case STAR -> this.emitByte(OP_MULTIPLY);
 			case SLASH -> this.emitByte(OP_DIVIDE);
+			case PERCENT -> this.emitBytes(OP_MODULO);
 			case CARET -> this.emitByte(OP_POWER);
 			case GREATER -> this.emitByte(OP_GREATER);
 			case GREATER_EQUAL -> this.emitByte(OP_GREATER_EQUAL);

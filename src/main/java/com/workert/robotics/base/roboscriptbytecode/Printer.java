@@ -89,6 +89,9 @@ final class Printer {
 			case OP_DIVIDE -> {
 				return simpleInstruction("OP_DIVIDE", offset);
 			}
+			case OP_MODULO -> {
+				return simpleInstruction("OP_MODULO", offset);
+			}
 			case OP_NOT -> {
 				return simpleInstruction("OP_NOT", offset);
 			}

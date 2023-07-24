@@ -21,14 +21,15 @@ public interface OpCode {
     byte OP_SUBTRACT = 17;
     byte OP_MULTIPLY = 18;
     byte OP_DIVIDE = 19;
-    byte OP_POWER = 20;
-    byte OP_NOT = 21;
-    byte OP_NEGATE = 22;
-    byte OP_JUMP = 23;
-    byte OP_JUMP_IF_FALSE = 24;
-    byte OP_LOOP = 25;
-    byte OP_CALL = 26;
-    byte OP_GET_NATIVE = 27;
-    byte OP_RETURN = 28;
-    byte OP_END = 29;
+    byte OP_MODULO = 20;
+    byte OP_POWER = 21;
+    byte OP_NOT = 22;
+    byte OP_NEGATE = 23;
+    byte OP_JUMP = 24;
+    byte OP_JUMP_IF_FALSE = 25;
+    byte OP_LOOP = 26;
+    byte OP_CALL = 27;
+    byte OP_GET_NATIVE = 28;
+    byte OP_RETURN = 29;
+    byte OP_END = 30;
 }

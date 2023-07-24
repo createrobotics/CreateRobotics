@@ -30,6 +30,7 @@ public class OpCodeGenerator {
 		opCodes.add("OP_SUBTRACT");
 		opCodes.add("OP_MULTIPLY");
 		opCodes.add("OP_DIVIDE");
+		opCodes.add("OP_MODULO");
 		opCodes.add("OP_POWER");
 		opCodes.add("OP_NOT");
 		opCodes.add("OP_NEGATE");

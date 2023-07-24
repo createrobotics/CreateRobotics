@@ -27,7 +27,6 @@ final class Token {
 		STAR(new Compiler.ParseRule(null, Compiler::binary, FACTOR)),
 		SLASH(new Compiler.ParseRule(null, Compiler::binary, FACTOR)),
 
-		// these two need to be changed when i figure out where they are actually supposed to go in the order of operations
 		PERCENT(new Compiler.ParseRule(null, Compiler::binary, FACTOR)),
 		CARET(new Compiler.ParseRule(null, Compiler::binary, POWER)),
 
@@ -46,6 +45,7 @@ final class Token {
 		STAR_EQUAL(empty()),
 		SLASH_EQUAL(empty()),
 		CARET_EQUAL(empty()),
+		PERCENT_EQUAL(empty()),
 		GREATER(new Compiler.ParseRule(null, Compiler::binary, COMPARISON)),
 		GREATER_EQUAL(new Compiler.ParseRule(null, Compiler::binary, COMPARISON)),
 		LESS(new Compiler.ParseRule(null, Compiler::binary, COMPARISON)),

@@ -122,6 +122,7 @@ final class VirtualMachine {
 				case OP_SUBTRACT -> this.binaryOperation('-');
 				case OP_MULTIPLY -> this.binaryOperation('*');
 				case OP_DIVIDE -> this.binaryOperation('/');
+				case OP_MODULO -> this.binaryOperation('%');
 				case OP_POWER -> this.binaryOperation('^');
 				case OP_NOT -> this.stack[this.stackSize - 1] = !truthy(this.peekStack());
 				case OP_NEGATE -> {
@@ -324,12 +325,21 @@ final class VirtualMachine {
 							"Division must be between two numbers, instead got '" + a.getClass() + "' and '" + b.getClass() + "'.");
 				}
 			}
+			case '%' -> {
+				try {
+					if ((double) b == 0) throw new RuntimeError("Cannot divide / modulo by 0.");
+					this.pushStack((double) a % (double) b);
+				} catch (ClassCastException e) {
+					throw new RuntimeError(
+							"Modulo must be between two numbers, instead got '" + a.getClass() + "' and '" + b.getClass() + "'.");
+				}
+			}
 			case '^' -> {
 				try {
 					this.pushStack(Math.pow((double) a, (double) b));
 				} catch (ClassCastException e) {
 					throw new RuntimeError(
-							"Division must be between two numbers, instead got '" + a.getClass() + "' and '" + b.getClass() + "'.");
+							"Exponents must be between two numbers, instead got '" + a.getClass() + "' and '" + b.getClass() + "'.");
 				}
 			}
 			case '>' -> {

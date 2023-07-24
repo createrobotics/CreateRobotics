@@ -89,7 +89,7 @@ final class Scanner {
 							this.consumeIfNextCharMatches('=') ? SLASH_EQUAL : SLASH);
 				}
 			case '%':
-				return this.addToken(PERCENT);
+				return this.addToken(this.consumeIfNextCharMatches('=') ? PERCENT_EQUAL : PERCENT);
 			case '^':
 				return this.addToken(this.consumeIfNextCharMatches('=') ? CARET_EQUAL : CARET);
 			case ':':
