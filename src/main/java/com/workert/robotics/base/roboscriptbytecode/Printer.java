@@ -95,6 +95,9 @@ final class Printer {
 			case OP_NEGATE -> {
 				return simpleInstruction("OP_NEGATE", offset);
 			}
+			case OP_POWER -> {
+				return simpleInstruction("OP_POWER", offset);
+			}
 			case OP_JUMP -> {
 				return jumpInstruction("OP_JUMP", 1, chunk, offset);
 			}

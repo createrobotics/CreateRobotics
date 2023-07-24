@@ -29,7 +29,7 @@ final class Token {
 
 		// these two need to be changed when i figure out where they are actually supposed to go in the order of operations
 		PERCENT(new Compiler.ParseRule(null, Compiler::binary, FACTOR)),
-		CARET(new Compiler.ParseRule(null, Compiler::binary, FACTOR)),
+		CARET(new Compiler.ParseRule(null, Compiler::binary, POWER)),
 
 		COLON(empty()),
 		SEMICOLON(empty()),

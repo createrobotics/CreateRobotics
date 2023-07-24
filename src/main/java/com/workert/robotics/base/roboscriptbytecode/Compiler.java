@@ -335,33 +335,32 @@ public final class Compiler {
 			this.expression();
 			this.emitBytes(setOp, lookup);
 			return;
-		} else if (this.checkAndConsumeIfMatches(PLUS_EQUAL)) {
-			this.emitBytes(getOp, lookup);
+		}
+		this.emitBytes(getOp, lookup);
+
+		if (this.checkAndConsumeIfMatches(PLUS_EQUAL)) {
 			this.expression();
 			this.emitByte(OP_ADD);
 			this.emitBytes(setOp, lookup);
-			return;
 		} else if (this.checkAndConsumeIfMatches(MINUS_EQUAL)) {
-			this.emitBytes(getOp, lookup);
 			this.expression();
 			this.emitByte(OP_SUBTRACT);
 			this.emitBytes(setOp, lookup);
-			return;
 		} else if (this.checkAndConsumeIfMatches(STAR_EQUAL)) {
-			this.emitBytes(getOp, lookup);
 			this.expression();
 			this.emitByte(OP_MULTIPLY);
 			this.emitBytes(setOp, lookup);
-			return;
 		} else if (this.checkAndConsumeIfMatches(SLASH_EQUAL)) {
-			this.emitBytes(getOp, lookup);
 			this.expression();
 			this.emitByte(OP_DIVIDE);
 			this.emitBytes(setOp, lookup);
-			return;
+		} else if (this.checkAndConsumeIfMatches(CARET_EQUAL)) {
+			this.expression();
+			this.emitByte(OP_POWER);
+			this.emitBytes(setOp, lookup);
 		}
 
-		this.emitBytes(getOp, lookup);
+
 	}
 
 	private void emitNativeFunction(Token name, byte lookup, boolean canAssign) {
@@ -415,6 +414,7 @@ public final class Compiler {
 			case MINUS -> this.emitByte(OP_SUBTRACT);
 			case STAR -> this.emitByte(OP_MULTIPLY);
 			case SLASH -> this.emitByte(OP_DIVIDE);
+			case CARET -> this.emitByte(OP_POWER);
 			case GREATER -> this.emitByte(OP_GREATER);
 			case GREATER_EQUAL -> this.emitByte(OP_GREATER_EQUAL);
 			case LESS -> this.emitByte(OP_LESS);
@@ -658,8 +658,9 @@ public final class Compiler {
 		byte TERM = 6; // + -
 		byte FACTOR = 7; // * /
 		byte UNARY = 8; // ! -
-		byte CALL = 9; // . ()
-		byte PRIMARY = 10;
+		byte POWER = 9; // ^
+		byte CALL = 10; // . ()
+		byte PRIMARY = 11;
 	}
 
 

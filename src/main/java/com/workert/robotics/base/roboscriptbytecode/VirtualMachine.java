@@ -122,6 +122,7 @@ final class VirtualMachine {
 				case OP_SUBTRACT -> this.binaryOperation('-');
 				case OP_MULTIPLY -> this.binaryOperation('*');
 				case OP_DIVIDE -> this.binaryOperation('/');
+				case OP_POWER -> this.binaryOperation('^');
 				case OP_NOT -> this.stack[this.stackSize - 1] = !truthy(this.peekStack());
 				case OP_NEGATE -> {
 					try {
@@ -316,7 +317,16 @@ final class VirtualMachine {
 			}
 			case '/' -> {
 				try {
+					if ((double) b == 0) throw new RuntimeError("Cannot divide by 0.");
 					this.pushStack((double) a / (double) b);
+				} catch (ClassCastException e) {
+					throw new RuntimeError(
+							"Division must be between two numbers, instead got '" + a.getClass() + "' and '" + b.getClass() + "'.");
+				}
+			}
+			case '^' -> {
+				try {
+					this.pushStack(Math.pow((double) a, (double) b));
 				} catch (ClassCastException e) {
 					throw new RuntimeError(
 							"Division must be between two numbers, instead got '" + a.getClass() + "' and '" + b.getClass() + "'.");
