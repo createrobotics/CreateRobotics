@@ -27,7 +27,9 @@ public class OpCodeGenerator {
 		opCodes.add("OP_LESS");
 		opCodes.add("OP_LESS_EQUAL");
 		opCodes.add("OP_ADD");
+		opCodes.add("OP_INCREMENT");
 		opCodes.add("OP_SUBTRACT");
+		opCodes.add("OP_DECREMENT");
 		opCodes.add("OP_MULTIPLY");
 		opCodes.add("OP_DIVIDE");
 		opCodes.add("OP_MODULO");

@@ -336,35 +336,34 @@ public final class Compiler {
 			this.emitBytes(setOp, lookup);
 			return;
 		}
-		this.emitBytes(getOp, lookup);
 
-		if (this.checkAndConsumeIfMatches(PLUS_EQUAL)) {
+		if (this.checkAndConsumeIfMatches
+				(PLUS_EQUAL, MINUS_EQUAL, STAR_EQUAL, SLASH_EQUAL, CARET_EQUAL, PERCENT_EQUAL)) {
+			this.emitBytes(getOp, lookup);
 			this.expression();
-			this.emitByte(OP_ADD);
-			this.emitBytes(setOp, lookup);
-		} else if (this.checkAndConsumeIfMatches(MINUS_EQUAL)) {
-			this.expression();
-			this.emitByte(OP_SUBTRACT);
-			this.emitBytes(setOp, lookup);
-		} else if (this.checkAndConsumeIfMatches(STAR_EQUAL)) {
-			this.expression();
-			this.emitByte(OP_MULTIPLY);
-			this.emitBytes(setOp, lookup);
-		} else if (this.checkAndConsumeIfMatches(SLASH_EQUAL)) {
-			this.expression();
-			this.emitByte(OP_DIVIDE);
-			this.emitBytes(setOp, lookup);
-		} else if (this.checkAndConsumeIfMatches(CARET_EQUAL)) {
-			this.expression();
-			this.emitByte(OP_POWER);
-			this.emitBytes(setOp, lookup);
-		} else if (this.checkAndConsumeIfMatches(PERCENT_EQUAL)) {
-			this.expression();
-			this.emitByte(OP_MODULO);
-			this.emitBytes(setOp, lookup);
+			byte emit;
+			emit = switch (this.previous.type) {
+				case PLUS_EQUAL -> OP_ADD;
+				case MINUS_EQUAL -> OP_SUBTRACT;
+				case STAR_EQUAL -> OP_MULTIPLY;
+				case SLASH_EQUAL -> OP_DIVIDE;
+				case CARET_EQUAL -> OP_POWER;
+				case PERCENT_EQUAL -> OP_MODULO;
+				default -> throw new IllegalStateException("Unexpected value: " + this.previous.type);
+			};
+			this.emitBytes(emit, setOp, lookup);
+			return;
 		}
 
 
+		if (this.checkAndConsumeIfMatches(PLUS_PLUS)) {
+			this.emitBytes(OP_INCREMENT, lookup);
+			return;
+		} else if (this.checkAndConsumeIfMatches(MINUS_MINUS)) {
+			this.emitBytes(OP_DECREMENT, lookup);
+			return;
+		}
+		this.emitBytes(getOp, lookup);
 	}
 
 	private void emitNativeFunction(Token name, byte lookup, boolean canAssign) {
@@ -544,6 +543,13 @@ public final class Compiler {
 		if (this.current.type != type) return false;
 		this.advance();
 		return true;
+	}
+
+	private boolean checkAndConsumeIfMatches(Token.TokenType... types) {
+		for (Token.TokenType type : types) {
+			if (this.current.type == type) return true;
+		}
+		return false;
 	}
 
 	private boolean isNextToken(Token.TokenType type) {

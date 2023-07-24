@@ -119,6 +119,35 @@ final class VirtualMachine {
 				case OP_GREATER -> this.binaryOperation('>');
 				case OP_GREATER_EQUAL -> this.binaryOperation('g');
 				case OP_ADD -> this.binaryOperation('+');
+				case OP_INCREMENT -> {
+					try {
+						byte b = this.readByte();
+						double previous = (double) this.globalVariables[b];
+						this.globalVariables[b] = previous + 1;
+						this.pushStack(previous);
+					} catch (Throwable t) {
+						if (t instanceof IndexOutOfBoundsException) {
+							throw new RuntimeError("Undefined variable.");
+						} else if (t instanceof ClassCastException e) {
+							throw new RuntimeError("Incrementing variable must be a number.");
+						}
+					}
+				}
+				case OP_DECREMENT -> {
+					try {
+						byte b = this.readByte();
+						double previous = (double) this.globalVariables[b];
+						this.globalVariables[b] = previous - 1;
+						this.pushStack(previous);
+					} catch (Throwable t) {
+						if (t instanceof IndexOutOfBoundsException) {
+							throw new RuntimeError("Undefined variable.");
+						} else if (t instanceof ClassCastException e) {
+							throw new RuntimeError("Decrementing variable must be a number.");
+
+						}
+					}
+				}
 				case OP_SUBTRACT -> this.binaryOperation('-');
 				case OP_MULTIPLY -> this.binaryOperation('*');
 				case OP_DIVIDE -> this.binaryOperation('/');
@@ -166,9 +195,11 @@ final class VirtualMachine {
 					}
 
 					if (!(callable instanceof RoboScriptFunction function))
-						throw new RuntimeError("Can only call functions, instead got '" + callable.getClass() + "'.");
+						throw new RuntimeError(
+								"Can only call functions, instead got '" + callable.getClass() + "'.");
 					if (arity != function.arity)
-						throw new RuntimeError("Expected '" + function.arity + "' arguments but got '" + arity + "'.");
+						throw new RuntimeError(
+								"Expected '" + function.arity + "' arguments but got '" + arity + "'.");
 
 					// push return address and base pointer
 					this.pushStack(this.instructionPointer);
