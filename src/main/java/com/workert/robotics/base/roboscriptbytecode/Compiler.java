@@ -164,17 +164,6 @@ public final class Compiler {
 		this.addLocal(name);
 	}
 
-	private void declareVariable(Token name) {
-		if (this.scopeDepth == 0) return;
-		for (int i = this.locals.size() - 1; i >= 0; i--) {
-			Local local = this.locals.get(i);
-			if (local.depth != -1 && local.depth < this.scopeDepth) break;
-			if (name.lexeme.equals(local.name.lexeme))
-				throw this.error("A variable with the name '" + name.lexeme + "' already exists in the current scope");
-		}
-		this.addLocal(name);
-	}
-
 	void variable(boolean canAssign) {
 		byte variable = this.resolveLocal(this.previous);
 		if (variable != -1) { // inside a scope
