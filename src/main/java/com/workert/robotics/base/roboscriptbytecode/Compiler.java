@@ -31,11 +31,6 @@ public final class Compiler {
 		this.roboScriptInstance = roboScriptInstance;
 	}
 
-
-	private void initializeNativeFunctionLookup() {
-
-	}
-
 	void compile(String source) {
 		System.out.println("Started compiling.");
 		long timeBefore = System.currentTimeMillis();
