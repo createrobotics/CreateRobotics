@@ -326,11 +326,42 @@ public final class Compiler {
 
 
 	private void emitVariable(byte getOp, byte setOp, byte lookup, boolean canAssign) {
-		if (canAssign && this.checkAndConsumeIfMatches(EQUAL)) {
+		if (!canAssign) {
+			this.emitBytes(getOp, lookup);
+			return;
+		}
+
+		if (this.checkAndConsumeIfMatches(EQUAL)) {
 			this.expression();
 			this.emitBytes(setOp, lookup);
-		} else
+			return;
+		} else if (this.checkAndConsumeIfMatches(PLUS_EQUAL)) {
 			this.emitBytes(getOp, lookup);
+			this.expression();
+			this.emitByte(OP_ADD);
+			this.emitBytes(setOp, lookup);
+			return;
+		} else if (this.checkAndConsumeIfMatches(MINUS_EQUAL)) {
+			this.emitBytes(getOp, lookup);
+			this.expression();
+			this.emitByte(OP_SUBTRACT);
+			this.emitBytes(setOp, lookup);
+			return;
+		} else if (this.checkAndConsumeIfMatches(STAR_EQUAL)) {
+			this.emitBytes(getOp, lookup);
+			this.expression();
+			this.emitByte(OP_MULTIPLY);
+			this.emitBytes(setOp, lookup);
+			return;
+		} else if (this.checkAndConsumeIfMatches(SLASH_EQUAL)) {
+			this.emitBytes(getOp, lookup);
+			this.expression();
+			this.emitByte(OP_DIVIDE);
+			this.emitBytes(setOp, lookup);
+			return;
+		}
+
+		this.emitBytes(getOp, lookup);
 	}
 
 	private void emitNativeFunction(Token name, byte lookup, boolean canAssign) {
