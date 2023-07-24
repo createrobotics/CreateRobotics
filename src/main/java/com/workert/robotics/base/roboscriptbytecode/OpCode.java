@@ -30,5 +30,4 @@ public interface OpCode {
     byte OP_GET_NATIVE = 26;
     byte OP_RETURN = 27;
     byte OP_END = 28;
-    byte OP_LOG = 29;
 }

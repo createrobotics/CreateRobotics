@@ -113,12 +113,6 @@ final class Printer {
 			case OP_END -> {
 				return simpleInstruction("OP_END", offset);
 			}
-
-			case OP_LOG -> {
-				return simpleInstruction("OP_LOG", offset);
-			}
-
-
 			default -> {
 				System.err.println("Unknown opcode '" + offset + "'.");
 				return offset + 1;

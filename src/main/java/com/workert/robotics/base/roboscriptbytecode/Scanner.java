@@ -247,11 +247,6 @@ final class Scanner {
 						}
 					}
 			}
-
-
-			case 'l' -> {
-				return this.checkKeyword(1, 2, "og", LOG);
-			}
 		}
 
 		return IDENTIFIER;

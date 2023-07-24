@@ -189,10 +189,6 @@ final class VirtualMachine {
 				case OP_END -> {
 					return;
 				}
-
-				case OP_LOG -> {
-					System.out.println(this.popStack());
-				}
 			}
 		}
 	}

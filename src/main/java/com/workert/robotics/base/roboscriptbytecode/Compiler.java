@@ -210,10 +210,6 @@ public final class Compiler {
 			this.whileStatement();
 		} else if (this.checkAndConsumeIfMatches(FOR)) {
 			this.forStatement();
-		} else if (this.checkAndConsumeIfMatches(LOG)) {
-			this.expression();
-			this.consumeOrThrow(SEMICOLON, "Expected ';' after expression.");
-			this.emitByte(OP_LOG);
 		} else if (this.checkAndConsumeIfMatches(RETURN)) {
 			this.returnStatement();
 		} else {
