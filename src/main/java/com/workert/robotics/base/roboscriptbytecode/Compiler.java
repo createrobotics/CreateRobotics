@@ -200,11 +200,7 @@ public final class Compiler {
 	}
 
 	private void statement() {
-		if (this.checkAndConsumeIfMatches(LEFT_BRACE)) {
-			this.beginScope();
-			this.block();
-			this.endScope();
-		} else if (this.checkAndConsumeIfMatches(IF)) {
+		if (this.checkAndConsumeIfMatches(IF)) {
 			this.ifStatement();
 		} else if (this.checkAndConsumeIfMatches(WHILE)) {
 			this.whileStatement();
@@ -224,17 +220,27 @@ public final class Compiler {
 		this.consumeOrThrow(RIGHT_BRACE, "Expected '}' after block.");
 	}
 
+	private void statementOrBlock() {
+		if (this.checkAndConsumeIfMatches(LEFT_BRACE)) {
+			this.beginScope();
+			this.block();
+			this.endScope();
+		} else {
+			this.statement();
+		}
+	}
+
 	private void ifStatement() {
 		this.consumeOrThrow(LEFT_PAREN, "Expected '(' after 'if'.");
 		this.expression();
 		this.consumeOrThrow(RIGHT_PAREN, "Expected ')' after condition.");
 		int thenJump = this.emitJump(OP_JUMP_IF_FALSE);
 		this.emitByte(OP_POP);
-		this.statement();
+		this.statementOrBlock();
 		int elseJump = this.emitJump(OP_JUMP);
 		this.patchJump(thenJump);
 		this.emitByte(OP_POP);
-		if (this.checkAndConsumeIfMatches(ELSE)) this.statement();
+		if (this.checkAndConsumeIfMatches(ELSE)) this.statementOrBlock();
 		this.patchJump(elseJump);
 	}
 
@@ -245,7 +251,7 @@ public final class Compiler {
 		this.consumeOrThrow(RIGHT_PAREN, "Expected ')' after condition.");
 		int exitJump = this.emitJump(OP_JUMP_IF_FALSE);
 		this.emitByte(OP_POP);
-		this.statement();
+		this.statementOrBlock();
 		this.emitLoop(loopStart);
 		this.patchJump(exitJump);
 		this.emitByte(OP_POP);
@@ -280,7 +286,7 @@ public final class Compiler {
 			loopStart = incrementStart;
 			this.patchJump(bodyJump);
 		}
-		this.statement();
+		this.statementOrBlock();
 		this.emitLoop(loopStart);
 		if (exitJump != -1) {
 			this.patchJump(exitJump);
