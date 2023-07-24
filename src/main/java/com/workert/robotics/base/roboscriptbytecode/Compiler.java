@@ -402,6 +402,18 @@ public final class Compiler {
 		this.consumeOrThrow(RIGHT_PAREN, "Expected ')' after expression.");
 	}
 
+	void list(boolean canAssign) {
+		List<Object> list = new ArrayList<>();
+		this.emitConstant(list);
+		if (!this.isNextToken(RIGHT_BRACKET)) {
+			do {
+				this.expression();
+				this.emitByte(OP_LIST_ADD);
+			} while (this.checkAndConsumeIfMatches(COMMA));
+		}
+		this.consumeOrThrow(RIGHT_BRACKET, "Expected ']' after map expression.");
+	}
+
 
 	void number(boolean canAssign) {
 		double value = Double.parseDouble(this.previous.lexeme);

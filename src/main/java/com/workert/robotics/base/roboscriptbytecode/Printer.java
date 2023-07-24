@@ -125,6 +125,9 @@ final class Printer {
 			case OP_PUT -> {
 				return simpleInstruction("OP_PUT", offset);
 			}
+			case OP_LIST_ADD -> {
+				return simpleInstruction("OP_LIST_ADD", offset);
+			}
 			case OP_GET -> {
 				return simpleInstruction("OP_GET", offset);
 			}

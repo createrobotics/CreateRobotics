@@ -1,4 +1,5 @@
 package com.workert.robotics.base.roboscriptbytecode;
+import java.util.List;
 import java.util.Map;
 
 import static com.workert.robotics.base.roboscriptbytecode.OpCode.*;
@@ -229,9 +230,20 @@ final class VirtualMachine {
 					if (puttable instanceof Map map) {
 						map.put(key, value);
 					} else {
-						throw new RuntimeError("Can only put a key and value into a map.");
+						throw new RuntimeError(
+								"Can only use 'OP_MAP_PUT' with a list being the third to top in the stack.");
 					}
 
+				}
+				case OP_LIST_ADD -> {
+					try {
+						Object value = this.popStack();
+						List<Object> list = (List<Object>) this.peekStack();
+						list.add(value);
+					} catch (ClassCastException e) {
+						throw new IllegalArgumentException(
+								"Can only use 'OP_LIST_PUT' with a list being the second to top in the stack.");
+					}
 				}
 				case OP_GET -> {
 					Object key = this.popStack();
@@ -239,6 +251,24 @@ final class VirtualMachine {
 
 					if (gettable instanceof Map map) {
 						this.pushStack(map.get(key));
+					} else if (gettable instanceof List list) {
+						try {
+
+							// i am deeply sorry for all the nesting, i didnt really try to make it look nice
+
+							double d = (double) key;
+							if (isWhole(d) && !isNegative(d)) {
+								if (d >= list.size())
+									throw new RuntimeError("List index out of range of '" + (list.size() - 1) + "'.");
+								this.pushStack(list.get((int) Math.round(d)));
+							} else {
+								throw new RuntimeError(
+										"Index value for list must be a whole number greater or equal to 0.");
+							}
+						} catch (ClassCastException e) {
+							throw new RuntimeError(
+									"Index value for list must be a whole number greater or equal to 0.");
+						}
 					} else {
 						throw new RuntimeError("Can only get objects from maps.");
 					}
@@ -446,6 +476,32 @@ final class VirtualMachine {
 		return true;
 	}
 
+	/**
+	 * Checks if a double value is a whole number
+	 *
+	 * @param d Double being checked for a whole number
+	 * @return The boolean value of the double being a whole number.
+	 */
+	private static boolean isWhole(double d) {
+		return d == Math.floor(d);
+	}
+
+	/**
+	 * Checks if a double value is negative
+	 *
+	 * @param d Double being checked for a negative value.
+	 * @return The boolean value of the double being negative
+	 */
+	private static boolean isNegative(double d) {
+		return d < 0;
+	}
+
+	/**
+	 * Gets a string value for an object passed in.
+	 *
+	 * @param object The object being stringified.
+	 * @return The string value of the object.
+	 */
 	public static String stringify(Object object) {
 		if (object == null) return "null";
 

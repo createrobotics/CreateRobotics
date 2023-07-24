@@ -43,6 +43,7 @@ public class OpCodeGenerator {
 		opCodes.add("OP_GET_NATIVE");
 		opCodes.add("OP_RETURN");
 		opCodes.add("OP_PUT");
+		opCodes.add("OP_LIST_ADD");
 		opCodes.add("OP_GET");
 		opCodes.add("OP_END");
 	}
