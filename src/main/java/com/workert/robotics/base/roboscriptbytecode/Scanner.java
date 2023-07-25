@@ -48,7 +48,7 @@ final class Scanner {
 	Token scanToken() {
 		this.skipWhiteSpace();
 		this.start = this.current;
-		if (this.isAtEnd()) return new Token(EOF, "", this.line);
+		if (this.isAtEnd()) return new Token(EOF, "", this.line + 1);
 		char c = this.consumeCurrentChar();
 		switch (c) {
 			case '(':

@@ -17,8 +17,9 @@ public abstract class RoboScript {
 		this.vm.interpret(c.chunk);
 	}
 
-
+	
 	void defineNativeFunctions(Compiler c) {
+		// print(arg)
 		this.defineNativeFunction("print", 1, new NativeFunction() {
 			@Override
 			public Object call(VirtualMachine vm) {

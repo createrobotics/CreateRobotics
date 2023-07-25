@@ -54,7 +54,7 @@ public final class Compiler {
 
 	private void expressionStatement() {
 		this.expression();
-		this.consumeOrThrow(SEMICOLON, "Expected ';' after expression.");
+		this.consumeOrInsertSemicolon("Expected ';' or new line after expression.");
 		if (this.emitPop)
 			this.emitByte(OP_POP);
 		this.emitPop = true;
@@ -84,7 +84,7 @@ public final class Compiler {
 		} else {
 			this.emitByte(OP_NULL);
 		}
-		this.consumeOrThrow(SEMICOLON, "Expected ';' after variable declaration.");
+		this.consumeOrInsertSemicolon("Expected ';' or new line after variable declaration.");
 
 		this.defineVariable(global, name);
 	}
@@ -308,7 +308,7 @@ public final class Compiler {
 			return;
 		}
 		this.expression();
-		this.consumeOrThrow(SEMICOLON, "Expected semicolon after return expression.");
+		this.consumeOrInsertSemicolon("Expected ';' or new line after return expression.");
 		this.emitByte(OP_RETURN);
 	}
 
@@ -588,12 +588,24 @@ public final class Compiler {
 		this.current = this.scanner.scanToken();
 		if (this.current.type == ERROR)
 			throw this.errorAtCurrent(this.current.lexeme);
-
 	}
+
 
 	private void consumeOrThrow(Token.TokenType type, String message) {
 		if (this.current.type == type) {
 			this.advance();
+			return;
+		}
+		throw this.errorAtCurrent(message);
+	}
+
+	private void consumeOrInsertSemicolon(String message) {
+		if (this.current.type == SEMICOLON) {
+			this.advance();
+			return;
+		} else if (this.previous.line < this.current.line) {
+			return;
+		} else if (this.isNextToken(RIGHT_BRACE)) {
 			return;
 		}
 		throw this.errorAtCurrent(message);
@@ -606,17 +618,24 @@ public final class Compiler {
 	}
 
 	private boolean checkAndConsumeIfMatches(Token.TokenType... types) {
-		for (Token.TokenType type : types) {
-			if (this.current.type == type) {
-				this.advance();
-				return true;
-			}
+		if (this.isNextToken(types)) {
+			this.advance();
+			return true;
 		}
 		return false;
 	}
 
 	private boolean isNextToken(Token.TokenType type) {
 		return this.current.type == type;
+	}
+
+	private boolean isNextToken(Token.TokenType... types) {
+		for (Token.TokenType type : types) {
+			if (this.current.type == type) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 
