@@ -48,7 +48,7 @@ final class Chunk {
 	}
 
 	Object getConstant(int i) {
-		return this.constants.get(i & 0xFF);
+		return this.constants.get(Math.abs(i));
 	}
 
 
