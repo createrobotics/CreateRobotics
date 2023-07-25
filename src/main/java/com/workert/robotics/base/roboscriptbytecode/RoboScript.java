@@ -14,14 +14,11 @@ public abstract class RoboScript {
 		if (this.hadError) {
 			return;
 		}
-		Printer p = new Printer();
-		p.disassembleChunk(c.chunk, "From source");
 		this.vm.interpret(c.chunk);
 	}
 
 
 	void defineNativeFunctions(Compiler c) {
-		// print(arg)
 		this.defineNativeFunction("print", 1, new NativeFunction() {
 			@Override
 			public Object call(VirtualMachine vm) {
