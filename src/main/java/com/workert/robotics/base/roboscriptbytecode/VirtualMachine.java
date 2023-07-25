@@ -355,16 +355,19 @@ final class VirtualMachine {
 					}
 				}
 				case OP_LIST_MAP_GET -> {
-					Object key = this.popStack();
-					Object gettable = this.popStack();
+					byte keep = this.readByte();
+					Object key = this.peekStack();
+					Object gettable = this.peekStack(1);
+
+					if (keep == 0) {
+						key = this.popStack();
+						gettable = this.popStack();
+					}
 
 					if (gettable instanceof Map map) {
 						this.pushStack(map.get(key));
 					} else if (gettable instanceof List list) {
 						try {
-
-							// i am deeply sorry for all the nesting, i didnt really try to make it look nice
-
 							double d = (double) key;
 							if (isWhole(d) && !isNegative(d)) {
 								if (d >= list.size())
@@ -395,12 +398,12 @@ final class VirtualMachine {
 					} else if (settable instanceof List list) {
 						try {
 
-							// also if you didnt notice this is almost copy paste
+							// this is almost copy paste
 							double d = (double) key;
 							if (isWhole(d) && !isNegative(d)) {
 								if (d >= list.size())
 									throw new RuntimeError("List index out of range of '" + (list.size() - 1) + "'.");
-								// its different right here though dont worry
+								// different here
 								list.set((int) Math.round(d), value);
 							} else {
 								throw new RuntimeError(

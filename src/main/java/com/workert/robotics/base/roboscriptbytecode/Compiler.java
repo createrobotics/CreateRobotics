@@ -351,10 +351,10 @@ public final class Compiler {
 		if (!canAssign) {
 			this.emitBytes(getOp, lookup);
 			return;
-		}
-		if (this.checkAndConsumeIfMatches(EQUAL)) {
+		} else if (this.checkAndConsumeIfMatches(EQUAL)) {
 			this.expression();
 			this.emitBytes(setOp, lookup);
+			return;
 		} else if (this.checkAndConsumeIfMatches
 				(PLUS_EQUAL, MINUS_EQUAL, STAR_EQUAL, SLASH_EQUAL, CARET_EQUAL, PERCENT_EQUAL)) {
 			Token.TokenType previousType = this.previous.type;
@@ -376,7 +376,7 @@ public final class Compiler {
 
 	private void emitGetVariable(byte getOp, boolean canAssign) {
 		if (!canAssign) {
-			this.emitByte(getOp);
+			this.emitBytes(getOp, (byte) 0);
 			return;
 		}
 
@@ -389,7 +389,7 @@ public final class Compiler {
 		if (this.checkAndConsumeIfMatches
 				(PLUS_EQUAL, MINUS_EQUAL, STAR_EQUAL, SLASH_EQUAL, CARET_EQUAL, PERCENT_EQUAL)) {
 			Token.TokenType previousType = this.previous.type;
-			this.emitBytes(getOp);
+			this.emitBytes(getOp, (byte) 1);
 			this.expression();
 			byte emit = getAssignmentOperatorByte(previousType);
 			this.emitBytes(emit, OP_LIST_MAP_SET);
@@ -403,7 +403,7 @@ public final class Compiler {
 			this.emitBytes(OP_DECREMENT_LIST_MAP);
 			return;
 		}
-		this.emitBytes(getOp);
+		this.emitBytes(getOp, (byte) 0);
 	}
 
 	private static byte getAssignmentOperatorByte(Token.TokenType previousType) {
