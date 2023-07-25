@@ -14,8 +14,6 @@ public abstract class RoboScript {
 		if (this.hadError) {
 			return;
 		}
-		Printer p = new Printer();
-		p.disassembleChunk(c.chunk, "From source");
 		this.vm.interpret(c.chunk);
 	}
 
