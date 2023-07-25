@@ -15,5 +15,4 @@ public class ClockcopterRenderer extends MobRenderer<Clockcopter, ClockcopterMod
 	public ResourceLocation getTextureLocation(Clockcopter pEntity) {
 		return new ResourceLocation(Robotics.MOD_ID, "textures/entity/clockcopter.png");
 	}
-
 }

@@ -4,6 +4,8 @@ import com.tterrag.registrate.util.entry.EntityEntry;
 import com.workert.robotics.Robotics;
 import com.workert.robotics.content.robotics.clockcopter.Clockcopter;
 import com.workert.robotics.content.robotics.clockcopter.ClockcopterRenderer;
+import com.workert.robotics.content.robotics.flyingtoolbox.FlyingToolbox;
+import com.workert.robotics.content.robotics.flyingtoolbox.FlyingToolboxRenderer;
 import com.workert.robotics.content.utility.extendoboots.ExtendOBoots;
 import com.workert.robotics.content.utility.extendoboots.ExtendOBootsRenderer;
 import com.workert.robotics.unused.codedrone.CodeDrone;
@@ -60,4 +62,14 @@ public class EntityRegistry {
 			.renderer(() -> ExtendOBootsRenderer::new)
 			.register();
 
+	public static final EntityEntry<FlyingToolbox> FLYING_TOOLBOX = Robotics.REGISTRATE
+			.entity("flying_toolbox", FlyingToolbox::new, MobCategory.MISC)
+			.lang("Flying Toolbox")
+			.properties(properties -> properties.sized(0.9f, 1f))
+			.attributes(() -> Mob.createMobAttributes()
+					.add(Attributes.MOVEMENT_SPEED, 0.2F)
+					.add(Attributes.MAX_HEALTH, 1.0D)
+					.add(Attributes.FLYING_SPEED, 0.8F))
+			.renderer(() -> FlyingToolboxRenderer::new)
+			.register();
 }

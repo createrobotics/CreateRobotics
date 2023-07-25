@@ -5,12 +5,13 @@
   "compatibilityLevel": "JAVA_17",
   "refmap": "robotics.refmap.json",
   "mixins": [
-    "CrashReportMixin"
+	"CrashReportMixin",
+	"ToolboxInventoryAccessor"
   ],
   "client": [
   ],
   "injectors": {
-    "defaultRequire": 1
+	"defaultRequire": 1
   },
   "minVersion": "0.8"
 }

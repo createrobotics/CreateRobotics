@@ -69,7 +69,7 @@ public class ItemRegistry {
 	public static final ItemEntry<BaseRobotItem> CLOCKCOPTER = Robotics.REGISTRATE
 			.item("clockcopter", BaseRobotItem::new)
 			.lang("Clockcopter")
-			.onRegister(item -> item.setEntity(EntityRegistry.CLOCKCOPTER))
+			.onRegister(item -> item.setEntity(EntityRegistry.FLYING_TOOLBOX))
 			.register();
 
 
