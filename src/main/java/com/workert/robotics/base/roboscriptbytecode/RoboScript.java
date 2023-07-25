@@ -156,8 +156,8 @@ public abstract class RoboScript {
 		}, c);
 	}
 
-	public final void defineNativeFunction(String name, int arity, NativeFunction function, Compiler c) {
-		function.arity = arity;
+	public final void defineNativeFunction(String name, int argumentCount, NativeFunction function, Compiler c) {
+		function.argumentCount = argumentCount;
 		this.vm.nativeFunctions[this.nativeFunctions++] = function;
 		c.nativeFunctionLookup.put(name, (byte) (this.nativeFunctions - 1));
 	}
@@ -174,7 +174,7 @@ public abstract class RoboScript {
 
 
 	abstract static class NativeFunction {
-		int arity = 0;
+		int argumentCount = 0;
 
 		/**
 		 * Calls a native function and automatically pushes the return value.

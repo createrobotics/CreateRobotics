@@ -19,9 +19,9 @@ final class Printer {
 
 	protected static int disassembleInstruction(Chunk chunk, int offset) {
 		System.out.printf("%04d", offset);
-		if (offset > 0 && chunk.readLine(offset) == chunk.readLine(offset - 1)) System.out.printf("   | ");
+		if (offset > 0 && chunk.getLine(offset) == chunk.getLine(offset - 1)) System.out.printf("   | ");
 		else
-			System.out.printf("%4d ", chunk.readLine(offset));
+			System.out.printf("%4d ", chunk.getLine(offset));
 		byte instruction = chunk.readCode(offset);
 		String segmentedByte = String.format("%8s", Integer.toBinaryString(instruction & 0xFF)).replace(' ', '0');
 		System.out.print('[' + segmentedByte.substring(0, 4) + ' ' + segmentedByte.substring(4, 8) + "] ");
@@ -174,7 +174,7 @@ final class Printer {
 		short constant = (short) (chunk.readCode(offset + 1) << 8);
 		constant |= chunk.readCode(offset + 2);
 		System.out.printf("%-16s %4d '", name, constant);
-		System.out.println(chunk.readConstant(constant) + "'");
+		System.out.println(chunk.getConstant(constant) + "'");
 		return offset + 3;
 	}
 

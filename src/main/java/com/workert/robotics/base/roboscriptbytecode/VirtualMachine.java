@@ -78,8 +78,7 @@ final class VirtualMachine {
 	 */
 	private void run() {
 		while (true) {
-			byte instruction;
-			switch (instruction = this.readByte()) {
+			switch (this.readByte()) {
 				case OP_CONSTANT -> {
 					Object constant = this.readConstant();
 					this.pushStack(constant);
@@ -128,10 +127,10 @@ final class VirtualMachine {
 						double previous = (double) this.globalVariables[b];
 						this.globalVariables[b] = previous + 1;
 						this.pushStack(previous);
-					} catch (Throwable t) {
-						if (t instanceof IndexOutOfBoundsException) {
+					} catch (IndexOutOfBoundsException | ClassCastException e) {
+						if (e instanceof IndexOutOfBoundsException) {
 							throw new RuntimeError("Undefined variable.");
-						} else if (t instanceof ClassCastException e) {
+						} else {
 							throw new RuntimeError("Incrementing variable must be a number.");
 						}
 					}
@@ -142,10 +141,10 @@ final class VirtualMachine {
 						double previous = (double) this.stack[this.basePointer + b];
 						this.globalVariables[b] = previous + 1;
 						this.pushStack(previous);
-					} catch (Throwable t) {
-						if (t instanceof IndexOutOfBoundsException) {
+					} catch (IndexOutOfBoundsException | ClassCastException e) {
+						if (e instanceof IndexOutOfBoundsException) {
 							throw new RuntimeError("Undefined variable.");
-						} else if (t instanceof ClassCastException e) {
+						} else {
 							throw new RuntimeError("Incrementing variable must be a number.");
 						}
 					}
@@ -164,8 +163,6 @@ final class VirtualMachine {
 						}
 					} else if (gettable instanceof List list) {
 						try {
-							// i am deeply sorry for all the nesting, i didnt really try to make it look nice
-							// this is another copy paste
 							double d = (double) key;
 							if (isWhole(d) && !isNegative(d)) {
 								if (d >= list.size())
@@ -196,12 +193,11 @@ final class VirtualMachine {
 						double previous = (double) this.globalVariables[b];
 						this.globalVariables[b] = previous - 1;
 						this.pushStack(previous);
-					} catch (Throwable t) {
-						if (t instanceof IndexOutOfBoundsException) {
+					} catch (IndexOutOfBoundsException | ClassCastException e) {
+						if (e instanceof IndexOutOfBoundsException) {
 							throw new RuntimeError("Undefined variable.");
-						} else if (t instanceof ClassCastException e) {
+						} else {
 							throw new RuntimeError("Decrementing variable must be a number.");
-
 						}
 					}
 				}
@@ -211,12 +207,11 @@ final class VirtualMachine {
 						double previous = (double) this.stack[this.basePointer + b];
 						this.globalVariables[b] = previous - 1;
 						this.pushStack(previous);
-					} catch (Throwable t) {
-						if (t instanceof IndexOutOfBoundsException) {
+					} catch (IndexOutOfBoundsException | ClassCastException e) {
+						if (e instanceof IndexOutOfBoundsException) {
 							throw new RuntimeError("Undefined variable.");
-						} else if (t instanceof ClassCastException e) {
+						} else {
 							throw new RuntimeError("Decrementing variable must be a number.");
-
 						}
 					}
 				}
@@ -234,8 +229,6 @@ final class VirtualMachine {
 						}
 					} else if (gettable instanceof List list) {
 						try {
-							// i am deeply sorry for all the nesting, i didnt really try to make it look nice
-							// this is another copy paste
 							double d = (double) key;
 							if (isWhole(d) && !isNegative(d)) {
 								if (d >= list.size())
@@ -265,7 +258,7 @@ final class VirtualMachine {
 				case OP_DIVIDE -> this.binaryOperation('/');
 				case OP_MODULO -> this.binaryOperation('%');
 				case OP_POWER -> this.binaryOperation('^');
-				case OP_NOT -> this.stack[this.stackSize - 1] = !truthy(this.peekStack());
+				case OP_NOT -> this.stack[this.stackSize - 1] = !isTruthy(this.peekStack());
 				case OP_NEGATE -> {
 					try {
 						this.stack[this.stackSize - 1] = -(double) this.peekStack();
@@ -279,7 +272,7 @@ final class VirtualMachine {
 				}
 				case OP_JUMP_IF_FALSE -> {
 					short offset = this.readShort();
-					if (!truthy(this.peekStack())) this.instructionPointer += offset;
+					if (!isTruthy(this.peekStack())) this.instructionPointer += offset;
 				}
 				case OP_LOOP -> {
 					short offset = this.readShort();
@@ -287,15 +280,15 @@ final class VirtualMachine {
 				}
 
 				case OP_CALL -> {
-					byte arity = this.readByte();
+					byte argumentCount = this.readByte();
 
-					Object callable = this.peekStack(arity);
+					Object callable = this.peekStack(argumentCount);
 
 
 					if (callable instanceof RoboScript.NativeFunction function) {
-						if (function.arity != arity) {
+						if (function.argumentCount != argumentCount) {
 							throw new RuntimeError(
-									"Expected '" + function.arity + "' arguments but got '" + arity + "'.");
+									"Expected '" + function.argumentCount + "' arguments but got '" + argumentCount + "'.");
 						}
 						Object returnValue = function.call(this);
 						while (!(this.peekStack() instanceof RoboScript.NativeFunction)) {
@@ -309,16 +302,16 @@ final class VirtualMachine {
 					if (!(callable instanceof RoboScriptFunction function))
 						throw new RuntimeError(
 								"Can only call functions, instead got '" + callable.getClass() + "'.");
-					if (arity != function.arity)
+					if (argumentCount != function.argumentCount)
 						throw new RuntimeError(
-								"Expected '" + function.arity + "' arguments but got '" + arity + "'.");
+								"Expected '" + function.argumentCount + "' arguments but got '" + argumentCount + "'.");
 
 					// push return address and base pointer
 					this.pushStack(this.instructionPointer);
 					this.pushStack(this.basePointer);
 
 					this.instructionPointer = function.address;
-					this.basePointer = this.stackSize - arity - 2;
+					this.basePointer = this.stackSize - argumentCount - 2;
 				}
 				case OP_RETURN -> {
 					Object returnValue = this.popStack();
@@ -448,7 +441,7 @@ final class VirtualMachine {
 	 * @return The constant in the current chunk at the index of the current byte.
 	 */
 	private Object readConstant() {
-		return this.chunk.readConstant(this.readShort());
+		return this.chunk.getConstant(this.readShort());
 	}
 
 	/**
@@ -612,7 +605,7 @@ final class VirtualMachine {
 	 * @param o The object being evaluated.
 	 * @return The truthy value of the passed in object.
 	 */
-	private static boolean truthy(Object o) {
+	private static boolean isTruthy(Object o) {
 		if (o == null) return false;
 		if (o instanceof Boolean b) return b;
 		return true;

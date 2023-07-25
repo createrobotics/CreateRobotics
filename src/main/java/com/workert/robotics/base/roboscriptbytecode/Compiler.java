@@ -40,18 +40,13 @@ public final class Compiler {
 			while (!this.checkAndConsumeIfMatches(EOF)) {
 				this.declaration();
 			}
-			this.endCompiler();
+			this.emitEnd();
 			this.createFinalChunk();
 		} catch (CompileError e) {
 			this.synchronize();
 		}
 		System.out.println("Compiled in " + (System.currentTimeMillis() - timeBefore) + "ms.");
 	}
-
-	private void endCompiler() {
-		this.emitEnd();
-	}
-
 
 	private void expression() {
 		this.parsePrecedence(Precedence.ASSIGNMENT);
@@ -75,54 +70,9 @@ public final class Compiler {
 			} else {
 				this.statement();
 			}
-
 		} catch (CompileError e) {
 			this.synchronize();
 		}
-	}
-
-	private void funcDeclaration() {
-		byte global = this.parseVariable("Expected function name.");
-		String name = this.previous.lexeme;
-		int arity = 0;
-		int constantIndex = this.emitConstant(null);
-		this.defineVariable(global, name);
-
-
-		List<Byte> previousCodeList = this.currentCodeList;
-		this.currentCodeList = new ArrayList<>();
-		List<Integer> previousLineList = this.currentLineList;
-		this.currentLineList = new ArrayList<>();
-		boolean wasInFunction = this.inFunction;
-		this.inFunction = true;
-
-		this.beginScope();
-		this.consumeOrThrow(LEFT_PAREN, "Expected '(' after function name.");
-
-		if (!this.isNextToken(RIGHT_PAREN)) {
-			do {
-				// this.consumeOrThrow(IDENTIFIER, "Expected parameter name.");
-				byte constant = this.parseVariable("Expected parameter name.");
-				this.defineVariable(constant, this.previous.lexeme);
-				arity++;
-			} while (this.checkAndConsumeIfMatches(COMMA));
-		}
-
-		this.consumeOrThrow(RIGHT_PAREN, "Expected ')' after function parameters.");
-
-		this.consumeOrThrow(LEFT_BRACE, "Expected '{' before function body");
-		this.block();
-		this.endFunctionScope();
-		this.emitBytes(OP_NULL, OP_RETURN);
-
-		CompilerFunction function = new CompilerFunction(this.currentCodeList, this.currentLineList, arity);
-
-		this.currentCodeList = previousCodeList;
-		this.currentLineList = previousLineList;
-		this.inFunction = wasInFunction;
-
-		this.chunk.setConstant(constantIndex, function);
-		this.functions.add(constantIndex);
 	}
 
 	private void varDeclaration() {
@@ -134,22 +84,51 @@ public final class Compiler {
 		} else {
 			this.emitByte(OP_NULL);
 		}
-
 		this.consumeOrThrow(SEMICOLON, "Expected ';' after variable declaration.");
 
 		this.defineVariable(global, name);
-
 	}
 
-	private void defineVariable(byte global, String name) {
-		if (this.scopeDepth > 0) {
-			this.markInitialized();
-			return;
+	private void funcDeclaration() {
+		byte global = this.parseVariable("Expected function name.");
+		String name = this.previous.lexeme;
+		int constantIndex = this.emitConstant(null);
+		this.defineVariable(global, name);
+
+		List<Byte> previousCodeList = this.currentCodeList;
+		this.currentCodeList = new ArrayList<>();
+		List<Integer> previousLineList = this.currentLineList;
+		this.currentLineList = new ArrayList<>();
+		boolean wasInFunction = this.inFunction;
+		this.inFunction = true;
+
+		this.beginScope();
+		this.consumeOrThrow(LEFT_PAREN, "Expected '(' after function name.");
+
+		int argumentCount = 0;
+		if (!this.isNextToken(RIGHT_PAREN)) {
+			do {
+				byte constant = this.parseVariable("Expected parameter name.");
+				this.defineVariable(constant, this.previous.lexeme);
+				argumentCount++;
+			} while (this.checkAndConsumeIfMatches(COMMA));
 		}
-		if (this.globalVariableLookup.containsKey(name))
-			throw this.error("Variable '" + name + "' already declared in the public scope.");
-		this.globalVariableLookup.put(name, global);
-		this.emitBytes(OP_DEFINE_GLOBAL, global);
+
+		this.consumeOrThrow(RIGHT_PAREN, "Expected ')' after function parameters.");
+
+		this.consumeOrThrow(LEFT_BRACE, "Expected '{' before function body");
+		this.block();
+		this.endFunctionScope();
+		this.emitBytes(OP_NULL, OP_RETURN);
+
+		CompilerFunction function = new CompilerFunction(this.currentCodeList, this.currentLineList, argumentCount);
+
+		this.currentCodeList = previousCodeList;
+		this.currentLineList = previousLineList;
+		this.inFunction = wasInFunction;
+
+		this.chunk.setConstant(constantIndex, function);
+		this.functions.add(constantIndex);
 	}
 
 	private void declareVariable() {
@@ -164,11 +143,22 @@ public final class Compiler {
 		this.addLocal(name);
 	}
 
+	private void defineVariable(byte global, String name) {
+		if (this.scopeDepth > 0) {
+			this.markInitialized();
+			return;
+		}
+		if (this.globalVariableLookup.containsKey(name))
+			throw this.error("Variable '" + name + "' already declared in the public scope.");
+		this.globalVariableLookup.put(name, global);
+		this.emitBytes(OP_DEFINE_GLOBAL, global);
+	}
+
 	void variable(boolean canAssign) {
 		byte variable = this.resolveLocal(this.previous);
-		if (variable != -1) { // inside a scope
+		if (variable != -1) { // Inside a Scope
 			this.emitVariable(OP_GET_LOCAL, OP_SET_LOCAL, OP_INCREMENT_LOCAL, OP_DECREMENT_LOCAL, variable, canAssign);
-		} else { // outside a scope; global
+		} else { // Outside a Scope -> global
 			if (this.globalVariableLookup.containsKey(this.previous.lexeme)) {
 				variable = this.globalVariableLookup.get(this.previous.lexeme);
 				this.emitVariable(OP_GET_GLOBAL, OP_SET_GLOBAL, OP_INCREMENT_GLOBAL, OP_DECREMENT_GLOBAL, variable,
@@ -187,7 +177,7 @@ public final class Compiler {
 		if (!this.isNextToken(RIGHT_BRACE)) {
 			do {
 				this.expression();
-				this.consumeOrThrow(COLON, "Expect ':' after map key.");
+				this.consumeOrThrow(COLON, "Expected ':' after map key.");
 				this.expression();
 				this.emitByte(OP_PUT);
 			} while (this.checkAndConsumeIfMatches(COMMA));
@@ -196,7 +186,7 @@ public final class Compiler {
 	}
 
 	private void addLocal(Token name) {
-		if (this.locals.size() == 256)
+		if (this.locals.size() >= 256)
 			throw this.error("Too many local variables in function.");
 		this.locals.add(new Local(name, -1));
 	}
@@ -374,9 +364,9 @@ public final class Compiler {
 		this.emitBytes(getOp, lookup);
 	}
 
-	private void emitGetVariable(byte getOp, boolean canAssign) {
+	private void emitGetVariable(byte getOpCode, boolean canAssign) {
 		if (!canAssign) {
-			this.emitBytes(getOp, (byte) 0);
+			this.emitBytes(getOpCode, (byte) 0);
 			return;
 		}
 
@@ -389,7 +379,7 @@ public final class Compiler {
 		if (this.checkAndConsumeIfMatches
 				(PLUS_EQUAL, MINUS_EQUAL, STAR_EQUAL, SLASH_EQUAL, CARET_EQUAL, PERCENT_EQUAL)) {
 			Token.TokenType previousType = this.previous.type;
-			this.emitBytes(getOp, (byte) 1);
+			this.emitBytes(getOpCode, (byte) 1);
 			this.expression();
 			byte emit = getAssignmentOperatorByte(previousType);
 			this.emitBytes(emit, OP_LIST_MAP_SET);
@@ -403,20 +393,19 @@ public final class Compiler {
 			this.emitBytes(OP_DECREMENT_LIST_MAP);
 			return;
 		}
-		this.emitBytes(getOp, (byte) 0);
+		this.emitBytes(getOpCode, (byte) 0);
 	}
 
-	private static byte getAssignmentOperatorByte(Token.TokenType previousType) {
-		return switch (previousType) {
+	private static byte getAssignmentOperatorByte(Token.TokenType previousTokenType) {
+		return switch (previousTokenType) {
 			case PLUS_EQUAL -> OP_ADD;
 			case MINUS_EQUAL -> OP_SUBTRACT;
 			case STAR_EQUAL -> OP_MULTIPLY;
 			case SLASH_EQUAL -> OP_DIVIDE;
 			case CARET_EQUAL -> OP_POWER;
 			case PERCENT_EQUAL -> OP_MODULO;
-			default -> throw new IllegalStateException("Unexpected value: " + previousType);
+			default -> throw new IllegalArgumentException("Invalid previous Token Type.");
 		};
-
 	}
 
 	private void emitNativeFunction(Token name, byte lookup, boolean canAssign) {
@@ -425,8 +414,9 @@ public final class Compiler {
 			this.globalVariableLookup.put(name.lexeme, (byte) this.globalVariableLookup.size());
 			this.emitBytes(OP_DEFINE_GLOBAL, (byte) (this.globalVariableLookup.size() - 1));
 			this.emitPop = false;
-		} else
+		} else {
 			this.emitBytes(OP_GET_NATIVE, lookup);
+		}
 	}
 
 	void grouping(boolean canAssign) {
@@ -443,7 +433,7 @@ public final class Compiler {
 				this.emitByte(OP_LIST_ADD);
 			} while (this.checkAndConsumeIfMatches(COMMA));
 		}
-		this.consumeOrThrow(RIGHT_BRACKET, "Expected ']' after map expression.");
+		this.consumeOrThrow(RIGHT_BRACKET, "Expected ']' after list expression.");
 	}
 
 
@@ -495,19 +485,19 @@ public final class Compiler {
 	}
 
 	void call(boolean canAssign) {
-		byte arity = 0;
+		byte argumentCount = 0;
 
 		if (!this.isNextToken(RIGHT_PAREN)) {
 			do {
 				this.expression();
-				if (arity == 255) {
-					this.error("Cannot have more than 255 arguments.");
+				if (argumentCount >= 255) {
+					throw this.error("Cannot have more than 255 arguments.");
 				}
-				arity++;
+				argumentCount++;
 			} while (this.checkAndConsumeIfMatches(COMMA));
 		}
 		this.consumeOrThrow(RIGHT_PAREN, "Expected ')' after arguments.");
-		this.emitBytes(OP_CALL, arity);
+		this.emitBytes(OP_CALL, argumentCount);
 	}
 
 	void index(boolean canAssign) {
@@ -557,8 +547,7 @@ public final class Compiler {
 		this.consumeOrThrow(IDENTIFIER, message);
 		this.declareVariable();
 		if (this.scopeDepth > 0) return 0;
-		byte variable = (byte) this.globalVariableLookup.size();
-		return variable;
+		return (byte) this.globalVariableLookup.size();
 	}
 
 	private void markInitialized() {
@@ -687,23 +676,24 @@ public final class Compiler {
 		this.chunk.setLines(this.currentLineList);
 
 		for (int i : this.functions) {
-			CompilerFunction function = (CompilerFunction) this.chunk.readConstant(i);
-			RoboScriptFunction runtimeFunction = new RoboScriptFunction(this.chunk.getCodeSize(), function.arity);
+			CompilerFunction function = (CompilerFunction) this.chunk.getConstant(i);
+			RoboScriptFunction runtimeFunction = new RoboScriptFunction(this.chunk.getCodeSize(),
+					function.argumentCount);
 			this.chunk.setConstant(i, runtimeFunction);
-			this.chunk.combineCode(function.code);
-			this.chunk.combineLines(function.lines);
+			this.chunk.addCode(function.code);
+			this.chunk.addLines(function.lines);
 		}
 	}
 
 	private static class CompilerFunction {
 		List<Byte> code;
 		List<Integer> lines;
-		int arity;
+		int argumentCount;
 
-		CompilerFunction(List<Byte> code, List<Integer> lines, int arity) {
+		CompilerFunction(List<Byte> code, List<Integer> lines, int argumentCount) {
 			this.code = code;
 			this.lines = lines;
-			this.arity = arity;
+			this.argumentCount = argumentCount;
 		}
 	}
 

@@ -1,10 +1,10 @@
 package com.workert.robotics.base.roboscriptbytecode;
 public class RoboScriptFunction {
 	int address;
-	int arity;
+	int argumentCount;
 
-	RoboScriptFunction(int address, int arity) {
+	RoboScriptFunction(int address, int argumentCount) {
 		this.address = address;
-		this.arity = arity;
+		this.argumentCount = argumentCount;
 	}
 }

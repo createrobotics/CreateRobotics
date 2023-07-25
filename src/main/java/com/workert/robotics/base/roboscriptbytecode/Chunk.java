@@ -36,7 +36,7 @@ final class Chunk {
 		this.code = b;
 	}
 
-	void combineCode(List<Byte> b) {
+	void addCode(List<Byte> b) {
 		this.code.addAll(b);
 	}
 
@@ -44,19 +44,17 @@ final class Chunk {
 		this.lines = i;
 	}
 
-	void combineLines(List<Integer> i) {
+	void addLines(List<Integer> i) {
 		this.lines.addAll(i);
 	}
 
 
-	Object readConstant(int i) {
+	Object getConstant(int i) {
 		return this.constants[i & 0xFF];
 	}
 
 
-	int readLine(int i) {
+	int getLine(int i) {
 		return this.lines.get(i);
 	}
-
-
 }

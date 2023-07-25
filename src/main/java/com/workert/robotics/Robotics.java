@@ -10,7 +10,6 @@ import com.workert.robotics.base.client.LangPartials;
 import com.workert.robotics.base.registries.*;
 import com.workert.robotics.base.world.feature.RoboticsConfiguredFeatures;
 import com.workert.robotics.base.world.feature.RoboticsPlacedFeatures;
-import com.workert.robotics.unused.CodeHelper;
 import com.workert.robotics.unused.smasher.SmasherBlockScreen;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.data.DataGenerator;
@@ -52,7 +51,7 @@ public class Robotics {
 
 		PacketRegistry.registerPackets();
 
-		CodeHelper.registerDefaultCommands();
+		// CodeHelper.registerDefaultCommands();
 	}
 
 	private static void clientSetup(final FMLClientSetupEvent event) {
