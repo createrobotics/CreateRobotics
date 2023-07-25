@@ -63,7 +63,9 @@ public final class Compiler {
 
 	private void declaration() {
 		try {
-			if (this.checkAndConsumeIfMatches(VAR)) {
+			if (this.checkAndConsumeIfMatches(CLASS)) {
+				this.classDeclaration();
+			} else if (this.checkAndConsumeIfMatches(VAR)) {
 				this.varDeclaration();
 			} else if (this.checkAndConsumeIfMatches(FUNCTION)) {
 				this.funcDeclaration();
@@ -73,6 +75,98 @@ public final class Compiler {
 		} catch (CompileError e) {
 			this.synchronize();
 		}
+	}
+
+	private void fieldDeclaration() {
+		try {
+			if (this.checkAndConsumeIfMatches(VAR)) {
+				this.varDeclarationForClass();
+			} else if (this.checkAndConsumeIfMatches(FUNCTION)) {
+				this.methodDeclaration();
+			} else {
+				throw new RuntimeError("Only declarations are allowed in main class body.");
+			}
+		} catch (CompileError e) {
+			this.synchronize();
+		}
+	}
+
+	private void varDeclarationForClass() {
+		this.consumeOrThrow(IDENTIFIER, "Expected variable name.");
+		String name = this.previous.lexeme;
+		this.emitConstant(name);
+		if (this.checkAndConsumeIfMatches(EQUAL)) {
+			this.expression();
+		} else {
+			this.emitByte(OP_NULL);
+		}
+
+		this.consumeOrInsertSemicolon("Expected ';' or new line after variable declaration.");
+
+		this.emitByte(OP_PUT);
+	}
+
+	private void methodDeclaration() {
+		// the actual putting
+		this.consumeOrThrow(IDENTIFIER, "Expected method name");
+		String name = this.previous.lexeme;
+		this.emitConstant(name);
+		int constantIndex = this.emitConstant(null);
+		this.emitByte(OP_PUT);
+
+		// the function stuff
+		List<Byte> previousCodeList = this.currentCodeList;
+		this.currentCodeList = new ArrayList<>();
+		List<Integer> previousLineList = this.currentLineList;
+		this.currentLineList = new ArrayList<>();
+		boolean wasInFunction = this.inFunction;
+		this.inFunction = true;
+
+		this.beginScope();
+		this.consumeOrThrow(LEFT_PAREN, "Expected '(' after function name.");
+
+		int argumentCount = 0;
+		if (!this.isNextToken(RIGHT_PAREN)) {
+			do {
+				byte constant = this.parseVariable("Expected parameter name.");
+				if (this.previous.lexeme.equals("this"))
+					throw new RuntimeError("Methods must not contain parameter 'this', as it is added by default.");
+				this.defineVariable(constant, this.previous.lexeme);
+				argumentCount++;
+			} while (this.checkAndConsumeIfMatches(COMMA));
+		}
+		this.declareVariable(new Token(IDENTIFIER, "this", this.previous.line));
+		this.defineVariable((byte) 0, "this");
+		this.consumeOrThrow(RIGHT_PAREN, "Expected ')' after function parameters.");
+		this.consumeOrThrow(LEFT_BRACE, "Expected '{' before function body");
+		this.block();
+		this.endFunctionScope();
+		this.emitBytes(OP_NULL, OP_RETURN);
+
+		CompilerFunction function = new CompilerFunction(this.currentCodeList, this.currentLineList, argumentCount);
+
+		this.currentCodeList = previousCodeList;
+		this.currentLineList = previousLineList;
+		this.inFunction = wasInFunction;
+
+		this.chunk.setConstant(constantIndex, function);
+		this.functions.add(constantIndex);
+	}
+
+	private void classDeclaration() {
+		byte global = this.parseVariable("Expected class name");
+		String name = this.previous.lexeme;
+		Map<String, Object> fields = new HashMap<>();
+		RoboScriptClass clazz = new RoboScriptClass(fields);
+		this.emitConstant(clazz);
+		this.defineVariable(global, name);
+		this.emitConstant(clazz);
+		this.consumeOrThrow(LEFT_BRACE, "Expected '{' after class name.");
+
+		while (!this.isNextToken(RIGHT_BRACE) && !this.isNextToken(EOF)) {
+			this.fieldDeclaration();
+		}
+		this.consumeOrThrow(RIGHT_BRACE, "Expected '}' after class body.");
 	}
 
 	private void varDeclaration() {
@@ -132,8 +226,11 @@ public final class Compiler {
 	}
 
 	private void declareVariable() {
+		this.declareVariable(this.previous);
+	}
+
+	private void declareVariable(Token name) {
 		if (this.scopeDepth == 0) return;
-		Token name = this.previous;
 		for (int i = this.locals.size() - 1; i >= 0; i--) {
 			Local local = this.locals.get(i);
 			if (local.depth != -1 && local.depth < this.scopeDepth) break;
@@ -169,6 +266,14 @@ public final class Compiler {
 			} else
 				throw this.error("Variable '" + this.previous.lexeme + "' has not been declared.");
 		}
+	}
+
+
+	void dot(boolean canAssign) {
+		this.consumeOrThrow(IDENTIFIER, "Expected field name after '.'.");
+		String name = this.previous.lexeme;
+		this.emitConstant(name);
+		this.emitGetVariable(OP_LIST_MAP_GET, canAssign);
 	}
 
 	void map(boolean canAssign) {

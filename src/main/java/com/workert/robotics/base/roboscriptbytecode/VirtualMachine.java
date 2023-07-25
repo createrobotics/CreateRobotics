@@ -299,12 +299,23 @@ final class VirtualMachine {
 						break;
 					}
 
+					if (callable instanceof RoboScriptClass clazz) {
+						this.pushStack(new RoboScriptObject(clazz.fields));
+						break;
+					}
+
+
 					if (!(callable instanceof RoboScriptFunction function))
 						throw new RuntimeError(
 								"Can only call functions, instead got '" + callable.getClass() + "'.");
 					if (argumentCount != function.argumentCount)
 						throw new RuntimeError(
 								"Expected '" + function.argumentCount + "' arguments but got '" + argumentCount + "'.");
+
+					if (callable instanceof RoboScriptMethod method) {
+						this.pushStack(method.instance);
+						argumentCount++;
+					}
 
 					// push return address and base pointer
 					this.pushStack(this.instructionPointer);
@@ -331,8 +342,10 @@ final class VirtualMachine {
 
 					if (puttable instanceof Map map) {
 						map.put(key, value);
+					} else if (puttable instanceof RoboScriptClass clazz) {
+						clazz.fields.put((String) key, value);
 					} else {
-						throw new RuntimeError(
+						throw new IllegalArgumentException(
 								"Can only use 'OP_MAP_PUT' with a list being the third to top in the stack.");
 					}
 
@@ -359,6 +372,8 @@ final class VirtualMachine {
 
 					if (gettable instanceof Map map) {
 						this.pushStack(map.get(key));
+					} else if (gettable instanceof RoboScriptObject object) {
+						this.pushStack(this.getFieldInObject(object, (String) key));
 					} else if (gettable instanceof List list) {
 						try {
 							double d = (double) key;
@@ -375,7 +390,8 @@ final class VirtualMachine {
 									"Index value for list must be a whole number greater or equal to 0.");
 						}
 					} else {
-						throw new RuntimeError("Can only get objects from maps.");
+						throw new RuntimeError(
+								"Can only get objects from maps, instead getting from '" + gettable.getClass() + "'.");
 					}
 				}
 				case OP_LIST_MAP_SET -> {
@@ -386,8 +402,11 @@ final class VirtualMachine {
 					this.pushStack(value);
 
 					if (settable instanceof Map map) {
-						// different here
 						map.put(key, value);
+					} else if (settable instanceof RoboScriptObject object) {
+						if (!object.fields.containsKey((String) key))
+							throw new RuntimeError("Object does not contain field '" + (String) key + "'.");
+						object.fields.put((String) key, value);
 					} else if (settable instanceof List list) {
 						try {
 
@@ -414,6 +433,22 @@ final class VirtualMachine {
 			}
 		}
 	}
+
+	/**
+	 * Gets a field and binds it to the object if the field is a function.
+	 *
+	 * @param object    The RoboScriptObject the field is being gotten from.
+	 * @param fieldName The name of the field.
+	 * @return A field from the object or a binded method from an objects function.
+	 */
+	private Object getFieldInObject(RoboScriptObject object, String fieldName) {
+		Object field = object.fields.get(fieldName);
+		if (field instanceof RoboScriptFunction r) {
+			return new RoboScriptMethod(r, object);
+		}
+		return field;
+	}
+
 
 	/**
 	 * Reads the byte at the current index of instructionPointer.

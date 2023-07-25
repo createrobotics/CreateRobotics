@@ -21,7 +21,7 @@ final class Token {
 		LEFT_BRACKET(new Compiler.ParseRule(Compiler::list, Compiler::index, CALL)),
 		RIGHT_BRACKET(empty()),
 		COMMA(empty()),
-		DOT(empty()),
+		DOT(new Compiler.ParseRule(null, Compiler::dot, CALL)),
 		PLUS(new Compiler.ParseRule(null, Compiler::binary, TERM)),
 		MINUS(new Compiler.ParseRule(Compiler::unary, Compiler::binary, TERM)),
 		STAR(new Compiler.ParseRule(null, Compiler::binary, FACTOR)),

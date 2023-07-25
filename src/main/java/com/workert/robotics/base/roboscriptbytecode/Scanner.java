@@ -223,6 +223,9 @@ final class Scanner {
 			case 'w' -> {
 				return this.checkKeyword(1, 4, "hile", WHILE);
 			}
+			case 't' -> {
+				return this.checkKeyword(1, 3, "rue", TRUE);
+			}
 			case 'f' -> {
 				if (this.current - this.start > 1)
 					switch (this.source.charAt(this.start + 1)) {
@@ -234,17 +237,6 @@ final class Scanner {
 						}
 						case 'u' -> {
 							return this.checkKeyword(2, 6, "nction", FUNCTION);
-						}
-					}
-			}
-			case 't' -> {
-				if (this.current - this.start > 1)
-					switch (this.source.charAt(this.start + 1)) {
-						case 'h' -> {
-							return this.checkKeyword(2, 2, "is", THIS);
-						}
-						case 'r' -> {
-							return this.checkKeyword(2, 2, "ue", TRUE);
 						}
 					}
 			}
