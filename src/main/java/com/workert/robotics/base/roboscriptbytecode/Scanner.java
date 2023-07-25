@@ -84,6 +84,7 @@ final class Scanner {
 					while (this.getCurrentChar() != '\n' && !this.isAtEnd()) {
 						this.consumeCurrentChar();
 					}
+					return this.scanToken();
 				} else {
 					return this.addToken(
 							this.consumeIfNextCharMatches('=') ? SLASH_EQUAL : SLASH);
