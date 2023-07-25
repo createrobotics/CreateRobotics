@@ -573,7 +573,7 @@ public final class Compiler {
 
 	private int emitConstant(Object value) {
 		int constant = this.chunk.addConstant(value);
-		if (constant > 511) {
+		if (constant > Short.MAX_VALUE) {
 			throw this.error("Too many constants in one chunk.");
 		}
 		// emit constant as short

@@ -1,5 +1,6 @@
 package com.workert.robotics.base.roboscriptbytecode;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,8 +8,7 @@ final class Chunk {
 	private List<Byte> code = new ArrayList<>();
 
 
-	private Object[] constants = new Object[512];
-	private int constantsSize = 0;
+	private final List<Object> constants = new ArrayList<>();
 
 	private List<Integer> lines = new ArrayList<>();
 
@@ -23,12 +23,12 @@ final class Chunk {
 
 	// Add a value to the chunk
 	int addConstant(Object value) {
-		this.constants[this.constantsSize++] = value;
-		return this.constantsSize - 1;
+		this.constants.add(value);
+		return this.constants.size() - 1;
 	}
 
 	void setConstant(int index, Object value) {
-		this.constants[index] = value;
+		this.constants.set(index, value);
 	}
 
 
@@ -49,8 +49,11 @@ final class Chunk {
 	}
 
 
+	@Nullable
 	Object getConstant(int i) {
-		return this.constants[i & 0xFF];
+		if ((i & 0xFF) > this.constants.size())
+			return null; // TODO Fix the @Nullable issue and remove this
+		return this.constants.get(i & 0xFF);
 	}
 
 
