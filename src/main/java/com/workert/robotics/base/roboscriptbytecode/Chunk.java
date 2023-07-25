@@ -1,6 +1,5 @@
 package com.workert.robotics.base.roboscriptbytecode;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,11 +47,7 @@ final class Chunk {
 		this.lines.addAll(i);
 	}
 
-
-	@Nullable
 	Object getConstant(int i) {
-		if ((i & 0xFF) > this.constants.size())
-			return null; // TODO Fix the @Nullable issue and remove this
 		return this.constants.get(i & 0xFF);
 	}
 
