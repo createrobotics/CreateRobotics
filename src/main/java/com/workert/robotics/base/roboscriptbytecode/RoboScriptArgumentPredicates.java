@@ -9,22 +9,24 @@ import net.minecraft.world.item.Item;
 import java.util.function.Function;
 
 /**
- * The {@code RoboScriptArgumentPredicates} class provides utility methods for validating and converting objects to specific types
+ * The {@code RoboScriptArgumentPredicates} class provides static utility methods for validating and converting objects to specific types
  * while allowing for nullable arguments.
+ * <p>
+ * This class only throws {@link RuntimeError}s.
  */
 public final class RoboScriptArgumentPredicates {
 
 	/**
 	 * Converts the specified object to the specified return type using the provided function, but allows for the argument to be null.
 	 * <p>
-	 * This method is useful when you have an object that you want to convert to a specific type but need to handle the case where the object might be null. By using the `asOptional` method, you can avoid null pointer exceptions and gracefully handle nullable arguments.
+	 * This method is useful when you have an object that you want to convert to a specific type but need to handle the case where the object might be null. By using the `optional` method, you can avoid null pointer exceptions and gracefully handle nullable arguments.
 	 * <p>
 	 * <b>Code Example:</b>
 	 * <pre>{@code
 	 * Object maybeNumber;
 	 *
 	 * // Convert `maybeNumber` to a `Double` using the `asNumber` method, allowing for null input
-	 * Double definitelyNumberOrNull = RoboScriptArgumentPredicates.asOptional(maybeNumber, predicates::asNumber);
+	 * Double definitelyNumberOrNull = RoboScriptArgumentPredicates.optional(maybeNumber, RoboScriptArgumentPredicates::asNumber);
 	 * System.out.println(definitelyNumberOrNull); // This will definitely be a number or null. If `maybeNumber` is neither, it will throw.
 	 * }</pre>
 	 * <p>
@@ -33,7 +35,7 @@ public final class RoboScriptArgumentPredicates {
 	 * <b>Another more complex code example:</b>
 	 * <pre>{@code
 	 * // Convert `maybeNumber` to a positive `Double` number, allowing for null input
-	 * Double definitelyPositiveNumberOrNull = RoboScriptArgumentPredicates.asOptional(maybeNumber, (object) -> predicates.asPositiveNumber(object, true));
+	 * Double definitelyPositiveNumberOrNull = RoboScriptArgumentPredicates.optional(maybeNumber, (object) -> RoboScriptArgumentPredicates.asPositiveNumber(object, true));
 	 * System.out.println(definitelyPositiveNumberOrNull); // Definitely a positive number or null.
 	 * }</pre>
 	 *
