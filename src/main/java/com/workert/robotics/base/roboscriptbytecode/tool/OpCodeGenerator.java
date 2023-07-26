@@ -46,10 +46,12 @@ public class OpCodeGenerator {
 		opCodes.add("OP_CALL");
 		opCodes.add("OP_GET_NATIVE");
 		opCodes.add("OP_RETURN");
-		opCodes.add("OP_PUT");
-		opCodes.add("OP_LIST_ADD");
-		opCodes.add("OP_LIST_MAP_GET");
-		opCodes.add("OP_LIST_MAP_SET");
+		// classes are also maps
+		opCodes.add("OP_MAKE_MAP");
+		opCodes.add("OP_MAKE_LIST");
+		// lists are also maps but just here
+		opCodes.add("OP_MAP_GET");
+		opCodes.add("OP_MAP_SET");
 		opCodes.add("OP_END");
 	}
 

@@ -103,7 +103,7 @@ public final class Compiler {
 
 		this.consumeOrInsertSemicolon("Expected ';' or new line after variable declaration.");
 
-		this.emitByte(OP_PUT);
+		this.emitByte(OP_MAKE_MAP);
 	}
 
 	private void methodDeclaration() {
@@ -112,7 +112,7 @@ public final class Compiler {
 		String name = this.previous.lexeme;
 		this.emitConstant(name);
 		int constantIndex = this.emitConstant(null);
-		this.emitByte(OP_PUT);
+		this.emitByte(OP_MAKE_MAP);
 
 		// the function stuff
 		List<Byte> previousCodeList = this.currentCodeList;
@@ -273,20 +273,22 @@ public final class Compiler {
 		this.consumeOrThrow(IDENTIFIER, "Expected field name after '.'.");
 		String name = this.previous.lexeme;
 		this.emitConstant(name);
-		this.emitGetVariable(OP_LIST_MAP_GET, canAssign);
+		this.emitGetVariable(OP_MAP_GET, canAssign);
 	}
 
 	void map(boolean canAssign) {
 		Map<Object, Object> map = new HashMap<>();
 		this.emitConstant(map);
+		byte mapSize = 0;
 		if (!this.isNextToken(RIGHT_BRACE)) {
 			do {
+				mapSize++;
 				this.expression();
 				this.consumeOrThrow(COLON, "Expected ':' after map key.");
 				this.expression();
-				this.emitByte(OP_PUT);
 			} while (this.checkAndConsumeIfMatches(COMMA));
 		}
+		this.emitBytes(OP_MAKE_MAP, mapSize);
 		this.consumeOrThrow(RIGHT_BRACE, "Expected '}' after map expression.");
 	}
 
@@ -477,7 +479,7 @@ public final class Compiler {
 
 		if (this.checkAndConsumeIfMatches(EQUAL)) {
 			this.expression();
-			this.emitByte(OP_LIST_MAP_SET);
+			this.emitByte(OP_MAP_SET);
 			return;
 		}
 
@@ -487,7 +489,7 @@ public final class Compiler {
 			this.emitBytes(getOpCode, (byte) 1);
 			this.expression();
 			byte emit = getAssignmentOperatorByte(previousType);
-			this.emitBytes(emit, OP_LIST_MAP_SET);
+			this.emitBytes(emit, OP_MAP_SET);
 			return;
 		}
 
@@ -532,12 +534,14 @@ public final class Compiler {
 	void list(boolean canAssign) {
 		List<Object> list = new ArrayList<>();
 		this.emitConstant(list);
+		byte listSize = 0;
 		if (!this.isNextToken(RIGHT_BRACKET)) {
 			do {
+				listSize++;
 				this.expression();
-				this.emitByte(OP_LIST_ADD);
 			} while (this.checkAndConsumeIfMatches(COMMA));
 		}
+		this.emitBytes(OP_MAKE_LIST, listSize);
 		this.consumeOrThrow(RIGHT_BRACKET, "Expected ']' after list expression.");
 	}
 
@@ -608,7 +612,7 @@ public final class Compiler {
 	void index(boolean canAssign) {
 		this.expression();
 		this.consumeOrThrow(RIGHT_BRACKET, "Expected ']' after expression");
-		this.emitGetVariable(OP_LIST_MAP_GET, canAssign);
+		this.emitGetVariable(OP_MAP_GET, canAssign);
 	}
 
 	void and(boolean canAssign) {

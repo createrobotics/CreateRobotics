@@ -335,32 +335,31 @@ final class VirtualMachine {
 					this.popStack();
 					this.pushStack(returnValue);
 				}
-				case OP_PUT -> {
-					Object puttable = this.peekStack(2);
-					Object value = this.popStack();
-					Object key = this.popStack();
-
-					if (puttable instanceof Map map) {
-						map.put(key, value);
-					} else if (puttable instanceof RoboScriptClass clazz) {
-						clazz.fields.put((String) key, value);
-					} else {
-						throw new IllegalArgumentException(
-								"Can only use 'OP_MAP_PUT' with a list being the third to top in the stack.");
-					}
-
-				}
-				case OP_LIST_ADD -> {
-					try {
+				case OP_MAKE_MAP -> {
+					byte mapSize = this.readByte();
+					Object puttable = this.peekStack(mapSize * 2);
+					for (int i = 0; i < mapSize; i++) {
 						Object value = this.popStack();
-						List<Object> list = (List<Object>) this.peekStack();
-						list.add(value);
-					} catch (ClassCastException e) {
-						throw new IllegalArgumentException(
-								"Can only use 'OP_LIST_PUT' with a list being the second to top in the stack.");
+						Object key = this.popStack();
+
+						if (puttable instanceof Map map) map.put(key, value);
+
+						else if (puttable instanceof RoboScriptClass clazz) clazz.fields.put((String) key, value);
+
+						else throw new IllegalArgumentException("Unable to find map.");
 					}
 				}
-				case OP_LIST_MAP_GET -> {
+				case OP_MAKE_LIST -> {
+					byte listSize = this.readByte();
+					Object puttable = this.peekStack(listSize);
+					if (!(puttable instanceof List list))
+						throw new IllegalArgumentException("Unable to find list.");
+					for (int i = listSize - 1; i >= 0; i--) {
+						list.add(this.peekStack(i));
+					}
+					this.stackSize -= listSize;
+				}
+				case OP_MAP_GET -> {
 					byte keep = this.readByte();
 					Object key = this.peekStack();
 					Object gettable = this.peekStack(1);
@@ -394,7 +393,7 @@ final class VirtualMachine {
 								"Can only get objects from maps, instead getting from '" + gettable.getClass() + "'.");
 					}
 				}
-				case OP_LIST_MAP_SET -> {
+				case OP_MAP_SET -> {
 					Object value = this.popStack();
 					Object key = this.popStack();
 					Object settable = this.popStack();
