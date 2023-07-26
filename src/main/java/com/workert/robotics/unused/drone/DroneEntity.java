@@ -1,4 +1,4 @@
-package com.workert.robotics.content.robotics.drone;
+package com.workert.robotics.unused.drone;
 import com.workert.robotics.content.robotics.AbstractRobotEntity;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.damagesource.DamageSource;
