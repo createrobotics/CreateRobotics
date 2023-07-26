@@ -6,7 +6,7 @@
   "refmap": "robotics.refmap.json",
   "mixins": [
 	"CrashReportMixin",
-	"ToolboxInventoryAccessor"
+	"ToolboxContainerMixin"
   ],
   "client": [
   ],
