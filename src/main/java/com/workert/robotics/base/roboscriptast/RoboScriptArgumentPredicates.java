@@ -150,7 +150,8 @@ public class RoboScriptArgumentPredicates {
 		throw new RoboScriptRuntimeError(this.errorToken, "Argument must not be empty.");
 	}
 
-	public static BlockPos asBlockPos(List<Object> argumentList, int startingIndex) {
+	// TODO: outcraft figure out why this was static i changed it so it would compile
+	public BlockPos asBlockPos(List<Object> argumentList, int startingIndex) {
 		return new BlockPos(this.asNumber(argumentList.get(startingIndex)),
 				this.asNumber(argumentList.get(startingIndex + 1)),
 				this.asNumber(argumentList.get(startingIndex + 2)));
