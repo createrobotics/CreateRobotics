@@ -6,7 +6,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 
-import java.util.List;
 import java.util.function.Function;
 
 /**
@@ -22,12 +21,10 @@ public final class RoboScriptArgumentPredicates {
 	 * <p>
 	 * <b>Code Example:</b>
 	 * <pre>{@code
-	 * RoboScriptArgumentPredicates predicates = new RoboScriptArgumentPredicates(YOUR_ERROR_TOKEN_HERE);
-	 *
 	 * Object maybeNumber;
 	 *
 	 * // Convert `maybeNumber` to a `Double` using the `asNumber` method, allowing for null input
-	 * Double definitelyNumberOrNull = predicates.asOptional(maybeNumber, predicates::asNumber);
+	 * Double definitelyNumberOrNull = RoboScriptArgumentPredicates.asOptional(maybeNumber, predicates::asNumber);
 	 * System.out.println(definitelyNumberOrNull); // This will definitely be a number or null. If `maybeNumber` is neither, it will throw.
 	 * }</pre>
 	 * <p>
@@ -36,18 +33,18 @@ public final class RoboScriptArgumentPredicates {
 	 * <b>Another more complex code example:</b>
 	 * <pre>{@code
 	 * // Convert `maybeNumber` to a positive `Double` number, allowing for null input
-	 * Double definitelyPositiveNumberOrNull = predicates.asOptional(maybeNumber, (object) -> predicates.asPositiveNumber(object, true));
+	 * Double definitelyPositiveNumberOrNull = RoboScriptArgumentPredicates.asOptional(maybeNumber, (object) -> predicates.asPositiveNumber(object, true));
 	 * System.out.println(definitelyPositiveNumberOrNull); // Definitely a positive number or null.
 	 * }</pre>
 	 *
-	 * @param object       the object to be converted
-	 * @param function     the conversion function, which takes an object and returns the desired return type
-	 * @param <ReturnType> the type of the returned object
+	 * @param object            the object to be converted
+	 * @param predicateFunction the conversion function, which takes an object and returns the desired return type
+	 * @param <ReturnType>      the type of the returned object
 	 * @return the converted object, or null if the input object is null
 	 */
-	public static <ReturnType> ReturnType optional(Object object, Function<Object, ReturnType> function) {
+	public static <ReturnType> ReturnType optional(Object object, Function<Object, ReturnType> predicateFunction) {
 		if (object == null) return null;
-		return function.apply(object);
+		return predicateFunction.apply(object);
 	}
 
 	/**
@@ -141,10 +138,10 @@ public final class RoboScriptArgumentPredicates {
 		throw new RuntimeError("Argument must not be empty.");
 	}
 
-	public static BlockPos asBlockPos(List<Object> argumentList, int startingIndex) {
-		return new BlockPos(asNumber(argumentList.get(startingIndex)),
-				asNumber(argumentList.get(startingIndex + 1)),
-				asNumber(argumentList.get(startingIndex + 2)));
+	public static BlockPos asBlockPos(Object[] argumentList, int startingIndex) {
+		return new BlockPos(asNumber(argumentList[(startingIndex)]),
+				asNumber(argumentList[(startingIndex + 1)]),
+				asNumber(argumentList[(startingIndex + 2)]));
 	}
 
 	public static BlockPos asBlockPos(Object object1, Object object2, Object object3) {
