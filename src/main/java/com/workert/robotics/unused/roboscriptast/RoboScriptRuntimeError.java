@@ -1,4 +1,4 @@
-package com.workert.robotics.base.roboscriptast;
+package com.workert.robotics.unused.roboscriptast;
 public final class RoboScriptRuntimeError extends RuntimeException {
 	public final Token token;
 

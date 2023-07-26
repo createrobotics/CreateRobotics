@@ -1,10 +1,10 @@
 package com.workert.robotics.content.computers.computer;
 
 import com.simibubi.create.content.contraptions.base.KineticTileEntity;
-import com.workert.robotics.base.roboscriptast.Interpreter;
-import com.workert.robotics.base.roboscriptast.RoboScript;
-import com.workert.robotics.base.roboscriptast.RoboScriptArray;
-import com.workert.robotics.base.roboscriptast.ingame.LineLimitedString;
+import com.workert.robotics.unused.roboscriptast.Interpreter;
+import com.workert.robotics.unused.roboscriptast.RoboScript;
+import com.workert.robotics.unused.roboscriptast.RoboScriptArray;
+import com.workert.robotics.unused.roboscriptast.ingame.LineLimitedString;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;

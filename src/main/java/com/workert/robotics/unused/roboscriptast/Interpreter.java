@@ -1,4 +1,4 @@
-package com.workert.robotics.base.roboscriptast;
+package com.workert.robotics.unused.roboscriptast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -328,7 +328,8 @@ public final class Interpreter implements Expression.Visitor<Object>, Statement.
 			case DOUBLE -> value instanceof Double;
 			case BOOLEAN -> value instanceof Boolean;
 			case ARRAY -> value instanceof RoboScriptArray;
-			case OBJECT -> value instanceof RoboScriptVariable || value instanceof RoboScriptFunction || value instanceof RoboScriptClassInstance;
+			case OBJECT ->
+					value instanceof RoboScriptVariable || value instanceof RoboScriptFunction || value instanceof RoboScriptClassInstance;
 			case IDENTIFIER -> {
 				if (this.lookUpVariable(expr.right, expr) instanceof RoboScriptClass clazz) {
 					if (value instanceof RoboScriptClassInstance classInstance)
@@ -480,7 +481,7 @@ public final class Interpreter implements Expression.Visitor<Object>, Statement.
 			case BANG -> !this.isTruthy(right);
 			case MINUS -> -(double) right;
 			default ->
-					// Unreachable.
+				// Unreachable.
 					null;
 		};
 	}

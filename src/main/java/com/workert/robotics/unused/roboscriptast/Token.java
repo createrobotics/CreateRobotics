@@ -1,4 +1,4 @@
-package com.workert.robotics.base.roboscriptast;
+package com.workert.robotics.unused.roboscriptast;
 public final class Token {
 	final TokenType type;
 	final String lexeme;

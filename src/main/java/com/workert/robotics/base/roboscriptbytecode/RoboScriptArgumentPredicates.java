@@ -1,6 +1,6 @@
 package com.workert.robotics.base.roboscriptbytecode;
 
-import com.workert.robotics.base.roboscriptast.RoboScriptRuntimeError;
+import com.workert.robotics.unused.roboscriptast.RoboScriptRuntimeError;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;

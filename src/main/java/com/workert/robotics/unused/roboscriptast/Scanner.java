@@ -1,10 +1,8 @@
-package com.workert.robotics.base.roboscriptast;
+package com.workert.robotics.unused.roboscriptast;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static com.workert.robotics.base.roboscriptast.Token.TokenType.*;
 
 /**
  * The Scanner class is responsible for tokenizing the source code of a RoboScript program.
@@ -29,38 +27,38 @@ final class Scanner {
 	private static Map<String, Token.TokenType> initializeKeywords() {
 		Map<String, Token.TokenType> keywords = new HashMap<>();
 
-		keywords.put("class", CLASS);
-		keywords.put("function", FUNCTION);
+		keywords.put("class", Token.TokenType.CLASS);
+		keywords.put("function", Token.TokenType.FUNCTION);
 
-		keywords.put("for", FOR);
-		keywords.put("foreach", FOREACH);
+		keywords.put("for", Token.TokenType.FOR);
+		keywords.put("foreach", Token.TokenType.FOREACH);
 
-		keywords.put("if", IF);
-		keywords.put("else", ELSE);
-		keywords.put("while", WHILE);
+		keywords.put("if", Token.TokenType.IF);
+		keywords.put("else", Token.TokenType.ELSE);
+		keywords.put("while", Token.TokenType.WHILE);
 
-		keywords.put("true", TRUE);
-		keywords.put("false", FALSE);
+		keywords.put("true", Token.TokenType.TRUE);
+		keywords.put("false", Token.TokenType.FALSE);
 
-		keywords.put("and", AND);
-		keywords.put("or", OR);
+		keywords.put("and", Token.TokenType.AND);
+		keywords.put("or", Token.TokenType.OR);
 
-		keywords.put("null", NULL);
+		keywords.put("null", Token.TokenType.NULL);
 
-		keywords.put("extends", EXTENDS);
-		keywords.put("super", SUPER);
-		keywords.put("this", THIS);
-		keywords.put("return", RETURN);
-		keywords.put("break", BREAK);
-		keywords.put("var", VAR);
-		keywords.put("persistent", PERSISTENT);
-		keywords.put("instanceof", INSTANCEOF);
+		keywords.put("extends", Token.TokenType.EXTENDS);
+		keywords.put("super", Token.TokenType.SUPER);
+		keywords.put("this", Token.TokenType.THIS);
+		keywords.put("return", Token.TokenType.RETURN);
+		keywords.put("break", Token.TokenType.BREAK);
+		keywords.put("var", Token.TokenType.VAR);
+		keywords.put("persistent", Token.TokenType.PERSISTENT);
+		keywords.put("instanceof", Token.TokenType.INSTANCEOF);
 
-		keywords.put("String", STRING);
-		keywords.put("double", DOUBLE);
-		keywords.put("boolean", BOOLEAN);
-		keywords.put("Array", ARRAY);
-		keywords.put("Object", OBJECT);
+		keywords.put("String", Token.TokenType.STRING);
+		keywords.put("double", Token.TokenType.DOUBLE);
+		keywords.put("boolean", Token.TokenType.BOOLEAN);
+		keywords.put("Array", Token.TokenType.ARRAY);
+		keywords.put("Object", Token.TokenType.OBJECT);
 
 		return keywords;
 	}
@@ -86,7 +84,7 @@ final class Scanner {
 			this.start = this.current;
 			this.scanToken();
 		}
-		this.tokens.add(new Token(EOF, "", null, this.line));
+		this.tokens.add(new Token(Token.TokenType.EOF, "", null, this.line));
 		return this.tokens;
 	}
 
@@ -97,45 +95,45 @@ final class Scanner {
 		char c = this.consumeNextChar();
 		switch (c) {
 			case '(':
-				this.addToken(LEFT_PAREN);
+				this.addToken(Token.TokenType.LEFT_PAREN);
 				break;
 			case ')':
-				this.addToken(RIGHT_PAREN);
+				this.addToken(Token.TokenType.RIGHT_PAREN);
 				break;
 			case '{':
-				this.addToken(LEFT_BRACE);
+				this.addToken(Token.TokenType.LEFT_BRACE);
 				break;
 			case '}':
-				this.addToken(RIGHT_BRACE);
+				this.addToken(Token.TokenType.RIGHT_BRACE);
 				break;
 			case '[':
-				this.addToken(LEFT_BRACKET);
+				this.addToken(Token.TokenType.LEFT_BRACKET);
 				break;
 			case ']':
-				this.addToken(RIGHT_BRACKET);
+				this.addToken(Token.TokenType.RIGHT_BRACKET);
 				break;
 			case ',':
-				this.addToken(COMMA);
+				this.addToken(Token.TokenType.COMMA);
 				break;
 			case '.':
-				this.addToken(DOT);
+				this.addToken(Token.TokenType.DOT);
 				break;
 			case '+':
 				if (this.consumeIfNextCharMatches('+')) {
-					this.addToken(PLUS_PLUS);
+					this.addToken(Token.TokenType.PLUS_PLUS);
 					break;
 				}
-				this.addToken(this.consumeIfNextCharMatches('=') ? PLUS_EQUAL : PLUS);
+				this.addToken(this.consumeIfNextCharMatches('=') ? Token.TokenType.PLUS_EQUAL : Token.TokenType.PLUS);
 				break;
 			case '-':
 				if (this.consumeIfNextCharMatches('-')) {
-					this.addToken(MINUS_MINUS);
+					this.addToken(Token.TokenType.MINUS_MINUS);
 					break;
 				}
-				this.addToken(this.consumeIfNextCharMatches('=') ? MINUS_EQUAL : MINUS);
+				this.addToken(this.consumeIfNextCharMatches('=') ? Token.TokenType.MINUS_EQUAL : Token.TokenType.MINUS);
 				break;
 			case '*':
-				this.addToken(this.consumeIfNextCharMatches('=') ? STAR_EQUAL : STAR);
+				this.addToken(this.consumeIfNextCharMatches('=') ? Token.TokenType.STAR_EQUAL : Token.TokenType.STAR);
 				break;
 			case '/':
 				if (this.consumeIfNextCharMatches('/')) {
@@ -144,33 +142,33 @@ final class Scanner {
 					}
 				} else {
 					this.addToken(
-							this.consumeIfNextCharMatches('=') ? SLASH_EQUAL : SLASH);
+							this.consumeIfNextCharMatches('=') ? Token.TokenType.SLASH_EQUAL : Token.TokenType.SLASH);
 				}
 				break;
 			case '%':
-				this.addToken(PERCENT);
+				this.addToken(Token.TokenType.PERCENT);
 				break;
 			case '^':
-				this.addToken(this.consumeIfNextCharMatches('=') ? CARET_EQUAL : CARET);
+				this.addToken(this.consumeIfNextCharMatches('=') ? Token.TokenType.CARET_EQUAL : Token.TokenType.CARET);
 				break;
 			case ':':
-				this.addToken(COLON);
+				this.addToken(Token.TokenType.COLON);
 				break;
 			case ';':
-				this.addToken(SEMICOLON);
+				this.addToken(Token.TokenType.SEMICOLON);
 				break;
 			case '!':
-				this.addToken(this.consumeIfNextCharMatches('=') ? BANG_EQUAL : BANG);
+				this.addToken(this.consumeIfNextCharMatches('=') ? Token.TokenType.BANG_EQUAL : Token.TokenType.BANG);
 				break;
 			case '=':
-				this.addToken(this.consumeIfNextCharMatches('=') ? EQUAL_EQUAL : EQUAL);
+				this.addToken(this.consumeIfNextCharMatches('=') ? Token.TokenType.EQUAL_EQUAL : Token.TokenType.EQUAL);
 				break;
 			case '<':
-				this.addToken(this.consumeIfNextCharMatches('=') ? LESS_EQUAL : LESS);
+				this.addToken(this.consumeIfNextCharMatches('=') ? Token.TokenType.LESS_EQUAL : Token.TokenType.LESS);
 				break;
 			case '>':
 				this.addToken(
-						this.consumeIfNextCharMatches('=') ? GREATER_EQUAL : GREATER);
+						this.consumeIfNextCharMatches('=') ? Token.TokenType.GREATER_EQUAL : Token.TokenType.GREATER);
 				break;
 			case ' ':
 			case '\r':
@@ -213,7 +211,7 @@ final class Scanner {
 		this.consumeNextChar();
 
 		String value = this.source.substring(this.start + 1, this.current - 1);
-		this.addToken(STRING_VALUE, value);
+		this.addToken(Token.TokenType.STRING_VALUE, value);
 	}
 
 	/**
@@ -232,7 +230,7 @@ final class Scanner {
 		}
 
 		String value = this.source.substring(this.start, this.current);
-		this.addToken(DOUBLE_VALUE, Double.parseDouble(value));
+		this.addToken(Token.TokenType.DOUBLE_VALUE, Double.parseDouble(value));
 	}
 
 	/**
@@ -244,7 +242,7 @@ final class Scanner {
 		}
 
 		String text = this.source.substring(this.start, this.current);
-		Token.TokenType type = keywords.getOrDefault(text, IDENTIFIER);
+		Token.TokenType type = keywords.getOrDefault(text, Token.TokenType.IDENTIFIER);
 		this.addToken(type);
 	}
 
