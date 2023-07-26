@@ -29,8 +29,8 @@ public class RoboScriptRunner {
 			}
 
 			@Override
-			protected void handleErrorMessage(String message) {
-				System.err.println(message);
+			protected void handleErrorMessage(String error) {
+				System.err.println(error);
 			}
 		}.runString(readFile());
 	}

@@ -44,7 +44,12 @@ final class VirtualMachine {
 	/**
 	 * Global functions that are defined natively and use Java code.
 	 */
-	RoboScript.NativeFunction[] nativeFunctions = new RoboScript.NativeFunction[32];
+	RoboScript.NativeFunction[] nativeFunctions = new RoboScript.NativeFunction[Short.MAX_VALUE];
+
+	/**
+	 * The amount of all Native Functions in the `nativeFunctions` array.
+	 */
+	int nativeFunctionSize = 0;
 
 	/**
 	 * Creates a static virtual machine.
@@ -663,25 +668,5 @@ final class VirtualMachine {
 	 */
 	private static boolean isNegative(double d) {
 		return d < 0;
-	}
-
-	/**
-	 * Gets a string value for an object passed in.
-	 *
-	 * @param object The object being stringified.
-	 * @return The string value of the object.
-	 */
-	public static String stringify(Object object) {
-		if (object == null) return "null";
-
-		if (object instanceof Double) {
-			String text = object.toString();
-			if (text.endsWith(".0")) {
-				text = text.substring(0, text.length() - 2);
-			}
-			return text;
-		}
-
-		return object.toString();
 	}
 }

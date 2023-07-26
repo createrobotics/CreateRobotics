@@ -1,5 +1,6 @@
-package com.workert.robotics.base.roboscriptast;
+package com.workert.robotics.base.roboscriptbytecode;
 
+import com.workert.robotics.base.roboscriptast.RoboScriptRuntimeError;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
@@ -12,17 +13,7 @@ import java.util.function.Function;
  * The {@code RoboScriptArgumentPredicates} class provides utility methods for validating and converting objects to specific types
  * while allowing for nullable arguments.
  */
-public class RoboScriptArgumentPredicates {
-	private final Token errorToken;
-
-	/**
-	 * Constructs a {@code RoboScriptArgumentPredicates} instance with the specified error token.
-	 *
-	 * @param errorToken the token to be used for error reporting
-	 */
-	public RoboScriptArgumentPredicates(Token errorToken) {
-		this.errorToken = errorToken;
-	}
+public final class RoboScriptArgumentPredicates {
 
 	/**
 	 * Converts the specified object to the specified return type using the provided function, but allows for the argument to be null.
@@ -54,7 +45,7 @@ public class RoboScriptArgumentPredicates {
 	 * @param <ReturnType> the type of the returned object
 	 * @return the converted object, or null if the input object is null
 	 */
-	public <ReturnType> ReturnType optional(Object object, Function<Object, ReturnType> function) {
+	public static <ReturnType> ReturnType optional(Object object, Function<Object, ReturnType> function) {
 		if (object == null) return null;
 		return function.apply(object);
 	}
@@ -66,10 +57,10 @@ public class RoboScriptArgumentPredicates {
 	 * @return the converted {@code Double} number
 	 * @throws RoboScriptRuntimeError if the argument is not a number
 	 */
-	public Double asNumber(Object object) {
+	public static Double asNumber(Object object) {
 		if (object instanceof Double number && !number.isNaN())
 			return number;
-		throw new RoboScriptRuntimeError(this.errorToken, "Argument must be a number.");
+		throw new RuntimeError("Argument must be a number.");
 	}
 
 	/**
@@ -79,12 +70,12 @@ public class RoboScriptArgumentPredicates {
 	 * @return the converted {@code Integer} whole number
 	 * @throws RoboScriptRuntimeError if the argument is not a whole number
 	 */
-	public Integer asFullNumber(Object object) {
-		Double number = this.asNumber(object);
+	public static Integer asFullNumber(Object object) {
+		Double number = asNumber(object);
 
 		if (Math.round(number) == number)
 			return number.intValue();
-		throw new RoboScriptRuntimeError(this.errorToken, "Argument must be a whole number.");
+		throw new RuntimeError("Argument must be a whole number.");
 	}
 
 	/**
@@ -95,14 +86,14 @@ public class RoboScriptArgumentPredicates {
 	 * @return the converted positive {@code Double} number
 	 * @throws RoboScriptRuntimeError if the argument is not a positive number
 	 */
-	public Double asPositiveNumber(Object object, boolean includeZero) {
-		Double number = this.asNumber(object);
+	public static Double asPositiveNumber(Object object, boolean includeZero) {
+		Double number = asNumber(object);
 		if (includeZero && number >= 0)
 			return number;
 		if (!includeZero && number > 0)
 			return number;
 
-		throw new RoboScriptRuntimeError(this.errorToken, "Argument must be positive.");
+		throw new RuntimeError("Argument must be positive.");
 	}
 
 	/**
@@ -113,14 +104,14 @@ public class RoboScriptArgumentPredicates {
 	 * @return the converted positive {@code Integer} whole number
 	 * @throws RoboScriptRuntimeError if the argument is not a positive whole number
 	 */
-	public Integer asPositiveFullNumber(Object object, boolean includeZero) {
-		Integer number = this.asFullNumber(object);
+	public static Integer asPositiveFullNumber(Object object, boolean includeZero) {
+		Integer number = asFullNumber(object);
 		if (includeZero && number >= 0)
 			return number;
 		if (!includeZero && number > 0)
 			return number;
 
-		throw new RoboScriptRuntimeError(this.errorToken, "Argument must be positive.");
+		throw new RuntimeError("Argument must be positive.");
 	}
 
 	/**
@@ -130,10 +121,10 @@ public class RoboScriptArgumentPredicates {
 	 * @return the converted {@code String}
 	 * @throws RoboScriptRuntimeError if the argument is not a string
 	 */
-	public String asString(Object object) {
+	public static String asString(Object object) {
 		if (object instanceof String string)
 			return string;
-		throw new RoboScriptRuntimeError(this.errorToken, "Argument must be a String.");
+		throw new RuntimeError("Argument must be a String.");
 	}
 
 	/**
@@ -143,27 +134,47 @@ public class RoboScriptArgumentPredicates {
 	 * @return the converted non-empty {@code String}
 	 * @throws RoboScriptRuntimeError if the argument is an empty string
 	 */
-	public String asNonEmptyString(Object object) {
-		String string = this.asString(object);
+	public static String asNonEmptyString(Object object) {
+		String string = asString(object);
 		if (!string.isEmpty())
 			return string;
-		throw new RoboScriptRuntimeError(this.errorToken, "Argument must not be empty.");
+		throw new RuntimeError("Argument must not be empty.");
 	}
 
 	public static BlockPos asBlockPos(List<Object> argumentList, int startingIndex) {
-		return new BlockPos(this.asNumber(argumentList.get(startingIndex)),
-				this.asNumber(argumentList.get(startingIndex + 1)),
-				this.asNumber(argumentList.get(startingIndex + 2)));
+		return new BlockPos(asNumber(argumentList.get(startingIndex)),
+				asNumber(argumentList.get(startingIndex + 1)),
+				asNumber(argumentList.get(startingIndex + 2)));
 	}
 
-	public BlockPos asBlockPos(Object object1, Object object2, Object object3) {
-		return new BlockPos(this.asNumber(object1), this.asNumber(object2),
-				this.asNumber(object3));
+	public static BlockPos asBlockPos(Object object1, Object object2, Object object3) {
+		return new BlockPos(asNumber(object1), asNumber(object2),
+				asNumber(object3));
 	}
 
-	public Item asItem(Object object) {
-		String itemId = this.asNonEmptyString(object);
+	public static Item asItem(Object object) {
+		String itemId = asNonEmptyString(object);
 		// May return Items.AIR
 		return Registry.ITEM.get(new ResourceLocation(itemId.split(":")[0], itemId.trim().split(":")[1]));
+	}
+
+	/**
+	 * Gets a string value for an object passed in.
+	 *
+	 * @param object The object being stringified.
+	 * @return The string value of the object.
+	 */
+	public static String stringify(Object object) {
+		if (object == null) return "null";
+
+		if (object instanceof Double) {
+			String text = object.toString();
+			if (text.endsWith(".0")) {
+				text = text.substring(0, text.length() - 2);
+			}
+			return text;
+		}
+
+		return object.toString();
 	}
 }
