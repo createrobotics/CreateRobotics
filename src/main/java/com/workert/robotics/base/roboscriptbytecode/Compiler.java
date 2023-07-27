@@ -102,8 +102,6 @@ public final class Compiler {
 		}
 
 		this.consumeOrInsertSemicolon("Expected ';' or new line after variable declaration.");
-
-		this.emitByte(OP_MAKE_MAP);
 	}
 
 	private void methodDeclaration() {
@@ -112,7 +110,6 @@ public final class Compiler {
 		String name = this.previous.lexeme;
 		this.emitConstant(name);
 		int constantIndex = this.emitConstant(null);
-		this.emitByte(OP_MAKE_MAP);
 
 		// the function stuff
 		List<Byte> previousCodeList = this.currentCodeList;
