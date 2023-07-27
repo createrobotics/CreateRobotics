@@ -74,7 +74,12 @@ final class VirtualMachine {
 
 		long currentTime = System.currentTimeMillis();
 		System.out.println("Started interpreting.");
-		this.run();
+		try {
+			this.run();
+		} catch (RuntimeError e) {
+			System.err.println("[line " + this.chunk.getLine(this.instructionPointer) + "] " + e.message);
+		}
+
 		System.out.println("Completed in " + (System.currentTimeMillis() - currentTime) + "ms.");
 	}
 
@@ -296,10 +301,7 @@ final class VirtualMachine {
 									"Expected '" + function.argumentCount + "' arguments but got '" + argumentCount + "'.");
 						}
 						Object returnValue = function.call(this);
-						while (!(this.peekStack() instanceof RoboScript.NativeFunction)) {
-							this.popStack();
-						}
-						this.popStack();
+						this.stackSize -= argumentCount + 1;
 						this.pushStack(returnValue);
 						break;
 					}
@@ -310,9 +312,13 @@ final class VirtualMachine {
 					}
 
 
-					if (!(callable instanceof RoboScriptFunction function))
-						throw new RuntimeError(
-								"Can only call functions, instead got '" + callable.getClass() + "'.");
+					if (!(callable instanceof RoboScriptFunction function)) {
+						if (callable != null)
+							throw new RuntimeError(
+									"Can only call functions, instead got '" + callable.getClass() + "'.");
+						else
+							throw new RuntimeError("Can only call functions, instead got 'null'.");
+					}
 					if (argumentCount != function.argumentCount)
 						throw new RuntimeError(
 								"Expected '" + function.argumentCount + "' arguments but got '" + argumentCount + "'.");
@@ -446,6 +452,8 @@ final class VirtualMachine {
 	 * @return A field from the object or a binded method from an objects function.
 	 */
 	private Object getFieldInObject(RoboScriptObject object, String fieldName) {
+		if (!object.fields.containsKey(fieldName))
+			throw new RuntimeError("Field '" + fieldName + "' does not exist in object.");
 		Object field = object.fields.get(fieldName);
 		if (field instanceof RoboScriptFunction r) {
 			return new RoboScriptMethod(r, object);

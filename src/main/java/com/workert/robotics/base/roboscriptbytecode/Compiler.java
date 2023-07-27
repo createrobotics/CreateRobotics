@@ -84,7 +84,7 @@ public final class Compiler {
 			} else if (this.checkAndConsumeIfMatches(FUNCTION)) {
 				this.methodDeclaration();
 			} else {
-				throw new RuntimeError("Only declarations are allowed in main class body.");
+				throw this.error("Only declarations are allowed in main class body.");
 			}
 		} catch (CompileError e) {
 			this.synchronize();
@@ -130,7 +130,7 @@ public final class Compiler {
 			do {
 				byte constant = this.parseVariable("Expected parameter name.");
 				if (this.previous.lexeme.equals("this"))
-					throw new RuntimeError("Methods must not contain parameter 'this', as it is added by default.");
+					throw this.error("Methods must not contain parameter 'this', as it is added by default.");
 				this.defineVariable(constant, this.previous.lexeme);
 				argumentCount++;
 			} while (this.checkAndConsumeIfMatches(COMMA));
@@ -157,15 +157,17 @@ public final class Compiler {
 		byte global = this.parseVariable("Expected class name");
 		String name = this.previous.lexeme;
 		Map<String, Object> fields = new HashMap<>();
-		RoboScriptClass clazz = new RoboScriptClass(fields);
+		RoboScriptClass clazz = new RoboScriptClass();
 		this.emitConstant(clazz);
 		this.defineVariable(global, name);
 		this.emitConstant(clazz);
 		this.consumeOrThrow(LEFT_BRACE, "Expected '{' after class name.");
-
+		byte fieldCount = 0;
 		while (!this.isNextToken(RIGHT_BRACE) && !this.isNextToken(EOF)) {
+			fieldCount++;
 			this.fieldDeclaration();
 		}
+		this.emitBytes(OP_MAKE_MAP, fieldCount);
 		this.consumeOrThrow(RIGHT_BRACE, "Expected '}' after class body.");
 	}
 
