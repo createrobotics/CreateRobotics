@@ -102,38 +102,17 @@ final class VirtualMachine {
 
 				case OP_POP -> this.popStack();
 
-				case OP_GET_LOCAL -> {
-					byte slot = this.readByte();
-					this.pushStack(this.stack[this.basePointer + slot]);
-				}
+				case OP_GET_LOCAL -> this.pushStack(this.stack[this.basePointer + this.readByte()]);
 
-				case OP_SET_LOCAL -> {
-					byte slot = this.readByte();
-					this.stack[this.basePointer + slot] = this.popStack();
-				}
+				case OP_SET_LOCAL -> this.stack[this.basePointer + this.readByte()] = this.popStack();
 
-				case OP_GET_NATIVE -> {
-					byte slot = this.readByte();
-					this.pushStack(this.nativeFunctions[slot]);
-				}
+				case OP_GET_NATIVE -> this.pushStack(this.nativeFunctions[this.readByte()]);
 
-				case OP_GET_GLOBAL -> {
-					try {
-						this.pushStack(this.readGlobalVariable());
-					} catch (IndexOutOfBoundsException i) {
-						throw new RuntimeError("Undefined variable.");
-					}
-				}
+				case OP_GET_GLOBAL -> this.pushStack(this.readGlobalVariable());
 
 				case OP_DEFINE_GLOBAL -> this.globalVariables[this.readByte()] = this.popStack();
 
-				case OP_SET_GLOBAL -> {
-					try {
-						this.globalVariables[this.readByte()] = this.peekStack();
-					} catch (IndexOutOfBoundsException i) {
-						throw new RuntimeError("Undefined variable.");
-					}
-				}
+				case OP_SET_GLOBAL -> this.globalVariables[this.readByte()] = this.peekStack();
 
 				case OP_EQUAL -> this.binaryOperation('=');
 
@@ -254,11 +233,8 @@ final class VirtualMachine {
 				case OP_NOT -> this.stack[this.stackSize - 1] = !isTruthy(this.peekStack());
 
 				case OP_NEGATE -> {
-					try {
-						this.stack[this.stackSize - 1] = -(double) this.peekStack();
-					} catch (ClassCastException e) {
-						throw new RuntimeError("Can only negate numbers.");
-					}
+					if (!(this.peekStack() instanceof Double d)) throw new RuntimeError("Can only negate numbers.");
+					this.stack[this.stackSize - 1] = -(double) d;
 				}
 
 				case OP_JUMP -> {
@@ -376,7 +352,6 @@ final class VirtualMachine {
 					} else if (gettable instanceof RoboScriptObject object) {
 						this.pushStack(this.getFieldInObject(object, (String) key));
 					} else if (gettable instanceof List list) {
-
 						if (!(key instanceof Double d))
 							throw new RuntimeError(
 									"Index value for list must be a whole number greater or equal to 0.");
@@ -532,12 +507,9 @@ final class VirtualMachine {
 		if (a instanceof String || b instanceof String) {
 			this.pushStack(a.toString() + b.toString());
 			return;
-		}
-		try {
-			this.pushStack((double) a + (double) b);
-		} catch (ClassCastException e) {
+		} else if (!(a instanceof Double && b instanceof Double))
 			throw new RuntimeError("Addition must be between two numbers or a string.");
-		}
+		this.pushStack((double) a + (double) b);
 	}
 
 	/**
@@ -551,78 +523,51 @@ final class VirtualMachine {
 		switch (operand) {
 			case '+' -> this.binaryAdd(a, b);
 			case '-' -> {
-				try {
-					this.pushStack((double) a - (double) b);
-				} catch (ClassCastException e) {
-					throw new RuntimeError(
-							"Subtraction must be between two numbers, instead got '" + a.getClass() + "' and '" + b.getClass() + "'.");
-				}
+				if (!(a instanceof Double && b instanceof Double))
+					throw new RuntimeError("Subtraction must be between two numbers.");
+				this.pushStack((double) a - (double) b);
 			}
 			case '*' -> {
-				try {
-					this.pushStack((double) a * (double) b);
-				} catch (ClassCastException e) {
-					throw new RuntimeError(
-							"Multiplication must be between two numbers, instead got '" + a.getClass() + "' and '" + b.getClass() + "'.");
-				}
+				if (!(a instanceof Double && b instanceof Double))
+					throw new RuntimeError("Multiplication must be between two numbers.");
+				this.pushStack((double) a * (double) b);
 			}
 			case '/' -> {
-				try {
-					if ((double) b == 0) throw new RuntimeError("Cannot divide by 0.");
-					this.pushStack((double) a / (double) b);
-				} catch (ClassCastException e) {
-					throw new RuntimeError(
-							"Division must be between two numbers, instead got '" + a.getClass() + "' and '" + b.getClass() + "'.");
-				}
+				if (!(a instanceof Double && b instanceof Double))
+					throw new RuntimeError("Multiplication must be between two numbers.");
+				if ((double) b == 0) throw new RuntimeError("Cannot divide by 0.");
+				this.pushStack((double) a / (double) b);
 			}
 			case '%' -> {
-				try {
-					if ((double) b == 0) throw new RuntimeError("Cannot divide / modulo by 0.");
-					this.pushStack((double) a % (double) b);
-				} catch (ClassCastException e) {
-					throw new RuntimeError(
-							"Modulo must be between two numbers, instead got '" + a.getClass() + "' and '" + b.getClass() + "'.");
-				}
+				if (!(a instanceof Double && b instanceof Double))
+					throw new RuntimeError("Modulo must be between two numbers.");
+				if ((double) b == 0) throw new RuntimeError("Cannot divide by 0.");
+				this.pushStack((double) a % (double) b);
 			}
 			case '^' -> {
-				try {
-					this.pushStack(Math.pow((double) a, (double) b));
-				} catch (ClassCastException e) {
-					throw new RuntimeError(
-							"Exponents must be between two numbers, instead got '" + a.getClass() + "' and '" + b.getClass() + "'.");
-				}
+				if (!(a instanceof Double && b instanceof Double))
+					throw new RuntimeError("Exponents must be between two numbers.");
+				this.pushStack(Math.pow((double) a, (double) b));
 			}
 			case '>' -> {
-				try {
-					this.pushStack((double) a > (double) b);
-				} catch (ClassCastException e) {
-					throw new RuntimeError(
-							"Comparison using '>' must be between two numbers, instead got '" + a.getClass() + "' and '" + b.getClass() + "'.");
-				}
+				if (!(a instanceof Double && b instanceof Double))
+					throw new RuntimeError("Comparison using '>' must be between two numbers.");
+				this.pushStack((double) a > (double) b);
 			}
 			case '<' -> {
-				try {
-					this.pushStack((double) a < (double) b);
-				} catch (ClassCastException e) {
-					throw new RuntimeError(
-							"Comparison using '<' must be between two numbers, instead got '" + a.getClass() + "' and '" + b.getClass() + "'.");
-				}
+				if (!(a instanceof Double && b instanceof Double))
+					throw new RuntimeError("Comparison using '<' must be between two numbers.");
+				this.pushStack((double) a < (double) b);
 			}
 			case 'g' -> { // >=
-				try {
-					this.pushStack((double) a >= (double) b);
-				} catch (ClassCastException e) {
-					throw new RuntimeError(
-							"Comparison using '>=' must be between two numbers, instead got '" + a.getClass() + "' and '" + b.getClass() + "'.");
-				}
+				if (!(a instanceof Double && b instanceof Double))
+					throw new RuntimeError("Comparison using '>=' must be between two numbers.");
+				this.pushStack((double) a >= (double) b);
 			}
 			case 'l' -> { // <=
-				try {
-					this.pushStack((double) a <= (double) b);
-				} catch (ClassCastException e) {
-					throw new RuntimeError(
-							"Comparison using '<=' must be between two numbers, instead got '" + a.getClass() + "' and '" + b.getClass() + "'.");
-				}
+				if (!(a instanceof Double && b instanceof Double))
+					throw new RuntimeError("Comparison using '<=' must be between two numbers.");
+				this.pushStack((double) a <= (double) b);
 			}
 			case '=' -> this.pushStack(a.equals(b)); // ==
 			case 'n' -> this.pushStack(!a.equals(b)); // !=
