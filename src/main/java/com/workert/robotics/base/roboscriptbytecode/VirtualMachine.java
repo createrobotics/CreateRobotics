@@ -301,7 +301,7 @@ final class VirtualMachine {
 									"Expected '" + function.argumentCount + "' arguments but got '" + argumentCount + "'.");
 						}
 						Object returnValue = function.call(this);
-						this.stackSize -= argumentCount + 1;
+						this.popStack();
 						this.pushStack(returnValue);
 						break;
 					}
