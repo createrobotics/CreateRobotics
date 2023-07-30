@@ -94,7 +94,8 @@ final class Token {
 
 
 		EOF(empty()),
-		ERROR(empty());
+		ERROR(empty()),
+		NA(empty());
 
 		private final Compiler.ParseRule parseRule;
 

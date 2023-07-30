@@ -14,7 +14,7 @@ public final class Compiler {
 
 	List<Byte> currentCodeList = new ArrayList<>();
 	List<Integer> currentLineList = new ArrayList<>();
-	boolean inFunction = false;
+	int functionArgAmount = -1;
 	boolean emitPop = true;
 
 	List<Integer> functions = new ArrayList<>();
@@ -116,8 +116,6 @@ public final class Compiler {
 		this.currentCodeList = new ArrayList<>();
 		List<Integer> previousLineList = this.currentLineList;
 		this.currentLineList = new ArrayList<>();
-		boolean wasInFunction = this.inFunction;
-		this.inFunction = true;
 
 		this.beginScope();
 		this.consumeOrThrow(LEFT_PAREN, "Expected '(' after function name.");
@@ -132,19 +130,33 @@ public final class Compiler {
 				argumentCount++;
 			} while (this.checkAndConsumeIfMatches(COMMA));
 		}
+
+		// define "this"
 		this.declareVariable(new Token(IDENTIFIER, "this", this.previous.line));
 		this.defineVariable((byte) 0, "this");
+
+		int prevFunctionArg = this.functionArgAmount;
+		this.functionArgAmount = argumentCount + 1 /* "this" */;
+
+		// define instruction pointer
+		this.declareVariable(new Token(NA, "instruction pointers", this.previous.line));
+		this.defineVariable((byte) 0, "");
+
+		// define base pointer
+		this.declareVariable(new Token(NA, "base pointer", this.previous.line));
+		this.defineVariable((byte) 0, "");
+
 		this.consumeOrThrow(RIGHT_PAREN, "Expected ')' after function parameters.");
 		this.consumeOrThrow(LEFT_BRACE, "Expected '{' before function body");
 		this.block();
 		this.endFunctionScope();
-		this.emitBytes(OP_NULL, OP_RETURN);
+		this.emitBytes(OP_NULL, OP_RETURN, (byte) this.functionArgAmount);
 
 		CompilerFunction function = new CompilerFunction(this.currentCodeList, this.currentLineList, argumentCount);
 
 		this.currentCodeList = previousCodeList;
 		this.currentLineList = previousLineList;
-		this.inFunction = wasInFunction;
+		this.functionArgAmount = prevFunctionArg;
 
 		this.chunk.setConstant(constantIndex, function);
 		this.functions.add(constantIndex);
@@ -192,8 +204,6 @@ public final class Compiler {
 		this.currentCodeList = new ArrayList<>();
 		List<Integer> previousLineList = this.currentLineList;
 		this.currentLineList = new ArrayList<>();
-		boolean wasInFunction = this.inFunction;
-		this.inFunction = true;
 
 		this.beginScope();
 		this.consumeOrThrow(LEFT_PAREN, "Expected '(' after function name.");
@@ -207,18 +217,29 @@ public final class Compiler {
 			} while (this.checkAndConsumeIfMatches(COMMA));
 		}
 
+		int prevFunctionArg = this.functionArgAmount;
+		this.functionArgAmount = argumentCount;
+
+		// define instruction pointer
+		this.declareVariable(new Token(NA, "instruction pointers", this.previous.line));
+		this.defineVariable((byte) 0, "");
+
+		// define base pointer
+		this.declareVariable(new Token(NA, "base pointer", this.previous.line));
+		this.defineVariable((byte) 0, "");
+
 		this.consumeOrThrow(RIGHT_PAREN, "Expected ')' after function parameters.");
 
 		this.consumeOrThrow(LEFT_BRACE, "Expected '{' before function body");
 		this.block();
 		this.endFunctionScope();
-		this.emitBytes(OP_NULL, OP_RETURN);
+		this.emitBytes(OP_NULL, OP_RETURN, (byte) this.functionArgAmount);
 
 		CompilerFunction function = new CompilerFunction(this.currentCodeList, this.currentLineList, argumentCount);
 
 		this.currentCodeList = previousCodeList;
 		this.currentLineList = previousLineList;
-		this.inFunction = wasInFunction;
+		this.functionArgAmount = prevFunctionArg;
 
 		this.chunk.setConstant(constantIndex, function);
 		this.functions.add(constantIndex);
@@ -408,14 +429,27 @@ public final class Compiler {
 	}
 
 	private void returnStatement() {
-		if (!this.inFunction) throw this.error("Can only return inside of functions.");
+		if (this.functionArgAmount == -1) throw this.error("Can only return inside of functions.");
+
+		int virtualLocalSize = this.locals.size();
+		int localsInScope = 0;
+		while (virtualLocalSize > 0 && this.locals.get(virtualLocalSize - 1).depth > this.scopeDepth - 1) {
+			virtualLocalSize -= 1;
+			localsInScope++;
+		}
+		int localsToPop = localsInScope - this.functionArgAmount - 2;
+		for (int i = 0; i < localsToPop; i++) {
+			this.emitByte(OP_POP);
+		}
+
+
 		if (this.checkAndConsumeIfMatches(SEMICOLON)) {
-			this.emitBytes(OP_NULL, OP_RETURN);
+			this.emitBytes(OP_NULL, OP_RETURN, (byte) this.functionArgAmount);
 			return;
 		}
 		this.expression();
 		this.consumeOrInsertSemicolon("Expected ';' or new line after return expression.");
-		this.emitByte(OP_RETURN);
+		this.emitBytes(OP_RETURN, (byte) this.functionArgAmount);
 	}
 
 	private int emitJump(byte instruction) {
@@ -675,6 +709,17 @@ public final class Compiler {
 		}
 	}
 
+	private void removeByte() {
+		this.currentCodeList.remove(this.currentCodeList.size() - 1);
+		this.currentLineList.remove(this.currentLineList.size() - 1);
+	}
+
+	private void removeBytes(int amount) {
+		for (int i = 0; i < amount; i++) {
+			this.removeByte();
+		}
+	}
+
 	private void emitEnd() {
 		this.emitByte(OP_END);
 	}
@@ -793,8 +838,14 @@ public final class Compiler {
 
 	private void endFunctionScope() {
 		this.scopeDepth--;
+		int localsInScope = 0;
 		while (this.locals.size() > 0 && this.locals.get(this.locals.size() - 1).depth > this.scopeDepth) {
 			this.locals.remove(this.locals.size() - 1);
+			localsInScope++;
+		}
+		int localsToPop = localsInScope - this.functionArgAmount - 2;
+		for (int i = 0; i < localsToPop; i++) {
+			this.emitByte(OP_POP);
 		}
 	}
 

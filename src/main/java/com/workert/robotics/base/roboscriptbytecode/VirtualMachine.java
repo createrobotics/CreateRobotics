@@ -300,14 +300,12 @@ final class VirtualMachine {
 				}
 
 				case OP_RETURN -> {
+					byte argCount = this.readByte();
 					Object returnValue = this.popStack();
-
 					this.basePointer = (int) this.popStack();
 					this.instructionPointer = (int) this.popStack();
-					while (!(this.peekStack() instanceof RoboScriptFunction)) {
-						this.popStack();
-					}
-					this.popStack();
+					this.stackSize -= argCount; // pops args
+					this.stackSize -= 1; // pops function
 					this.pushStack(returnValue);
 				}
 
