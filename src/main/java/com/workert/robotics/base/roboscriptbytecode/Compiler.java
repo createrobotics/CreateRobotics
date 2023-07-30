@@ -293,7 +293,7 @@ public final class Compiler {
 		this.consumeOrThrow(IDENTIFIER, "Expected field name after '.'.");
 		String name = this.previous.lexeme;
 		this.emitConstant(name);
-		this.emitGetVariable(OP_MAP_GET, canAssign);
+		this.emitGetVariable(OP_GET_MAP, canAssign);
 	}
 
 	void map(boolean canAssign) {
@@ -512,7 +512,7 @@ public final class Compiler {
 
 		if (this.checkAndConsumeIfMatches(EQUAL)) {
 			this.expression();
-			this.emitByte(OP_MAP_SET);
+			this.emitByte(OP_SET_MAP);
 			return;
 		}
 
@@ -522,7 +522,7 @@ public final class Compiler {
 			this.emitBytes(getOpCode, (byte) 1);
 			this.expression();
 			byte emit = getAssignmentOperatorByte(previousType);
-			this.emitBytes(emit, OP_MAP_SET);
+			this.emitBytes(emit, OP_SET_MAP);
 			return;
 		}
 
@@ -645,7 +645,7 @@ public final class Compiler {
 	void index(boolean canAssign) {
 		this.expression();
 		this.consumeOrThrow(RIGHT_BRACKET, "Expected ']' after expression");
-		this.emitGetVariable(OP_MAP_GET, canAssign);
+		this.emitGetVariable(OP_GET_MAP, canAssign);
 	}
 
 	void and(boolean canAssign) {

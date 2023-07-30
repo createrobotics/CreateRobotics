@@ -50,8 +50,8 @@ public class OpCodeGenerator {
 		opCodes.add("OP_MAKE_MAP");
 		opCodes.add("OP_MAKE_LIST");
 		// lists are also maps but just here
-		opCodes.add("OP_MAP_GET");
-		opCodes.add("OP_MAP_SET");
+		opCodes.add("OP_GET_MAP");
+		opCodes.add("OP_SET_MAP");
 		opCodes.add("OP_END");
 	}
 

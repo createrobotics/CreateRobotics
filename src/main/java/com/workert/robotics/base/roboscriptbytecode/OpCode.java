@@ -39,7 +39,7 @@ public interface OpCode {
 	byte OP_RETURN = 35;
 	byte OP_MAKE_MAP = 36;
 	byte OP_MAKE_LIST = 37;
-	byte OP_MAP_GET = 38;
-	byte OP_MAP_SET = 39;
+	byte OP_GET_MAP = 38;
+	byte OP_SET_MAP = 39;
 	byte OP_END = 40;
 }

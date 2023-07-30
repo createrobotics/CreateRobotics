@@ -335,7 +335,7 @@ final class VirtualMachine {
 					this.stackSize -= listSize;
 				}
 
-				case OP_MAP_GET -> {
+				case OP_GET_MAP -> {
 					byte keep = this.readByte();
 					Object key = this.peekStack();
 					Object gettable = this.peekStack(1);
@@ -364,7 +364,7 @@ final class VirtualMachine {
 					}
 				}
 
-				case OP_MAP_SET -> {
+				case OP_SET_MAP -> {
 					Object value = this.popStack();
 					Object key = this.popStack();
 					Object settable = this.popStack();
