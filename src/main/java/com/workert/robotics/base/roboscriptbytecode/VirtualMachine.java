@@ -174,6 +174,21 @@ final class VirtualMachine {
 					}
 				}
 
+				case OP_INCREMENT_CLASS -> {
+					String key = (String) this.popStack();
+					Object gettable = this.popStack();
+
+					if (!(gettable instanceof RoboScriptObject object))
+						throw new RuntimeError("Can only use '.' to set fields from an object.");
+
+					if (!object.fields.containsKey(key))
+						throw new RuntimeError("Object does not contain field '" + key + "'.");
+					if (!(object.fields.get(key) instanceof Double increment))
+						throw new RuntimeError("Incrementing field must be a number.");
+					this.pushStack(increment);
+					object.fields.put(key, increment + 1);
+				}
+
 				case OP_DECREMENT_GLOBAL -> {
 					byte global = this.readByte();
 					if (!(this.globalVariables[global] instanceof Double increment))
@@ -218,6 +233,21 @@ final class VirtualMachine {
 					} else {
 						throw new RuntimeError("Can only get objects from maps and lists.");
 					}
+				}
+
+				case OP_DECREMENT_CLASS -> {
+					String key = (String) this.popStack();
+					Object gettable = this.popStack();
+
+					if (!(gettable instanceof RoboScriptObject object))
+						throw new RuntimeError("Can only use '.' to set fields from an object.");
+
+					if (!object.fields.containsKey(key))
+						throw new RuntimeError("Object does not contain field '" + key + "'.");
+					if (!(object.fields.get(key) instanceof Double increment))
+						throw new RuntimeError("Decrementing field must be a number.");
+					this.pushStack(increment);
+					object.fields.put(key, increment - 1);
 				}
 
 				case OP_SUBTRACT -> this.binaryOperation('-');
@@ -347,8 +377,6 @@ final class VirtualMachine {
 
 					if (gettable instanceof Map map) {
 						this.pushStack(map.get(key));
-					} else if (gettable instanceof RoboScriptObject object) {
-						this.pushStack(this.getFieldInObject(object, (String) key));
 					} else if (gettable instanceof List list) {
 						if (!(key instanceof Double d))
 							throw new RuntimeError(
@@ -373,10 +401,6 @@ final class VirtualMachine {
 
 					if (settable instanceof Map map) {
 						map.put(key, value);
-					} else if (settable instanceof RoboScriptObject object) {
-						if (!object.fields.containsKey((String) key))
-							throw new RuntimeError("Object does not contain field '" + (String) key + "'.");
-						object.fields.put((String) key, value);
 					} else if (settable instanceof List list) {
 
 						if (!(key instanceof Double d))
@@ -391,6 +415,36 @@ final class VirtualMachine {
 						throw new RuntimeError(
 								"Can only get objects from maps, instead getting from '" + settable.getClass() + "'.");
 					}
+				}
+
+				case OP_GET_CLASS -> {
+					byte keep = this.readByte();
+
+					String key = (String) this.peekStack();
+					Object gettable = this.peekStack(1);
+
+					if (keep == 0) {
+						key = (String) this.popStack();
+						gettable = this.popStack();
+					}
+
+					if (!(gettable instanceof RoboScriptObject object))
+						throw new RuntimeError("Can only use '.' to get fields from an object.");
+					if (!object.fields.containsKey(key))
+						throw new RuntimeError("Object does not contain field '" + key + "'.");
+					this.pushStack(this.getFieldInObject(object, key));
+				}
+
+				case OP_SET_CLASS -> {
+					Object value = this.popStack();
+					String key = (String) this.popStack();
+					Object settable = this.popStack();
+					this.pushStack(value);
+					if (!(settable instanceof RoboScriptObject object))
+						throw new RuntimeError("Can only use '.' to set fields from an object.");
+					if (!object.fields.containsKey(key))
+						throw new RuntimeError("Object does not contain field '" + key + "'.");
+					object.fields.put(key, value);
 				}
 
 				case OP_END -> {

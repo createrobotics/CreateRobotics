@@ -293,7 +293,7 @@ public final class Compiler {
 		this.consumeOrThrow(IDENTIFIER, "Expected field name after '.'.");
 		String name = this.previous.lexeme;
 		this.emitConstant(name);
-		this.emitGetVariable(OP_GET_MAP, canAssign);
+		this.emitMapVariable(OP_GET_CLASS, OP_SET_CLASS, OP_INCREMENT_CLASS, OP_DECREMENT_CLASS, canAssign);
 	}
 
 	void map(boolean canAssign) {
@@ -504,7 +504,7 @@ public final class Compiler {
 		this.emitBytes(getOp, lookup);
 	}
 
-	private void emitGetVariable(byte getOpCode, boolean canAssign) {
+	private void emitMapVariable(byte getOpCode, byte setOpCode, byte incrementOpCode, byte decrementOpCode, boolean canAssign) {
 		if (!canAssign) {
 			this.emitBytes(getOpCode, (byte) 0);
 			return;
@@ -512,7 +512,7 @@ public final class Compiler {
 
 		if (this.checkAndConsumeIfMatches(EQUAL)) {
 			this.expression();
-			this.emitByte(OP_SET_MAP);
+			this.emitByte(setOpCode);
 			return;
 		}
 
@@ -522,15 +522,15 @@ public final class Compiler {
 			this.emitBytes(getOpCode, (byte) 1);
 			this.expression();
 			byte emit = getAssignmentOperatorByte(previousType);
-			this.emitBytes(emit, OP_SET_MAP);
+			this.emitBytes(emit, setOpCode);
 			return;
 		}
 
 		if (this.checkAndConsumeIfMatches(PLUS_PLUS)) {
-			this.emitBytes(OP_INCREMENT_MAP);
+			this.emitBytes(incrementOpCode);
 			return;
 		} else if (this.checkAndConsumeIfMatches(MINUS_MINUS)) {
-			this.emitBytes(OP_DECREMENT_MAP);
+			this.emitBytes(decrementOpCode);
 			return;
 		}
 		this.emitBytes(getOpCode, (byte) 0);
@@ -645,7 +645,7 @@ public final class Compiler {
 	void index(boolean canAssign) {
 		this.expression();
 		this.consumeOrThrow(RIGHT_BRACKET, "Expected ']' after expression");
-		this.emitGetVariable(OP_GET_MAP, canAssign);
+		this.emitMapVariable(OP_GET_MAP, OP_SET_MAP, OP_INCREMENT_MAP, OP_DECREMENT_MAP, canAssign);
 	}
 
 	void and(boolean canAssign) {
