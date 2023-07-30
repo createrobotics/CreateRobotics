@@ -20,11 +20,11 @@ public interface OpCode {
 	byte OP_ADD = 16;
 	byte OP_INCREMENT_GLOBAL = 17;
 	byte OP_INCREMENT_LOCAL = 18;
-	byte OP_INCREMENT_LIST_MAP = 19;
+	byte OP_INCREMENT_MAP = 19;
 	byte OP_SUBTRACT = 20;
 	byte OP_DECREMENT_GLOBAL = 21;
 	byte OP_DECREMENT_LOCAL = 22;
-	byte OP_DECREMENT_LIST_MAP = 23;
+	byte OP_DECREMENT_MAP = 23;
 	byte OP_MULTIPLY = 24;
 	byte OP_DIVIDE = 25;
 	byte OP_MODULO = 26;

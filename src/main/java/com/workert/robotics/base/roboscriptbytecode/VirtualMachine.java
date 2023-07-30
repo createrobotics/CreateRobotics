@@ -145,7 +145,7 @@ final class VirtualMachine {
 					this.pushStack(increment);
 				}
 
-				case OP_INCREMENT_LIST_MAP -> {
+				case OP_INCREMENT_MAP -> {
 					Object key = this.popStack();
 					Object gettable = this.popStack();
 
@@ -191,7 +191,7 @@ final class VirtualMachine {
 					this.pushStack(increment);
 				}
 
-				case OP_DECREMENT_LIST_MAP -> {
+				case OP_DECREMENT_MAP -> {
 					Object key = this.popStack();
 					Object gettable = this.popStack();
 

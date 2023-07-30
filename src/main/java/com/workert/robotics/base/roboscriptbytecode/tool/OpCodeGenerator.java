@@ -29,11 +29,11 @@ public class OpCodeGenerator {
 		opCodes.add("OP_ADD");
 		opCodes.add("OP_INCREMENT_GLOBAL");
 		opCodes.add("OP_INCREMENT_LOCAL");
-		opCodes.add("OP_INCREMENT_LIST_MAP");
+		opCodes.add("OP_INCREMENT_MAP");
 		opCodes.add("OP_SUBTRACT");
 		opCodes.add("OP_DECREMENT_GLOBAL");
 		opCodes.add("OP_DECREMENT_LOCAL");
-		opCodes.add("OP_DECREMENT_LIST_MAP");
+		opCodes.add("OP_DECREMENT_MAP");
 		opCodes.add("OP_MULTIPLY");
 		opCodes.add("OP_DIVIDE");
 		opCodes.add("OP_MODULO");

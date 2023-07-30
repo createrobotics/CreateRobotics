@@ -527,10 +527,10 @@ public final class Compiler {
 		}
 
 		if (this.checkAndConsumeIfMatches(PLUS_PLUS)) {
-			this.emitBytes(OP_INCREMENT_LIST_MAP);
+			this.emitBytes(OP_INCREMENT_MAP);
 			return;
 		} else if (this.checkAndConsumeIfMatches(MINUS_MINUS)) {
-			this.emitBytes(OP_DECREMENT_LIST_MAP);
+			this.emitBytes(OP_DECREMENT_MAP);
 			return;
 		}
 		this.emitBytes(getOpCode, (byte) 0);
