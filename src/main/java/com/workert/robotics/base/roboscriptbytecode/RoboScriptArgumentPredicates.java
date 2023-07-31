@@ -5,6 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 
 import java.util.function.Function;
 
@@ -92,7 +93,10 @@ public final class RoboScriptArgumentPredicates {
 		if (!includeZero && number > 0)
 			return number;
 
-		throw new RuntimeError("Argument must be positive.");
+		if (includeZero)
+			throw new RuntimeError("Argument must be positive or zero.");
+		else
+			throw new RuntimeError("Argument must be positive.");
 	}
 
 	/**
@@ -146,14 +150,31 @@ public final class RoboScriptArgumentPredicates {
 				asNumber(argumentList[(startingIndex + 2)]));
 	}
 
-	public static BlockPos asBlockPos(Object object1, Object object2, Object object3) {
-		return new BlockPos(asNumber(object1), asNumber(object2),
-				asNumber(object3));
+	/**
+	 * Converts the specified three objects to a {@link BlockPos}.
+	 *
+	 * @param xPosObject the object to be used as X-Position
+	 * @param yPosObject the object to be used as Y-Position
+	 * @param zPosObject the object to be used as Z-Position
+	 * @return the converted non-empty {@link BlockPos}
+	 * @throws RoboScriptRuntimeError if one or more of the arguments is not a number
+	 */
+	public static BlockPos asBlockPos(Object xPosObject, Object yPosObject, Object zPosObject) {
+		return new BlockPos(asNumber(xPosObject), asNumber(yPosObject),
+				asNumber(zPosObject));
 	}
 
+	/**
+	 * Converts the specified object to an {@link Item}.
+	 * <p>
+	 * May return {@link Items#AIR} if the Item ID is invalid.
+	 *
+	 * @param object the object to be converted
+	 * @return the converted non-empty {@link Item}
+	 * @throws RoboScriptRuntimeError if the argument is not a string with an Item ID
+	 */
 	public static Item asItem(Object object) {
 		String itemId = asNonEmptyString(object);
-		// May return Items.AIR
 		return Registry.ITEM.get(new ResourceLocation(itemId.split(":")[0], itemId.trim().split(":")[1]));
 	}
 
