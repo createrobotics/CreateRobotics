@@ -14,7 +14,7 @@ public final class Compiler {
 
 	List<Byte> currentCodeList = new ArrayList<>();
 	List<Integer> currentLineList = new ArrayList<>();
-	boolean inFunction = false;
+	int functionArgAmount = -1;
 	boolean emitPop = true;
 
 	List<Integer> functions = new ArrayList<>();
@@ -84,7 +84,7 @@ public final class Compiler {
 			} else if (this.checkAndConsumeIfMatches(FUNCTION)) {
 				this.methodDeclaration();
 			} else {
-				throw new RuntimeError("Only declarations are allowed in main class body.");
+				throw this.error("Only declarations are allowed in main class body.");
 			}
 		} catch (CompileError e) {
 			this.synchronize();
@@ -102,8 +102,6 @@ public final class Compiler {
 		}
 
 		this.consumeOrInsertSemicolon("Expected ';' or new line after variable declaration.");
-
-		this.emitByte(OP_MAKE_MAP);
 	}
 
 	private void methodDeclaration() {
@@ -112,15 +110,12 @@ public final class Compiler {
 		String name = this.previous.lexeme;
 		this.emitConstant(name);
 		int constantIndex = this.emitConstant(null);
-		this.emitByte(OP_MAKE_MAP);
 
 		// the function stuff
 		List<Byte> previousCodeList = this.currentCodeList;
 		this.currentCodeList = new ArrayList<>();
 		List<Integer> previousLineList = this.currentLineList;
 		this.currentLineList = new ArrayList<>();
-		boolean wasInFunction = this.inFunction;
-		this.inFunction = true;
 
 		this.beginScope();
 		this.consumeOrThrow(LEFT_PAREN, "Expected '(' after function name.");
@@ -130,24 +125,38 @@ public final class Compiler {
 			do {
 				byte constant = this.parseVariable("Expected parameter name.");
 				if (this.previous.lexeme.equals("this"))
-					throw new RuntimeError("Methods must not contain parameter 'this', as it is added by default.");
+					throw this.error("Methods must not contain parameter 'this', as it is added by default.");
 				this.defineVariable(constant, this.previous.lexeme);
 				argumentCount++;
 			} while (this.checkAndConsumeIfMatches(COMMA));
 		}
+
+		// define "this"
 		this.declareVariable(new Token(IDENTIFIER, "this", this.previous.line));
 		this.defineVariable((byte) 0, "this");
+
+		int prevFunctionArg = this.functionArgAmount;
+		this.functionArgAmount = argumentCount + 1 /* "this" */;
+
+		// define instruction pointer
+		this.declareVariable(new Token(NA, "instruction pointers", this.previous.line));
+		this.defineVariable((byte) 0, "");
+
+		// define base pointer
+		this.declareVariable(new Token(NA, "base pointer", this.previous.line));
+		this.defineVariable((byte) 0, "");
+
 		this.consumeOrThrow(RIGHT_PAREN, "Expected ')' after function parameters.");
 		this.consumeOrThrow(LEFT_BRACE, "Expected '{' before function body");
 		this.block();
 		this.endFunctionScope();
-		this.emitBytes(OP_NULL, OP_RETURN);
+		this.emitBytes(OP_NULL, OP_RETURN, (byte) this.functionArgAmount);
 
 		CompilerFunction function = new CompilerFunction(this.currentCodeList, this.currentLineList, argumentCount);
 
 		this.currentCodeList = previousCodeList;
 		this.currentLineList = previousLineList;
-		this.inFunction = wasInFunction;
+		this.functionArgAmount = prevFunctionArg;
 
 		this.chunk.setConstant(constantIndex, function);
 		this.functions.add(constantIndex);
@@ -157,15 +166,17 @@ public final class Compiler {
 		byte global = this.parseVariable("Expected class name");
 		String name = this.previous.lexeme;
 		Map<String, Object> fields = new HashMap<>();
-		RoboScriptClass clazz = new RoboScriptClass(fields);
+		RoboScriptClass clazz = new RoboScriptClass();
 		this.emitConstant(clazz);
 		this.defineVariable(global, name);
 		this.emitConstant(clazz);
 		this.consumeOrThrow(LEFT_BRACE, "Expected '{' after class name.");
-
+		byte fieldCount = 0;
 		while (!this.isNextToken(RIGHT_BRACE) && !this.isNextToken(EOF)) {
+			fieldCount++;
 			this.fieldDeclaration();
 		}
+		this.emitBytes(OP_MAKE_MAP, fieldCount);
 		this.consumeOrThrow(RIGHT_BRACE, "Expected '}' after class body.");
 	}
 
@@ -193,8 +204,6 @@ public final class Compiler {
 		this.currentCodeList = new ArrayList<>();
 		List<Integer> previousLineList = this.currentLineList;
 		this.currentLineList = new ArrayList<>();
-		boolean wasInFunction = this.inFunction;
-		this.inFunction = true;
 
 		this.beginScope();
 		this.consumeOrThrow(LEFT_PAREN, "Expected '(' after function name.");
@@ -208,18 +217,29 @@ public final class Compiler {
 			} while (this.checkAndConsumeIfMatches(COMMA));
 		}
 
+		int prevFunctionArg = this.functionArgAmount;
+		this.functionArgAmount = argumentCount;
+
+		// define instruction pointer
+		this.declareVariable(new Token(NA, "instruction pointers", this.previous.line));
+		this.defineVariable((byte) 0, "");
+
+		// define base pointer
+		this.declareVariable(new Token(NA, "base pointer", this.previous.line));
+		this.defineVariable((byte) 0, "");
+
 		this.consumeOrThrow(RIGHT_PAREN, "Expected ')' after function parameters.");
 
 		this.consumeOrThrow(LEFT_BRACE, "Expected '{' before function body");
 		this.block();
 		this.endFunctionScope();
-		this.emitBytes(OP_NULL, OP_RETURN);
+		this.emitBytes(OP_NULL, OP_RETURN, (byte) this.functionArgAmount);
 
 		CompilerFunction function = new CompilerFunction(this.currentCodeList, this.currentLineList, argumentCount);
 
 		this.currentCodeList = previousCodeList;
 		this.currentLineList = previousLineList;
-		this.inFunction = wasInFunction;
+		this.functionArgAmount = prevFunctionArg;
 
 		this.chunk.setConstant(constantIndex, function);
 		this.functions.add(constantIndex);
@@ -273,7 +293,7 @@ public final class Compiler {
 		this.consumeOrThrow(IDENTIFIER, "Expected field name after '.'.");
 		String name = this.previous.lexeme;
 		this.emitConstant(name);
-		this.emitGetVariable(OP_MAP_GET, canAssign);
+		this.emitMapVariable(OP_GET_CLASS, OP_SET_CLASS, OP_INCREMENT_CLASS, OP_DECREMENT_CLASS, canAssign);
 	}
 
 	void map(boolean canAssign) {
@@ -409,14 +429,27 @@ public final class Compiler {
 	}
 
 	private void returnStatement() {
-		if (!this.inFunction) throw this.error("Can only return inside of functions.");
+		if (this.functionArgAmount == -1) throw this.error("Can only return inside of functions.");
+
+		int virtualLocalSize = this.locals.size();
+		int localsInScope = 0;
+		while (virtualLocalSize > 0 && this.locals.get(virtualLocalSize - 1).depth > this.scopeDepth - 1) {
+			virtualLocalSize -= 1;
+			localsInScope++;
+		}
+		int localsToPop = localsInScope - this.functionArgAmount - 2;
+		for (int i = 0; i < localsToPop; i++) {
+			this.emitByte(OP_POP);
+		}
+
+
 		if (this.checkAndConsumeIfMatches(SEMICOLON)) {
-			this.emitBytes(OP_NULL, OP_RETURN);
+			this.emitBytes(OP_NULL, OP_RETURN, (byte) this.functionArgAmount);
 			return;
 		}
 		this.expression();
 		this.consumeOrInsertSemicolon("Expected ';' or new line after return expression.");
-		this.emitByte(OP_RETURN);
+		this.emitBytes(OP_RETURN, (byte) this.functionArgAmount);
 	}
 
 	private int emitJump(byte instruction) {
@@ -471,7 +504,7 @@ public final class Compiler {
 		this.emitBytes(getOp, lookup);
 	}
 
-	private void emitGetVariable(byte getOpCode, boolean canAssign) {
+	private void emitMapVariable(byte getOpCode, byte setOpCode, byte incrementOpCode, byte decrementOpCode, boolean canAssign) {
 		if (!canAssign) {
 			this.emitBytes(getOpCode, (byte) 0);
 			return;
@@ -479,7 +512,7 @@ public final class Compiler {
 
 		if (this.checkAndConsumeIfMatches(EQUAL)) {
 			this.expression();
-			this.emitByte(OP_MAP_SET);
+			this.emitByte(setOpCode);
 			return;
 		}
 
@@ -489,15 +522,15 @@ public final class Compiler {
 			this.emitBytes(getOpCode, (byte) 1);
 			this.expression();
 			byte emit = getAssignmentOperatorByte(previousType);
-			this.emitBytes(emit, OP_MAP_SET);
+			this.emitBytes(emit, setOpCode);
 			return;
 		}
 
 		if (this.checkAndConsumeIfMatches(PLUS_PLUS)) {
-			this.emitBytes(OP_INCREMENT_LIST_MAP);
+			this.emitBytes(incrementOpCode);
 			return;
 		} else if (this.checkAndConsumeIfMatches(MINUS_MINUS)) {
-			this.emitBytes(OP_DECREMENT_LIST_MAP);
+			this.emitBytes(decrementOpCode);
 			return;
 		}
 		this.emitBytes(getOpCode, (byte) 0);
@@ -612,7 +645,7 @@ public final class Compiler {
 	void index(boolean canAssign) {
 		this.expression();
 		this.consumeOrThrow(RIGHT_BRACKET, "Expected ']' after expression");
-		this.emitGetVariable(OP_MAP_GET, canAssign);
+		this.emitMapVariable(OP_GET_MAP, OP_SET_MAP, OP_INCREMENT_MAP, OP_DECREMENT_MAP, canAssign);
 	}
 
 	void and(boolean canAssign) {
@@ -673,6 +706,17 @@ public final class Compiler {
 	private void emitBytes(byte... b) {
 		for (byte currentByte : b) {
 			this.emitByte(currentByte);
+		}
+	}
+
+	private void removeByte() {
+		this.currentCodeList.remove(this.currentCodeList.size() - 1);
+		this.currentLineList.remove(this.currentLineList.size() - 1);
+	}
+
+	private void removeBytes(int amount) {
+		for (int i = 0; i < amount; i++) {
+			this.removeByte();
 		}
 	}
 
@@ -794,8 +838,14 @@ public final class Compiler {
 
 	private void endFunctionScope() {
 		this.scopeDepth--;
+		int localsInScope = 0;
 		while (this.locals.size() > 0 && this.locals.get(this.locals.size() - 1).depth > this.scopeDepth) {
 			this.locals.remove(this.locals.size() - 1);
+			localsInScope++;
+		}
+		int localsToPop = localsInScope - this.functionArgAmount - 2;
+		for (int i = 0; i < localsToPop; i++) {
+			this.emitByte(OP_POP);
 		}
 	}
 

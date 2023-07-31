@@ -74,7 +74,12 @@ final class VirtualMachine {
 
 		long currentTime = System.currentTimeMillis();
 		System.out.println("Started interpreting.");
-		this.run();
+		try {
+			this.run();
+		} catch (RuntimeError e) {
+			System.err.println("[line " + this.chunk.getLine(this.instructionPointer) + "] " + e.message);
+		}
+
 		System.out.println("Completed in " + (System.currentTimeMillis() - currentTime) + "ms.");
 	}
 
@@ -88,197 +93,190 @@ final class VirtualMachine {
 					Object constant = this.readConstant();
 					this.pushStack(constant);
 				}
+
 				case OP_NULL -> this.pushStack(null);
+
 				case OP_TRUE -> this.pushStack(true);
+
 				case OP_FALSE -> this.pushStack(false);
+
 				case OP_POP -> this.popStack();
-				case OP_GET_LOCAL -> {
-					byte slot = this.readByte();
-					this.pushStack(this.stack[this.basePointer + slot]);
-				}
-				case OP_SET_LOCAL -> {
-					byte slot = this.readByte();
-					this.stack[this.basePointer + slot] = this.popStack();
-				}
-				case OP_GET_NATIVE -> {
-					byte slot = this.readByte();
-					this.pushStack(this.nativeFunctions[slot]);
-				}
-				case OP_GET_GLOBAL -> {
-					try {
-						this.pushStack(this.readGlobalVariable());
-					} catch (IndexOutOfBoundsException i) {
-						throw new RuntimeError("Undefined variable.");
-					}
-				}
+
+				case OP_GET_LOCAL -> this.pushStack(this.stack[this.basePointer + this.readByte()]);
+
+				case OP_SET_LOCAL -> this.stack[this.basePointer + this.readByte()] = this.popStack();
+
+				case OP_GET_NATIVE -> this.pushStack(this.nativeFunctions[this.readByte()]);
+
+				case OP_GET_GLOBAL -> this.pushStack(this.readGlobalVariable());
+
 				case OP_DEFINE_GLOBAL -> this.globalVariables[this.readByte()] = this.popStack();
-				case OP_SET_GLOBAL -> {
-					try {
-						this.globalVariables[this.readByte()] = this.peekStack();
-					} catch (IndexOutOfBoundsException i) {
-						throw new RuntimeError("Undefined variable.");
-					}
-				}
+
+				case OP_SET_GLOBAL -> this.globalVariables[this.readByte()] = this.peekStack();
+
 				case OP_EQUAL -> this.binaryOperation('=');
+
 				case OP_NOT_EQUAL -> this.binaryOperation('n');
+
 				case OP_LESS -> this.binaryOperation('<');
+
 				case OP_LESS_EQUAL -> this.binaryOperation('l');
+
 				case OP_GREATER -> this.binaryOperation('>');
+
 				case OP_GREATER_EQUAL -> this.binaryOperation('g');
+
 				case OP_ADD -> this.binaryOperation('+');
+
 				case OP_INCREMENT_GLOBAL -> {
-					try {
-						byte b = this.readByte();
-						double previous = (double) this.globalVariables[b];
-						this.globalVariables[b] = previous + 1;
-						this.pushStack(previous);
-					} catch (IndexOutOfBoundsException | ClassCastException e) {
-						if (e instanceof IndexOutOfBoundsException) {
-							throw new RuntimeError("Undefined variable.");
-						} else {
-							throw new RuntimeError("Incrementing variable must be a number.");
-						}
-					}
+					byte global = this.readByte();
+					if (!(this.globalVariables[global] instanceof Double increment))
+						throw new RuntimeError("Incrementing variable must be a number.");
+
+					this.globalVariables[global] = increment + 1;
+					this.pushStack(increment);
 				}
+
 				case OP_INCREMENT_LOCAL -> {
-					try {
-						byte b = this.readByte();
-						double previous = (double) this.stack[this.basePointer + b];
-						this.globalVariables[b] = previous + 1;
-						this.pushStack(previous);
-					} catch (IndexOutOfBoundsException | ClassCastException e) {
-						if (e instanceof IndexOutOfBoundsException) {
-							throw new RuntimeError("Undefined variable.");
-						} else {
-							throw new RuntimeError("Incrementing variable must be a number.");
-						}
-					}
+					byte local = this.readByte();
+					if (!(this.stack[this.basePointer + local] instanceof Double increment))
+						throw new RuntimeError("Incrementing variable must be a number.");
+					this.stack[this.basePointer + local] = increment + 1;
+					this.pushStack(increment);
 				}
-				case OP_INCREMENT_LIST_MAP -> {
+
+				case OP_INCREMENT_MAP -> {
 					Object key = this.popStack();
 					Object gettable = this.popStack();
 
 					if (gettable instanceof Map map) {
-						try {
-							double previous = ((double) map.get(key));
-							map.put(key, previous + 1);
-							this.pushStack(previous);
-						} catch (ClassCastException e) {
+						if (!(map.get(key) instanceof Double increment))
 							throw new RuntimeError("Incrementing variable must be a number.");
-						}
+						map.put(key, increment + 1);
+						this.pushStack(increment);
 					} else if (gettable instanceof List list) {
-						try {
-							double d = (double) key;
-							if (isWhole(d) && !isNegative(d)) {
-								if (d >= list.size())
-									throw new RuntimeError("List index out of range of '" + (list.size() - 1) + "'.");
+						if (!(key instanceof Double d)) throw new RuntimeError(
+								"Index value for list must be a whole number greater or equal to 0.");
 
-								try {
-									double previous = ((double) list.get((int) Math.round(d)));
-									list.set((int) Math.round(d), previous + 1);
-									this.pushStack(previous);
-								} catch (ClassCastException e) {
-									throw new RuntimeError("Incrementing variable must be a number.");
-								}
-							} else {
-								throw new RuntimeError(
-										"Index value for list must be a whole number greater or equal to 0.");
-							}
-						} catch (ClassCastException e) {
-							throw new RuntimeError(
-									"Index value for list must be a whole number greater or equal to 0.");
-						}
+						if (!isWhole(d) || isNegative(d)) throw new RuntimeError(
+								"Index value for list must be a whole number greater or equal to 0.");
+
+						if (d >= list.size())
+							throw new RuntimeError("List index out of range of '" + (list.size() - 1) + "'.");
+
+						if (!(list.get((int) Math.round(d)) instanceof Double increment))
+							throw new RuntimeError("Incrementing variable must be a number.");
+
+						list.set((int) Math.round(d), increment + 1);
+						this.pushStack(increment);
 					} else {
-						throw new RuntimeError("Can only get objects from maps.");
+						throw new RuntimeError("Can only get objects from maps and lists.");
 					}
 				}
+
+				case OP_INCREMENT_CLASS -> {
+					String key = (String) this.popStack();
+					Object gettable = this.popStack();
+
+					if (!(gettable instanceof RoboScriptObject object))
+						throw new RuntimeError("Can only use '.' to set fields from an object.");
+
+					if (!object.fields.containsKey(key))
+						throw new RuntimeError("Object does not contain field '" + key + "'.");
+					if (!(object.fields.get(key) instanceof Double increment))
+						throw new RuntimeError("Incrementing field must be a number.");
+					this.pushStack(increment);
+					object.fields.put(key, increment + 1);
+				}
+
 				case OP_DECREMENT_GLOBAL -> {
-					try {
-						byte b = this.readByte();
-						double previous = (double) this.globalVariables[b];
-						this.globalVariables[b] = previous - 1;
-						this.pushStack(previous);
-					} catch (IndexOutOfBoundsException | ClassCastException e) {
-						if (e instanceof IndexOutOfBoundsException) {
-							throw new RuntimeError("Undefined variable.");
-						} else {
-							throw new RuntimeError("Decrementing variable must be a number.");
-						}
-					}
+					byte global = this.readByte();
+					if (!(this.globalVariables[global] instanceof Double increment))
+						throw new RuntimeError("Decrementing variable must be a number.");
+
+					this.globalVariables[global] = increment - 1;
+					this.pushStack(increment);
 				}
+
 				case OP_DECREMENT_LOCAL -> {
-					try {
-						byte b = this.readByte();
-						double previous = (double) this.stack[this.basePointer + b];
-						this.globalVariables[b] = previous - 1;
-						this.pushStack(previous);
-					} catch (IndexOutOfBoundsException | ClassCastException e) {
-						if (e instanceof IndexOutOfBoundsException) {
-							throw new RuntimeError("Undefined variable.");
-						} else {
-							throw new RuntimeError("Decrementing variable must be a number.");
-						}
-					}
+					byte local = this.readByte();
+					if (!(this.stack[this.basePointer + local] instanceof Double increment))
+						throw new RuntimeError("Decrementing variable must be a number.");
+					this.stack[this.basePointer + local] = increment - 1;
+					this.pushStack(increment);
 				}
-				case OP_DECREMENT_LIST_MAP -> {
+
+				case OP_DECREMENT_MAP -> {
 					Object key = this.popStack();
 					Object gettable = this.popStack();
 
 					if (gettable instanceof Map map) {
-						try {
-							double previous = ((double) map.get(key));
-							map.put(key, previous - 1);
-							this.pushStack(previous);
-						} catch (ClassCastException e) {
-							throw new RuntimeError("Incrementing variable must be a number.");
-						}
+						if (!(map.get(key) instanceof Double increment))
+							throw new RuntimeError("Decrementing variable must be a number.");
+						map.put(key, increment - 1);
+						this.pushStack(increment);
 					} else if (gettable instanceof List list) {
-						try {
-							double d = (double) key;
-							if (isWhole(d) && !isNegative(d)) {
-								if (d >= list.size())
-									throw new RuntimeError("List index out of range of '" + (list.size() - 1) + "'.");
+						if (!(key instanceof Double d)) throw new RuntimeError(
+								"Index value for list must be a whole number greater or equal to 0.");
 
-								try {
-									double previous = ((double) list.get((int) Math.round(d)));
-									list.set((int) Math.round(d), previous - 1);
-									this.pushStack(previous);
-								} catch (ClassCastException e) {
-									throw new RuntimeError("Decrementing variable must be a number.");
-								}
-							} else {
-								throw new RuntimeError(
-										"Index value for list must be a whole number greater or equal to 0.");
-							}
-						} catch (ClassCastException e) {
-							throw new RuntimeError(
-									"Index value for list must be a whole number greater or equal to 0.");
-						}
+						if (!isWhole(d) || isNegative(d)) throw new RuntimeError(
+								"Index value for list must be a whole number greater or equal to 0.");
+
+						if (d >= list.size())
+							throw new RuntimeError("List index out of range of '" + (list.size() - 1) + "'.");
+
+						if (!(list.get((int) Math.round(d)) instanceof Double increment))
+							throw new RuntimeError("Decrementing variable must be a number.");
+
+						list.set((int) Math.round(d), increment - 1);
+						this.pushStack(increment);
 					} else {
-						throw new RuntimeError("Can only get objects from maps.");
+						throw new RuntimeError("Can only get objects from maps and lists.");
 					}
 				}
+
+				case OP_DECREMENT_CLASS -> {
+					String key = (String) this.popStack();
+					Object gettable = this.popStack();
+
+					if (!(gettable instanceof RoboScriptObject object))
+						throw new RuntimeError("Can only use '.' to set fields from an object.");
+
+					if (!object.fields.containsKey(key))
+						throw new RuntimeError("Object does not contain field '" + key + "'.");
+					if (!(object.fields.get(key) instanceof Double increment))
+						throw new RuntimeError("Decrementing field must be a number.");
+					this.pushStack(increment);
+					object.fields.put(key, increment - 1);
+				}
+
 				case OP_SUBTRACT -> this.binaryOperation('-');
+
 				case OP_MULTIPLY -> this.binaryOperation('*');
+
 				case OP_DIVIDE -> this.binaryOperation('/');
+
 				case OP_MODULO -> this.binaryOperation('%');
+
 				case OP_POWER -> this.binaryOperation('^');
+
 				case OP_NOT -> this.stack[this.stackSize - 1] = !isTruthy(this.peekStack());
+
 				case OP_NEGATE -> {
-					try {
-						this.stack[this.stackSize - 1] = -(double) this.peekStack();
-					} catch (ClassCastException e) {
-						throw new RuntimeError("Can only negate numbers.");
-					}
+					if (!(this.peekStack() instanceof Double d)) throw new RuntimeError("Can only negate numbers.");
+					this.stack[this.stackSize - 1] = -(double) d;
 				}
+
 				case OP_JUMP -> {
 					short offset = this.readShort();
 					this.instructionPointer += offset;
 				}
+
 				case OP_JUMP_IF_FALSE -> {
 					short offset = this.readShort();
 					if (!isTruthy(this.peekStack())) this.instructionPointer += offset;
 				}
+
 				case OP_LOOP -> {
 					short offset = this.readShort();
 					this.instructionPointer -= offset;
@@ -296,9 +294,6 @@ final class VirtualMachine {
 									"Expected '" + function.argumentCount + "' arguments but got '" + argumentCount + "'.");
 						}
 						Object returnValue = function.call(this);
-						while (!(this.peekStack() instanceof RoboScript.NativeFunction)) {
-							this.popStack();
-						}
 						this.popStack();
 						this.pushStack(returnValue);
 						break;
@@ -310,9 +305,13 @@ final class VirtualMachine {
 					}
 
 
-					if (!(callable instanceof RoboScriptFunction function))
-						throw new RuntimeError(
-								"Can only call functions, instead got '" + callable.getClass() + "'.");
+					if (!(callable instanceof RoboScriptFunction function)) {
+						if (callable != null)
+							throw new RuntimeError(
+									"Can only call functions, instead got '" + callable.getClass() + "'.");
+						else
+							throw new RuntimeError("Can only call functions, instead got 'null'.");
+					}
 					if (argumentCount != function.argumentCount)
 						throw new RuntimeError(
 								"Expected '" + function.argumentCount + "' arguments but got '" + argumentCount + "'.");
@@ -329,17 +328,17 @@ final class VirtualMachine {
 					this.instructionPointer = function.address;
 					this.basePointer = this.stackSize - argumentCount - 2;
 				}
-				case OP_RETURN -> {
-					Object returnValue = this.popStack();
 
+				case OP_RETURN -> {
+					byte argCount = this.readByte();
+					Object returnValue = this.popStack();
 					this.basePointer = (int) this.popStack();
 					this.instructionPointer = (int) this.popStack();
-					while (!(this.peekStack() instanceof RoboScriptFunction)) {
-						this.popStack();
-					}
-					this.popStack();
+					this.stackSize -= argCount; // pops args
+					this.stackSize -= 1; // pops function
 					this.pushStack(returnValue);
 				}
+
 				case OP_MAKE_MAP -> {
 					byte mapSize = this.readByte();
 					Object puttable = this.peekStack(mapSize * 2);
@@ -354,6 +353,7 @@ final class VirtualMachine {
 						else throw new IllegalArgumentException("Unable to find map.");
 					}
 				}
+
 				case OP_MAKE_LIST -> {
 					byte listSize = this.readByte();
 					Object puttable = this.peekStack(listSize);
@@ -364,7 +364,8 @@ final class VirtualMachine {
 					}
 					this.stackSize -= listSize;
 				}
-				case OP_MAP_GET -> {
+
+				case OP_GET_MAP -> {
 					byte keep = this.readByte();
 					Object key = this.peekStack();
 					Object gettable = this.peekStack(1);
@@ -376,29 +377,22 @@ final class VirtualMachine {
 
 					if (gettable instanceof Map map) {
 						this.pushStack(map.get(key));
-					} else if (gettable instanceof RoboScriptObject object) {
-						this.pushStack(this.getFieldInObject(object, (String) key));
 					} else if (gettable instanceof List list) {
-						try {
-							double d = (double) key;
-							if (isWhole(d) && !isNegative(d)) {
-								if (d >= list.size())
-									throw new RuntimeError("List index out of range of '" + (list.size() - 1) + "'.");
-								this.pushStack(list.get((int) Math.round(d)));
-							} else {
-								throw new RuntimeError(
-										"Index value for list must be a whole number greater or equal to 0.");
-							}
-						} catch (ClassCastException e) {
+						if (!(key instanceof Double d))
 							throw new RuntimeError(
 									"Index value for list must be a whole number greater or equal to 0.");
-						}
+						if (!isWhole(d) || isNegative(d)) throw new RuntimeError(
+								"Index value for list must be a whole number greater or equal to 0.");
+						if (d >= list.size())
+							throw new RuntimeError("List index out of range of '" + (list.size() - 1) + "'.");
+						this.pushStack(list.get((int) Math.round(d)));
 					} else {
 						throw new RuntimeError(
 								"Can only get objects from maps, instead getting from '" + gettable.getClass() + "'.");
 					}
 				}
-				case OP_MAP_SET -> {
+
+				case OP_SET_MAP -> {
 					Object value = this.popStack();
 					Object key = this.popStack();
 					Object settable = this.popStack();
@@ -407,30 +401,52 @@ final class VirtualMachine {
 
 					if (settable instanceof Map map) {
 						map.put(key, value);
-					} else if (settable instanceof RoboScriptObject object) {
-						if (!object.fields.containsKey((String) key))
-							throw new RuntimeError("Object does not contain field '" + (String) key + "'.");
-						object.fields.put((String) key, value);
 					} else if (settable instanceof List list) {
-						try {
 
-							// this is almost copy paste
-							double d = (double) key;
-							if (isWhole(d) && !isNegative(d)) {
-								if (d >= list.size())
-									throw new RuntimeError("List index out of range of '" + (list.size() - 1) + "'.");
-								// different here
-								list.set((int) Math.round(d), value);
-							} else {
-								throw new RuntimeError(
-										"Index value for list must be a whole number greater or equal to 0.");
-							}
-						} catch (ClassCastException e) {
+						if (!(key instanceof Double d))
 							throw new RuntimeError(
 									"Index value for list must be a whole number greater or equal to 0.");
-						}
+						if (!isWhole(d) || isNegative(d)) throw new RuntimeError(
+								"Index value for list must be a whole number greater or equal to 0.");
+						if (d >= list.size())
+							throw new RuntimeError("List index out of range of '" + (list.size() - 1) + "'.");
+						list.set((int) Math.round(d), value);
+					} else {
+						throw new RuntimeError(
+								"Can only get objects from maps, instead getting from '" + settable.getClass() + "'.");
 					}
 				}
+
+				case OP_GET_CLASS -> {
+					byte keep = this.readByte();
+
+					String key = (String) this.peekStack();
+					Object gettable = this.peekStack(1);
+
+					if (keep == 0) {
+						key = (String) this.popStack();
+						gettable = this.popStack();
+					}
+
+					if (!(gettable instanceof RoboScriptObject object))
+						throw new RuntimeError("Can only use '.' to get fields from an object.");
+					if (!object.fields.containsKey(key))
+						throw new RuntimeError("Object does not contain field '" + key + "'.");
+					this.pushStack(this.getFieldInObject(object, key));
+				}
+
+				case OP_SET_CLASS -> {
+					Object value = this.popStack();
+					String key = (String) this.popStack();
+					Object settable = this.popStack();
+					this.pushStack(value);
+					if (!(settable instanceof RoboScriptObject object))
+						throw new RuntimeError("Can only use '.' to set fields from an object.");
+					if (!object.fields.containsKey(key))
+						throw new RuntimeError("Object does not contain field '" + key + "'.");
+					object.fields.put(key, value);
+				}
+
 				case OP_END -> {
 					return;
 				}
@@ -446,6 +462,8 @@ final class VirtualMachine {
 	 * @return A field from the object or a binded method from an objects function.
 	 */
 	private Object getFieldInObject(RoboScriptObject object, String fieldName) {
+		if (!object.fields.containsKey(fieldName))
+			throw new RuntimeError("Field '" + fieldName + "' does not exist in object.");
 		Object field = object.fields.get(fieldName);
 		if (field instanceof RoboScriptFunction r) {
 			return new RoboScriptMethod(r, object);
@@ -541,12 +559,9 @@ final class VirtualMachine {
 		if (a instanceof String || b instanceof String) {
 			this.pushStack(a.toString() + b.toString());
 			return;
-		}
-		try {
-			this.pushStack((double) a + (double) b);
-		} catch (ClassCastException e) {
+		} else if (!(a instanceof Double && b instanceof Double))
 			throw new RuntimeError("Addition must be between two numbers or a string.");
-		}
+		this.pushStack((double) a + (double) b);
 	}
 
 	/**
@@ -560,78 +575,51 @@ final class VirtualMachine {
 		switch (operand) {
 			case '+' -> this.binaryAdd(a, b);
 			case '-' -> {
-				try {
-					this.pushStack((double) a - (double) b);
-				} catch (ClassCastException e) {
-					throw new RuntimeError(
-							"Subtraction must be between two numbers, instead got '" + a.getClass() + "' and '" + b.getClass() + "'.");
-				}
+				if (!(a instanceof Double && b instanceof Double))
+					throw new RuntimeError("Subtraction must be between two numbers.");
+				this.pushStack((double) a - (double) b);
 			}
 			case '*' -> {
-				try {
-					this.pushStack((double) a * (double) b);
-				} catch (ClassCastException e) {
-					throw new RuntimeError(
-							"Multiplication must be between two numbers, instead got '" + a.getClass() + "' and '" + b.getClass() + "'.");
-				}
+				if (!(a instanceof Double && b instanceof Double))
+					throw new RuntimeError("Multiplication must be between two numbers.");
+				this.pushStack((double) a * (double) b);
 			}
 			case '/' -> {
-				try {
-					if ((double) b == 0) throw new RuntimeError("Cannot divide by 0.");
-					this.pushStack((double) a / (double) b);
-				} catch (ClassCastException e) {
-					throw new RuntimeError(
-							"Division must be between two numbers, instead got '" + a.getClass() + "' and '" + b.getClass() + "'.");
-				}
+				if (!(a instanceof Double && b instanceof Double))
+					throw new RuntimeError("Multiplication must be between two numbers.");
+				if ((double) b == 0) throw new RuntimeError("Cannot divide by 0.");
+				this.pushStack((double) a / (double) b);
 			}
 			case '%' -> {
-				try {
-					if ((double) b == 0) throw new RuntimeError("Cannot divide / modulo by 0.");
-					this.pushStack((double) a % (double) b);
-				} catch (ClassCastException e) {
-					throw new RuntimeError(
-							"Modulo must be between two numbers, instead got '" + a.getClass() + "' and '" + b.getClass() + "'.");
-				}
+				if (!(a instanceof Double && b instanceof Double))
+					throw new RuntimeError("Modulo must be between two numbers.");
+				if ((double) b == 0) throw new RuntimeError("Cannot divide by 0.");
+				this.pushStack((double) a % (double) b);
 			}
 			case '^' -> {
-				try {
-					this.pushStack(Math.pow((double) a, (double) b));
-				} catch (ClassCastException e) {
-					throw new RuntimeError(
-							"Exponents must be between two numbers, instead got '" + a.getClass() + "' and '" + b.getClass() + "'.");
-				}
+				if (!(a instanceof Double && b instanceof Double))
+					throw new RuntimeError("Exponents must be between two numbers.");
+				this.pushStack(Math.pow((double) a, (double) b));
 			}
 			case '>' -> {
-				try {
-					this.pushStack((double) a > (double) b);
-				} catch (ClassCastException e) {
-					throw new RuntimeError(
-							"Comparison using '>' must be between two numbers, instead got '" + a.getClass() + "' and '" + b.getClass() + "'.");
-				}
+				if (!(a instanceof Double && b instanceof Double))
+					throw new RuntimeError("Comparison using '>' must be between two numbers.");
+				this.pushStack((double) a > (double) b);
 			}
 			case '<' -> {
-				try {
-					this.pushStack((double) a < (double) b);
-				} catch (ClassCastException e) {
-					throw new RuntimeError(
-							"Comparison using '<' must be between two numbers, instead got '" + a.getClass() + "' and '" + b.getClass() + "'.");
-				}
+				if (!(a instanceof Double && b instanceof Double))
+					throw new RuntimeError("Comparison using '<' must be between two numbers.");
+				this.pushStack((double) a < (double) b);
 			}
 			case 'g' -> { // >=
-				try {
-					this.pushStack((double) a >= (double) b);
-				} catch (ClassCastException e) {
-					throw new RuntimeError(
-							"Comparison using '>=' must be between two numbers, instead got '" + a.getClass() + "' and '" + b.getClass() + "'.");
-				}
+				if (!(a instanceof Double && b instanceof Double))
+					throw new RuntimeError("Comparison using '>=' must be between two numbers.");
+				this.pushStack((double) a >= (double) b);
 			}
 			case 'l' -> { // <=
-				try {
-					this.pushStack((double) a <= (double) b);
-				} catch (ClassCastException e) {
-					throw new RuntimeError(
-							"Comparison using '<=' must be between two numbers, instead got '" + a.getClass() + "' and '" + b.getClass() + "'.");
-				}
+				if (!(a instanceof Double && b instanceof Double))
+					throw new RuntimeError("Comparison using '<=' must be between two numbers.");
+				this.pushStack((double) a <= (double) b);
 			}
 			case '=' -> this.pushStack(a.equals(b)); // ==
 			case 'n' -> this.pushStack(!a.equals(b)); // !=
