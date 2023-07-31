@@ -7,6 +7,7 @@ import com.workert.robotics.content.computers.computer.ComputerToggleRunningPack
 import com.workert.robotics.content.computers.computer.ConfigureComputerScriptPacket;
 import com.workert.robotics.content.computers.inputs.ConfigureInputSignalPacket;
 import com.workert.robotics.content.robotics.codeeditor.ReturnEditedCodePacket;
+import com.workert.robotics.content.robotics.flyingtoolbox.FlyingToolboxEquipPacket;
 import com.workert.robotics.content.utility.extendoboots.ChangeExtendOBootsHeightPacket;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -29,7 +30,8 @@ public enum PacketRegistry {
 	CONFIGURE_INPUT_SIGNAL(ConfigureInputSignalPacket.class, ConfigureInputSignalPacket::new, PLAY_TO_SERVER),
 	CONFIGURE_COMPUTER_SCRIPT(ConfigureComputerScriptPacket.class, ConfigureComputerScriptPacket::new, PLAY_TO_SERVER),
 	CLEAR_COMPUTER_TERMINAL(ComputerClearTerminalPacket.class, ComputerClearTerminalPacket::new, PLAY_TO_SERVER),
-	COMPUTER_SET_RUNNING(ComputerToggleRunningPacket.class, ComputerToggleRunningPacket::new, PLAY_TO_SERVER);
+	COMPUTER_SET_RUNNING(ComputerToggleRunningPacket.class, ComputerToggleRunningPacket::new, PLAY_TO_SERVER),
+	FLYING_TOOLBOX_EQUIP(FlyingToolboxEquipPacket.class, FlyingToolboxEquipPacket::new, PLAY_TO_SERVER);
 
 	public static final String PROTOCOL_VERSION = "1";
 	public static SimpleChannel CHANNEL;

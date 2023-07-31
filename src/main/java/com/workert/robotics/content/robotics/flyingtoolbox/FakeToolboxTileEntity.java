@@ -8,12 +8,25 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.UUID;
+
 public class FakeToolboxTileEntity extends ToolboxTileEntity {
-	FlyingToolbox flyingToolbox;
+	public final FlyingToolbox flyingToolbox;
 
 	public FakeToolboxTileEntity(FlyingToolbox flyingToolbox) {
 		super(AllTileEntities.TOOLBOX.get(), BlockPos.ZERO, null);
 		this.flyingToolbox = flyingToolbox;
+		this.setUniqueId(UUID.randomUUID());
+		this.setLevel(flyingToolbox.level);
+	}
+
+	@Override
+	public void initialize() {
+		this.lazyTick();
+	}
+
+	@Override
+	public void invalidate() {
 	}
 
 	@Override

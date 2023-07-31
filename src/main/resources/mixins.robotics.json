@@ -5,9 +5,13 @@
   "compatibilityLevel": "JAVA_17",
   "refmap": "robotics.refmap.json",
   "mixins": [
-	"ToolboxContainerMixin"
+	"ToolboxContainerMixin",
+	"ToolboxHandlerMixin",
+	"ToolboxTileEntityAccessor"
   ],
   "client": [
+	"RadialToolboxMenuMixin",
+	"ToolboxHandlerClientMixin"
   ],
   "injectors": {
 	"defaultRequire": 1
