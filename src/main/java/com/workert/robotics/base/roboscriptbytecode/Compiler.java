@@ -230,10 +230,15 @@ public final class Compiler {
 
 		this.consumeOrThrow(RIGHT_PAREN, "Expected ')' after function parameters.");
 
-		this.consumeOrThrow(LEFT_BRACE, "Expected '{' before function body");
-		this.block();
-		this.endFunctionScope();
-		this.emitBytes(OP_NULL, OP_RETURN, (byte) this.functionArgAmount);
+		if (this.checkAndConsumeIfMatches(EQUAL)) {
+			this.expression();
+			this.endFunctionScope();
+			this.emitBytes(OP_RETURN, (byte) this.functionArgAmount);
+		} else if (this.checkAndConsumeIfMatches(LEFT_BRACE)) {
+			this.block();
+			this.endFunctionScope();
+			this.emitBytes(OP_NULL, OP_RETURN, (byte) this.functionArgAmount);
+		}
 
 		CompilerFunction function = new CompilerFunction(this.currentCodeList, this.currentLineList, argumentCount);
 
