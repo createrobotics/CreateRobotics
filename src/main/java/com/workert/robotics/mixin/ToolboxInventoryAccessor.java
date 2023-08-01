@@ -6,7 +6,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 import java.util.List;
 
-@Mixin(ToolboxInventory.class)
+@Mixin(value = ToolboxInventory.class, remap = false)
 public interface ToolboxInventoryAccessor {
 	@Accessor
 	List<ItemStack> getFilters();

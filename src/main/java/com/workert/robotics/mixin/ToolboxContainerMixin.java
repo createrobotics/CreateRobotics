@@ -15,9 +15,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-@Mixin(ToolboxContainer.class)
+@Mixin(value = ToolboxContainer.class, remap = false)
 public class ToolboxContainerMixin {
-	@Inject(method = "createOnClient(Lnet/minecraft/network/FriendlyByteBuf;)Lcom/simibubi/create/content/curiosities/toolbox/ToolboxTileEntity;", at = @At("TAIL"), remap = false, locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
+	@Inject(method = "createOnClient(Lnet/minecraft/network/FriendlyByteBuf;)Lcom/simibubi/create/content/curiosities/toolbox/ToolboxTileEntity;", at = @At("TAIL"), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
 	private void createOnClient(FriendlyByteBuf extraData, CallbackInfoReturnable<ToolboxTileEntity> cir, BlockPos readBlockPos, CompoundTag readNbt, ClientLevel world, BlockEntity tileEntity) {
 		if (extraData.isReadable()) {
 			Entity entity = Minecraft.getInstance().level.getEntity(extraData.readInt());

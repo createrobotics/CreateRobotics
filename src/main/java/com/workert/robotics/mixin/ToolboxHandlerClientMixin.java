@@ -1,5 +1,6 @@
 package com.workert.robotics.mixin;
 import com.simibubi.create.content.curiosities.toolbox.RadialToolboxMenu;
+import com.simibubi.create.content.curiosities.toolbox.ToolboxHandler;
 import com.simibubi.create.content.curiosities.toolbox.ToolboxHandlerClient;
 import com.simibubi.create.foundation.gui.ScreenOpener;
 import com.workert.robotics.content.robotics.flyingtoolbox.FakeToolboxTileEntity;
@@ -17,11 +18,11 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.List;
 
-@Mixin(ToolboxHandlerClient.class)
+@Mixin(value = ToolboxHandlerClient.class, remap = false)
 public class ToolboxHandlerClientMixin {
-	@Inject(method = "onKeyInput", remap = false, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;getBlockEntity(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/entity/BlockEntity;", shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-	private static void onKeyInput(int key, boolean pressed, CallbackInfo ci, Minecraft mc, LocalPlayer player, Level level, List toolboxes, CompoundTag compound, String slotKey, boolean equipped, BlockPos pos, double max, boolean canReachToolbox) {
-		if (canReachToolbox) {
+	@Inject(method = "onKeyInput", at = @At(value = "INVOKE", target = "Lcom/simibubi/create/content/curiosities/toolbox/ToolboxHandler;distance(Lnet/minecraft/world/phys/Vec3;Lnet/minecraft/core/BlockPos;)D", shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
+	private static void onKeyInput(int key, boolean pressed, CallbackInfo ci, Minecraft mc, LocalPlayer player, Level level, List toolboxes, CompoundTag compound, String slotKey, boolean equipped, BlockPos pos, double max) {
+		if (ToolboxHandler.distance(player.position(), pos) < max * max) {
 			BlockEntity blockEntity = level.getBlockEntity(pos);
 			if (blockEntity instanceof FakeToolboxTileEntity fakeToolboxTileEntity) {
 				RadialToolboxMenu screen = new RadialToolboxMenu(toolboxes,

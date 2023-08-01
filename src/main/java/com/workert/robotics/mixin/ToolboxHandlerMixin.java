@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.WeakHashMap;
 import java.util.stream.Collectors;
 
-@Mixin(ToolboxHandler.class)
+@Mixin(value = ToolboxHandler.class, remap = false)
 public abstract class ToolboxHandlerMixin {
 	@Final
 	@Shadow
@@ -41,7 +41,7 @@ public abstract class ToolboxHandlerMixin {
 	 * @author OutCraft
 	 * @reason Adding fake toolboxes to {@code getNearest}
 	 */
-	@Overwrite(remap = false)
+	@Overwrite
 	public static List<ToolboxTileEntity> getNearest(LevelAccessor world, Player player, int maxAmount) {
 		Vec3 location = player.position();
 		double maxRange = ToolboxHandler.getMaxRange(player);
@@ -66,7 +66,7 @@ public abstract class ToolboxHandlerMixin {
 				.collect(Collectors.toList());
 	}
 
-	@Inject(method = "entityTick", remap = false, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;isLoaded(Lnet/minecraft/core/BlockPos;)Z"), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
+	@Inject(method = "entityTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;isLoaded(Lnet/minecraft/core/BlockPos;)Z"), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
 	private static void connectFlyingToolboxes(Entity entity, Level world, CallbackInfo ci, ServerPlayer player, boolean sendData, CompoundTag compound, int i, String key, CompoundTag data, BlockPos pos, int slot) {
 		if (data.hasUUID("EntityUUID") && !world.isClientSide) {
 			if (((ServerLevel) world).getEntity(data.getUUID("EntityUUID")) instanceof FlyingToolbox flyingToolbox) {
