@@ -3,5 +3,5 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class RoboScriptClass {
-	Map<String, Object> fields = new HashMap<>();
+	Map<String, RoboScriptFunction> functions = new HashMap<>();
 }

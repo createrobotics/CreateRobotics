@@ -3,9 +3,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class RoboScriptObject {
-	Map<String, Object> fields;
 
-	RoboScriptObject(Map<String, Object> fields) {
-		this.fields = new HashMap<>(fields);
+	RoboScriptClass clazz;
+	Map<String, Object> fields = new HashMap<>();
+
+	RoboScriptObject(RoboScriptClass clazz) {
+		this.clazz = clazz;
 	}
 }

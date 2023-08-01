@@ -1,8 +1,5 @@
 package com.workert.robotics.base.roboscriptbytecode;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.workert.robotics.base.roboscriptbytecode.OpCode.*;
 import static com.workert.robotics.base.roboscriptbytecode.Token.TokenType.*;
@@ -15,6 +12,7 @@ public final class Compiler {
 	List<Byte> currentCodeList = new ArrayList<>();
 	List<Integer> currentLineList = new ArrayList<>();
 	int functionArgAmount = -1;
+	int removeConstantDepth = 0;
 	boolean emitPop = true;
 
 	List<Integer> functions = new ArrayList<>();
@@ -26,6 +24,9 @@ public final class Compiler {
 	final Map<String, Byte> nativeFunctionLookup = new HashMap<>();
 	private final List<Local> locals = new ArrayList<>();
 	private int scopeDepth = 0;
+
+
+	private final List<Integer> postCompileInstructions = new ArrayList<>();
 
 	Compiler(RoboScript roboScriptInstance) {
 		this.roboScriptInstance = roboScriptInstance;
@@ -79,9 +80,7 @@ public final class Compiler {
 
 	private void fieldDeclaration() {
 		try {
-			if (this.checkAndConsumeIfMatches(VAR)) {
-				this.varDeclarationForClass();
-			} else if (this.checkAndConsumeIfMatches(FUNCTION)) {
+			if (this.checkAndConsumeIfMatches(FUNCTION)) {
 				this.methodDeclaration();
 			} else {
 				throw this.error("Only declarations are allowed in main class body.");
@@ -91,25 +90,19 @@ public final class Compiler {
 		}
 	}
 
-	private void varDeclarationForClass() {
-		this.consumeOrThrow(IDENTIFIER, "Expected variable name.");
-		String name = this.previous.lexeme;
-		this.emitConstant(name);
-		if (this.checkAndConsumeIfMatches(EQUAL)) {
-			this.expression();
-		} else {
-			this.emitByte(OP_NULL);
-		}
-
-		this.consumeOrInsertSemicolon("Expected ';' or new line after variable declaration.");
-	}
-
 	private void methodDeclaration() {
-		// the actual putting
 		this.consumeOrThrow(IDENTIFIER, "Expected method name");
 		String name = this.previous.lexeme;
-		this.emitConstant(name);
-		int constantIndex = this.emitConstant(null);
+		int nameIndex = this.emitFakeConstant(name);
+		int constantIndex = this.emitFakeConstant(null);
+
+		this.postCompileInstructions.add(CompilerInstructions.PUSH_AND_REMOVE_CONST);
+		this.postCompileInstructions.add(nameIndex);
+
+		this.postCompileInstructions.add(CompilerInstructions.PUSH_AND_REMOVE_CONST);
+		this.postCompileInstructions.add(constantIndex);
+
+		this.removeConstantDepth += 2;
 
 		// the function stuff
 		List<Byte> previousCodeList = this.currentCodeList;
@@ -171,18 +164,24 @@ public final class Compiler {
 	private void classDeclaration() {
 		byte global = this.parseVariable("Expected class name");
 		String name = this.previous.lexeme;
-		Map<String, Object> fields = new HashMap<>();
 		RoboScriptClass clazz = new RoboScriptClass();
-		this.emitConstant(clazz);
+		int classConstant = this.emitConstant(clazz);
+
 		this.defineVariable(global, name);
 		this.emitConstant(clazz);
 		this.consumeOrThrow(LEFT_BRACE, "Expected '{' after class name.");
-		byte fieldCount = 0;
+		int fieldCount = 0;
 		while (!this.isNextToken(RIGHT_BRACE) && !this.isNextToken(EOF)) {
 			fieldCount++;
 			this.fieldDeclaration();
 		}
-		this.emitBytes(OP_MAKE_MAP, fieldCount);
+
+		this.postCompileInstructions.add(CompilerInstructions.PUSH_CONST);
+		this.postCompileInstructions.add(classConstant);
+
+		this.postCompileInstructions.add(CompilerInstructions.CREATE_CLASS);
+		this.postCompileInstructions.add(fieldCount);
+
 		this.consumeOrThrow(RIGHT_BRACE, "Expected '}' after class body.");
 	}
 
@@ -794,9 +793,14 @@ public final class Compiler {
 		if (constant > Short.MAX_VALUE) {
 			throw this.error("Too many constants in one chunk.");
 		}
+		constant -= this.removeConstantDepth;
 		// emit constant as short
 		this.emitBytes(OP_CONSTANT, (byte) ((constant >> 8) & 0xFF), (byte) (constant & 0xFF));
 		return constant;
+	}
+
+	private int emitFakeConstant(Object value) {
+		return this.chunk.addConstant(value);
 	}
 
 
@@ -926,6 +930,45 @@ public final class Compiler {
 			this.chunk.addCode(function.code);
 			this.chunk.addLines(function.lines);
 		}
+		this.executePostCompilerInstructions();
+	}
+
+	private void executePostCompilerInstructions() {
+		if (this.postCompileInstructions.isEmpty()) return;
+		Stack<Object> stack = new Stack<>();
+		List<Integer> removeStack = new ArrayList<>();
+		int instructionPointer = 0;
+
+		while (instructionPointer < this.postCompileInstructions.size()) {
+			int instruction = this.postCompileInstructions.get(instructionPointer++);
+			switch (instruction) {
+				case CompilerInstructions.CREATE_CLASS -> {
+					System.out.println(stack);
+					int fieldCount = this.postCompileInstructions.get(instructionPointer++);
+					RoboScriptClass clazz = (RoboScriptClass) stack.pop();
+					for (int i = 0; i < fieldCount; i++) {
+						RoboScriptFunction function = (RoboScriptFunction) stack.pop();
+						String name = (String) stack.pop();
+						clazz.functions.put(name, function);
+					}
+				}
+				case CompilerInstructions.PUSH_CONST -> {
+					int constLocation = this.postCompileInstructions.get(instructionPointer++);
+					stack.push(this.chunk.getConstant(constLocation));
+				}
+				case CompilerInstructions.PUSH_AND_REMOVE_CONST -> {
+					int constLocation = this.postCompileInstructions.get(instructionPointer++);
+					stack.push(this.chunk.getConstant(constLocation));
+					removeStack.add(constLocation);
+				}
+			}
+		}
+
+		int removeBase = 0;
+		for (int constant : removeStack) {
+			this.chunk.removeConstant(constant - removeBase);
+			removeBase++;
+		}
 	}
 
 	private static class CompilerFunction {
@@ -979,6 +1022,12 @@ public final class Compiler {
 		byte POWER = 9; // ^
 		byte CALL = 10; // . ()
 		byte PRIMARY = 11;
+	}
+
+	private interface CompilerInstructions {
+		int CREATE_CLASS = 0;
+		int PUSH_AND_REMOVE_CONST = 1;
+		int PUSH_CONST = 2;
 	}
 
 
