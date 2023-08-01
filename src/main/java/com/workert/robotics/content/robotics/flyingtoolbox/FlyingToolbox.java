@@ -1,6 +1,4 @@
 package com.workert.robotics.content.robotics.flyingtoolbox;
-import com.simibubi.create.content.curiosities.toolbox.ToolboxHandler;
-import com.simibubi.create.content.curiosities.toolbox.ToolboxInventory;
 import com.workert.robotics.content.robotics.AbstractRobotEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
@@ -13,14 +11,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.network.NetworkHooks;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 import java.util.WeakHashMap;
 
 public class FlyingToolbox extends AbstractRobotEntity {
@@ -35,26 +31,14 @@ public class FlyingToolbox extends AbstractRobotEntity {
 		super(entity, world);
 		this.connectedPlayers = new HashMap<>();
 		this.fakeToolboxTileEntity = new FakeToolboxTileEntity(this);
-		this.fakeToolboxTileEntity.setLevel(this.level);
+		FlyingToolboxHandler.onLoad(this);
 	}
 
 	@Override
 	public void tick() {
 		super.tick();
 
-		if (!this.fakeToolboxTileEntity.isFullyInitialized()) {
-			this.fakeToolboxTileEntity.setUniqueId(UUID.randomUUID());
-			this.fakeToolboxTileEntity.initialize();
-			// TODO Testing
-			ToolboxInventory inventory = new ToolboxInventory(this.fakeToolboxTileEntity);
-			inventory.setStackInSlot(0, new ItemStack(Items.STONE, 50));
-			this.fakeToolboxTileEntity.readInventory(inventory.serializeNBT());
-		}
-
-		ToolboxHandler.onUnload(this.fakeToolboxTileEntity);
-		ToolboxHandler.onLoad(this.fakeToolboxTileEntity);
-
-		if (!this.level.isClientSide) {
+		if (!this.level.isClientSide && this.fakeToolboxTileEntity != null) {
 			this.fakeToolboxTileEntity.tick();
 		}
 	}
@@ -88,9 +72,9 @@ public class FlyingToolbox extends AbstractRobotEntity {
 
 	@Override
 	public void die(DamageSource pDamageSource) {
-		super.die(pDamageSource);
-		this.fakeToolboxTileEntity.invalidate();
+		FlyingToolboxHandler.onUnload(this);
 		this.fakeToolboxTileEntity = null;
+		super.die(pDamageSource);
 	}
 
 	public DyeColor getColor() {
@@ -111,8 +95,10 @@ public class FlyingToolbox extends AbstractRobotEntity {
 
 	@Override
 	public void addAdditionalSaveData(CompoundTag pCompound) {
-		this.fakeToolboxTileEntity.saveWithoutMetadata(); // Saves fakeToolboxTileEntity's Compound and forces writeFakeToolboxTileEntityCompound to trigger
-		pCompound.put("FakeToolboxTileEntityCompound", this.fakeToolboxTileEntityCompound);
+		if (this.fakeToolboxTileEntity != null) {
+			this.fakeToolboxTileEntity.saveWithoutMetadata(); // Saves fakeToolboxTileEntity's Compound and forces writeFakeToolboxTileEntityCompound to trigger
+			pCompound.put("FakeToolboxTileEntityCompound", this.fakeToolboxTileEntityCompound);
+		}
 		super.addAdditionalSaveData(pCompound);
 	}
 
