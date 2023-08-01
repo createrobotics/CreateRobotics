@@ -193,39 +193,53 @@ final class Scanner {
 		switch (this.source.charAt(this.start)) {
 			// one path keywords ; initial characters that only share on keyword
 
+			// and
 			case 'a' -> {
 				return this.checkKeyword(1, 2, "nd", AND);
 			}
+			// class
 			case 'c' -> {
 				return this.checkKeyword(1, 4, "lass", CLASS);
 			}
+			// else
 			case 'e' -> {
 				return this.checkKeyword(1, 3, "lse", ELSE);
 			}
+			// if
 			case 'i' -> {
 				return this.checkKeyword(1, 1, "f", IF);
 			}
+			// null
 			case 'n' -> {
 				return this.checkKeyword(1, 3, "ull", NULL);
 			}
+			// or
 			case 'o' -> {
 				return this.checkKeyword(1, 1, "r", OR);
 			}
+			// return
 			case 'r' -> {
 				return this.checkKeyword(1, 5, "eturn", RETURN);
 			}
-			case 's' -> {
-				return this.checkKeyword(1, 4, "uper", SUPER);
-			}
+			// var
 			case 'v' -> {
 				return this.checkKeyword(1, 2, "ar", VAR);
 			}
+			// while
 			case 'w' -> {
 				return this.checkKeyword(1, 4, "hile", WHILE);
 			}
+			// true
 			case 't' -> {
 				return this.checkKeyword(1, 3, "rue", TRUE);
 			}
+			// lambda
+			case 'l' -> {
+				return this.checkKeyword(1, 5, "ambda", LAMBDA);
+			}
+			// false
+			// for
+			// func
 			case 'f' -> {
 				if (this.current - this.start > 1)
 					switch (this.source.charAt(this.start + 1)) {
@@ -236,7 +250,7 @@ final class Scanner {
 							return this.checkKeyword(2, 1, "r", FOR);
 						}
 						case 'u' -> {
-							return this.checkKeyword(2, 6, "nction", FUNCTION);
+							return this.checkKeyword(2, 2, "nc", FUNCTION);
 						}
 					}
 			}

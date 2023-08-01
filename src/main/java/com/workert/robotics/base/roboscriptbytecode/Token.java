@@ -75,16 +75,13 @@ final class Token {
 
 		NULL(new Compiler.ParseRule(Compiler::literal, null, NONE)),
 
-
-		EXTENDS(empty()),
-		SUPER(empty()),
-		THIS(empty()),
 		RETURN(empty()),
 		BREAK(empty()),
 		VAR(empty()),
 
-		PERSISTENT(empty()),
 		INSTANCEOF(empty()),
+
+		LAMBDA(new Compiler.ParseRule(Compiler::lambda, null, NONE)),
 
 		STRING(empty()),
 		DOUBLE(empty()),

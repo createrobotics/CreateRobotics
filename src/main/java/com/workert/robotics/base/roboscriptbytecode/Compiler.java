@@ -575,6 +575,60 @@ public final class Compiler {
 		this.consumeOrThrow(RIGHT_PAREN, "Expected ')' after expression.");
 	}
 
+	void lambda(boolean canAssign) {
+
+		int constantIndex = this.emitConstant(null);
+
+		List<Byte> previousCodeList = this.currentCodeList;
+		this.currentCodeList = new ArrayList<>();
+		List<Integer> previousLineList = this.currentLineList;
+		this.currentLineList = new ArrayList<>();
+
+		this.beginScope();
+		this.consumeOrThrow(LEFT_PAREN, "Expected '(' after 'lambda'.");
+
+		int argumentCount = 0;
+		if (!this.isNextToken(RIGHT_PAREN)) {
+			do {
+				byte constant = this.parseVariable("Expected parameter name.");
+				this.defineVariable(constant, this.previous.lexeme);
+				argumentCount++;
+			} while (this.checkAndConsumeIfMatches(COMMA));
+		}
+
+		int prevFunctionArg = this.functionArgAmount;
+		this.functionArgAmount = argumentCount;
+
+		// define instruction pointer
+		this.declareVariable(new Token(NA, "instruction pointers", this.previous.line));
+		this.defineVariable((byte) 0, "");
+
+		// define base pointer
+		this.declareVariable(new Token(NA, "base pointer", this.previous.line));
+		this.defineVariable((byte) 0, "");
+
+		this.consumeOrThrow(RIGHT_PAREN, "Expected ')' after lambda parameters.");
+
+		if (this.checkAndConsumeIfMatches(EQUAL)) {
+			this.expression();
+			this.endFunctionScope();
+			this.emitBytes(OP_RETURN, (byte) this.functionArgAmount);
+		} else if (this.checkAndConsumeIfMatches(LEFT_BRACE)) {
+			this.block();
+			this.endFunctionScope();
+			this.emitBytes(OP_NULL, OP_RETURN, (byte) this.functionArgAmount);
+		}
+
+		CompilerFunction function = new CompilerFunction(this.currentCodeList, this.currentLineList, argumentCount);
+
+		this.currentCodeList = previousCodeList;
+		this.currentLineList = previousLineList;
+		this.functionArgAmount = prevFunctionArg;
+
+		this.chunk.setConstant(constantIndex, function);
+		this.functions.add(constantIndex);
+	}
+
 	void list(boolean canAssign) {
 		List<Object> list = new ArrayList<>();
 		this.emitConstant(list);
