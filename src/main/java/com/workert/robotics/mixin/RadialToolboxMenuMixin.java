@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-@Mixin(RadialToolboxMenu.class)
+@Mixin(value = RadialToolboxMenu.class, remap = false)
 public class RadialToolboxMenuMixin {
 	@Shadow
 	private ToolboxTileEntity selectedBox;
@@ -21,7 +21,7 @@ public class RadialToolboxMenuMixin {
 	@Shadow
 	private RadialToolboxMenu.State state;
 
-	@Inject(method = "removed", remap = false, at = @At(value = "INVOKE", target = "Lnet/minecraftforge/network/simple/SimpleChannel;sendToServer(Ljava/lang/Object;)V"), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
+	@Inject(method = "removed", remap = true, at = @At(value = "INVOKE", target = "Lnet/minecraftforge/network/simple/SimpleChannel;sendToServer(Ljava/lang/Object;)V", remap = false), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
 	public void removed(CallbackInfo ci, int selected) {
 		if (this.selectedBox instanceof FakeToolboxTileEntity fakeToolboxTileEntity) {
 			PacketRegistry.CHANNEL.sendToServer(
@@ -32,7 +32,7 @@ public class RadialToolboxMenuMixin {
 		}
 	}
 
-	@Inject(method = "mouseClicked", remap = false, at = @At(value = "INVOKE", target = "Lnet/minecraftforge/network/simple/SimpleChannel;sendToServer(Ljava/lang/Object;)V"), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
+	@Inject(method = "mouseClicked", remap = true, at = @At(value = "INVOKE", target = "Lnet/minecraftforge/network/simple/SimpleChannel;sendToServer(Ljava/lang/Object;)V", remap = false), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
 	public void removed(double x, double y, int button, CallbackInfoReturnable<Boolean> cir, int selected) {
 		if (this.selectedBox instanceof FakeToolboxTileEntity fakeToolboxTileEntity) {
 			PacketRegistry.CHANNEL.sendToServer(
