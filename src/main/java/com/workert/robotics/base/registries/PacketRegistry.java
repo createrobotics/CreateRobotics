@@ -8,6 +8,8 @@ import com.workert.robotics.content.computers.computer.ConfigureComputerScriptPa
 import com.workert.robotics.content.computers.inputs.ConfigureInputSignalPacket;
 import com.workert.robotics.content.robotics.codeeditor.ReturnEditedCodePacket;
 import com.workert.robotics.content.robotics.flyingtoolbox.FlyingToolboxEquipPacket;
+import com.workert.robotics.content.robotics.flyingtoolbox.FlyingToolboxGetSelectedToolboxEntityIdPacket;
+import com.workert.robotics.content.robotics.flyingtoolbox.FlyingToolboxReplySelectedToolboxEntityIdPacket;
 import com.workert.robotics.content.utility.extendoboots.ChangeExtendOBootsHeightPacket;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -20,6 +22,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static net.minecraftforge.network.NetworkDirection.PLAY_TO_CLIENT;
 import static net.minecraftforge.network.NetworkDirection.PLAY_TO_SERVER;
 
 public enum PacketRegistry {
@@ -31,7 +34,14 @@ public enum PacketRegistry {
 	CONFIGURE_COMPUTER_SCRIPT(ConfigureComputerScriptPacket.class, ConfigureComputerScriptPacket::new, PLAY_TO_SERVER),
 	CLEAR_COMPUTER_TERMINAL(ComputerClearTerminalPacket.class, ComputerClearTerminalPacket::new, PLAY_TO_SERVER),
 	COMPUTER_SET_RUNNING(ComputerToggleRunningPacket.class, ComputerToggleRunningPacket::new, PLAY_TO_SERVER),
-	FLYING_TOOLBOX_EQUIP(FlyingToolboxEquipPacket.class, FlyingToolboxEquipPacket::new, PLAY_TO_SERVER);
+	FLYING_TOOLBOX_EQUIP(FlyingToolboxEquipPacket.class, FlyingToolboxEquipPacket::new, PLAY_TO_SERVER),
+	FLYING_TOOLBOX_GET_SELECTED_TOOLBOX_ENTITY_ID(FlyingToolboxGetSelectedToolboxEntityIdPacket.class,
+			FlyingToolboxGetSelectedToolboxEntityIdPacket::new, PLAY_TO_SERVER),
+
+	// Packets to Client
+	FLYING_TOOLBOX_REPLY_SELECTED_TOOLBOX_ENTITY_ID(FlyingToolboxReplySelectedToolboxEntityIdPacket.class,
+			FlyingToolboxReplySelectedToolboxEntityIdPacket::new, PLAY_TO_CLIENT);
+
 
 	public static final String PROTOCOL_VERSION = "1";
 	public static SimpleChannel CHANNEL;

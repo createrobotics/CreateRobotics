@@ -60,15 +60,13 @@ public class FakeToolboxTileEntity extends ToolboxTileEntity {
 	}
 
 	@Override
-	public boolean canPlayerUse(Player player) {
-		return player.distanceToSqr(this.getBlockPos().getX() + 0.5D, this.getBlockPos().getY() + 0.5D,
-				this.getBlockPos().getZ() + 0.5D) <= 64.0D;
+	protected void read(CompoundTag compound, boolean clientPacket) {
+		super.read(compound, clientPacket);
 	}
 
 	@Override
-	protected void write(CompoundTag compound, boolean clientPacket) {
-		super.write(compound, clientPacket);
-		if (!clientPacket)
-			this.flyingToolbox.writeFakeToolboxTileEntityCompound(compound);
+	public boolean canPlayerUse(Player player) {
+		return player.distanceToSqr(this.getBlockPos().getX() + 0.5D, this.getBlockPos().getY() + 0.5D,
+				this.getBlockPos().getZ() + 0.5D) <= 64.0D;
 	}
 }
