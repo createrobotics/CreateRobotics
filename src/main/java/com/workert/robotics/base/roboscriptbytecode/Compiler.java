@@ -897,7 +897,7 @@ public final class Compiler {
 
 	private void synchronize() {
 		while (this.current.type != EOF) {
-			if (this.previous.type == SEMICOLON) return;
+			if (this.previous != null && this.previous.type == SEMICOLON) return;
 			switch (this.current.type) {
 				case CLASS, FUNCTION, VAR, FOR, IF, WHILE, RETURN -> {
 					return;
