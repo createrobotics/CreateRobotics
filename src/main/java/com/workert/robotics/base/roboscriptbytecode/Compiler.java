@@ -15,7 +15,7 @@ public final class Compiler {
 	List<Byte> currentCodeList = new ArrayList<>();
 	List<Integer> currentLineList = new ArrayList<>();
 	int functionArgAmount = -1;
-	int removeConstantDepth = 0;
+	boolean inInitializer = false;
 	boolean emitPop = true;
 
 	List<Integer> functions = new ArrayList<>();
@@ -84,6 +84,7 @@ public final class Compiler {
 	private void methodDeclaration(RoboScriptClass methodOwner, boolean hasSuper) {
 		this.consumeOrThrow(IDENTIFIER, "Expected method name");
 		String name = this.previous.lexeme;
+		if (name.equals("init")) this.inInitializer = true;
 		int constantIndex = this.emitFakeConstant(null);
 
 		// the function stuff
@@ -140,6 +141,8 @@ public final class Compiler {
 			this.endFunctionScope();
 			this.emitBytes(OP_NULL, OP_RETURN, (byte) this.functionArgAmount);
 		}
+
+		this.inInitializer = false;
 
 		CompilerFunction function = new CompilerFunction(
 				this.currentCodeList, this.currentLineList, argumentCount, methodOwner, name
@@ -463,6 +466,8 @@ public final class Compiler {
 			this.emitBytes(OP_NULL, OP_RETURN, (byte) this.functionArgAmount);
 			return;
 		}
+		if (this.inInitializer)
+			throw this.errorAtCurrent("Unable to return a value inside of an initializer function.");
 		this.expression();
 		this.consumeOrInsertSemicolon("Expected ';' or new line after return expression.");
 		this.emitBytes(OP_RETURN, (byte) this.functionArgAmount);
@@ -803,7 +808,6 @@ public final class Compiler {
 		if (constant > Short.MAX_VALUE) {
 			throw this.error("Too many constants in one chunk.");
 		}
-		constant -= this.removeConstantDepth;
 		// emit constant as short
 		this.emitBytes(OP_CONSTANT, (byte) ((constant >> 8) & 0xFF), (byte) (constant & 0xFF));
 		return constant;
