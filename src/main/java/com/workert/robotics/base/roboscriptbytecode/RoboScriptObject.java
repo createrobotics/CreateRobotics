@@ -7,7 +7,11 @@ public class RoboScriptObject {
 	RoboScriptClass clazz;
 	Map<String, Object> fields = new HashMap<>();
 
-	RoboScriptObject(RoboScriptClass clazz) {
+	boolean settable = false;
+
+
+	RoboScriptObject(RoboScriptClass clazz, boolean settable) {
 		this.clazz = clazz;
+		this.settable = settable;
 	}
 }

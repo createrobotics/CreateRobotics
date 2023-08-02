@@ -81,10 +81,9 @@ public final class Compiler {
 		}
 	}
 
-	private void methodDeclaration(RoboScriptClass methodOwner) {
+	private void methodDeclaration(RoboScriptClass methodOwner, boolean hasSuper) {
 		this.consumeOrThrow(IDENTIFIER, "Expected method name");
 		String name = this.previous.lexeme;
-		int nameIndex = this.emitFakeConstant(name);
 		int constantIndex = this.emitFakeConstant(null);
 
 		// the function stuff
@@ -113,6 +112,14 @@ public final class Compiler {
 
 		int prevFunctionArg = this.functionArgAmount;
 		this.functionArgAmount = argumentCount + 1 /* "this" */;
+
+		if (hasSuper) {
+			// define "super"
+			this.declareVariable(new Token(IDENTIFIER, "super", this.previous.line));
+			this.defineVariable((byte) 0, "super");
+			this.functionArgAmount++;
+		}
+
 
 		// define instruction pointer
 		this.declareVariable(new Token(NA, "instruction pointers", this.previous.line));
@@ -151,6 +158,7 @@ public final class Compiler {
 		String name = this.previous.lexeme;
 		RoboScriptClass clazz = new RoboScriptClass();
 		this.emitConstant(clazz);
+		boolean hasSuper = false;
 		if (this.checkAndConsumeIfMatches(COLON)) {
 			this.consumeOrThrow(IDENTIFIER, "Expected superclass name.");
 			String superclassName = this.previous.lexeme;
@@ -163,6 +171,7 @@ public final class Compiler {
 			} else
 				throw this.error("Variable '" + this.previous.lexeme + "' has not been declared.");
 			this.emitByte(OP_INHERIT);
+			hasSuper = true;
 		}
 
 		this.defineVariable(global, name);
@@ -170,7 +179,7 @@ public final class Compiler {
 		while (!this.isNextToken(RIGHT_BRACE) && !this.isNextToken(EOF)) {
 			try {
 				if (this.checkAndConsumeIfMatches(FUNCTION)) {
-					this.methodDeclaration(clazz);
+					this.methodDeclaration(clazz, hasSuper);
 				} else {
 					throw this.error("Only declarations are allowed in main class body.");
 				}

@@ -181,7 +181,8 @@ final class VirtualMachine {
 					if (!(gettable instanceof RoboScriptObject object))
 						throw new RuntimeError(
 								"Can only use '.' to set fields from an object. Instead got '" + gettable.getClass() + "'.");
-
+					if (!object.settable)
+						throw new RuntimeError("Cannot edit fields of a 'super' keyword.");
 					if (!object.fields.containsKey(key))
 						throw new RuntimeError("Object does not contain field '" + key + "'.");
 					if (!(object.fields.get(key) instanceof Double increment))
@@ -243,7 +244,8 @@ final class VirtualMachine {
 					if (!(gettable instanceof RoboScriptObject object))
 						throw new RuntimeError(
 								"Can only use '.' to set fields from an object. Instead got '" + gettable.getClass() + "'.");
-
+					if (!object.settable)
+						throw new RuntimeError("Cannot edit fields of a 'super' keyword.");
 					if (!object.fields.containsKey(key))
 						throw new RuntimeError("Object does not contain field '" + key + "'.");
 					if (!(object.fields.get(key) instanceof Double increment))
@@ -302,9 +304,13 @@ final class VirtualMachine {
 					}
 
 					if (callable instanceof RoboScriptClass clazz) {
-						// TODO: init function
-						this.pushStack(new RoboScriptObject(clazz));
-						break;
+						RoboScriptObject object = new RoboScriptObject(clazz, true);
+						if ((callable = this.getFunctionInClass(clazz, object, "init")) != null) {
+							this.stack[this.stackSize - 1 - argumentCount] = object;
+						} else {
+							this.pushStack(object);
+							break;
+						}
 					}
 
 
@@ -322,6 +328,10 @@ final class VirtualMachine {
 					if (callable instanceof RoboScriptMethod method) {
 						this.pushStack(method.instance);
 						argumentCount++;
+						if (method.instance.clazz.superclass != null) {
+							this.pushStack(new RoboScriptObject(method.instance.clazz.superclass, false));
+							argumentCount++;
+						}
 					}
 
 					// push return address and base pointer
@@ -338,8 +348,13 @@ final class VirtualMachine {
 					this.basePointer = (int) this.popStack();
 					this.instructionPointer = (int) this.popStack();
 					this.stackSize -= argCount; // pops args
-					this.stackSize -= 1; // pops function
-					this.pushStack(returnValue);
+					if (this.peekStack() instanceof RoboScriptFunction) {
+						this.stackSize--; // pops function
+						this.pushStack(returnValue);
+					} else if (!(this.peekStack() instanceof RoboScriptObject)) {
+						throw new IllegalArgumentException(
+								"Expected a function or object in this place. Rework the compiler.");
+					}
 				}
 
 				case OP_MAKE_MAP -> {
@@ -431,7 +446,9 @@ final class VirtualMachine {
 					if (!(gettable instanceof RoboScriptObject object))
 						throw new RuntimeError(
 								"Can only use '.' to get fields from an object. Instead got '" + gettable.getClass() + "'.");
-					this.pushStack(this.getFieldInObject(object, key));
+					if (object.settable)
+						this.pushStack(this.getFieldInObject(object, key));
+					else this.pushStack(this.getFunctionInClass(object.clazz, object, key));
 				}
 
 				case OP_SET_CLASS -> {
@@ -442,6 +459,8 @@ final class VirtualMachine {
 					if (!(settable instanceof RoboScriptObject object))
 						throw new RuntimeError(
 								"Can only use '.' to set fields from an object. Instead got '" + settable.getClass() + "'.");
+					if (!object.settable)
+						throw new RuntimeError("Cannot edit fields of a 'super' keyword.");
 					object.fields.put(key, value);
 				}
 				case OP_INHERIT -> {
@@ -487,8 +506,11 @@ final class VirtualMachine {
 	private RoboScriptMethod getFunctionInClass(RoboScriptClass clazz, RoboScriptObject object, String fieldName) {
 		if (clazz.functions.containsKey(fieldName))
 			return new RoboScriptMethod(clazz.functions.get(fieldName), object);
-		if (clazz.superclass != null)
-			return this.getFunctionInClass(clazz.superclass, object, fieldName);
+		if (clazz.superclass != null) {
+			RoboScriptMethod method = this.getFunctionInClass(clazz.superclass, object, fieldName);
+			if (method == null) throw new RuntimeError("Superclass does not contain function '" + fieldName + "'.");
+			return method;
+		}
 		return null;
 	}
 
