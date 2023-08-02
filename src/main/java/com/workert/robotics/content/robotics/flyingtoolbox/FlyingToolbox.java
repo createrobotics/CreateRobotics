@@ -23,7 +23,6 @@ public class FlyingToolbox extends AbstractRobotEntity {
 	Map<Integer, WeakHashMap<Player, Integer>> connectedPlayers;
 
 	FakeToolboxTileEntity fakeToolboxTileEntity;
-	CompoundTag fakeToolboxTileEntityCompound;
 
 	DyeColor color = DyeColor.BROWN;
 
@@ -89,17 +88,20 @@ public class FlyingToolbox extends AbstractRobotEntity {
 		this.saveWithoutId(new CompoundTag());
 	}
 
-	void writeFakeToolboxTileEntityCompound(CompoundTag compound) {
-		this.fakeToolboxTileEntityCompound = compound;
-	}
-
 	@Override
 	public void addAdditionalSaveData(CompoundTag pCompound) {
 		if (this.fakeToolboxTileEntity != null) {
-			this.fakeToolboxTileEntity.saveWithoutMetadata(); // Saves fakeToolboxTileEntity's Compound and forces writeFakeToolboxTileEntityCompound to trigger
-			pCompound.put("FakeToolboxTileEntityCompound", this.fakeToolboxTileEntityCompound);
+			pCompound.put("FakeToolboxTileEntityNBT", this.fakeToolboxTileEntity.serializeNBT());
 		}
 		super.addAdditionalSaveData(pCompound);
+	}
+
+	@Override
+	public void readAdditionalSaveData(CompoundTag pCompound) {
+		if (this.fakeToolboxTileEntity != null) {
+			this.fakeToolboxTileEntity.deserializeNBT(pCompound.getCompound("FakeToolboxTileEntityNBT"));
+		}
+		super.readAdditionalSaveData(pCompound);
 	}
 
 	@Override

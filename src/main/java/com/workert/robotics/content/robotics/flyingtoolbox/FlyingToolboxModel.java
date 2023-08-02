@@ -12,7 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 public class FlyingToolboxModel<T extends FlyingToolbox> extends EntityModel<T> {
 
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(
-			new ResourceLocation(Robotics.MOD_ID, "clockcopter"), "clockcopter");
+			new ResourceLocation(Robotics.MOD_ID, "flying_toolbox"), "flying_toolbox");
 
 	private static final float gearTurnSpeed = 0.3f;
 
@@ -27,11 +27,7 @@ public class FlyingToolboxModel<T extends FlyingToolbox> extends EntityModel<T> 
 		PartDefinition partdefinition = meshdefinition.getRoot();
 
 		PartDefinition body = partdefinition.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 0)
-						.addBox(-7.0F, -13.0F, -7.0F, 13.0F, 13.0F, 13.0F, new CubeDeformation(0.0F)).texOffs(16, 26)
-						.addBox(-5.0F, -5.09F, -7.7F, 9.0F, 5.0F, 1.0F, new CubeDeformation(0.0F)).texOffs(0, 26)
-						.addBox(-5.0F, -11.0F, -7.5F, 3.0F, 4.0F, 1.0F, new CubeDeformation(0.0F)).texOffs(0, 26)
-						.addBox(1.0F, -11.0F, -7.5F, 3.0F, 4.0F, 1.0F, new CubeDeformation(0.0F)).texOffs(0, 37)
-						.addBox(-4.0F, -7.0F, 6.0F, 7.0F, 5.0F, 1.0F, new CubeDeformation(0.0F)),
+						.addBox(-7.0F, -13.0F, -7.0F, 13.0F, 13.0F, 13.0F, new CubeDeformation(0.0F)).texOffs(16, 26),
 				PartPose.offset(0.0F, 24.0F, 0.0F));
 
 		return LayerDefinition.create(meshdefinition, 64, 64);

@@ -6,6 +6,7 @@ import com.simibubi.create.foundation.ponder.PonderRegistrationHelper;
 import com.workert.robotics.Robotics;
 import com.workert.robotics.base.registries.ItemRegistry;
 import com.workert.robotics.content.robotics.clockcopter.ClockcopterModel;
+import com.workert.robotics.content.robotics.flyingtoolbox.FlyingToolboxModel;
 import com.workert.robotics.content.utility.extendoboots.ExtendOBootsModel;
 import com.workert.robotics.unused.miner.MinerModel;
 import net.minecraft.network.chat.Component;
@@ -32,6 +33,7 @@ public class ClientHandler {
 		event.registerLayerDefinition(ClockcopterModel.LAYER_LOCATION, ClockcopterModel::createBodyLayer);
 		event.registerLayerDefinition(MinerModel.LAYER_LOCATION, MinerModel::createBodyLayer);
 		event.registerLayerDefinition(ExtendOBootsModel.LAYER_LOCATION, ExtendOBootsModel::createBodyLayer);
+		event.registerLayerDefinition(FlyingToolboxModel.LAYER_LOCATION, FlyingToolboxModel::createBodyLayer);
 	}
 
 	@SubscribeEvent

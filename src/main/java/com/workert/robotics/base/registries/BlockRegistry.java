@@ -61,7 +61,7 @@ public class BlockRegistry {
 	public static final BlockEntry<DropExperienceBlock> DEEPSLATE_TIN_ORE = Robotics.REGISTRATE
 			.block("deepslate_tin_ore", DropExperienceBlock::new)
 			.lang("Deepslate tin ore")
-			.initialProperties(() -> BlockRegistry.TIN_ORE.get())
+			.initialProperties(BlockRegistry.TIN_ORE)
 			.properties(properties -> properties
 					.sound(SoundType.DEEPSLATE)
 					.strength(4.5F, 3.0F)

@@ -7,7 +7,9 @@
   "mixins": [
 	"ToolboxContainerMixin",
 	"ToolboxHandlerMixin",
-	"ToolboxTileEntityAccessor"
+	"ToolboxInventoryAccessor",
+	"ToolboxTileEntityAccessor",
+	"ToolboxTileEntityMixin"
   ],
   "client": [
 	"RadialToolboxMenuMixin",

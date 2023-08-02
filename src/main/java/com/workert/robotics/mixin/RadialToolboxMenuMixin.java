@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(value = RadialToolboxMenu.class, remap = false)
-public class RadialToolboxMenuMixin {
+public abstract class RadialToolboxMenuMixin {
 	@Shadow
 	private ToolboxTileEntity selectedBox;
 

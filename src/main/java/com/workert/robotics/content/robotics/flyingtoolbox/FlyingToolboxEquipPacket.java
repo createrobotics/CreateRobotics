@@ -19,10 +19,10 @@ import net.minecraftforge.network.NetworkEvent;
 import java.util.function.Supplier;
 
 public class FlyingToolboxEquipPacket extends SimplePacketBase {
-	private Integer toolboxEntityId;
-	private BlockPos pos;
-	private int slot;
-	private int hotbarSlot;
+	private final Integer toolboxEntityId;
+	private final BlockPos pos;
+	private final int slot;
+	private final int hotbarSlot;
 
 	public FlyingToolboxEquipPacket(Integer toolboxEntityId, BlockPos pos, int slot, int hotbarSlot) {
 		this.toolboxEntityId = toolboxEntityId;
