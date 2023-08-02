@@ -14,6 +14,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.network.NetworkHooks;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -70,10 +71,10 @@ public class FlyingToolbox extends AbstractRobotEntity {
 	}
 
 	@Override
-	public void die(DamageSource pDamageSource) {
+	public void remove(@NotNull RemovalReason pReason) {
 		FlyingToolboxHandler.onUnload(this);
 		this.fakeToolboxTileEntity = null;
-		super.die(pDamageSource);
+		super.remove(pReason);
 	}
 
 	public DyeColor getColor() {
@@ -115,7 +116,7 @@ public class FlyingToolbox extends AbstractRobotEntity {
 	}
 
 	@Override
-	public boolean causeFallDamage(float pFallDistance, float pMultiplier, DamageSource pSource) {
+	public boolean causeFallDamage(float pFallDistance, float pMultiplier, @NotNull DamageSource pSource) {
 		return false;
 	}
 }
