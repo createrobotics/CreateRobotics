@@ -57,6 +57,7 @@ public class OpCodeGenerator {
 		// class stuff
 		opCodes.add("OP_GET_CLASS");
 		opCodes.add("OP_SET_CLASS");
+		opCodes.add("OP_INHERIT");
 		opCodes.add("OP_END");
 	}
 

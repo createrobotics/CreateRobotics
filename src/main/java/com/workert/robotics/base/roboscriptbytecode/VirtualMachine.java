@@ -179,7 +179,8 @@ final class VirtualMachine {
 					Object gettable = this.popStack();
 
 					if (!(gettable instanceof RoboScriptObject object))
-						throw new RuntimeError("Can only use '.' to set fields from an object.");
+						throw new RuntimeError(
+								"Can only use '.' to set fields from an object. Instead got '" + gettable.getClass() + "'.");
 
 					if (!object.fields.containsKey(key))
 						throw new RuntimeError("Object does not contain field '" + key + "'.");
@@ -240,7 +241,8 @@ final class VirtualMachine {
 					Object gettable = this.popStack();
 
 					if (!(gettable instanceof RoboScriptObject object))
-						throw new RuntimeError("Can only use '.' to set fields from an object.");
+						throw new RuntimeError(
+								"Can only use '.' to set fields from an object. Instead got '" + gettable.getClass() + "'.");
 
 					if (!object.fields.containsKey(key))
 						throw new RuntimeError("Object does not contain field '" + key + "'.");
@@ -427,7 +429,8 @@ final class VirtualMachine {
 					}
 
 					if (!(gettable instanceof RoboScriptObject object))
-						throw new RuntimeError("Can only use '.' to get fields from an object.");
+						throw new RuntimeError(
+								"Can only use '.' to get fields from an object. Instead got '" + gettable.getClass() + "'.");
 					this.pushStack(this.getFieldInObject(object, key));
 				}
 
@@ -437,10 +440,19 @@ final class VirtualMachine {
 					Object settable = this.popStack();
 					this.pushStack(value);
 					if (!(settable instanceof RoboScriptObject object))
-						throw new RuntimeError("Can only use '.' to set fields from an object.");
+						throw new RuntimeError(
+								"Can only use '.' to set fields from an object. Instead got '" + settable.getClass() + "'.");
 					object.fields.put(key, value);
 				}
+				case OP_INHERIT -> {
+					Object superclassObject = this.popStack();
+					RoboScriptClass clazz = (RoboScriptClass) this.peekStack();
 
+					if (!(superclassObject instanceof RoboScriptClass superclass))
+						throw new RuntimeError("Superclass does not exist.");
+
+					clazz.superclass = superclass;
+				}
 				case OP_END -> {
 					return;
 				}
@@ -458,9 +470,26 @@ final class VirtualMachine {
 	private Object getFieldInObject(RoboScriptObject object, String fieldName) {
 		if (object.fields.containsKey(fieldName))
 			return object.fields.get(fieldName);
-		if (object.clazz.functions.containsKey(fieldName))
-			return new RoboScriptMethod(object.clazz.functions.get(fieldName), object);
-		throw new RuntimeError("Class does not contain field '" + fieldName + "'.");
+		RoboScriptMethod function = this.getFunctionInClass(object.clazz, object, fieldName);
+		if (function == null)
+			throw new RuntimeError("Class does not contain field '" + fieldName + "'.");
+		return function;
+	}
+
+	/**
+	 * Gets a function from a class and if it is not found the function will be called again for the superclass.
+	 *
+	 * @param clazz     The class the function is being gotten from.
+	 * @param object    The object the function should be bound to.
+	 * @param fieldName The name of the function
+	 * @return The method after the function is bound, or null if the function is never found.
+	 */
+	private RoboScriptMethod getFunctionInClass(RoboScriptClass clazz, RoboScriptObject object, String fieldName) {
+		if (clazz.functions.containsKey(fieldName))
+			return new RoboScriptMethod(clazz.functions.get(fieldName), object);
+		if (clazz.superclass != null)
+			return this.getFunctionInClass(clazz.superclass, object, fieldName);
+		return null;
 	}
 
 

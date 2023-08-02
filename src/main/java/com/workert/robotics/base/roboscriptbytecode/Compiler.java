@@ -150,14 +150,24 @@ public final class Compiler {
 		byte global = this.parseVariable("Expected class name");
 		String name = this.previous.lexeme;
 		RoboScriptClass clazz = new RoboScriptClass();
-		int classConstant = this.emitConstant(clazz);
+		this.emitConstant(clazz);
+		if (this.checkAndConsumeIfMatches(COLON)) {
+			this.consumeOrThrow(IDENTIFIER, "Expected superclass name.");
+			String superclassName = this.previous.lexeme;
+			byte superclass = this.resolveLocal(this.previous);
+			if (superclass != -1)
+				this.emitVariable(OP_GET_LOCAL, superclass);
+			else if (this.globalVariableLookup.containsKey(superclassName)) {
+				superclass = this.globalVariableLookup.get(superclassName);
+				this.emitVariable(OP_GET_GLOBAL, superclass);
+			} else
+				throw this.error("Variable '" + this.previous.lexeme + "' has not been declared.");
+			this.emitByte(OP_INHERIT);
+		}
 
 		this.defineVariable(global, name);
-		this.emitConstant(clazz);
 		this.consumeOrThrow(LEFT_BRACE, "Expected '{' after class name.");
-		int fieldCount = 0;
 		while (!this.isNextToken(RIGHT_BRACE) && !this.isNextToken(EOF)) {
-			fieldCount++;
 			try {
 				if (this.checkAndConsumeIfMatches(FUNCTION)) {
 					this.methodDeclaration(clazz);
@@ -471,6 +481,10 @@ public final class Compiler {
 		}
 		this.currentCodeList.set(offset, (byte) ((jump >> 8) & 0xff));
 		this.currentCodeList.set(offset + 1, (byte) (jump & 0xFF));
+	}
+
+	private void emitVariable(byte getOp, byte lookup) {
+		this.emitBytes(getOp, lookup);
 	}
 
 
