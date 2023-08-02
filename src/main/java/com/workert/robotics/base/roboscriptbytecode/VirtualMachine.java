@@ -300,7 +300,8 @@ final class VirtualMachine {
 					}
 
 					if (callable instanceof RoboScriptClass clazz) {
-						this.pushStack(new RoboScriptObject(clazz.fields));
+						// TODO: init function
+						this.pushStack(new RoboScriptObject(clazz));
 						break;
 					}
 
@@ -347,9 +348,6 @@ final class VirtualMachine {
 						Object key = this.popStack();
 
 						if (puttable instanceof Map map) map.put(key, value);
-
-						else if (puttable instanceof RoboScriptClass clazz) clazz.fields.put((String) key, value);
-
 						else throw new IllegalArgumentException("Unable to find map.");
 					}
 				}
@@ -430,8 +428,6 @@ final class VirtualMachine {
 
 					if (!(gettable instanceof RoboScriptObject object))
 						throw new RuntimeError("Can only use '.' to get fields from an object.");
-					if (!object.fields.containsKey(key))
-						throw new RuntimeError("Object does not contain field '" + key + "'.");
 					this.pushStack(this.getFieldInObject(object, key));
 				}
 
@@ -442,8 +438,6 @@ final class VirtualMachine {
 					this.pushStack(value);
 					if (!(settable instanceof RoboScriptObject object))
 						throw new RuntimeError("Can only use '.' to set fields from an object.");
-					if (!object.fields.containsKey(key))
-						throw new RuntimeError("Object does not contain field '" + key + "'.");
 					object.fields.put(key, value);
 				}
 
@@ -462,13 +456,11 @@ final class VirtualMachine {
 	 * @return A field from the object or a binded method from an objects function.
 	 */
 	private Object getFieldInObject(RoboScriptObject object, String fieldName) {
-		if (!object.fields.containsKey(fieldName))
-			throw new RuntimeError("Field '" + fieldName + "' does not exist in object.");
-		Object field = object.fields.get(fieldName);
-		if (field instanceof RoboScriptFunction r) {
-			return new RoboScriptMethod(r, object);
-		}
-		return field;
+		if (object.fields.containsKey(fieldName))
+			return object.fields.get(fieldName);
+		if (object.clazz.functions.containsKey(fieldName))
+			return new RoboScriptMethod(object.clazz.functions.get(fieldName), object);
+		throw new RuntimeError("Class does not contain field '" + fieldName + "'.");
 	}
 
 

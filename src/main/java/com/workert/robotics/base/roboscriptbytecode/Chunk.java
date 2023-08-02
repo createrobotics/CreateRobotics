@@ -26,6 +26,10 @@ final class Chunk {
 		return this.constants.size() - 1;
 	}
 
+	void removeConstant(int location) {
+		this.constants.remove(location);
+	}
+
 	void setConstant(int index, Object value) {
 		this.constants.set(index, value);
 	}
