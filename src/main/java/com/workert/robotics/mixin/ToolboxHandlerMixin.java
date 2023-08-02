@@ -68,7 +68,7 @@ public abstract class ToolboxHandlerMixin {
 				.collect(Collectors.toList());
 	}
 
-	@Inject(method = "entityTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;isLoaded(Lnet/minecraft/core/BlockPos;)Z"), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
+	@Inject(method = "entityTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;isLoaded(Lnet/minecraft/core/BlockPos;)Z", remap = true), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
 	private static void connectFlyingToolboxes(Entity entity, Level world, CallbackInfo ci, ServerPlayer player, boolean sendData, CompoundTag compound, int i, String key, CompoundTag data, BlockPos pos, int slot) {
 		if (data.hasUUID("EntityUUID") && !world.isClientSide) {
 			if (((ServerLevel) world).getEntity(data.getUUID("EntityUUID")) instanceof FlyingToolbox flyingToolbox) {
@@ -84,7 +84,7 @@ public abstract class ToolboxHandlerMixin {
 		}
 	}
 
-	@Inject(method = "unequip", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;getBlockEntity(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/entity/BlockEntity;", shift = At.Shift.BEFORE), locals = LocalCapture.CAPTURE_FAILHARD)
+	@Inject(method = "unequip", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;getBlockEntity(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/entity/BlockEntity;", shift = At.Shift.BEFORE, remap = true), locals = LocalCapture.CAPTURE_FAILHARD)
 	private static void unequip(Player player, int hotbarSlot, boolean keepItems, CallbackInfo ci, CompoundTag compound, Level world, String key, CompoundTag prevData, BlockPos prevPos, int prevSlot) {
 		if (!world.isClientSide && prevData.hasUUID("EntityUUID")) {
 			Entity entity = ((ServerLevel) world).getEntity(prevData.getUUID("EntityUUID"));
