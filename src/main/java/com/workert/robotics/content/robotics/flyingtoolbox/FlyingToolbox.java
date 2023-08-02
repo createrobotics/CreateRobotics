@@ -1,4 +1,5 @@
 package com.workert.robotics.content.robotics.flyingtoolbox;
+import com.simibubi.create.AllBlocks;
 import com.workert.robotics.content.robotics.AbstractRobotEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
@@ -107,7 +108,8 @@ public class FlyingToolbox extends AbstractRobotEntity {
 
 	@Override
 	public Item getRobotItem() {
-		return null;
+		// TODO Return real Robot Item
+		return AllBlocks.TOOLBOXES.get(this.color).get().asItem();
 	}
 
 	@Override
