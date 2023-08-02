@@ -887,8 +887,10 @@ public final class Compiler {
 		String finalMessage = "Error";
 		if (token.type == EOF) {
 			finalMessage += " at end";
-		} else /*if (token.type != ERROR)*/ {
+		} else if (token.type != ERROR) {
 			finalMessage += " at " + token.lexeme;
+		} else {
+			finalMessage += " with scanning";
 		}
 		finalMessage += ": '" + message + "'";
 		this.roboScriptInstance.reportCompileError(token.line, finalMessage);
