@@ -184,13 +184,15 @@ public final class Compiler {
 				if (this.checkAndConsumeIfMatches(FUNCTION)) {
 					this.methodDeclaration(clazz, hasSuper);
 				} else {
-					throw this.error("Only declarations are allowed in main class body.");
+					throw this.errorAtCurrent("Only declarations are allowed in main class body.");
 				}
 			} catch (CompileError e) {
+				switch (this.current.type) {
+					case CLASS, FUNCTION, VAR, FOR, IF, WHILE, RETURN -> this.advance();
+				}
 				this.synchronize();
 			}
 		}
-
 		this.consumeOrThrow(RIGHT_BRACE, "Expected '}' after class body.");
 	}
 
