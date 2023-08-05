@@ -109,7 +109,7 @@ public final class Compiler {
 
 		// define "this"
 		this.declareVariable(new Token(IDENTIFIER, "this", this.previous.line));
-		this.defineVariable((byte) 0, "this");
+		this.markInitialized();
 
 		int prevFunctionArg = this.functionArgAmount;
 		this.functionArgAmount = argumentCount + 1 /* "this" */;
@@ -117,18 +117,18 @@ public final class Compiler {
 		if (hasSuper) {
 			// define "super"
 			this.declareVariable(new Token(IDENTIFIER, "super", this.previous.line));
-			this.defineVariable((byte) 0, "super");
+			this.markInitialized();
 			this.functionArgAmount++;
 		}
 
 
 		// define instruction pointer
 		this.declareVariable(new Token(NA, "instruction pointers", this.previous.line));
-		this.defineVariable((byte) 0, "");
+		this.markInitialized();
 
 		// define base pointer
 		this.declareVariable(new Token(NA, "base pointer", this.previous.line));
-		this.defineVariable((byte) 0, "");
+		this.markInitialized();
 
 		this.consumeOrThrow(RIGHT_PAREN, "Expected ')' after function parameters.");
 
@@ -236,11 +236,11 @@ public final class Compiler {
 
 		// define instruction pointer
 		this.declareVariable(new Token(NA, "instruction pointers", this.previous.line));
-		this.defineVariable((byte) 0, "");
+		this.markInitialized();
 
 		// define base pointer
 		this.declareVariable(new Token(NA, "base pointer", this.previous.line));
-		this.defineVariable((byte) 0, "");
+		this.markInitialized();
 
 		this.consumeOrThrow(RIGHT_PAREN, "Expected ')' after function parameters.");
 
@@ -615,11 +615,11 @@ public final class Compiler {
 
 		// define instruction pointer
 		this.declareVariable(new Token(NA, "instruction pointers", this.previous.line));
-		this.defineVariable((byte) 0, "");
+		this.markInitialized();
 
 		// define base pointer
 		this.declareVariable(new Token(NA, "base pointer", this.previous.line));
-		this.defineVariable((byte) 0, "");
+		this.markInitialized();
 
 		this.consumeOrThrow(RIGHT_PAREN, "Expected ')' after lambda parameters.");
 
@@ -791,12 +791,6 @@ public final class Compiler {
 	private void removeByte() {
 		this.currentCodeList.remove(this.currentCodeList.size() - 1);
 		this.currentLineList.remove(this.currentLineList.size() - 1);
-	}
-
-	private void removeBytes(int amount) {
-		for (int i = 0; i < amount; i++) {
-			this.removeByte();
-		}
 	}
 
 	private void emitEnd() {

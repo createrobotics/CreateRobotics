@@ -352,8 +352,11 @@ final class VirtualMachine {
 						this.stackSize--; // pops function
 						this.pushStack(returnValue);
 					} else if (!(this.peekStack() instanceof RoboScriptObject)) {
+						// this.stackSize--;
 						throw new IllegalArgumentException(
-								"Expected a function or object in this place. Rework the compiler.");
+								"Expected a function or object in this place. Rework the compiler. Got '" + this.peekStack()
+										.getClass() + "'. At line " + this.chunk.getLine(
+										this.instructionPointer) + "'.");
 					}
 				}
 
@@ -507,9 +510,7 @@ final class VirtualMachine {
 		if (clazz.functions.containsKey(fieldName))
 			return new RoboScriptMethod(clazz.functions.get(fieldName), object);
 		if (clazz.superclass != null) {
-			RoboScriptMethod method = this.getFunctionInClass(clazz.superclass, object, fieldName);
-			if (method == null) throw new RuntimeError("Superclass does not contain function '" + fieldName + "'.");
-			return method;
+			return this.getFunctionInClass(clazz.superclass, object, fieldName);
 		}
 		return null;
 	}
