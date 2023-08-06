@@ -1,9 +1,8 @@
 package com.workert.robotics.content.computers.computer;
 
 import com.simibubi.create.content.contraptions.base.KineticTileEntity;
-import com.workert.robotics.unused.roboscriptast.Interpreter;
-import com.workert.robotics.unused.roboscriptast.RoboScript;
-import com.workert.robotics.unused.roboscriptast.RoboScriptArray;
+import com.workert.robotics.base.roboscript.RoboScript;
+import com.workert.robotics.base.roboscript.RoboScriptArgumentPredicates;
 import com.workert.robotics.unused.roboscriptast.ingame.LineLimitedString;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -29,29 +28,30 @@ public class ComputerBlockEntity extends KineticTileEntity {
 
 	public ComputerBlockEntity(BlockEntityType<?> type, BlockPos blockPos, BlockState blockState) {
 		super(type, blockPos, blockState);
-		this.roboScript = new RoboScript() {
 
+
+		this.roboScript = new RoboScript() {
 			@Override
-			public void print(String message) {
+			protected void handlePrintMessage(String message) {
 				ComputerBlockEntity.this.terminal.addLine(message);
 				ComputerBlockEntity.this.notifyUpdate();
 			}
 
 			@Override
-			public void reportCompileError(String error) {
+			protected void handleErrorMessage(String error) {
 				ComputerBlockEntity.this.terminal.addLine(error);
 				ComputerBlockEntity.this.notifyUpdate();
 			}
 
 			@Override
-			public void defineDefaultFunctions() {
-				super.defineDefaultFunctions();
-				this.defineFunction("display", 1, (interpreter, objects, errorToken) -> {
-					if (objects.get(0) instanceof RoboScriptArray array) {
-						ComputerBlockEntity.this.outputDisplay = RoboScriptArray.stringifyAllElements(array.elements);
+			protected void defineNativeFunctions() {
+				super.defineNativeFunctions();
+				this.defineNativeFunction("display", 1, (args) -> {
+					if (args[0] instanceof List l) {
+						ComputerBlockEntity.this.outputDisplay = RoboScriptArgumentPredicates.stringifyAllElements(l);
 						return null;
 					}
-					ComputerBlockEntity.this.outputDisplay = List.of(Interpreter.stringify(objects.get(0)));
+					ComputerBlockEntity.this.outputDisplay = List.of(RoboScriptArgumentPredicates.stringify(args[0]));
 					return null;
 				});
 			}
@@ -59,17 +59,17 @@ public class ComputerBlockEntity extends KineticTileEntity {
 	}
 
 	public void runScript() {
-		this.roboScript.runString(this.script);
+		//this.roboScript.runString(this.script);
 		this.running = true;
 	}
 
 	public void turnOff() {
-		this.roboScript.requestStop();
+		//this.roboScript.requestStop();
 		this.running = false;
 	}
 
 	public void interpretSignal(String function, List<Object> args) {
-		if (this.running) this.roboScript.runFunction(function, args);
+		// if (this.running) this.roboScript.runFunction(function, args);
 	}
 
 	@Override
@@ -97,7 +97,7 @@ public class ComputerBlockEntity extends KineticTileEntity {
 	public void tick() {
 		super.tick();
 		if (!this.isSpeedRequirementFulfilled() && this.running) {
-			this.roboScript.requestStop();
+			// this.roboScript.requestStop();
 			this.terminal.addLine("ERROR: Speed requirement not fulfilled, stopped program");
 			this.running = false;
 

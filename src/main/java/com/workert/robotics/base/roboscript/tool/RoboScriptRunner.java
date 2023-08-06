@@ -13,7 +13,7 @@ public class RoboScriptRunner {
 
 	// credit to jakslxpwrm on discord for helping with optimizations and a lot of C to Java conversions
 
-	private static final String sourcePath = "src/main/java/com/workert/robotics/base/roboscriptbytecode/tool/script.robo";
+	private static final String sourcePath = "src/main/java/com/workert/robotics/base/roboscript/tool/script.robo";
 
 
 	private static String readFile() throws IOException {

@@ -70,12 +70,13 @@ final class VirtualMachine {
 		this.chunk = chunk;
 		this.instructionPointer = 0;
 		this.basePointer = 0;
-		// this.pushStack((Object) (int) -1);   , top-level stack frame.
-		// this.pushStack((Object) (int) -1);
-
+		this.stackSize = 0;
 		long currentTime = System.currentTimeMillis();
 		System.out.println("Started interpreting.");
 		try {
+			this.pushStack(-1);
+			this.pushStack(-1);
+			this.pushStack(null);
 			this.run();
 		} catch (RuntimeError e) {
 			System.err.println("[line " + this.chunk.getLine(this.instructionPointer) + "] " + e.message);
@@ -91,8 +92,7 @@ final class VirtualMachine {
 		while (true) {
 			switch (this.readByte()) {
 				case OP_CONSTANT -> {
-					Object constant = this.readConstant();
-					this.pushStack(constant);
+					this.pushStack(this.readConstant());
 				}
 
 				case OP_NULL -> this.pushStack(null);
@@ -353,6 +353,7 @@ final class VirtualMachine {
 					Object returnValue = this.popStack();
 					this.basePointer = (int) this.popStack();
 					this.instructionPointer = (int) this.popStack();
+					if (this.basePointer == -1 && this.instructionPointer == -1) return;
 					this.stackSize -= argCount; // pops args
 					if (this.peekStack() instanceof RoboScriptFunction) {
 						this.stackSize--; // pops function
@@ -480,9 +481,6 @@ final class VirtualMachine {
 						throw new RuntimeError("Superclass does not exist.");
 
 					clazz.superclass = superclass;
-				}
-				case OP_END -> {
-					return;
 				}
 			}
 		}

@@ -795,7 +795,7 @@ public final class Compiler {
 	}
 
 	private void emitEnd() {
-		this.emitByte(OP_END);
+		this.emitBytes(OP_RETURN, (byte) 0);
 	}
 
 	private int emitConstant(Object value) {
