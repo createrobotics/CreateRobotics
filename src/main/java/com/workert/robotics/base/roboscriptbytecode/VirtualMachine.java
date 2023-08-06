@@ -304,7 +304,7 @@ final class VirtualMachine {
 					}
 
 					if (callable instanceof RoboScriptClass clazz) {
-						RoboScriptObject object = new RoboScriptObject(clazz, true);
+						RoboScriptObject object = new RoboScriptObject(clazz);
 						if ((callable = this.getFunctionInClass(clazz, object, "init")) != null) {
 							this.stack[this.stackSize - 1 - argumentCount] = object;
 						} else {
@@ -326,9 +326,14 @@ final class VirtualMachine {
 								"Expected '" + function.argumentCount + "' arguments but got '" + argumentCount + "'.");
 
 					if (callable instanceof RoboScriptMethod method) {
-						this.pushStack(method.instance);
-						if (method.instance.clazz.superclass != null)
-							this.pushStack(new RoboScriptObject(method.instance.clazz.superclass, false));
+						RoboScriptObject instance;
+						if (method.instance.settable)
+							instance = method.instance;
+						else
+							instance = ((RoboScriptSuper) method.instance).subclassObject;
+						this.pushStack(instance);
+						if (instance.clazz.superclass != null)
+							this.pushStack(new RoboScriptSuper(instance.clazz.superclass, instance));
 						else this.pushStack(null);
 
 						argumentCount += 2;

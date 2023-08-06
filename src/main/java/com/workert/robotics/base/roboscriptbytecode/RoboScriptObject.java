@@ -10,8 +10,8 @@ public class RoboScriptObject {
 	boolean settable = false;
 
 
-	RoboScriptObject(RoboScriptClass clazz, boolean settable) {
+	RoboScriptObject(RoboScriptClass clazz) {
 		this.clazz = clazz;
-		this.settable = settable;
+		this.settable = true;
 	}
 }
