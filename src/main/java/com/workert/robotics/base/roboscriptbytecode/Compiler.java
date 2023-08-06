@@ -129,7 +129,8 @@ public final class Compiler {
 		this.consumeOrThrow(RIGHT_PAREN, "Expected ')' after function parameters.");
 
 		if (this.checkAndConsumeIfMatches(EQUAL)) {
-			this.expressionStatement();
+			this.expression();
+			this.consumeOrInsertSemicolon("Expected ';' or new line after expression.");
 			this.endFunctionScope();
 			this.emitBytes(OP_RETURN, (byte) this.functionArgAmount);
 		} else if (this.checkAndConsumeIfMatches(LEFT_BRACE)) {
@@ -243,7 +244,8 @@ public final class Compiler {
 		this.consumeOrThrow(RIGHT_PAREN, "Expected ')' after function parameters.");
 
 		if (this.checkAndConsumeIfMatches(EQUAL)) {
-			this.expressionStatement();
+			this.expression();
+			this.consumeOrInsertSemicolon("Expected ';' or new line after expression.");
 			this.endFunctionScope();
 			this.emitBytes(OP_RETURN, (byte) this.functionArgAmount);
 		} else if (this.checkAndConsumeIfMatches(LEFT_BRACE)) {
