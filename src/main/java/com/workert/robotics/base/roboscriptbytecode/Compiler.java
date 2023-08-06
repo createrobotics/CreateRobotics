@@ -57,6 +57,7 @@ public final class Compiler {
 	}
 
 	private void expressionStatement() {
+		this.emitPop = true;
 		this.expression();
 		this.consumeOrInsertSemicolon("Expected ';' or new line after expression.");
 		if (this.emitPop)
