@@ -133,7 +133,7 @@ public final class Compiler {
 		this.consumeOrThrow(RIGHT_PAREN, "Expected ')' after function parameters.");
 
 		if (this.checkAndConsumeIfMatches(EQUAL)) {
-			this.expression();
+			this.expressionStatement();
 			this.endFunctionScope();
 			this.emitBytes(OP_RETURN, (byte) this.functionArgAmount);
 		} else if (this.checkAndConsumeIfMatches(LEFT_BRACE)) {
@@ -247,7 +247,7 @@ public final class Compiler {
 		this.consumeOrThrow(RIGHT_PAREN, "Expected ')' after function parameters.");
 
 		if (this.checkAndConsumeIfMatches(EQUAL)) {
-			this.expression();
+			this.expressionStatement();
 			this.endFunctionScope();
 			this.emitBytes(OP_RETURN, (byte) this.functionArgAmount);
 		} else if (this.checkAndConsumeIfMatches(LEFT_BRACE)) {
