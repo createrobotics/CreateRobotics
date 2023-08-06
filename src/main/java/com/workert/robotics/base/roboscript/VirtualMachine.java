@@ -77,7 +77,8 @@ final class VirtualMachine {
 			this.pushStack(null);
 			this.run();
 		} catch (RuntimeError e) {
-			System.err.println("[line " + this.chunk.getLine(this.instructionPointer) + "] " + e.message);
+			this.roboScriptInstance.handleErrorMessage(
+					"[line " + this.chunk.getLine(this.instructionPointer) + "] " + e.message);
 		}
 	}
 
