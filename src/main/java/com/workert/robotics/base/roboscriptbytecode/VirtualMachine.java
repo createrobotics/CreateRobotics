@@ -1,4 +1,5 @@
 package com.workert.robotics.base.roboscriptbytecode;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -629,8 +630,20 @@ final class VirtualMachine {
 				this.pushStack((double) a - (double) b);
 			}
 			case '*' -> {
+				if (a instanceof String string && b instanceof Double) {
+					StringBuilder newString = new StringBuilder(string);
+					for (int i = 1; i < (double) b; i++) {
+						newString.append(string);
+					}
+					this.pushStack(newString.toString());
+				} else if (a instanceof List l && b instanceof Double) {
+					List toBeAdded = new ArrayList(l);
+					for (int i = 1; i < (double) b; i++) {
+						l.addAll(toBeAdded);
+					}
+				}
 				if (!(a instanceof Double && b instanceof Double))
-					throw new RuntimeError("Multiplication must be between two numbers.");
+					throw new RuntimeError("Multiplication must be between two numbers or an array and a number.");
 				this.pushStack((double) a * (double) b);
 			}
 			case '/' -> {
