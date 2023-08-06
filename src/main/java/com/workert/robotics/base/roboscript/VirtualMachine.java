@@ -1,9 +1,9 @@
-package com.workert.robotics.base.roboscriptbytecode;
+package com.workert.robotics.base.roboscript;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.workert.robotics.base.roboscriptbytecode.OpCode.*;
+import static com.workert.robotics.base.roboscript.OpCode.*;
 
 final class VirtualMachine {
 

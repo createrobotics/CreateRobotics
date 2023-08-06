@@ -1,4 +1,4 @@
-package com.workert.robotics.base.roboscriptbytecode;
+package com.workert.robotics.base.roboscript;
 public class RoboScriptSuper extends RoboScriptObject {
 	final RoboScriptObject subclassObject;
 

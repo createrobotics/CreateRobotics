@@ -1,4 +1,4 @@
-package com.workert.robotics.base.roboscriptbytecode;
+package com.workert.robotics.base.roboscript;
 import java.util.HashMap;
 import java.util.Map;
 

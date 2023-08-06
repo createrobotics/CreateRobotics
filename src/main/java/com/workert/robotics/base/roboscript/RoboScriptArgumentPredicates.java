@@ -1,4 +1,4 @@
-package com.workert.robotics.base.roboscriptbytecode;
+package com.workert.robotics.base.roboscript;
 
 import com.workert.robotics.unused.roboscriptast.RoboScriptRuntimeError;
 import net.minecraft.core.BlockPos;

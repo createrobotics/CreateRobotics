@@ -1,11 +1,11 @@
-package com.workert.robotics.base.roboscriptbytecode;
+package com.workert.robotics.base.roboscript;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.workert.robotics.base.roboscriptbytecode.OpCode.*;
-import static com.workert.robotics.base.roboscriptbytecode.Token.TokenType.*;
+import static com.workert.robotics.base.roboscript.OpCode.*;
+import static com.workert.robotics.base.roboscript.Token.TokenType.*;
 
 public final class Compiler {
 	final RoboScript roboScriptInstance;
