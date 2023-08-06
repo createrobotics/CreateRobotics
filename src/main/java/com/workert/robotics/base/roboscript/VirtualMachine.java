@@ -71,8 +71,6 @@ final class VirtualMachine {
 		this.instructionPointer = 0;
 		this.basePointer = 0;
 		this.stackSize = 0;
-		long currentTime = System.currentTimeMillis();
-		System.out.println("Started interpreting.");
 		try {
 			this.pushStack(-1);
 			this.pushStack(-1);
@@ -81,8 +79,6 @@ final class VirtualMachine {
 		} catch (RuntimeError e) {
 			System.err.println("[line " + this.chunk.getLine(this.instructionPointer) + "] " + e.message);
 		}
-
-		System.out.println("Completed in " + (System.currentTimeMillis() - currentTime) + "ms.");
 	}
 
 	/**

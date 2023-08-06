@@ -36,8 +36,6 @@ public final class Compiler {
 	}
 
 	void compile(String source) {
-		System.out.println("Started compiling.");
-		long timeBefore = System.currentTimeMillis();
 		try {
 			this.scanner = new Scanner(source);
 			this.advance();
@@ -49,7 +47,6 @@ public final class Compiler {
 		} catch (CompileError e) {
 			this.synchronize();
 		}
-		System.out.println("Compiled in " + (System.currentTimeMillis() - timeBefore) + "ms.");
 	}
 
 	private void expression() {
@@ -787,11 +784,6 @@ public final class Compiler {
 		for (byte currentByte : b) {
 			this.emitByte(currentByte);
 		}
-	}
-
-	private void removeByte() {
-		this.currentCodeList.remove(this.currentCodeList.size() - 1);
-		this.currentLineList.remove(this.currentLineList.size() - 1);
 	}
 
 	private void emitEnd() {
