@@ -327,11 +327,11 @@ final class VirtualMachine {
 
 					if (callable instanceof RoboScriptMethod method) {
 						this.pushStack(method.instance);
-						argumentCount++;
-						if (method.instance.clazz.superclass != null) {
+						if (method.instance.clazz.superclass != null)
 							this.pushStack(new RoboScriptObject(method.instance.clazz.superclass, false));
-							argumentCount++;
-						}
+						else this.pushStack(null);
+
+						argumentCount += 2;
 					}
 
 					// push return address and base pointer

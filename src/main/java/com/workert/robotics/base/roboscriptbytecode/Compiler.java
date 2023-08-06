@@ -111,16 +111,12 @@ public final class Compiler {
 		this.declareVariable(new Token(IDENTIFIER, "this", this.previous.line));
 		this.markInitialized();
 
+		// define "super" that is only usable if the methods class has a superclass.
+		this.declareVariable(new Token(IDENTIFIER, hasSuper ? "super" : "super placeholder", this.previous.line));
+		this.markInitialized();
+
 		int prevFunctionArg = this.functionArgAmount;
-		this.functionArgAmount = argumentCount + 1 /* "this" */;
-
-		if (hasSuper) {
-			// define "super"
-			this.declareVariable(new Token(IDENTIFIER, "super", this.previous.line));
-			this.markInitialized();
-			this.functionArgAmount++;
-		}
-
+		this.functionArgAmount = argumentCount + 2 /* "this" and "super" (sometimes not actually usable) */;
 
 		// define instruction pointer
 		this.declareVariable(new Token(NA, "instruction pointers", this.previous.line));
