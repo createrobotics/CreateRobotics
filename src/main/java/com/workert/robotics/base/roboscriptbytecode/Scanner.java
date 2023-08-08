@@ -7,6 +7,17 @@ import static com.workert.robotics.base.roboscriptbytecode.Token.TokenType.*;
 /**
  * The Scanner class is responsible for tokenizing the source code of a RoboScript program.
  * It scans the source code character by character and converts it into a list of tokens.
+ * <br><p><br>
+ * <b>Warning!</b>
+ * <p>
+ * This Class contains code that is difficult to read and does <i>not</i> follow the Java Code Conventions.
+ * <p>
+ * It prioritizes high-speed execution, often using boilerplate alternatives instead of more concise code.
+ * <p>
+ * Do not reuse this code.<br>
+ * Instead, look at RoboScript AST for better written but slower running Examples.
+ * <p>
+ * If you want to make your own Scripting Language the Create Robotics Team recommends reading <a href="https://craftinginterpreters.com/">Crafting Interpreters</a>, a Book which has helped us a lot with implementing RoboScript.
  */
 final class Scanner {
 	// private final com.workert.robotics.base.roboscriptast.RoboScript roboScriptInstance;

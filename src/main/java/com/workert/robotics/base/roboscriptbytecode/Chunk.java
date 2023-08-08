@@ -3,6 +3,18 @@ package com.workert.robotics.base.roboscriptbytecode;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * <b>Warning!</b>
+ * <p>
+ * This Class contains code that is difficult to read and does <i>not</i> follow the Java Code Conventions.
+ * <p>
+ * It prioritizes high-speed execution, often using boilerplate alternatives instead of more concise code.
+ * <p>
+ * Do not reuse this code.<br>
+ * Instead, look at RoboScript AST for better written but slower running Examples.
+ * <p>
+ * If you want to make your own Scripting Language the Create Robotics Team recommends reading <a href="https://craftinginterpreters.com/">Crafting Interpreters</a>, a Book which has helped us a lot with implementing RoboScript.
+ */
 final class Chunk {
 	private List<Byte> code = new ArrayList<>();
 
