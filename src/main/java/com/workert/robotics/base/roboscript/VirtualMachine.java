@@ -545,6 +545,7 @@ final class VirtualMachine {
 	}
 
 	private void runSignal(ComputerSignal computerSignal) {
+		this.runningState = true;
 		for (Object object : computerSignal.args) {
 			this.pushStack(object);
 		}
@@ -576,13 +577,15 @@ final class VirtualMachine {
 
 		} else throw new IllegalArgumentException(
 				"Somehow got a non callable in the signal queue. Probably not great. Object: " + signalFunction.getClass());
+		this.executeSignalQueue();
+		this.runningState = false;
 	}
 
 	void addSignalToQueue(ComputerSignal s) {
 		if (this.signals.containsKey(s.name))
 			if (this.runningState)
 				this.signalQueue.add(s);
-			else this.runSignal(s);
+			else new Thread(() -> this.runSignal(s)).start();
 	}
 
 
