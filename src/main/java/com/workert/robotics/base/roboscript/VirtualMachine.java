@@ -575,13 +575,14 @@ final class VirtualMachine {
 			this.pushStack(returnValue);
 
 		} else throw new IllegalArgumentException(
-				"Somehow got a non callable in the signal queue. Probably not great");
+				"Somehow got a non callable in the signal queue. Probably not great. Object: " + signalFunction.getClass());
 	}
 
 	void addSignalToQueue(ComputerSignal s) {
-		if (this.runningState)
-			this.signalQueue.add(s);
-		else this.runSignal(s);
+		if (this.signals.containsKey(s.name))
+			if (this.runningState)
+				this.signalQueue.add(s);
+			else this.runSignal(s);
 	}
 
 
