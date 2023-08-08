@@ -51,10 +51,10 @@ public class ScannerBlockEntity extends KineticTileEntity implements ScannerBeha
 	@Override
 	public boolean scanOnBelt(TransportedItemStack itemStack) {
 		if (this.level.getBlockEntity(this.targetPos) instanceof ComputerBlockEntity computer) {
+			Object[] args = {ForgeRegistries.ITEMS.getKey(
+					itemStack.stack.getItem()).toString(), itemStack.stack.getHoverName().getString(), (double) itemStack.stack.getCount()};
 			// TODO: Make this a class system
-			computer.interpretSignal(this.getSignalName(),
-					List.of(ForgeRegistries.ITEMS.getKey(itemStack.stack.getItem()).toString(),
-							itemStack.stack.getHoverName().getString(), (double) itemStack.stack.getCount()));
+			computer.interpretSignal(this.getSignalName(), args);
 		}
 		return true;
 	}

@@ -1,4 +1,4 @@
-package com.workert.robotics.base.roboscriptbytecode.tool;
+package com.workert.robotics.base.roboscript.tool;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -7,7 +7,7 @@ import java.util.List;
 public class OpCodeGenerator {
 	// tool i made to make it less of a pain to add opcodes
 	private static List<String> opCodes = new ArrayList<>();
-	private static final String path = "src/main/java/com/workert/robotics/base/roboscriptbytecode/OpCode.java";
+	private static final String path = "src/main/java/com/workert/robotics/base/roboscript/OpCode.java";
 
 	private static void defineOpCodes() {
 		opCodes.add("OP_CONSTANT");
@@ -58,14 +58,14 @@ public class OpCodeGenerator {
 		opCodes.add("OP_GET_CLASS");
 		opCodes.add("OP_SET_CLASS");
 		opCodes.add("OP_INHERIT");
-		opCodes.add("OP_END");
+		opCodes.add("OP_MAKE_SIGNAL");
 	}
 
 
 	public static void main(String[] args) throws IOException {
 		defineOpCodes();
 		PrintWriter writer = new PrintWriter(path, "UTF-8");
-		writer.println("package com.workert.robotics.base.roboscriptbytecode;");
+		writer.println("package com.workert.robotics.base.roboscript;");
 		writer.println();
 		writer.println("public interface OpCode {");
 		for (int i = 0; i < opCodes.size(); i++) {

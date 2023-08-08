@@ -1,4 +1,4 @@
-package com.workert.robotics.base.roboscriptbytecode;
+package com.workert.robotics.base.roboscript;
 
 import com.workert.robotics.unused.roboscriptast.RoboScriptRuntimeError;
 import net.minecraft.core.BlockPos;
@@ -7,6 +7,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 
 /**
@@ -144,6 +147,14 @@ public final class RoboScriptArgumentPredicates {
 		throw new RuntimeError("Argument must not be empty.");
 	}
 
+	public static List<String> stringifyAllElements(List<Object> elements) {
+		List<String> stringList = new ArrayList<>();
+		for (Object object : elements) {
+			stringList.add(stringify(object));
+		}
+		return stringList;
+	}
+
 	public static BlockPos asBlockPos(Object[] argumentList, int startingIndex) {
 		return new BlockPos(asNumber(argumentList[(startingIndex)]),
 				asNumber(argumentList[(startingIndex + 1)]),
@@ -184,7 +195,7 @@ public final class RoboScriptArgumentPredicates {
 	 * @param object The object being stringified.
 	 * @return The string value of the object.
 	 */
-	public static String stringify(Object object) {
+	public static String stringify(@Nullable Object object) {
 		if (object == null) return "null";
 
 		if (object instanceof Double) {

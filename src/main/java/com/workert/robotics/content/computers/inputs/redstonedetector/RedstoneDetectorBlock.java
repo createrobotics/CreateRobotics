@@ -30,8 +30,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.DistExecutor;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-
 public class RedstoneDetectorBlock extends Block implements EntityBlock, ITE<RedstoneDetectorBlockEntity> {
 	public static final BooleanProperty LIT = BooleanProperty.create("lit");
 
@@ -110,9 +108,9 @@ public class RedstoneDetectorBlock extends Block implements EntityBlock, ITE<Red
 
 	private void getRedstoneSignalUpdate(int power, ServerLevel level, BlockPos blockPos) {
 		RedstoneDetectorBlockEntity redstoneDetector = (RedstoneDetectorBlockEntity) level.getBlockEntity(blockPos);
+		Object[] args = {(double) power};
 		if (level.getBlockEntity(redstoneDetector.getTargetPos()) instanceof ComputerBlockEntity computer) {
-			computer.interpretSignal(((RedstoneDetectorBlockEntity) level.getBlockEntity(blockPos)).getSignalName(),
-					List.of((double) power));
+			computer.interpretSignal(redstoneDetector.getSignalName(), args);
 		}
 	}
 }

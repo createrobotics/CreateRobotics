@@ -1,5 +1,5 @@
-package com.workert.robotics.base.roboscriptbytecode;
-import static com.workert.robotics.base.roboscriptbytecode.Compiler.Precedence.*;
+package com.workert.robotics.base.roboscript;
+import static com.workert.robotics.base.roboscript.Compiler.Precedence.*;
 
 final class Token {
 	final TokenType type;
@@ -58,6 +58,7 @@ final class Token {
 
 		// Keywords.
 		CLASS(empty()),
+		SIGNAL(empty()),
 		FUNCTION(empty()),
 
 		FOR(empty()),

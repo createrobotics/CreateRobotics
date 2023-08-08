@@ -1,4 +1,4 @@
-package com.workert.robotics.base.roboscriptbytecode;
+package com.workert.robotics.base.roboscript;
 final class RuntimeError extends RuntimeException {
 	String message;
 

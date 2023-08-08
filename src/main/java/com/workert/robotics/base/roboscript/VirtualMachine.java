@@ -1,8 +1,7 @@
-package com.workert.robotics.base.roboscriptbytecode;
-import java.util.List;
-import java.util.Map;
+package com.workert.robotics.base.roboscript;
+import java.util.*;
 
-import static com.workert.robotics.base.roboscriptbytecode.OpCode.*;
+import static com.workert.robotics.base.roboscript.OpCode.*;
 
 /**
  * <b>Warning!</b>
@@ -41,12 +40,17 @@ final class VirtualMachine {
 	/**
 	 * The index of the current instruction.
 	 */
-	private int instructionPointer = 0;
+	int instructionPointer = 0;
+
+	/**
+	 * The running state of WRITTEN program.
+	 */
+	boolean runningState = false;
 
 	/**
 	 * The size of the stack when a new function is entered.
 	 */
-	private int basePointer = 0;
+	int basePointer = 0;
 
 	/**
 	 * Variables defined in the global scope; Can be accessed from anywhere.
@@ -54,9 +58,24 @@ final class VirtualMachine {
 	private final Object[] globalVariables = new Object[256];
 
 	/**
+	 * Signals that can be called externally using a string that
+	 */
+	final Map<String, Object> signals = new HashMap<>();
+
+	/**
+	 * The queue of signals to not mess anything up in the vm.
+	 */
+	private final Queue<Object> signalQueue = new LinkedList<>();
+
+	/**
 	 * Global functions that are defined natively and use Java code.
 	 */
 	RoboScript.NativeFunction[] nativeFunctions = new RoboScript.NativeFunction[Short.MAX_VALUE];
+
+	/**
+	 * Halts the program when true.
+	 */
+	boolean stopQueued = false;
 
 	/**
 	 * The amount of all Native Functions in the `nativeFunctions` array.
@@ -77,22 +96,29 @@ final class VirtualMachine {
 	 *
 	 * @param chunk The chunk being interpreted.
 	 */
-	void interpret(Chunk chunk) {
+	void interpret(Chunk chunk, int instructionPointer) {
 		this.chunk = chunk;
-		this.instructionPointer = 0;
+		this.instructionPointer = instructionPointer;
 		this.basePointer = 0;
-		// this.pushStack((Object) (int) -1);   , top-level stack frame.
-		// this.pushStack((Object) (int) -1);
-
-		long currentTime = System.currentTimeMillis();
-		System.out.println("Started interpreting.");
+		this.stackSize = 0;
 		try {
+			this.runningState = true;
+			this.pushStack(-1);
+			this.pushStack(-1);
+			this.pushStack(null);
 			this.run();
+			this.runningState = false;
 		} catch (RuntimeError e) {
-			System.err.println("[line " + this.chunk.getLine(this.instructionPointer) + "] " + e.message);
+			this.roboScriptInstance.handleErrorMessage(
+					"[line " + this.chunk.getLine(this.instructionPointer) + "] " + e.message);
 		}
+	}
 
-		System.out.println("Completed in " + (System.currentTimeMillis() - currentTime) + "ms.");
+	/**
+	 * Makes the program stop after the current instruction is finished.
+	 */
+	void queueStop() {
+		this.stopQueued = true;
 	}
 
 	/**
@@ -100,10 +126,14 @@ final class VirtualMachine {
 	 */
 	private void run() {
 		while (true) {
+			if (this.stopQueued) {
+				this.stopQueued = false;
+				return;
+			}
+			this.executeSignalQueue();
 			switch (this.readByte()) {
 				case OP_CONSTANT -> {
-					Object constant = this.readConstant();
-					this.pushStack(constant);
+					this.pushStack(this.readConstant());
 				}
 
 				case OP_NULL -> this.pushStack(null);
@@ -316,7 +346,7 @@ final class VirtualMachine {
 					}
 
 					if (callable instanceof RoboScriptClass clazz) {
-						RoboScriptObject object = new RoboScriptObject(clazz, true);
+						RoboScriptObject object = new RoboScriptObject(clazz);
 						if ((callable = this.getFunctionInClass(clazz, object, "init")) != null) {
 							this.stack[this.stackSize - 1 - argumentCount] = object;
 						} else {
@@ -338,12 +368,17 @@ final class VirtualMachine {
 								"Expected '" + function.argumentCount + "' arguments but got '" + argumentCount + "'.");
 
 					if (callable instanceof RoboScriptMethod method) {
-						this.pushStack(method.instance);
-						argumentCount++;
-						if (method.instance.clazz.superclass != null) {
-							this.pushStack(new RoboScriptObject(method.instance.clazz.superclass, false));
-							argumentCount++;
-						}
+						RoboScriptObject instance;
+						if (method.instance.settable)
+							instance = method.instance;
+						else
+							instance = ((RoboScriptSuper) method.instance).subclassObject;
+						this.pushStack(instance);
+						if (instance.clazz.superclass != null)
+							this.pushStack(new RoboScriptSuper(instance.clazz.superclass, instance));
+						else this.pushStack(null);
+
+						argumentCount += 2;
 					}
 
 					// push return address and base pointer
@@ -359,13 +394,17 @@ final class VirtualMachine {
 					Object returnValue = this.popStack();
 					this.basePointer = (int) this.popStack();
 					this.instructionPointer = (int) this.popStack();
+					if (this.basePointer == -1 && this.instructionPointer == -1) return;
 					this.stackSize -= argCount; // pops args
 					if (this.peekStack() instanceof RoboScriptFunction) {
 						this.stackSize--; // pops function
 						this.pushStack(returnValue);
 					} else if (!(this.peekStack() instanceof RoboScriptObject)) {
+						// this.stackSize--;
 						throw new IllegalArgumentException(
-								"Expected a function or object in this place. Rework the compiler.");
+								"Expected a function or object in this place. Rework the compiler. Got '" + this.peekStack()
+										.getClass() + "'. At line " + this.chunk.getLine(
+										this.instructionPointer) + "'.");
 					}
 				}
 
@@ -484,12 +523,67 @@ final class VirtualMachine {
 
 					clazz.superclass = superclass;
 				}
-				case OP_END -> {
-					return;
+				case OP_MAKE_SIGNAL -> {
+					Object function = this.popStack();
+					String name = (String) this.popStack();
+					if (!(function instanceof RoboScriptFunction || function instanceof RoboScript.NativeFunction))
+						throw new RuntimeError("Object set to signal must be a function.");
+					this.signals.put(name, function);
 				}
 			}
 		}
 	}
+
+
+	private void executeSignalQueue() {
+		while (this.signalQueue.size() > 0) {
+			Object cs = this.signalQueue.remove();
+			if (!(cs instanceof ComputerSignal computerSignal))
+				throw new IllegalArgumentException("Unexpected object in signal queue.");
+			this.runSignal(computerSignal);
+		}
+	}
+
+	private void runSignal(ComputerSignal computerSignal) {
+		for (Object object : computerSignal.args) {
+			this.pushStack(object);
+		}
+		Object signalFunction = this.signals.get(computerSignal.name);
+		if (signalFunction instanceof RoboScriptFunction function) {
+			if (function.argumentCount != computerSignal.args.length) throw new RuntimeError(
+					"The function connected to the signal '" + computerSignal.name +
+							"' does not match the arity of the signal caller. Expected '" +
+							computerSignal.args.length +
+							"' parameters.");
+
+			// push return address and base pointer
+			this.pushStack(this.instructionPointer);
+			this.pushStack(this.basePointer);
+
+			this.instructionPointer = function.address;
+			this.basePointer = this.stackSize - function.argumentCount - 2;
+
+		} else if (signalFunction instanceof RoboScript.NativeFunction function) {
+			if (function.argumentCount != computerSignal.args.length) {
+				throw new RuntimeError(
+						"The function connected to the signal '" + computerSignal.name +
+								"' does not match the arity of the signal caller. Expected '" +
+								computerSignal.args.length +
+								"' parameters.");
+			}
+			Object returnValue = function.call(this);
+			this.pushStack(returnValue);
+
+		} else throw new IllegalArgumentException(
+				"Somehow got a non callable in the signal queue. Probably not great");
+	}
+
+	void addSignalToQueue(ComputerSignal s) {
+		if (this.runningState)
+			this.signalQueue.add(s);
+		else this.runSignal(s);
+	}
+
 
 	/**
 	 * Gets a field and binds it to the object if the field is a function.
@@ -519,9 +613,7 @@ final class VirtualMachine {
 		if (clazz.functions.containsKey(fieldName))
 			return new RoboScriptMethod(clazz.functions.get(fieldName), object);
 		if (clazz.superclass != null) {
-			RoboScriptMethod method = this.getFunctionInClass(clazz.superclass, object, fieldName);
-			if (method == null) throw new RuntimeError("Superclass does not contain function '" + fieldName + "'.");
-			return method;
+			return this.getFunctionInClass(clazz.superclass, object, fieldName);
 		}
 		return null;
 	}
@@ -635,8 +727,20 @@ final class VirtualMachine {
 				this.pushStack((double) a - (double) b);
 			}
 			case '*' -> {
+				if (a instanceof String string && b instanceof Double) {
+					StringBuilder newString = new StringBuilder(string);
+					for (int i = 1; i < (double) b; i++) {
+						newString.append(string);
+					}
+					this.pushStack(newString.toString());
+				} else if (a instanceof List l && b instanceof Double) {
+					List toBeAdded = new ArrayList(l);
+					for (int i = 1; i < (double) b; i++) {
+						l.addAll(toBeAdded);
+					}
+				}
 				if (!(a instanceof Double && b instanceof Double))
-					throw new RuntimeError("Multiplication must be between two numbers.");
+					throw new RuntimeError("Multiplication must be between two numbers or an array and a number.");
 				this.pushStack((double) a * (double) b);
 			}
 			case '/' -> {

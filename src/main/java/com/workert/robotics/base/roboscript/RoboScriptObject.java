@@ -1,4 +1,4 @@
-package com.workert.robotics.base.roboscriptbytecode;
+package com.workert.robotics.base.roboscript;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,8 +10,8 @@ public class RoboScriptObject {
 	boolean settable = false;
 
 
-	RoboScriptObject(RoboScriptClass clazz, boolean settable) {
+	RoboScriptObject(RoboScriptClass clazz) {
 		this.clazz = clazz;
-		this.settable = settable;
+		this.settable = true;
 	}
 }

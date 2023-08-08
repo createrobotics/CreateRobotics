@@ -1,11 +1,11 @@
-package com.workert.robotics.base.roboscriptbytecode;
+package com.workert.robotics.base.roboscript;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.workert.robotics.base.roboscriptbytecode.OpCode.*;
-import static com.workert.robotics.base.roboscriptbytecode.Token.TokenType.*;
+import static com.workert.robotics.base.roboscript.OpCode.*;
+import static com.workert.robotics.base.roboscript.Token.TokenType.*;
 
 /**
  * <b>Warning!</b>
@@ -48,8 +48,6 @@ public final class Compiler {
 	}
 
 	void compile(String source) {
-		System.out.println("Started compiling.");
-		long timeBefore = System.currentTimeMillis();
 		try {
 			this.scanner = new Scanner(source);
 			this.advance();
@@ -61,7 +59,6 @@ public final class Compiler {
 		} catch (CompileError e) {
 			this.synchronize();
 		}
-		System.out.println("Compiled in " + (System.currentTimeMillis() - timeBefore) + "ms.");
 	}
 
 	private void expression() {
@@ -69,6 +66,7 @@ public final class Compiler {
 	}
 
 	private void expressionStatement() {
+		this.emitPop = true;
 		this.expression();
 		this.consumeOrInsertSemicolon("Expected ';' or new line after expression.");
 		if (this.emitPop)
@@ -85,12 +83,25 @@ public final class Compiler {
 				this.varDeclaration();
 			} else if (this.checkAndConsumeIfMatches(FUNCTION)) {
 				this.funcDeclaration();
+			} else if (this.checkAndConsumeIfMatches(SIGNAL)) {
+				this.signalDeclaration();
 			} else {
 				this.statement();
 			}
 		} catch (CompileError e) {
 			this.synchronize();
 		}
+	}
+
+	private void signalDeclaration() {
+		this.consumeOrThrow(IDENTIFIER, "Expected signal name.");
+		String signalName = this.previous.lexeme;
+		this.emitConstant(signalName);
+		this.consumeOrThrow(LEFT_PAREN, "Expected '(' after signal name.");
+		this.expression();
+		this.consumeOrThrow(RIGHT_PAREN, "Expected ')' after function expression.");
+		this.consumeOrInsertSemicolon("Expected ';' or new line after signal declaration.");
+		this.emitByte(OP_MAKE_SIGNAL);
 	}
 
 	private void methodDeclaration(RoboScriptClass methodOwner, boolean hasSuper) {
@@ -121,31 +132,28 @@ public final class Compiler {
 
 		// define "this"
 		this.declareVariable(new Token(IDENTIFIER, "this", this.previous.line));
-		this.defineVariable((byte) 0, "this");
+		this.markInitialized();
+
+		// define "super" that is only usable if the methods class has a superclass.
+		this.declareVariable(new Token(IDENTIFIER, hasSuper ? "super" : "super placeholder", this.previous.line));
+		this.markInitialized();
 
 		int prevFunctionArg = this.functionArgAmount;
-		this.functionArgAmount = argumentCount + 1 /* "this" */;
-
-		if (hasSuper) {
-			// define "super"
-			this.declareVariable(new Token(IDENTIFIER, "super", this.previous.line));
-			this.defineVariable((byte) 0, "super");
-			this.functionArgAmount++;
-		}
-
+		this.functionArgAmount = argumentCount + 2 /* "this" and "super" (sometimes not actually usable) */;
 
 		// define instruction pointer
 		this.declareVariable(new Token(NA, "instruction pointers", this.previous.line));
-		this.defineVariable((byte) 0, "");
+		this.markInitialized();
 
 		// define base pointer
 		this.declareVariable(new Token(NA, "base pointer", this.previous.line));
-		this.defineVariable((byte) 0, "");
+		this.markInitialized();
 
 		this.consumeOrThrow(RIGHT_PAREN, "Expected ')' after function parameters.");
 
 		if (this.checkAndConsumeIfMatches(EQUAL)) {
 			this.expression();
+			this.consumeOrInsertSemicolon("Expected ';' or new line after expression.");
 			this.endFunctionScope();
 			this.emitBytes(OP_RETURN, (byte) this.functionArgAmount);
 		} else if (this.checkAndConsumeIfMatches(LEFT_BRACE)) {
@@ -250,16 +258,17 @@ public final class Compiler {
 
 		// define instruction pointer
 		this.declareVariable(new Token(NA, "instruction pointers", this.previous.line));
-		this.defineVariable((byte) 0, "");
+		this.markInitialized();
 
 		// define base pointer
 		this.declareVariable(new Token(NA, "base pointer", this.previous.line));
-		this.defineVariable((byte) 0, "");
+		this.markInitialized();
 
 		this.consumeOrThrow(RIGHT_PAREN, "Expected ')' after function parameters.");
 
 		if (this.checkAndConsumeIfMatches(EQUAL)) {
 			this.expression();
+			this.consumeOrInsertSemicolon("Expected ';' or new line after expression.");
 			this.endFunctionScope();
 			this.emitBytes(OP_RETURN, (byte) this.functionArgAmount);
 		} else if (this.checkAndConsumeIfMatches(LEFT_BRACE)) {
@@ -629,11 +638,11 @@ public final class Compiler {
 
 		// define instruction pointer
 		this.declareVariable(new Token(NA, "instruction pointers", this.previous.line));
-		this.defineVariable((byte) 0, "");
+		this.markInitialized();
 
 		// define base pointer
 		this.declareVariable(new Token(NA, "base pointer", this.previous.line));
-		this.defineVariable((byte) 0, "");
+		this.markInitialized();
 
 		this.consumeOrThrow(RIGHT_PAREN, "Expected ')' after lambda parameters.");
 
@@ -802,19 +811,8 @@ public final class Compiler {
 		}
 	}
 
-	private void removeByte() {
-		this.currentCodeList.remove(this.currentCodeList.size() - 1);
-		this.currentLineList.remove(this.currentLineList.size() - 1);
-	}
-
-	private void removeBytes(int amount) {
-		for (int i = 0; i < amount; i++) {
-			this.removeByte();
-		}
-	}
-
 	private void emitEnd() {
-		this.emitByte(OP_END);
+		this.emitBytes(OP_RETURN, (byte) 0);
 	}
 
 	private int emitConstant(Object value) {
