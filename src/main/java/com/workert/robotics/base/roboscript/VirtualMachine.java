@@ -99,7 +99,7 @@ final class VirtualMachine {
 	void interpret(Chunk chunk, int instructionPointer) {
 		this.chunk = chunk;
 		this.instructionPointer = instructionPointer;
-		this.basePointer = 0;
+		this.basePointer = 3;
 		this.stackSize = 0;
 		try {
 			this.runningState = true;
