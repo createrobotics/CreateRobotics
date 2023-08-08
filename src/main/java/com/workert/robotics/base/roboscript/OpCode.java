@@ -46,4 +46,5 @@ public interface OpCode {
 	byte OP_GET_CLASS = 42;
 	byte OP_SET_CLASS = 43;
 	byte OP_INHERIT = 44;
+	byte OP_MAKE_SIGNAL = 45;
 }

@@ -58,6 +58,7 @@ final class Token {
 
 		// Keywords.
 		CLASS(empty()),
+		SIGNAL(empty()),
 		FUNCTION(empty()),
 
 		FOR(empty()),

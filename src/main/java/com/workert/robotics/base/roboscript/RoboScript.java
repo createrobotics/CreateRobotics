@@ -10,14 +10,23 @@ public abstract class RoboScript {
 
 	public final void runString(String source) {
 		this.hadError = false;
-		Scanner s = new Scanner(source);
-		System.out.println(s.scanTokens());
+		this.compiler = new Compiler(this);
+		this.virtualMachine = new VirtualMachine(this);
 		this.defineNativeFunctions();
 		this.compiler.compile(source);
 		if (this.hadError) {
 			return;
 		}
-		this.virtualMachine.interpret(this.compiler.chunk);
+		this.virtualMachine.interpret(this.compiler.chunk, 0);
+	}
+
+	public final void addSignal(String signalName, Object[] args) {
+		ComputerSignal c = new ComputerSignal(signalName, args);
+		this.virtualMachine.addSignalToQueue(c);
+	}
+
+	public final void queueStopForProgram() {
+		this.virtualMachine.queueStop();
 	}
 
 

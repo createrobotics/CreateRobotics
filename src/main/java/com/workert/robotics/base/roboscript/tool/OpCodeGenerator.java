@@ -58,6 +58,7 @@ public class OpCodeGenerator {
 		opCodes.add("OP_GET_CLASS");
 		opCodes.add("OP_SET_CLASS");
 		opCodes.add("OP_INHERIT");
+		opCodes.add("OP_MAKE_SIGNAL");
 	}
 
 

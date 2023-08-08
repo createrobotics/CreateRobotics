@@ -59,17 +59,17 @@ public class ComputerBlockEntity extends KineticTileEntity {
 	}
 
 	public void runScript() {
-		//this.roboScript.runString(this.script);
+		this.roboScript.runString(this.script);
 		this.running = true;
 	}
 
 	public void turnOff() {
-		//this.roboScript.requestStop();
+		this.roboScript.queueStopForProgram();
 		this.running = false;
 	}
 
-	public void interpretSignal(String function, List<Object> args) {
-		// if (this.running) this.roboScript.runFunction(function, args);
+	public void interpretSignal(String function, Object[] args) {
+		if (this.running) this.roboScript.addSignal(function, args);
 	}
 
 	@Override
@@ -78,8 +78,6 @@ public class ComputerBlockEntity extends KineticTileEntity {
 		this.script = compound.getString("Script");
 		this.terminal = new LineLimitedString(TERMINAL_LINE_LIMIT, compound.getString("Terminal"));
 		this.running = compound.getBoolean("Running");
-		//this.outputDisplay = getOutputDisplayFromTag(compound.getList("OutputDisplay", Tag.TAG_STRING));
-		//this.roboScript.putVariables(CompoundTagEnvironmentConversionHelper.valuesFromCompoundTag(compound.getCompound("Memory")));
 	}
 
 	@Override
@@ -88,16 +86,13 @@ public class ComputerBlockEntity extends KineticTileEntity {
 		compound.putString("Script", this.script);
 		compound.putString("Terminal", this.terminal.getString());
 		compound.putBoolean("Running", this.running);
-		//compound.put("OutputDisplay", getOutputDisplayToTag(this.outputDisplay));
-		//compound.put("Memory", CompoundTagEnvironmentConversionHelper.valuesToTag(this.roboScript.getPersistentVariables()));
-
 	}
 
 	@Override
 	public void tick() {
 		super.tick();
 		if (!this.isSpeedRequirementFulfilled() && this.running) {
-			// this.roboScript.requestStop();
+			this.roboScript.queueStopForProgram();
 			this.terminal.addLine("ERROR: Speed requirement not fulfilled, stopped program");
 			this.running = false;
 

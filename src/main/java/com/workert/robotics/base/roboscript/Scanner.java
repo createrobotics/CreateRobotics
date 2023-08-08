@@ -237,6 +237,10 @@ final class Scanner {
 			case 'l' -> {
 				return this.checkKeyword(1, 5, "ambda", LAMBDA);
 			}
+
+			case 's' -> {
+				return this.checkKeyword(1, 5, "ignal", SIGNAL);
+			}
 			// false
 			// for
 			// func
