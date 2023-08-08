@@ -1,6 +1,5 @@
 package com.workert.robotics.base.roboscript;
 
-import com.workert.robotics.unused.roboscriptast.RoboScriptRuntimeError;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
@@ -58,7 +57,7 @@ public final class RoboScriptArgumentPredicates {
 	 *
 	 * @param object the object to be converted
 	 * @return the converted {@code Double} number
-	 * @throws RoboScriptRuntimeError if the argument is not a number
+	 * @throws RuntimeError if the argument is not a number
 	 */
 	public static Double asNumber(Object object) {
 		if (object instanceof Double number && !number.isNaN())
@@ -71,7 +70,7 @@ public final class RoboScriptArgumentPredicates {
 	 *
 	 * @param object the object to be converted
 	 * @return the converted {@code Integer} whole number
-	 * @throws RoboScriptRuntimeError if the argument is not a whole number
+	 * @throws RuntimeError if the argument is not a whole number
 	 */
 	public static Integer asFullNumber(Object object) {
 		Double number = asNumber(object);
@@ -87,7 +86,7 @@ public final class RoboScriptArgumentPredicates {
 	 * @param object      the object to be converted
 	 * @param includeZero flag indicating whether zero is considered a valid value
 	 * @return the converted positive {@code Double} number
-	 * @throws RoboScriptRuntimeError if the argument is not a positive number
+	 * @throws RuntimeError if the argument is not a positive number
 	 */
 	public static Double asPositiveNumber(Object object, boolean includeZero) {
 		Double number = asNumber(object);
@@ -108,7 +107,7 @@ public final class RoboScriptArgumentPredicates {
 	 * @param object      the object to be converted
 	 * @param includeZero flag indicating whether zero is considered a valid value
 	 * @return the converted positive {@code Integer} whole number
-	 * @throws RoboScriptRuntimeError if the argument is not a positive whole number
+	 * @throws RuntimeError if the argument is not a positive whole number
 	 */
 	public static Integer asPositiveFullNumber(Object object, boolean includeZero) {
 		Integer number = asFullNumber(object);
@@ -125,7 +124,7 @@ public final class RoboScriptArgumentPredicates {
 	 *
 	 * @param object the object to be converted
 	 * @return the converted {@code String}
-	 * @throws RoboScriptRuntimeError if the argument is not a string
+	 * @throws RuntimeError if the argument is not a string
 	 */
 	public static String asString(Object object) {
 		if (object instanceof String string)
@@ -138,7 +137,7 @@ public final class RoboScriptArgumentPredicates {
 	 *
 	 * @param object the object to be converted
 	 * @return the converted non-empty {@code String}
-	 * @throws RoboScriptRuntimeError if the argument is an empty string
+	 * @throws RuntimeError if the argument is an empty string
 	 */
 	public static String asNonEmptyString(Object object) {
 		String string = asString(object);
@@ -168,7 +167,7 @@ public final class RoboScriptArgumentPredicates {
 	 * @param yPosObject the object to be used as Y-Position
 	 * @param zPosObject the object to be used as Z-Position
 	 * @return the converted non-empty {@link BlockPos}
-	 * @throws RoboScriptRuntimeError if one or more of the arguments is not a number
+	 * @throws RuntimeError if one or more of the arguments is not a number
 	 */
 	public static BlockPos asBlockPos(Object xPosObject, Object yPosObject, Object zPosObject) {
 		return new BlockPos(asNumber(xPosObject), asNumber(yPosObject),
@@ -182,7 +181,7 @@ public final class RoboScriptArgumentPredicates {
 	 *
 	 * @param object the object to be converted
 	 * @return the converted non-empty {@link Item}
-	 * @throws RoboScriptRuntimeError if the argument is not a string with an Item ID
+	 * @throws RuntimeError if the argument is not a string with an Item ID
 	 */
 	public static Item asItem(Object object) {
 		String itemId = asNonEmptyString(object);
