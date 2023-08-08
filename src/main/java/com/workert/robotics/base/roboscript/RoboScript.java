@@ -9,15 +9,18 @@ public abstract class RoboScript {
 	private boolean hadError = false;
 
 	public final void runString(String source) {
-		this.hadError = false;
-		this.compiler = new Compiler(this);
-		this.virtualMachine = new VirtualMachine(this);
-		this.defineNativeFunctions();
-		this.compiler.compile(source);
-		if (this.hadError) {
-			return;
-		}
-		this.virtualMachine.interpret(this.compiler.chunk, 0);
+		new Thread(() -> {
+			this.hadError = false;
+			this.compiler = new Compiler(this);
+			this.virtualMachine = new VirtualMachine(this);
+			this.defineNativeFunctions();
+			this.compiler.compile(source);
+			if (this.hadError) {
+				return;
+			}
+			this.virtualMachine.interpret(this.compiler.chunk, 0);
+		}).start();
+
 	}
 
 	public final void addSignal(String signalName, Object[] args) {
