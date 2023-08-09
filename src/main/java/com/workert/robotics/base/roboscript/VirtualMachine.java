@@ -40,7 +40,7 @@ final class VirtualMachine {
 	/**
 	 * The index of the current instruction.
 	 */
-	int instructionPointer = 0;
+	int ip = 0;
 
 	/**
 	 * The running state of WRITTEN program.
@@ -50,7 +50,7 @@ final class VirtualMachine {
 	/**
 	 * The size of the stack when a new function is entered.
 	 */
-	int basePointer = 0;
+	int bp = 0;
 
 	/**
 	 * Variables defined in the global scope; Can be accessed from anywhere.
@@ -98,8 +98,8 @@ final class VirtualMachine {
 	 */
 	void interpret(Chunk chunk, int instructionPointer) {
 		this.chunk = chunk;
-		this.instructionPointer = instructionPointer;
-		this.basePointer = 3;
+		this.ip = instructionPointer;
+		this.bp = 3;
 		this.stackSize = 0;
 		try {
 			this.runningState = true;
@@ -110,7 +110,7 @@ final class VirtualMachine {
 			this.runningState = false;
 		} catch (RuntimeError e) {
 			this.roboScriptInstance.handleErrorMessage(
-					"[line " + this.chunk.getLine(this.instructionPointer) + "] " + e.message);
+					"[line " + this.chunk.finalLines[this.ip] + "] " + e.message);
 		}
 	}
 
@@ -132,9 +132,7 @@ final class VirtualMachine {
 			}
 			this.executeSignalQueue();
 			switch (this.readByte()) {
-				case OP_CONSTANT -> {
-					this.pushStack(this.readConstant());
-				}
+				case OP_CONSTANT -> this.pushStack(this.chunk.finalConstants[this.readShort()]);
 
 				case OP_NULL -> this.pushStack(null);
 
@@ -144,31 +142,31 @@ final class VirtualMachine {
 
 				case OP_POP -> this.popStack();
 
-				case OP_GET_LOCAL -> this.pushStack(this.stack[this.basePointer + this.readByte()]);
+				case OP_GET_LOCAL -> this.pushStack(this.stack[this.bp + this.readByte()]);
 
-				case OP_SET_LOCAL -> this.stack[this.basePointer + this.readByte()] = this.popStack();
+				case OP_SET_LOCAL -> this.stack[this.bp + this.readByte()] = this.popStack();
 
 				case OP_GET_NATIVE -> this.pushStack(this.nativeFunctions[this.readByte()]);
 
-				case OP_GET_GLOBAL -> this.pushStack(this.readGlobalVariable());
+				case OP_GET_GLOBAL -> this.pushStack(this.globalVariables[this.readByte()]);
 
 				case OP_DEFINE_GLOBAL -> this.globalVariables[this.readByte()] = this.popStack();
 
 				case OP_SET_GLOBAL -> this.globalVariables[this.readByte()] = this.peekStack();
 
-				case OP_EQUAL -> this.binaryOperation('=');
+				case OP_EQUAL -> this.binaryEqual();
 
-				case OP_NOT_EQUAL -> this.binaryOperation('n');
+				case OP_NOT_EQUAL -> this.binaryNotEqual();
 
-				case OP_LESS -> this.binaryOperation('<');
+				case OP_LESS -> this.binaryLessThan();
 
-				case OP_LESS_EQUAL -> this.binaryOperation('l');
+				case OP_LESS_EQUAL -> this.binaryLessEqual();
 
-				case OP_GREATER -> this.binaryOperation('>');
+				case OP_GREATER -> this.binaryGreaterThan();
 
-				case OP_GREATER_EQUAL -> this.binaryOperation('g');
+				case OP_GREATER_EQUAL -> this.binaryGreaterEqual();
 
-				case OP_ADD -> this.binaryOperation('+');
+				case OP_ADD -> this.binaryAdd();
 
 				case OP_INCREMENT_GLOBAL -> {
 					byte global = this.readByte();
@@ -181,9 +179,9 @@ final class VirtualMachine {
 
 				case OP_INCREMENT_LOCAL -> {
 					byte local = this.readByte();
-					if (!(this.stack[this.basePointer + local] instanceof Double increment))
+					if (!(this.stack[this.bp + local] instanceof Double increment))
 						throw new RuntimeError("Incrementing variable must be a number.");
-					this.stack[this.basePointer + local] = increment + 1;
+					this.stack[this.bp + local] = increment + 1;
 					this.pushStack(increment);
 				}
 
@@ -244,9 +242,9 @@ final class VirtualMachine {
 
 				case OP_DECREMENT_LOCAL -> {
 					byte local = this.readByte();
-					if (!(this.stack[this.basePointer + local] instanceof Double increment))
+					if (!(this.stack[this.bp + local] instanceof Double increment))
 						throw new RuntimeError("Decrementing variable must be a number.");
-					this.stack[this.basePointer + local] = increment - 1;
+					this.stack[this.bp + local] = increment - 1;
 					this.pushStack(increment);
 				}
 
@@ -296,15 +294,15 @@ final class VirtualMachine {
 					object.fields.put(key, increment - 1);
 				}
 
-				case OP_SUBTRACT -> this.binaryOperation('-');
+				case OP_SUBTRACT -> this.binarySubtract();
 
-				case OP_MULTIPLY -> this.binaryOperation('*');
+				case OP_MULTIPLY -> this.binaryMultiply();
 
-				case OP_DIVIDE -> this.binaryOperation('/');
+				case OP_DIVIDE -> this.binaryDivision();
 
-				case OP_MODULO -> this.binaryOperation('%');
+				case OP_MODULO -> this.binaryModulo();
 
-				case OP_POWER -> this.binaryOperation('^');
+				case OP_POWER -> this.binaryPower();
 
 				case OP_NOT -> this.stack[this.stackSize - 1] = !isTruthy(this.peekStack());
 
@@ -315,17 +313,17 @@ final class VirtualMachine {
 
 				case OP_JUMP -> {
 					short offset = this.readShort();
-					this.instructionPointer += offset;
+					this.ip += offset;
 				}
 
 				case OP_JUMP_IF_FALSE -> {
 					short offset = this.readShort();
-					if (!isTruthy(this.peekStack())) this.instructionPointer += offset;
+					if (!isTruthy(this.peekStack())) this.ip += offset;
 				}
 
 				case OP_LOOP -> {
 					short offset = this.readShort();
-					this.instructionPointer -= offset;
+					this.ip -= offset;
 				}
 
 				case OP_CALL -> {
@@ -382,19 +380,19 @@ final class VirtualMachine {
 					}
 
 					// push return address and base pointer
-					this.pushStack(this.instructionPointer);
-					this.pushStack(this.basePointer);
+					this.pushStack(this.ip);
+					this.pushStack(this.bp);
 
-					this.instructionPointer = function.address;
-					this.basePointer = this.stackSize - argumentCount - 2;
+					this.ip = function.address;
+					this.bp = this.stackSize - argumentCount - 2;
 				}
 
 				case OP_RETURN -> {
 					byte argCount = this.readByte();
 					Object returnValue = this.popStack();
-					this.basePointer = (int) this.popStack();
-					this.instructionPointer = (int) this.popStack();
-					if (this.basePointer == -1 && this.instructionPointer == -1) return;
+					this.bp = (int) this.popStack();
+					this.ip = (int) this.popStack();
+					if (this.bp == -1 && this.ip == -1) return;
 					this.stackSize -= argCount; // pops args
 					if (this.peekStack() instanceof RoboScriptFunction) {
 						this.stackSize--; // pops function
@@ -403,8 +401,8 @@ final class VirtualMachine {
 						// this.stackSize--;
 						throw new IllegalArgumentException(
 								"Expected a function or object in this place. Rework the compiler. Got '" + this.peekStack()
-										.getClass() + "'. At line " + this.chunk.getLine(
-										this.instructionPointer) + "'.");
+										.getClass() + "'. At line " + this.chunk.finalLines[
+										this.ip] + "'.");
 					}
 				}
 
@@ -558,11 +556,11 @@ final class VirtualMachine {
 							"' parameters.");
 
 			// push return address and base pointer
-			this.pushStack(this.instructionPointer);
-			this.pushStack(this.basePointer);
+			this.pushStack(this.ip);
+			this.pushStack(this.bp);
 
-			this.instructionPointer = function.address;
-			this.basePointer = this.stackSize - function.argumentCount - 2;
+			this.ip = function.address;
+			this.bp = this.stackSize - function.argumentCount - 2;
 
 		} else if (signalFunction instanceof RoboScript.NativeFunction function) {
 			if (function.argumentCount != computerSignal.args.length) {
@@ -629,7 +627,7 @@ final class VirtualMachine {
 	 * @return The byte at the current index of instructionPointer.
 	 */
 	private byte readByte() {
-		return this.chunk.readCode(this.instructionPointer++);
+		return this.chunk.finalCode[this.ip++];
 	}
 
 	/**
@@ -638,27 +636,8 @@ final class VirtualMachine {
 	 * @return The short value of the current and next byte.
 	 */
 	private short readShort() {
-		this.instructionPointer += 2;
-		return (short) ((this.chunk.readCode(this.instructionPointer - 2) << 8) | this.chunk.readCode(
-				this.instructionPointer - 1));
-	}
-
-	/**
-	 * Reads the current byte and finds the constant in the current chunk at the index of that byte.
-	 *
-	 * @return The constant in the current chunk at the index of the current byte.
-	 */
-	private Object readConstant() {
-		return this.chunk.getConstant(this.readShort());
-	}
-
-	/**
-	 * Reads the current byte and finds the global variable at the index of that byte.
-	 *
-	 * @return The global variable at the index of the current byte.
-	 */
-	private Object readGlobalVariable() {
-		return this.globalVariables[this.readByte()];
+		return (short) ((this.chunk.finalCode[this.ip++] << 8)
+				| this.chunk.finalCode[this.ip++]);
 	}
 
 	/**
@@ -702,11 +681,10 @@ final class VirtualMachine {
 
 	/**
 	 * Adds two numbers.
-	 *
-	 * @param a Addend 'a'.
-	 * @param b Addend 'b'.
 	 */
-	private void binaryAdd(Object a, Object b) {
+	private void binaryAdd() {
+		Object b = this.popStack();
+		Object a = this.popStack();
 		if (a instanceof String || b instanceof String) {
 			this.pushStack(a.toString() + b.toString());
 			return;
@@ -716,77 +694,134 @@ final class VirtualMachine {
 	}
 
 	/**
-	 * Handles all operations with their given operand.
-	 *
-	 * @param operand The operand used to perform an operation.
+	 * Subtracts two numbers.
 	 */
-	private void binaryOperation(char operand) {
+	private void binarySubtract() {
 		Object b = this.popStack();
 		Object a = this.popStack();
-		switch (operand) {
-			case '+' -> this.binaryAdd(a, b);
-			case '-' -> {
-				if (!(a instanceof Double && b instanceof Double))
-					throw new RuntimeError("Subtraction must be between two numbers.");
-				this.pushStack((double) a - (double) b);
+		if (!(a instanceof Double && b instanceof Double))
+			throw new RuntimeError("Subtraction must be between two numbers.");
+		this.pushStack((double) a + (double) b);
+	}
+
+	/**
+	 * Multiplies two numbers
+	 */
+	private void binaryMultiply() {
+		Object b = this.popStack();
+		Object a = this.popStack();
+		if (a instanceof String string && b instanceof Double) {
+			StringBuilder newString = new StringBuilder(string);
+			for (int i = 1; i < (double) b; i++) {
+				newString.append(string);
 			}
-			case '*' -> {
-				if (a instanceof String string && b instanceof Double) {
-					StringBuilder newString = new StringBuilder(string);
-					for (int i = 1; i < (double) b; i++) {
-						newString.append(string);
-					}
-					this.pushStack(newString.toString());
-				} else if (a instanceof List l && b instanceof Double) {
-					List toBeAdded = new ArrayList(l);
-					for (int i = 1; i < (double) b; i++) {
-						l.addAll(toBeAdded);
-					}
-				}
-				if (!(a instanceof Double && b instanceof Double))
-					throw new RuntimeError("Multiplication must be between two numbers or an array and a number.");
-				this.pushStack((double) a * (double) b);
+			this.pushStack(newString.toString());
+		} else if (a instanceof List l && b instanceof Double) {
+			List toBeAdded = new ArrayList(l);
+			for (int i = 1; i < (double) b; i++) {
+				l.addAll(toBeAdded);
 			}
-			case '/' -> {
-				if (!(a instanceof Double && b instanceof Double))
-					throw new RuntimeError("Multiplication must be between two numbers.");
-				if ((double) b == 0) throw new RuntimeError("Cannot divide by 0.");
-				this.pushStack((double) a / (double) b);
-			}
-			case '%' -> {
-				if (!(a instanceof Double && b instanceof Double))
-					throw new RuntimeError("Modulo must be between two numbers.");
-				if ((double) b == 0) throw new RuntimeError("Cannot divide by 0.");
-				this.pushStack((double) a % (double) b);
-			}
-			case '^' -> {
-				if (!(a instanceof Double && b instanceof Double))
-					throw new RuntimeError("Exponents must be between two numbers.");
-				this.pushStack(Math.pow((double) a, (double) b));
-			}
-			case '>' -> {
-				if (!(a instanceof Double && b instanceof Double))
-					throw new RuntimeError("Comparison using '>' must be between two numbers.");
-				this.pushStack((double) a > (double) b);
-			}
-			case '<' -> {
-				if (!(a instanceof Double && b instanceof Double))
-					throw new RuntimeError("Comparison using '<' must be between two numbers.");
-				this.pushStack((double) a < (double) b);
-			}
-			case 'g' -> { // >=
-				if (!(a instanceof Double && b instanceof Double))
-					throw new RuntimeError("Comparison using '>=' must be between two numbers.");
-				this.pushStack((double) a >= (double) b);
-			}
-			case 'l' -> { // <=
-				if (!(a instanceof Double && b instanceof Double))
-					throw new RuntimeError("Comparison using '<=' must be between two numbers.");
-				this.pushStack((double) a <= (double) b);
-			}
-			case '=' -> this.pushStack(a.equals(b)); // ==
-			case 'n' -> this.pushStack(!a.equals(b)); // !=
 		}
+		if (!(a instanceof Double && b instanceof Double))
+			throw new RuntimeError("Multiplication must be between two numbers or an array and a number.");
+		this.pushStack((double) a * (double) b);
+	}
+
+	/**
+	 * Divides two numbers.
+	 */
+	private void binaryDivision() {
+		Object b = this.popStack();
+		Object a = this.popStack();
+		if (!(a instanceof Double && b instanceof Double))
+			throw new RuntimeError("Multiplication must be between two numbers.");
+		if ((double) b == 0) throw new RuntimeError("Cannot divide by 0.");
+		this.pushStack((double) a / (double) b);
+	}
+
+	/**
+	 * Modulo-s two numbers.
+	 */
+	private void binaryModulo() {
+		Object b = this.popStack();
+		Object a = this.popStack();
+		if (!(a instanceof Double && b instanceof Double))
+			throw new RuntimeError("Modulo must be between two numbers.");
+		if ((double) b == 0) throw new RuntimeError("Cannot divide by 0.");
+		this.pushStack((double) a % (double) b);
+	}
+
+	/**
+	 * Puts a number power to the next.
+	 */
+	private void binaryPower() {
+		Object b = this.popStack();
+		Object a = this.popStack();
+		if (!(a instanceof Double && b instanceof Double))
+			throw new RuntimeError("Exponents must be between two numbers.");
+		this.pushStack(Math.pow((double) a, (double) b));
+	}
+
+	/**
+	 * Compares two numbers using >.
+	 */
+	private void binaryGreaterThan() {
+		Object b = this.popStack();
+		Object a = this.popStack();
+		if (!(a instanceof Double && b instanceof Double))
+			throw new RuntimeError("Comparison using '>' must be between two numbers.");
+		this.pushStack((double) a > (double) b);
+	}
+
+	/**
+	 * Compares two numbers using <.
+	 */
+	private void binaryLessThan() {
+		Object b = this.popStack();
+		Object a = this.popStack();
+		if (!(a instanceof Double && b instanceof Double))
+			throw new RuntimeError("Comparison using '<' must be between two numbers.");
+		this.pushStack((double) a < (double) b);
+	}
+
+	/**
+	 * Compares two numbers using >=.
+	 */
+	private void binaryGreaterEqual() {
+		Object b = this.popStack();
+		Object a = this.popStack();
+		if (!(a instanceof Double && b instanceof Double))
+			throw new RuntimeError("Comparison using '>=' must be between two numbers.");
+		this.pushStack((double) a >= (double) b);
+	}
+
+	/**
+	 * Compares two numbers using <=.
+	 */
+	private void binaryLessEqual() {
+		Object b = this.popStack();
+		Object a = this.popStack();
+		if (!(a instanceof Double && b instanceof Double))
+			throw new RuntimeError("Comparison using '<=' must be between two numbers.");
+		this.pushStack((double) a <= (double) b);
+	}
+
+	/**
+	 * Compares two numbers directly.
+	 */
+	private void binaryEqual() {
+		Object b = this.popStack();
+		Object a = this.popStack();
+		this.pushStack(a.equals(b));
+	}
+
+	/**
+	 * Compares two numbers directly and toggle the result.
+	 */
+	private void binaryNotEqual() {
+		Object b = this.popStack();
+		Object a = this.popStack();
+		this.pushStack(!a.equals(b));
 	}
 
 	/**

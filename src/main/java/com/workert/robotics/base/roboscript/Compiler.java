@@ -961,6 +961,7 @@ public final class Compiler {
 			this.chunk.addCode(function.code);
 			this.chunk.addLines(function.lines);
 		}
+		this.chunk.finishChunk();
 	}
 
 	private static class CompilerFunction {

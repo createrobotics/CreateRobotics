@@ -18,14 +18,15 @@ import java.util.List;
 final class Chunk {
 	private List<Byte> code = new ArrayList<>();
 
+	byte[] finalCode;
 
 	private final List<Object> constants = new ArrayList<>();
 
+	Object[] finalConstants;
+
 	private List<Integer> lines = new ArrayList<>();
 
-	byte readCode(int i) {
-		return this.code.get(i);
-	}
+	int[] finalLines;
 
 	int getCodeSize() {
 		return this.code.size();
@@ -36,10 +37,6 @@ final class Chunk {
 	int addConstant(Object value) {
 		this.constants.add(value);
 		return this.constants.size() - 1;
-	}
-
-	void removeConstant(int location) {
-		this.constants.remove(location);
 	}
 
 	void setConstant(int index, Object value) {
@@ -67,8 +64,12 @@ final class Chunk {
 		return this.constants.get(Math.abs(i));
 	}
 
-
-	int getLine(int i) {
-		return this.lines.get(i);
+	void finishChunk() {
+		this.finalCode = new byte[this.code.size()];
+		for (int i = 0; i < this.code.size(); i++) {
+			this.finalCode[i] = this.code.get(i);
+		}
+		this.finalConstants = this.constants.toArray();
+		this.finalLines = this.lines.stream().mapToInt(Integer::intValue).toArray();
 	}
 }
