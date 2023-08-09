@@ -144,7 +144,7 @@ final class VirtualMachine {
 
 				case OP_GET_LOCAL -> this.pushStack(this.stack[this.bp + this.readByte()]);
 
-				case OP_SET_LOCAL -> this.stack[this.bp + this.readByte()] = this.popStack();
+				case OP_SET_LOCAL -> this.stack[this.bp + this.readByte()] = this.peekStack();
 
 				case OP_GET_NATIVE -> this.pushStack(this.nativeFunctions[this.readByte()]);
 
