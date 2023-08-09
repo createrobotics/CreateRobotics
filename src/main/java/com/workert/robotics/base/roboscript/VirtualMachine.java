@@ -794,11 +794,14 @@ final class VirtualMachine {
 				newString.append(string);
 			}
 			this.pushStack(newString.toString());
+			return;
 		} else if (a instanceof List l && b instanceof Double) {
 			List toBeAdded = new ArrayList(l);
 			for (int i = 1; i < (double) b; i++) {
 				l.addAll(toBeAdded);
 			}
+			this.pushStack(l);
+			return;
 		}
 		if (!(a instanceof Double && b instanceof Double))
 			throw new RuntimeError("Multiplication must be between two numbers or an array and a number.");
