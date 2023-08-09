@@ -336,7 +336,8 @@ final class VirtualMachine {
 						if (function.argumentCount != argumentCount)
 							throw new RuntimeError(
 									"Expected '" + function.argumentCount + "' arguments but got '" + argumentCount + "'.");
-						this.stack[this.stackSize - 1] = function.call(this);
+						Object returnValue = function.call(this);
+						this.stack[this.stackSize - 1] = returnValue;
 						break;
 					}
 
@@ -344,7 +345,8 @@ final class VirtualMachine {
 						if (function.argumentCount != argumentCount)
 							throw new RuntimeError(
 									"Expected '" + function.argumentCount + "' arguments but got '" + argumentCount + "'.");
-						this.stack[this.stackSize - 1] = function.run();
+						Object returnValue = function.run();
+						this.stack[this.stackSize - 1] = returnValue;
 						break;
 					}
 
@@ -500,6 +502,10 @@ final class VirtualMachine {
 
 					if (gettable instanceof List l) {
 						this.pushStack(this.getListNative(l, key));
+						break;
+					}
+					if (gettable instanceof String s) {
+						this.pushStack(this.getStringNative(s, key));
 						break;
 					}
 
@@ -662,6 +668,33 @@ final class VirtualMachine {
 				};
 			}
 			default -> throw new RuntimeError("Built-in type 'List' does not have method '" + key + "'.");
+		}
+	}
+
+	private RoboScriptNativeMethod<String> getStringNative(String string, String key) {
+		switch (key) {
+			case "replaceAt" -> {
+				return new RoboScriptNativeMethod<>(string, (byte) 2) {
+					@Override
+					Object run() {
+						if (!(VirtualMachine.this.popStack() instanceof String s))
+							throw new RuntimeError("Expected a string as the second argument of 'replaceAt'.");
+						if (!(VirtualMachine.this.popStack() instanceof Double location))
+							throw new RuntimeError("Expected a number as the first argument of 'replaceAt'.");
+
+						if (!isWhole(location) || isNegative(location)) throw new RuntimeError(
+								"Index value for string in first argument of 'replaceAt' must be a whole number greater or equal to 0.");
+						if (location >= string.length())
+							throw new RuntimeError(
+									"String index in first argument of 'replaceAt' out of range of '" + (string.length() - 1) + "'.");
+
+						StringBuilder builder = new StringBuilder(string);
+						builder.replace((int) Math.round(location), (int) Math.round(location) + 1, s);
+						return builder.toString();
+					}
+				};
+			}
+			default -> throw new RuntimeError("Built-in type 'String' does not have method '" + key + "'.");
 		}
 	}
 
