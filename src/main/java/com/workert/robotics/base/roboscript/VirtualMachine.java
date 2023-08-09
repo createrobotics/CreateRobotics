@@ -333,13 +333,18 @@ final class VirtualMachine {
 
 
 					if (callable instanceof RoboScript.NativeFunction function) {
-						if (function.argumentCount != argumentCount) {
+						if (function.argumentCount != argumentCount)
 							throw new RuntimeError(
 									"Expected '" + function.argumentCount + "' arguments but got '" + argumentCount + "'.");
-						}
-						Object returnValue = function.call(this);
-						this.popStack();
-						this.pushStack(returnValue);
+						this.stack[this.stackSize - 1] = function.call(this);
+						break;
+					}
+
+					if (callable instanceof RoboScriptNativeMethod<?> function) {
+						if (function.argumentCount != argumentCount)
+							throw new RuntimeError(
+									"Expected '" + function.argumentCount + "' arguments but got '" + argumentCount + "'.");
+						this.stack[this.stackSize - 1] = function.run();
 						break;
 					}
 
@@ -396,6 +401,7 @@ final class VirtualMachine {
 					this.stackSize -= argCount; // pops args
 					if (this.peekStack() instanceof RoboScriptFunction) {
 						this.stackSize--; // pops function
+						// TODO: somehow fix signals returning values to not mess around with the stack.
 						this.pushStack(returnValue);
 					} else if (!(this.peekStack() instanceof RoboScriptObject)) {
 						// this.stackSize--;
@@ -492,6 +498,11 @@ final class VirtualMachine {
 						gettable = this.popStack();
 					}
 
+					if (gettable instanceof List l) {
+						this.pushStack(this.getListNative(l, key));
+						break;
+					}
+
 					if (!(gettable instanceof RoboScriptObject object))
 						throw new RuntimeError(
 								"Can only use '.' to get fields from an object. Instead got '" + gettable.getClass() + "'.");
@@ -533,6 +544,9 @@ final class VirtualMachine {
 	}
 
 
+	/**
+	 * Executes all current signals in the signal queue.
+	 */
 	private void executeSignalQueue() {
 		while (this.signalQueue.size() > 0) {
 			Object cs = this.signalQueue.remove();
@@ -542,6 +556,11 @@ final class VirtualMachine {
 		}
 	}
 
+	/**
+	 * Runs a signal function.
+	 *
+	 * @param computerSignal The signal being ran.
+	 */
 	private void runSignal(ComputerSignal computerSignal) {
 		this.runningState = true;
 		for (Object object : computerSignal.args) {
@@ -579,6 +598,10 @@ final class VirtualMachine {
 		this.runningState = false;
 	}
 
+	/**
+	 * Adds a signal to the signal queue and executes if the program is not currently running.
+	 * If the program is currently running, it will run it after the current instruction finishes.
+	 */
 	void addSignalToQueue(ComputerSignal s) {
 		if (this.signals.containsKey(s.name))
 			if (this.runningState)
@@ -618,6 +641,28 @@ final class VirtualMachine {
 			return this.getFunctionInClass(clazz.superclass, object, fieldName);
 		}
 		return null;
+	}
+
+	/**
+	 * Gets a native method from RoboScript's built-in list "object".
+	 *
+	 * @param list The list the method is being gotten from.
+	 * @param key  The name of the method being gotten.
+	 * @return The method gotten from the list.
+	 */
+	private RoboScriptNativeMethod<List> getListNative(List list, String key) {
+		switch (key) {
+			case "add", "append" -> {
+				return new RoboScriptNativeMethod<>(list, (byte) 1) {
+					@Override
+					Object run() {
+						list.add(VirtualMachine.this.popStack());
+						return null;
+					}
+				};
+			}
+			default -> throw new RuntimeError("Built-in type 'List' does not have method '" + key + "'.");
+		}
 	}
 
 
