@@ -701,7 +701,7 @@ final class VirtualMachine {
 		Object a = this.popStack();
 		if (!(a instanceof Double && b instanceof Double))
 			throw new RuntimeError("Subtraction must be between two numbers.");
-		this.pushStack((double) a + (double) b);
+		this.pushStack((double) a - (double) b);
 	}
 
 	/**
