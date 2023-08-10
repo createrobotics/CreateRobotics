@@ -163,6 +163,10 @@ public final class RoboScriptArgumentPredicates {
 				asNumber(argumentList[(startingIndex + 1)]),
 				asNumber(argumentList[(startingIndex + 2)]));
 	}
+	
+	public static Item getItemById(String id) {
+		return Registry.ITEM.get(new ResourceLocation(id.trim().split(":")[0], id.trim().split(":")[1]));
+	}
 
 	/**
 	 * Converts the specified three objects to a {@link BlockPos}.
@@ -208,7 +212,7 @@ public final class RoboScriptArgumentPredicates {
 			}
 			return text;
 		}
-		
+
 		return object.toString();
 	}
 }
