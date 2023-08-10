@@ -9,7 +9,7 @@ import com.workert.robotics.Robotics;
 import java.util.function.Supplier;
 
 public enum LangPartials implements LangPartial {
-	TOOLTIPS("Item Descriptions");
+	TOOLTIPS("Tooltips");
 
 	private String display;
 	private Supplier<JsonElement> provider;

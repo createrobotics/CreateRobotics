@@ -3,7 +3,6 @@ package com.workert.robotics.base.registries;
 import com.simibubi.create.content.AllSections;
 import com.simibubi.create.content.logistics.block.display.AllDisplayBehaviours;
 import com.simibubi.create.foundation.block.BlockStressDefaults;
-import com.simibubi.create.foundation.data.AssetLookup;
 import com.simibubi.create.foundation.data.TagGen;
 import com.tterrag.registrate.providers.loot.RegistrateBlockLootTables;
 import com.tterrag.registrate.util.entry.BlockEntry;
@@ -153,14 +152,13 @@ public class BlockRegistry {
 			.block("redstone_detector", RedstoneDetectorBlock::new)
 			.lang("Redstone Detector")
 			.blockstate((dataGenContext, provider) -> provider.getVariantBuilder(dataGenContext.get()).partialState()
-					.with(dataGenContext.get().LIT, true).addModels(new ConfiguredModel(
+					.with(RedstoneDetectorBlock.LIT, true).addModels(new ConfiguredModel(
 							provider.models().getExistingFile(provider.modLoc("block/redstone_detector_on"))))
-					.partialState().with(dataGenContext.get().LIT, false).addModels(new ConfiguredModel(
+					.partialState().with(RedstoneDetectorBlock.LIT, false).addModels(new ConfiguredModel(
 							provider.models().getExistingFile(provider.modLoc("block/redstone_detector")))))
 			.initialProperties(() -> Blocks.STONE)
 			.transform(TagGen.pickaxeOnly())
 			.item(InputBlockItem::new)
-			.model(AssetLookup::customItemModel)
 			.build()
 			.register();
 	public static final BlockEntry<ScannerBlock> SCANNER = Robotics.REGISTRATE
@@ -172,7 +170,6 @@ public class BlockRegistry {
 			.transform(TagGen.pickaxeOnly())
 			.properties(BlockBehaviour.Properties::noOcclusion)
 			.item(InputBlockItem::new)
-			.model(AssetLookup::customItemModel)
 			.build()
 			.register();
 

@@ -1,12 +1,15 @@
-// 1.19.2	2023-03-21T11:36:51.0139115	Registrate Provider for robotics [Recipes, Advancements, Loot tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), Blockstates, Item models, Lang (en_us/en_ud)]
+// 1.19.2	2023-08-10T13:20:41.7866629	Registrate Provider for robotics [Recipes, Advancements, Loot tables, Tags (blocks), Tags (items), Tags (fluids), Tags (entity_types), Blockstates, Item models, Lang (en_us/en_ud)]
 523fee84ada6e89983fb549063c4e1ed956a5e06 assets/robotics/blockstates/bronze_block.json
 a97fc4e48e90050901a34d31be3c1ba41abf3660 assets/robotics/blockstates/code_editor.json
+a7ead397966799892df414200c9f88d41007b69b assets/robotics/blockstates/computer.json
 5e06240fa9dd8792f5793cae70db3110fd754c4d assets/robotics/blockstates/deepslate_tin_ore.json
+bad8e5af0a6b27f6908c77dbb20f2be48fb94ee0 assets/robotics/blockstates/redstone_detector.json
+3b7709591d56cb1208be7dafbbc53a6aacfb2563 assets/robotics/blockstates/scanner.json
 693b43b42efeed84e0ca45353384bc018dd8418b assets/robotics/blockstates/smasher.json
 46e6c2798f41c78679eeafbc1ea19c6756037e11 assets/robotics/blockstates/tin_block.json
 b72d67181353ec4260056ec24064f2139e337c35 assets/robotics/blockstates/tin_ore.json
-36b00d8884f7ee1f8b53fa8a66b2aa4991c4ca9b assets/robotics/lang/en_ud.json
-a41114fc419b27007c9e58be3159546c6bea0e5d assets/robotics/lang/en_us.json
+9996383f2440e5185007a8c8a5047de2165437fa assets/robotics/lang/en_ud.json
+0be15f30a4861372925cdd7072147830cb93b9bf assets/robotics/lang/en_us.json
 93d15b8804f278bc7eab662de9f55463ac27470c assets/robotics/models/block/bronze_block.json
 00403fb876a1404a49385152c493f587eeace1c5 assets/robotics/models/block/deepslate_tin_ore.json
 f9c9af1198f21b357a55df76020bec642e03f4c1 assets/robotics/models/block/tin_block.json
@@ -17,10 +20,13 @@ b90be57d55cd2b02309db2e30fb99ab3622a8f33 assets/robotics/models/item/bronze_ingo
 7ca5c1fb3cb1af21e89f548337ac790f1878aad9 assets/robotics/models/item/clockcopter.json
 1f4cc7c4a005b8ea283b3259ecda57350ff42d04 assets/robotics/models/item/code_drone.json
 62bd98596849d2429828f7ca66756085400b000c assets/robotics/models/item/code_editor.json
+119b61760d8dd3afff7af0f6ddd1ad98ad4ef0e4 assets/robotics/models/item/computer.json
 b6ed9e652e7f522b4e1c7b99266b06556d2608e1 assets/robotics/models/item/deepslate_tin_ore.json
 0ee045d309e702fc5d0916c87e1a2dedbcbad2cd assets/robotics/models/item/extend_o_boots.json
 a5fdffdea4083319b4ff6f9b91b2f8840839e35e assets/robotics/models/item/program.json
 2700d212405e80e02766a8554a8eb6a9bdd2428b assets/robotics/models/item/raw_tin.json
+95f11d8113b20b5b233ab72e94bf007bc5b7388e assets/robotics/models/item/redstone_detector.json
+5667ea12af9500c56e6d37b715325b7b99a31989 assets/robotics/models/item/scanner.json
 c94b01a973940223adc7e757fc442efb23f42def assets/robotics/models/item/smasher.json
 df0fc9087b6a868d02bcff77100e2261374ff2a8 assets/robotics/models/item/tin_block.json
 81b23ccba5ec293da2a37c4542bbe77a47659e1d assets/robotics/models/item/tin_ingot.json
@@ -48,11 +54,14 @@ fbbecf64368da314bf4242f9ec27d077ded7ec22 data/forge/tags/items/storage_blocks.js
 ff8c22dcd1f58eed8bb5ae816f3b4015589c8091 data/forge/tags/items/storage_blocks/bronze.json
 c72d8cebd56431651f61041f9a30ff85d7dd091e data/forge/tags/items/storage_blocks/tin.json
 fbbecf64368da314bf4242f9ec27d077ded7ec22 data/minecraft/tags/blocks/beacon_base_blocks.json
-7a6487d88a9b802ec1573b83f61b070fe1c246a0 data/minecraft/tags/blocks/mineable/pickaxe.json
+b7b46da4a31879340ca51ce067676dbc2eab17f7 data/minecraft/tags/blocks/mineable/pickaxe.json
 7a6487d88a9b802ec1573b83f61b070fe1c246a0 data/minecraft/tags/blocks/needs_iron_tool.json
 6a15ee160d321228bcd50c2fc74e8b94d8dcd007 data/robotics/loot_tables/blocks/bronze_block.json
 b5c717323e729d71fffa06dd498d950b35c2804b data/robotics/loot_tables/blocks/code_editor.json
+27d67dc80de42e769d3112fe3e6d6230a74df526 data/robotics/loot_tables/blocks/computer.json
 9abddcc6373e1e30c335916f077f5aa2cffd5f86 data/robotics/loot_tables/blocks/deepslate_tin_ore.json
+4fb40c804d5fdb47bb83822aa3dbb86d6501c62d data/robotics/loot_tables/blocks/redstone_detector.json
+d94cb8c15e3becf3a8fba15c23e82b9cf552912a data/robotics/loot_tables/blocks/scanner.json
 53c79e4b75b50925aa6b5b19177885c8aa73f79e data/robotics/loot_tables/blocks/smasher.json
 d59d5063492d6e8fcd992a51adfc723a4bda2a7e data/robotics/loot_tables/blocks/tin_block.json
 b863a2aaf2d0f6dabaa86c3a3483fd9afceac15a data/robotics/loot_tables/blocks/tin_ore.json

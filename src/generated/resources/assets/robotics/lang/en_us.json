@@ -4,20 +4,24 @@
 
   "block.robotics.bronze_block": "Bronze block",
   "block.robotics.code_editor": "Code Editor",
+  "block.robotics.computer": "Computer",
   "block.robotics.deepslate_tin_ore": "Deepslate tin ore",
+  "block.robotics.redstone_detector": "Redstone Detector",
+  "block.robotics.scanner": "Scanner",
   "block.robotics.smasher": "Smasher",
   "block.robotics.tin_block": "Tin block",
   "block.robotics.tin_ore": "Tin ore",
 
   "entity.robotics.clockcopter": "Clockcopter",
-  "entity.robotics.code_drone": "Code Drone",
-  "entity.robotics.extend_o_boots": "Extend O Boots",
+  "entity.robotics.code_drone": "Juan",
+  "entity.robotics.extend_o_boots": "Extend-O-Boots",
+  "entity.robotics.flying_toolbox": "Flying Toolbox",
   "entity.robotics.miner": "Miner",
 
   "item.robotics.bronze_ingot": "Bronze ingot",
   "item.robotics.bronze_nugget": "Bronze nugget",
   "item.robotics.clockcopter": "Clockcopter",
-  "item.robotics.code_drone": "Code Drone",
+  "item.robotics.code_drone": "Juan",
   "item.robotics.extend_o_boots": "Extend-O-Boots",
   "item.robotics.program": "Program",
   "item.robotics.raw_tin": "Raw tin",
@@ -48,7 +52,7 @@
   "robotics.ponder.programming.text_2": "Right click the code editor with the program to get started!",
   "robotics.ponder.programming.text_3": "When you're finished coding right click with the program on a programmable robot to apply your code to it.",
 
-  "_": "->------------------------]  Item Descriptions  [------------------------<-",
+  "_": "->------------------------]  Tooltips  [------------------------<-",
 
   "item.robotics.extend_o_boots.tooltip": "EXTEND-O-BOOTS",
   "item.robotics.extend_o_boots.tooltip.summary": "Your _equipable Scaffolding_! Allows you to create an _extendable temporary scaffolding_ under you.",
