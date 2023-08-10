@@ -1,5 +1,4 @@
 {
-
   "parent": "block/cube_all",
   "textures": {
 	"all": "robotics:block/redstone_detector_on"
