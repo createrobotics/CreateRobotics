@@ -1,6 +1,6 @@
 {
   "parent": "block/cube_all",
   "textures": {
-    "all": "computing:block/redstone_detector"
+    "all": "robotics:block/redstone_detector"
   }
 }
