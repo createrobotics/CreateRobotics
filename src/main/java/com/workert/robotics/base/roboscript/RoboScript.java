@@ -23,9 +23,9 @@ public abstract class RoboScript {
 
 	}
 
-	public final void addSignal(String signalName, Object[] args) {
-		ComputerSignal c = new ComputerSignal(signalName, args);
-		this.virtualMachine.addSignalToQueue(c);
+	public final void queueSignal(String signalName, Object[] args) {
+		ComputerSignal signal = new ComputerSignal(signalName, args);
+		this.virtualMachine.addSignalToQueue(signal);
 	}
 
 	public final void queueStopForProgram() {
