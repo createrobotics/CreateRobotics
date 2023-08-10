@@ -6,6 +6,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNullableByDefault;
 import java.util.ArrayList;
@@ -49,7 +50,7 @@ public final class RoboScriptArgumentPredicates {
 	 * @param <ReturnType>      the type of the returned object
 	 * @return the converted object, or null if the input object is null
 	 */
-	public static <ReturnType> ReturnType optional(Object object, Function<Object, ReturnType> predicateFunction) {
+	public static <ReturnType> ReturnType optional(Object object, @Nonnull Function<Object, ReturnType> predicateFunction) {
 		if (object == null) return null;
 		return predicateFunction.apply(object);
 	}
@@ -150,13 +151,14 @@ public final class RoboScriptArgumentPredicates {
 
 	public static List<String> stringifyAllElements(List<Object> elements) {
 		List<String> stringList = new ArrayList<>();
-		for (Object object : elements) {
-			stringList.add(stringify(object));
-		}
+		if (elements != null && !elements.isEmpty())
+			for (Object object : elements) {
+				stringList.add(stringify(object));
+			}
 		return stringList;
 	}
 
-	public static BlockPos asBlockPos(Object[] argumentList, int startingIndex) {
+	public static BlockPos asBlockPos(@Nonnull Object[] argumentList, int startingIndex) {
 		return new BlockPos(asNumber(argumentList[(startingIndex)]),
 				asNumber(argumentList[(startingIndex + 1)]),
 				asNumber(argumentList[(startingIndex + 2)]));
@@ -206,7 +208,7 @@ public final class RoboScriptArgumentPredicates {
 			}
 			return text;
 		}
-
+		
 		return object.toString();
 	}
 }
