@@ -1,6 +1,6 @@
 package com.workert.robotics.base.roboscript;
 
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 
 public abstract class RoboScript {
 	Compiler compiler = new Compiler(this);
@@ -54,8 +54,8 @@ public abstract class RoboScript {
 		this.defineNativeFunction("ceil", 1, args -> Math.ceil(RoboScriptArgumentPredicates.asNumber(args[0])));
 	}
 
-	public final void defineNativeFunction(String name, int argumentCount, NativeFunctionFunctionalInterface functionalInterface) {
-		NativeFunction function = new NativeFunction() {
+	public final void defineNativeFunction(String name, int argumentCount, NativeFunctionFunctionalInterface function) {
+		NativeFunction nativeFunctionWrapper = new NativeFunction() {
 			@Override
 			Object call(VirtualMachine vm) {
 				if (this.argumentCount > 0) {
@@ -64,19 +64,19 @@ public abstract class RoboScript {
 						functionArgs[i] = vm.popStack();
 					}
 
-					return functionalInterface.apply(functionArgs);
+					return function.call(functionArgs);
 				}
-				return functionalInterface.apply(null);
+				return function.call(new Object[] {});
 			}
 		};
-		function.argumentCount = argumentCount;
-		this.virtualMachine.nativeFunctions[this.virtualMachine.nativeFunctionSize] = function;
+		nativeFunctionWrapper.argumentCount = argumentCount;
+		this.virtualMachine.nativeFunctions[this.virtualMachine.nativeFunctionSize] = nativeFunctionWrapper;
 		this.compiler.nativeFunctionLookup.put(name, (byte) this.virtualMachine.nativeFunctionSize++);
 	}
 
 	@FunctionalInterface
 	public interface NativeFunctionFunctionalInterface {
-		Object apply(@Nullable Object[] parameters);
+		Object call(@Nonnull Object[] parameters);
 	}
 
 	protected final void reportCompileError(int line, String message) {

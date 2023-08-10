@@ -7,6 +7,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNullableByDefault;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -17,6 +18,7 @@ import java.util.function.Function;
  * <p>
  * This class only throws {@link RuntimeError}s.
  */
+@ParametersAreNullableByDefault
 public final class RoboScriptArgumentPredicates {
 
 	/**

@@ -335,7 +335,7 @@ final class VirtualMachine {
 					if (callable instanceof RoboScript.NativeFunction function) {
 						if (function.argumentCount != argumentCount)
 							throw new RuntimeError(
-									"Expected '" + function.argumentCount + "' arguments but got '" + argumentCount + "'.");
+									"Expected " + function.argumentCount + " argument(s) but got " + argumentCount + ".");
 						Object returnValue = function.call(this);
 						this.stack[this.stackSize - 1] = returnValue;
 						break;
@@ -344,7 +344,7 @@ final class VirtualMachine {
 					if (callable instanceof RoboScriptNativeMethod<?> function) {
 						if (function.argumentCount != argumentCount)
 							throw new RuntimeError(
-									"Expected '" + function.argumentCount + "' arguments but got '" + argumentCount + "'.");
+									"Expected " + function.argumentCount + " argument(s) but got " + argumentCount + ".");
 						Object returnValue = function.run();
 						this.stack[this.stackSize - 1] = returnValue;
 						break;
@@ -370,7 +370,7 @@ final class VirtualMachine {
 					}
 					if (argumentCount != function.argumentCount)
 						throw new RuntimeError(
-								"Expected '" + function.argumentCount + "' arguments but got '" + argumentCount + "'.");
+								"Expected " + function.argumentCount + " argument(s) but got " + argumentCount + ".");
 
 					if (callable instanceof RoboScriptMethod method) {
 						RoboScriptObject instance;

@@ -3,7 +3,7 @@ package com.workert.robotics.content.computers.computer;
 import com.simibubi.create.content.contraptions.base.KineticTileEntity;
 import com.workert.robotics.base.roboscript.RoboScript;
 import com.workert.robotics.base.roboscript.RoboScriptArgumentPredicates;
-import com.workert.robotics.unused.roboscriptast.ingame.LineLimitedString;
+import com.workert.robotics.base.roboscript.ingame.LineLimitedString;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;

@@ -7,13 +7,11 @@ import com.simibubi.create.content.curiosities.armor.BackTankUtil;
 import com.simibubi.create.content.logistics.RedstoneLinkNetworkHandler;
 import com.simibubi.create.foundation.utility.Couple;
 import com.workert.robotics.base.registries.ItemRegistry;
+import com.workert.robotics.base.roboscript.RoboScript;
+import com.workert.robotics.base.roboscript.RoboScriptArgumentPredicates;
+import com.workert.robotics.base.roboscript.RuntimeError;
+import com.workert.robotics.base.roboscript.ingame.LineLimitedString;
 import com.workert.robotics.unused.CodeHelper;
-import com.workert.robotics.unused.roboscriptast.RoboScript;
-import com.workert.robotics.unused.roboscriptast.RoboScriptArgumentPredicates;
-import com.workert.robotics.unused.roboscriptast.RoboScriptArray;
-import com.workert.robotics.unused.roboscriptast.RoboScriptRuntimeError;
-import com.workert.robotics.unused.roboscriptast.ingame.CompoundTagEnvironmentConversionHelper;
-import com.workert.robotics.unused.roboscriptast.ingame.LineLimitedString;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -65,51 +63,34 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 		this.air = maxAir;
 		if (this.isProgrammable()) {
 			this.roboScript = new RoboScript() {
-
 				@Override
-				public void print(String message) {
-					AbstractRobotEntity.this.terminal.addLine(message);
-					AbstractRobotEntity.this.saveWithoutId(new CompoundTag());
-				}
+				protected void defineNativeFunctions() {
 
-				@Override
-				public void reportCompileError(String error) {
-					AbstractRobotEntity.this.terminal.addLine(error);
-					AbstractRobotEntity.this.saveWithoutId(new CompoundTag());
-				}
+					this.defineNativeFunction("getXPos", 0, (parameters) -> AbstractRobotEntity.this.position().x);
+					this.defineNativeFunction("getYPos", 0, (parameters) -> AbstractRobotEntity.this.position().y);
+					this.defineNativeFunction("getZPos", 0, (parameters) -> AbstractRobotEntity.this.position().z);
 
-				@Override
-				public void defineDefaultFunctions() {
-					this.defineFunction("getXPos", 0,
-							(interpreter, arguments, errorToken) -> AbstractRobotEntity.this.position().x);
-					this.defineFunction("getYPos", 0,
-							(interpreter, arguments, errorToken) -> AbstractRobotEntity.this.position().y);
-					this.defineFunction("getZPos", 0,
-							(interpreter, arguments, errorToken) -> AbstractRobotEntity.this.position().z);
+					this.defineNativeFunction("getAirSupply", 0, (parameters) -> AbstractRobotEntity.this.air);
+					this.defineNativeFunction("getMaxAirSupply", 0,
+							(parameters) -> AbstractRobotEntity.this.getMaxAirSupply());
 
-					this.defineFunction("getAirSupply", 0,
-							(interpreter, arguments, errorToken) -> AbstractRobotEntity.this.air);
-					this.defineFunction("getMaxAirSupply", 0,
-							(interpreter, arguments, errorToken) -> AbstractRobotEntity.this.getMaxAirSupply());
-
-					this.defineFunction("getInventory", 0,
-							(interpreter, arguments, errorToken) -> {
+					this.defineNativeFunction("getInventory", 0,
+							(parameters) -> {
 								List<Object> itemList = new ArrayList<>();
 								for (int inventoryIndex = 0; inventoryIndex < AbstractRobotEntity.this.inventory.getContainerSize(); inventoryIndex++) {
 									ItemStack itemStack = AbstractRobotEntity.this.inventory.getItem(inventoryIndex);
 									if (itemStack.isEmpty()) continue;
-									itemList.add(new RoboScriptArray(
-											List.of(ForgeRegistries.ITEMS.getKey(itemStack.getItem()).toString(),
-													itemStack.getHoverName().getString(),
-													(double) itemStack.getCount())));
+									itemList.add(List.of(ForgeRegistries.ITEMS.getKey(itemStack.getItem()).toString(),
+											itemStack.getHoverName().getString(),
+											(double) itemStack.getCount()));
 								}
-								return new RoboScriptArray(itemList);
+								return itemList;
 							});
 
-					this.defineFunction("goTo", 3, (interpreter, arguments, errorToken) -> {
+					this.defineNativeFunction("goTo", 3, (parameters) -> {
 						AbstractRobotEntity robot = AbstractRobotEntity.this;
 
-						BlockPos blockPos = new RoboScriptArgumentPredicates(errorToken).asBlockPos(arguments, 0);
+						BlockPos blockPos = RoboScriptArgumentPredicates.asBlockPos(parameters, 0);
 
 						robot.getNavigation().moveTo(blockPos.getX(), blockPos.getY(), blockPos.getZ(), 1);
 
@@ -123,7 +104,6 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 									tryTimer = 0;
 								}
 								if (robot.getNavigation().isStuck()) {
-									interpreter.roboScriptInstance.print("Robot is stuck! Trying to recompute path.");
 									robot.getNavigation().recomputePath();
 								}
 							} catch (InterruptedException exception) {
@@ -135,18 +115,16 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 						return null;
 					});
 
-					this.defineFunction("getItems", 4, (interpreter, arguments, errorToken) -> {
+					this.defineNativeFunction("getItems", 4, (parameters) -> {
 						AbstractRobotEntity robot = AbstractRobotEntity.this;
-
-						RoboScriptArgumentPredicates predicates = new RoboScriptArgumentPredicates(errorToken);
-						BlockPos pos = predicates.asBlockPos(arguments, 0);
-						Item itemToGet = predicates.asItem(arguments.get(3));
+						BlockPos pos = RoboScriptArgumentPredicates.asBlockPos(parameters, 0);
+						Item itemToGet = RoboScriptArgumentPredicates.asItem(parameters[3]);
 
 						if (!pos.closerToCenterThan(robot.position(), 5))
-							interpreter.roboScriptInstance.print("The container is too far away. Ignored the command.");
+							this.handleErrorMessage("The container is too far away. Ignored the command.");
 
 						if (robot.getLevel().getExistingBlockEntity(pos) == null)
-							interpreter.roboScriptInstance.print(
+							this.handleErrorMessage(
 									"The block at the specified coordinates has no tile entity (is no container). Ignored the command.");
 
 						robot.getLevel().getExistingBlockEntity(pos).getCapability(ForgeCapabilities.ITEM_HANDLER)
@@ -163,18 +141,17 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 						robot.getLevel().blockUpdated(pos, robot.getLevel().getBlockState(pos).getBlock());
 						return null;
 					});
-					this.defineFunction("pushItems", 4, (interpreter, arguments, errorToken) -> {
+					this.defineNativeFunction("pushItems", 4, (parameters) -> {
 						AbstractRobotEntity robot = AbstractRobotEntity.this;
 
-						RoboScriptArgumentPredicates predicates = new RoboScriptArgumentPredicates(errorToken);
-						BlockPos pos = predicates.asBlockPos(arguments, 0);
-						Item itemToPush = predicates.asItem(arguments.get(3));
+						BlockPos pos = RoboScriptArgumentPredicates.asBlockPos(parameters, 0);
+						Item itemToPush = RoboScriptArgumentPredicates.asItem(parameters[3]);
 
 						if (!pos.closerToCenterThan(robot.position(), 5))
-							interpreter.roboScriptInstance.print("The container is too far away. Ignored the command.");
+							this.handleErrorMessage("The container is too far away. Ignored the command.");
 
 						if (robot.getLevel().getExistingBlockEntity(pos) == null)
-							interpreter.roboScriptInstance.print(
+							this.handleErrorMessage(
 									"The block at the specified coordinates has no tile entity (is no container). Ignored the command.");
 
 						robot.getLevel().getExistingBlockEntity(pos).getCapability(ForgeCapabilities.ITEM_HANDLER)
@@ -196,16 +173,17 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 						return null;
 					});
 
-					this.defineFunction("punch", 5, (interpreter, arguments, errorToken) -> {
+					this.defineNativeFunction("punch", 5, (parameters) -> {
 						AbstractRobotEntity robot = AbstractRobotEntity.this;
 
-						RoboScriptArgumentPredicates predicates = new RoboScriptArgumentPredicates(errorToken);
-						BlockPos clickPos = predicates.asBlockPos(arguments, 0);
-						Item item = predicates.optional(arguments.get(3), predicates::asItem);
-						String directionString = predicates.optional(arguments.get(4), predicates::asString);
+						BlockPos clickPos = RoboScriptArgumentPredicates.asBlockPos(parameters, 0);
+						Item item = RoboScriptArgumentPredicates.optional(parameters[3],
+								RoboScriptArgumentPredicates::asItem);
+						String directionString = RoboScriptArgumentPredicates.optional(parameters[4],
+								RoboScriptArgumentPredicates::asString);
 
 						if (!clickPos.closerToCenterThan(robot.position(), 5))
-							interpreter.roboScriptInstance.print(
+							this.handleErrorMessage(
 									"The click position is too far away. Ignored the command.");
 
 						Direction direction = null;
@@ -213,8 +191,8 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 							if (directionString != null)
 								direction = Direction.valueOf(directionString);
 						} catch (IllegalArgumentException exception) {
-							interpreter.roboScriptInstance.print(
-									"Invalid Direction value (only allowed are \"up\", \"east\", etc). Ignored the argument.");
+							throw new RuntimeError(
+									"Invalid Direction value. Allowed are 'up', 'down', 'north', 'east', 'south', 'west'.");
 						}
 
 						try {
@@ -224,16 +202,16 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 						}
 						return null;
 					});
-					this.defineFunction("use", 5, (interpreter, arguments, errorToken) -> {
+					this.defineNativeFunction("use", 5, (parameters) -> {
 						AbstractRobotEntity robot = AbstractRobotEntity.this;
-
-						RoboScriptArgumentPredicates predicates = new RoboScriptArgumentPredicates(errorToken);
-						BlockPos clickPos = predicates.asBlockPos(arguments, 0);
-						Item item = predicates.optional(arguments.get(3), predicates::asItem);
-						String directionString = predicates.optional(arguments.get(4), predicates::asString);
+						BlockPos clickPos = RoboScriptArgumentPredicates.asBlockPos(parameters, 0);
+						Item item = RoboScriptArgumentPredicates.optional(parameters[3],
+								RoboScriptArgumentPredicates::asItem);
+						String directionString = RoboScriptArgumentPredicates.optional(parameters[4],
+								RoboScriptArgumentPredicates::asString);
 
 						if (!clickPos.closerToCenterThan(robot.position(), 5))
-							interpreter.roboScriptInstance.print(
+							this.handleErrorMessage(
 									"The click position is too far away. Ignored the command.");
 
 						Direction direction = null;
@@ -241,7 +219,7 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 							if (directionString != null)
 								direction = Direction.valueOf(directionString);
 						} catch (IllegalArgumentException exception) {
-							interpreter.roboScriptInstance.print(
+							this.handleErrorMessage(
 									"Invalid Direction value (only allowed are \"up\", \"east\", etc). Ignored the argument.");
 						}
 
@@ -253,17 +231,15 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 						return null;
 					});
 
-					this.defineFunction("waitForRedstoneLink", 2, (interpreter, arguments, errorToken) -> {
-						RoboScriptArgumentPredicates predicates = new RoboScriptArgumentPredicates(errorToken);
-
-						Item item1 = predicates.asItem(arguments.get(0));
-						Item item2 = predicates.optional(arguments.get(1), predicates::asItem);
+					this.defineNativeFunction("waitForRedstoneLink", 2, (parameters) -> {
+						Item item1 = RoboScriptArgumentPredicates.asItem(parameters[0]);
+						Item item2 = RoboScriptArgumentPredicates.optional(parameters[1],
+								RoboScriptArgumentPredicates::asItem);
 
 						if (item1 == Items.AIR)
-							throw new RoboScriptRuntimeError(errorToken, "Invalid first itemId.");
-
+							throw new RuntimeError("Invalid first itemId.");
 						if (item2 == Items.AIR)
-							throw new RoboScriptRuntimeError(errorToken, "Invalid second itemId.");
+							throw new RuntimeError("Invalid second itemId.");
 
 						RedstoneLinkNetworkHandler.Frequency secondFrequency = RedstoneLinkNetworkHandler.Frequency.EMPTY;
 						if (item2 != null)
@@ -280,7 +256,19 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 						}
 						return null;
 					});
-					super.defineDefaultFunctions();
+					super.defineNativeFunctions();
+				}
+
+				@Override
+				protected void handlePrintMessage(String message) {
+					AbstractRobotEntity.this.terminal.addLine(message);
+					AbstractRobotEntity.this.saveWithoutId(new CompoundTag());
+				}
+
+				@Override
+				protected void handleErrorMessage(String error) {
+					AbstractRobotEntity.this.terminal.addLine(error);
+					AbstractRobotEntity.this.saveWithoutId(new CompoundTag());
 				}
 			};
 		} else {
@@ -348,8 +336,8 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 		pCompound.putString("Script", this.script);
 		pCompound.putString("Terminal", this.terminal.getString());
 		if (this.isProgrammable()) {
-			pCompound.put("Memory",
-					CompoundTagEnvironmentConversionHelper.valuesToTag(this.roboScript.getPersistentVariables()));
+			/*pCompound.put("Memory",
+					CompoundTagEnvironmentConversionHelper.valuesToTag(this.roboScript.getPersistentVariables()));*/
 		}
 		super.addAdditionalSaveData(pCompound);
 	}
@@ -362,9 +350,9 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 			this.script = pCompound.getString("Script");
 			this.terminal = new LineLimitedString(TERMINAL_LINE_LIMIT, pCompound.getString("Terminal"));
 			if (this.isProgrammable()) {
-				this.roboScript.putVariables(
+				/*this.roboScript.putVariables(
 						CompoundTagEnvironmentConversionHelper.valuesFromCompoundTag(
-								pCompound.getCompound("Memory")));
+								pCompound.getCompound("Memory")));*/
 			}
 			super.readAdditionalSaveData(pCompound);
 		} catch (NullPointerException exception) {

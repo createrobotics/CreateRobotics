@@ -172,5 +172,4 @@ public class BlockRegistry {
 			.item(InputBlockItem::new)
 			.build()
 			.register();
-
 }
