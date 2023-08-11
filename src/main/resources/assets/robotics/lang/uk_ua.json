@@ -1,28 +1,36 @@
 {
-  "itemGroup.robotics": "Створити механізм",
-
-  "item.robotics.tin_ingot": "Олов'яний злиток",
-  "item.robotics.tin_nugget": "Олов'яний шматочок",
-  "item.robotics.raw_tin": "Рудне олово",
+  
+  "_": "->------------------------]  Game Elements  [------------------------<-",
+  
+  "block.robotics.bronze_block": "Бронзовий блок",
+  "block.robotics.code_editor": "Редактор коду",
+  "block.robotics.computer": "Комп'ютер",
+  "block.robotics.deepslate_tin_ore": "Глибосланська олов'яна руда",
+  "block.robotics.redstone_detector": "Детектор редстоуну",
+  "block.robotics.scanner": "Сканер",
+  "block.robotics.smasher": "Розгромник",
+  "block.robotics.tin_block": "Олов'яний блок",
+  "block.robotics.tin_ore": "Олов'яна руда",
+  
+  "entity.robotics.clockcopter": "Годиниковий гелікоптер",
+  "entity.robotics.code_drone": "Juan",
+  "entity.robotics.extend_o_boots": "Довгі чоботи",
+  "entity.robotics.flying_toolbox": "Літаючий ящик з інструментами",
+  "entity.robotics.miner": "Копальник",
+  
   "item.robotics.bronze_ingot": "Бронзовий злиток",
   "item.robotics.bronze_nugget": "Бронзовий шматочок",
-  "item.robotics.program": "Програма",
   "item.robotics.clockcopter": "Годиниковий гелікоптер",
-  "item.robotics.miner": "Копальник",
-  "item.robotics.code_drone": "Запрограмувати дрона",
+  "item.robotics.code_drone": "Juan",
   "item.robotics.extend_o_boots": "Довгі чоботи",
+  "item.robotics.program": "Програма",
+  "item.robotics.raw_tin": "Рудне олово",
+  "item.robotics.tin_ingot": "Олов'яний злиток",
+  "item.robotics.tin_nugget": "Олов'яний шматочок",
 
-  "block.robotics.tin_ore": "Олов'яна руда",
-  "block.robotics.deepslate_tin_ore": "Глибосланська олов'яна руда",
-  "block.robotics.tin_block": "Олов'яний блок",
-  "block.robotics.bronze_block": "Бронзовий блок",
-  "block.robotics.smasher_block": "Розгромник",
-  "block.robotics.code_editor": "Редактор коду",
-
-  "entity.robotics.clockcopter": "Годиниковий гелікоптер",
-  "entity.robotics.code_drone": "Запрограмувати дрона",
-  "entity.robotics.miner": "Копальник",
-  "entity.robotics.extend_o_boots": "Довгі чоботи",
+  "itemGroup.robotics": "Створити механізм",
+  
+  "_": "->------------------------]  Tooltips  [------------------------<-",
 
   "item.robotics.extend_o_boots.tooltip": "ДОВГІ ЧОБОТИ",
   "item.robotics.extend_o_boots.tooltip.summary": "Ваші _обладнані будівельні ліси_! Дозволяють вам створювати _висувні тимчасові риштування_ під вами.",
@@ -40,9 +48,10 @@
   "block.robotics.code_editor.tooltip.summary": "Блок що дозволяє _редагувати_ _вміст_ програми!",
   "block.robotics.code_editor.tooltip.condition1": "Коли натискаєте праву кнопку миші з Програмою",
   "block.robotics.code_editor.tooltip.behaviour1": "Дозволяє вам _редагувати_ _програму_",
-
+  
   "robotics.ponder.programming.header": "Програмування використовуючи Редактор Коду.",
   "robotics.ponder.programming.text_1": "Щоб змінити вміст Програми, вам потрібен редактор коду.",
   "robotics.ponder.programming.text_2": "Натисніть праву кнопку миші на редактор коду з програмою щоб почати!",
   "robotics.ponder.programming.text_3": "Коли ви закінчите програмувати, натисніть праву кнопку миші з програмою на робота щоб завантажити код у нього."
+  
 }
