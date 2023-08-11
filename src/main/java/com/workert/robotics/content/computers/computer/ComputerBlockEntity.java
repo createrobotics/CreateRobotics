@@ -1,13 +1,21 @@
 package com.workert.robotics.content.computers.computer;
 
+import com.simibubi.create.Create;
 import com.simibubi.create.content.contraptions.base.KineticTileEntity;
+import com.simibubi.create.content.logistics.RedstoneLinkNetworkHandler;
+import com.simibubi.create.foundation.tileEntity.TileEntityBehaviour;
+import com.simibubi.create.foundation.utility.Couple;
 import com.workert.robotics.base.roboscript.RoboScript;
 import com.workert.robotics.base.roboscript.RoboScriptArgumentPredicates;
+import com.workert.robotics.base.roboscript.RuntimeError;
+import com.workert.robotics.base.roboscript.VirtualMachine;
 import com.workert.robotics.base.roboscript.ingame.LineLimitedString;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -25,10 +33,14 @@ public class ComputerBlockEntity extends KineticTileEntity {
 
 	private List<String> outputDisplay = new ArrayList<>();
 
+	private ComputerRedstoneLinkBehavior redstoneLinkBehavior = new ComputerRedstoneLinkBehavior(0, Couple.create(
+			RedstoneLinkNetworkHandler.Frequency.of(ItemStack.EMPTY),
+			RedstoneLinkNetworkHandler.Frequency.of(ItemStack.EMPTY)), this.getBlockPos());
+
 
 	public ComputerBlockEntity(BlockEntityType<?> type, BlockPos blockPos, BlockState blockState) {
 		super(type, blockPos, blockState);
-
+		Create.REDSTONE_LINK_NETWORK_HANDLER.addToNetwork(this.getLevel(), this.redstoneLinkBehavior);
 
 		this.roboScript = new RoboScript() {
 			@Override
@@ -52,6 +64,34 @@ public class ComputerBlockEntity extends KineticTileEntity {
 						return null;
 					}
 					ComputerBlockEntity.this.outputDisplay = List.of(RoboScriptArgumentPredicates.stringify(args[0]));
+					return null;
+				});
+				this.defineNativeFunction("emitLinkSignal", 3, (args) -> {
+					if (!(args[0] instanceof String blockID1 && args[1] instanceof String blockID2))
+						throw new RuntimeError("First two arguments of 'emitLinkSignal' needs to be strings or null.");
+					if (!(args[2] instanceof Double signalStrengthDouble))
+						throw new RuntimeError(
+								"Third argument of 'emitLinkSignal' must be a whole number greater or equal to 0.");
+					if (!VirtualMachine.isWhole(signalStrengthDouble) || VirtualMachine.isNegative(
+							signalStrengthDouble)) throw new RuntimeError(
+							"Third argument of 'emitLinkSignal' must be a whole number greater or equal to 0.");
+
+
+					Item item1 = RoboScriptArgumentPredicates.asItem(blockID1);
+					Item item2 = RoboScriptArgumentPredicates.asItem(blockID2);
+					this.handlePrintMessage(item1.toString());
+					this.handlePrintMessage(item2.toString());
+					if (signalStrengthDouble > 15) signalStrengthDouble = 15d;
+
+					ComputerBlockEntity.this.redstoneLinkBehavior.signalStrength = (int) Math.round(
+							signalStrengthDouble);
+					ComputerBlockEntity.this.redstoneLinkBehavior.frequency = Couple.create(
+							RedstoneLinkNetworkHandler.Frequency.of(item1.getDefaultInstance()),
+							RedstoneLinkNetworkHandler.Frequency.of(item2.getDefaultInstance()));
+					ComputerBlockEntity.this.redstoneLinkBehavior.blockPos = ComputerBlockEntity.this.getBlockPos();
+
+					Create.REDSTONE_LINK_NETWORK_HANDLER.updateNetworkOf(ComputerBlockEntity.this.level,
+							ComputerBlockEntity.this.redstoneLinkBehavior);
 					return null;
 				});
 			}
@@ -88,6 +128,11 @@ public class ComputerBlockEntity extends KineticTileEntity {
 		compound.putString("Script", this.script);
 		compound.putString("Terminal", this.terminal.getString());
 		compound.putBoolean("Running", this.running);
+	}
+
+	@Override
+	public void addBehavioursDeferred(List<TileEntityBehaviour> behaviours) {
+		super.addBehavioursDeferred(behaviours);
 	}
 
 	@Override

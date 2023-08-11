@@ -10,12 +10,12 @@ import static com.workert.robotics.base.roboscript.OpCode.*;
  * <p>
  * It prioritizes high-speed execution, often using boilerplate alternatives instead of more concise code.
  * <p>
- * Do not reuse this code.<br>
+ * Do not reuse this code. Do not instantiate this class.<br>
  * Instead, look at RoboScript AST for better written but slower running Examples.
  * <p>
  * If you want to make your own Scripting Language the Create Robotics Team recommends reading <a href="https://craftinginterpreters.com/">Crafting Interpreters</a>, a Book which has helped us a lot with implementing RoboScript.
  */
-final class VirtualMachine {
+public final class VirtualMachine {
 
 	/**
 	 * The instance of RoboScript running the virtual machine.
@@ -911,7 +911,7 @@ final class VirtualMachine {
 	 * @param o The object being evaluated.
 	 * @return The truthy value of the passed in object.
 	 */
-	private static boolean isTruthy(Object o) {
+	public static boolean isTruthy(Object o) {
 		if (o == null) return false;
 		if (o instanceof Boolean b) return b;
 		return true;
@@ -923,7 +923,7 @@ final class VirtualMachine {
 	 * @param d Double being checked for a whole number
 	 * @return The boolean value of the double being a whole number.
 	 */
-	private static boolean isWhole(double d) {
+	public static boolean isWhole(double d) {
 		return d == Math.floor(d);
 	}
 
@@ -933,7 +933,7 @@ final class VirtualMachine {
 	 * @param d Double being checked for a negative value.
 	 * @return The boolean value of the double being negative
 	 */
-	private static boolean isNegative(double d) {
+	public static boolean isNegative(double d) {
 		return d < 0;
 	}
 }
