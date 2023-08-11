@@ -5,6 +5,7 @@ import com.simibubi.create.content.contraptions.relays.belt.transport.Transporte
 import com.simibubi.create.foundation.tileEntity.SyncedTileEntity;
 import com.simibubi.create.foundation.tileEntity.TileEntityBehaviour;
 import com.workert.robotics.base.registries.BlockEntityRegistry;
+import com.workert.robotics.base.roboscript.util.RoboScriptObjectConversions;
 import com.workert.robotics.content.computers.computer.ComputerBlockEntity;
 import com.workert.robotics.content.computers.inputs.InputBlockEntity;
 import net.minecraft.core.BlockPos;
@@ -12,7 +13,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.List;
 
@@ -51,10 +51,9 @@ public class ScannerBlockEntity extends KineticTileEntity implements ScannerBeha
 	@Override
 	public boolean scanOnBelt(TransportedItemStack itemStack) {
 		if (this.level.getBlockEntity(this.targetPos) instanceof ComputerBlockEntity computer) {
-			Object[] args = {ForgeRegistries.ITEMS.getKey(
-					itemStack.stack.getItem()).toString(), itemStack.stack.getHoverName().getString(), (double) itemStack.stack.getCount()};
 			// TODO: Make this a class system
-			computer.interpretSignal(this.getSignalName(), args);
+			computer.interpretSignal(this.getSignalName(),
+					new Object[] {RoboScriptObjectConversions.itemStack(itemStack.stack)});
 		}
 		return true;
 	}

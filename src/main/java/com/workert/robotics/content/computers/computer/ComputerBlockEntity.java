@@ -2,8 +2,8 @@ package com.workert.robotics.content.computers.computer;
 
 import com.simibubi.create.content.contraptions.base.KineticTileEntity;
 import com.workert.robotics.base.roboscript.RoboScript;
-import com.workert.robotics.base.roboscript.RoboScriptArgumentPredicates;
 import com.workert.robotics.base.roboscript.ingame.LineLimitedString;
+import com.workert.robotics.base.roboscript.util.RoboScriptObjectConversions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -48,10 +48,10 @@ public class ComputerBlockEntity extends KineticTileEntity {
 				super.defineNativeFunctions();
 				this.defineNativeFunction("display", 1, (args) -> {
 					if (args[0] instanceof List l) {
-						ComputerBlockEntity.this.outputDisplay = RoboScriptArgumentPredicates.stringifyAllElements(l);
+						ComputerBlockEntity.this.outputDisplay = RoboScriptObjectConversions.stringifyAllElements(l);
 						return null;
 					}
-					ComputerBlockEntity.this.outputDisplay = List.of(RoboScriptArgumentPredicates.stringify(args[0]));
+					ComputerBlockEntity.this.outputDisplay = List.of(RoboScriptObjectConversions.stringify(args[0]));
 					return null;
 				});
 			}

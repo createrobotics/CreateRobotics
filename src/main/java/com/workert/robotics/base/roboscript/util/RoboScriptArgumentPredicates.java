@@ -1,5 +1,6 @@
-package com.workert.robotics.base.roboscript;
+package com.workert.robotics.base.roboscript.util;
 
+import com.workert.robotics.base.roboscript.RuntimeError;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
@@ -7,10 +8,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNullableByDefault;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Function;
 
 /**
@@ -149,15 +147,6 @@ public final class RoboScriptArgumentPredicates {
 		throw new RuntimeError("Argument must not be empty.");
 	}
 
-	public static List<String> stringifyAllElements(List<Object> elements) {
-		List<String> stringList = new ArrayList<>();
-		if (elements != null && !elements.isEmpty())
-			for (Object object : elements) {
-				stringList.add(stringify(object));
-			}
-		return stringList;
-	}
-
 	public static BlockPos asBlockPos(@Nonnull Object[] argumentList, int startingIndex) {
 		return new BlockPos(asNumber(argumentList[(startingIndex)]),
 				asNumber(argumentList[(startingIndex + 1)]),
@@ -194,25 +183,5 @@ public final class RoboScriptArgumentPredicates {
 
 	public static Item getItemById(@Nonnull String id) {
 		return Registry.ITEM.get(new ResourceLocation(id.trim().split(":")[0], id.trim().split(":")[1]));
-	}
-
-	/**
-	 * Gets a string value for an object passed in.
-	 *
-	 * @param object The object being stringified.
-	 * @return The string value of the object.
-	 */
-	public static String stringify(@Nullable Object object) {
-		if (object == null) return "null";
-
-		if (object instanceof Double) {
-			String text = object.toString();
-			if (text.endsWith(".0")) {
-				text = text.substring(0, text.length() - 2);
-			}
-			return text;
-		}
-
-		return object.toString();
 	}
 }

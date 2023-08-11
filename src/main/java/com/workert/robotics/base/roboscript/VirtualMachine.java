@@ -1,4 +1,6 @@
 package com.workert.robotics.base.roboscript;
+import com.workert.robotics.base.roboscript.util.RoboScriptObjectConversions;
+
 import java.util.*;
 
 import static com.workert.robotics.base.roboscript.OpCode.*;
@@ -764,7 +766,7 @@ final class VirtualMachine {
 		Object b = this.popStack();
 		Object a = this.popStack();
 		if (a instanceof String || b instanceof String) {
-			this.pushStack(a.toString() + b.toString());
+			this.pushStack(RoboScriptObjectConversions.stringify(a) + RoboScriptObjectConversions.stringify(b));
 			return;
 		} else if (!(a instanceof Double && b instanceof Double))
 			throw new RuntimeError("Addition must be between two numbers or a string.");
