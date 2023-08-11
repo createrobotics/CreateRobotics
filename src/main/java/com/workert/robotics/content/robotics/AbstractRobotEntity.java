@@ -8,9 +8,10 @@ import com.simibubi.create.content.logistics.RedstoneLinkNetworkHandler;
 import com.simibubi.create.foundation.utility.Couple;
 import com.workert.robotics.base.registries.ItemRegistry;
 import com.workert.robotics.base.roboscript.RoboScript;
-import com.workert.robotics.base.roboscript.RoboScriptArgumentPredicates;
 import com.workert.robotics.base.roboscript.RuntimeError;
 import com.workert.robotics.base.roboscript.ingame.LineLimitedString;
+import com.workert.robotics.base.roboscript.util.RoboScriptArgumentPredicates;
+import com.workert.robotics.base.roboscript.util.RoboScriptObjectConversions;
 import com.workert.robotics.unused.CodeHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -36,7 +37,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationTargetException;
@@ -80,9 +80,7 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 								for (int inventoryIndex = 0; inventoryIndex < AbstractRobotEntity.this.inventory.getContainerSize(); inventoryIndex++) {
 									ItemStack itemStack = AbstractRobotEntity.this.inventory.getItem(inventoryIndex);
 									if (itemStack.isEmpty()) continue;
-									itemList.add(List.of(ForgeRegistries.ITEMS.getKey(itemStack.getItem()).toString(),
-											itemStack.getHoverName().getString(),
-											(double) itemStack.getCount()));
+									itemList.add(RoboScriptObjectConversions.itemStack(itemStack));
 								}
 								return itemList;
 							});
