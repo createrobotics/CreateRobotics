@@ -1,41 +1,48 @@
-{
-  "itemGroup.robotics": "Створити механізм",
+{  
+  "_": "->------------------------]  Game Elements  [------------------------<-",
 
-  "item.robotics.tin_ingot": "Олов'яний злиток",
-  "item.robotics.tin_nugget": "Олов'яний шматочок",
-  "item.robotics.raw_tin": "Рудне олово",
-  "item.robotics.bronze_ingot": "Бронзовий злиток",
-  "item.robotics.bronze_nugget": "Бронзовий шматочок",
-  "item.robotics.program": "Програма",
-  "item.robotics.clockcopter": "Годиниковий гелікоптер",
-  "item.robotics.miner": "Копальник",
-  "item.robotics.code_drone": "Запрограмувати дрона",
-  "item.robotics.extend_o_boots": "Довгі чоботи",
-
-  "block.robotics.tin_ore": "Олов'яна руда",
-  "block.robotics.deepslate_tin_ore": "Глибосланська олов'яна руда",
-  "block.robotics.tin_block": "Олов'яний блок",
   "block.robotics.bronze_block": "Бронзовий блок",
-  "block.robotics.smasher_block": "Розгромник",
   "block.robotics.code_editor": "Редактор коду",
+  "block.robotics.computer": "Комп'ютер",
+  "block.robotics.deepslate_tin_ore": "Глибосланська олов'яна руда",
+  "block.robotics.redstone_detector": "Детектор редстоуну",
+  "block.robotics.scanner": "Сканер",
+  "block.robotics.smasher": "Розгромник",
+  "block.robotics.tin_block": "Олов'яний блок",
+  "block.robotics.tin_ore": "Олов'яна руда",
 
   "entity.robotics.clockcopter": "Годиниковий гелікоптер",
-  "entity.robotics.code_drone": "Запрограмувати дрона",
-  "entity.robotics.miner": "Копальник",
+  "entity.robotics.code_drone": "Juan",
   "entity.robotics.extend_o_boots": "Довгі чоботи",
+  "entity.robotics.flying_toolbox": "Літаючий ящик з інструментами",
+  "entity.robotics.miner": "Копальник",
+
+  "item.robotics.bronze_ingot": "Бронзовий злиток",
+  "item.robotics.bronze_nugget": "Бронзовий шматочок",
+  "item.robotics.clockcopter": "Годиниковий гелікоптер",
+  "item.robotics.code_drone": "Juan",
+  "item.robotics.extend_o_boots": "Довгі чоботи",
+  "item.robotics.program": "Програма",
+  "item.robotics.raw_tin": "Рудне олово",
+  "item.robotics.tin_ingot": "Олов'яний злиток",
+  "item.robotics.tin_nugget": "Олов'яний шматочок",
+
+  "itemGroup.robotics": "Створити механізм",
+
+  "_": "->------------------------]  Tooltips  [------------------------<-",
 
   "item.robotics.extend_o_boots.tooltip": "ДОВГІ ЧОБОТИ",
   "item.robotics.extend_o_boots.tooltip.summary": "Ваші _обладнані будівельні ліси_! Дозволяють вам створювати _висувні тимчасові риштування_ під вами.",
   "item.robotics.extend_o_boots.tooltip.control1": "Натисніть Ctrl поки носите",
   "item.robotics.extend_o_boots.tooltip.action1": "Дозволяє вам _активовувати_ Довгі чоботи чкркз _прокручування вверх чи в низ_",
-
+  
   "item.robotics.program.tooltip": "ПРОГРАМА",
   "item.robotics.program.tooltip.summary": "_Програма містить код_! Дозволяє вам _програмувати роботів_.",
   "item.robotics.program.tooltip.control1": "Натисніть праву кнопку миші на Редактор Коду",
   "item.robotics.program.tooltip.action1": "Дозволяє вам _редагувати_ _вміст_ програми",
   "item.robotics.program.tooltip.control2": "Натисніть праву кнопку миші на робота якого можна програмувати",
   "item.robotics.program.tooltip.action2": "Дозволяє вам _завантажити_ програмний _код_ у _робота_",
-
+  
   "block.robotics.code_editor.tooltip": "РЕДАКТОР КОДУ",
   "block.robotics.code_editor.tooltip.summary": "Блок що дозволяє _редагувати_ _вміст_ програми!",
   "block.robotics.code_editor.tooltip.condition1": "Коли натискаєте праву кнопку миші з Програмою",
