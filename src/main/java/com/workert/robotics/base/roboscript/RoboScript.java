@@ -37,14 +37,12 @@ public abstract class RoboScript {
 
 
 	protected void defineNativeFunctions() {
-		// print(arg)
 		this.defineNativeFunction("print", 1, args -> {
 			RoboScript.this.handlePrintMessage(RoboScriptObjectConversions.stringify(args[0]));
 			return null;
 		});
 
-		// str(arg)
-		this.defineNativeFunction("str", 1, args -> RoboScriptObjectConversions.stringify(args[0]));
+		this.defineNativeFunction("toString", 1, args -> RoboScriptObjectConversions.stringify(args[0]));
 
 		this.defineNativeFunction("sin", 1, args -> Math.sin(RoboScriptArgumentPredicates.asNumber(args[0])));
 		this.defineNativeFunction("cos", 1, args -> Math.cos(RoboScriptArgumentPredicates.asNumber(args[0])));
@@ -55,8 +53,6 @@ public abstract class RoboScript {
 		this.defineNativeFunction("abs", 1, args -> Math.abs(RoboScriptArgumentPredicates.asNumber(args[0])));
 		this.defineNativeFunction("floor", 1, args -> Math.floor(RoboScriptArgumentPredicates.asNumber(args[0])));
 		this.defineNativeFunction("ceil", 1, args -> Math.ceil(RoboScriptArgumentPredicates.asNumber(args[0])));
-
-		this.defineNativeFunction("test", 0, args -> 1f);
 	}
 
 	public final void defineNativeFunction(String name, int argumentCount, NativeFunctionFunctionalInterface function) {

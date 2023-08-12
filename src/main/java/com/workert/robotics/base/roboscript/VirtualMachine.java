@@ -696,6 +696,17 @@ public final class VirtualMachine {
 					}
 				};
 			}
+			case "split" -> {
+				return new RoboScriptNativeMethod<>(string, (byte) 1) {
+					@Override
+					Object run() {
+						if (!(VirtualMachine.this.popStack() instanceof String regex))
+							throw new RuntimeError(
+									"Expected a Regular Expression string as the argument of 'split'.");
+						return Arrays.asList(string.split(regex));
+					}
+				};
+			}
 			default -> throw new RuntimeError("Built-in type 'String' does not have method '" + key + "'.");
 		}
 	}
