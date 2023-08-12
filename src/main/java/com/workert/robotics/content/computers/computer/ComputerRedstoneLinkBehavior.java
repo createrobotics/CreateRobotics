@@ -15,10 +15,6 @@ public class ComputerRedstoneLinkBehavior implements IRedstoneLinkable {
 		this.blockPos = blockPos;
 	}
 
-	ComputerRedstoneLinkBehavior() {
-
-	}
-
 	@Override
 	public int getTransmittedStrength() {
 		return this.signalStrength;

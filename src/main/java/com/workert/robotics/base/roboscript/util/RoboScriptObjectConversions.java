@@ -49,6 +49,9 @@ public final class RoboScriptObjectConversions {
 	}
 
 	public static Object prepareForRoboScriptUse(Object object) {
+		if (object == null)
+			return null;
+
 		if (object instanceof List<?> list) {
 			List<Object> preparedList = new ArrayList<>();
 			for (Object listObject : list) {

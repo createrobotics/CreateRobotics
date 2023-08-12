@@ -39,7 +39,6 @@ public class ComputerBlockEntity extends KineticTileEntity {
 
 	public ComputerBlockEntity(BlockEntityType<?> type, BlockPos blockPos, BlockState blockState) {
 		super(type, blockPos, blockState);
-		Create.REDSTONE_LINK_NETWORK_HANDLER.addToNetwork(this.getLevel(), this.redstoneLinkBehavior);
 
 		this.roboScript = new RoboScript() {
 			@Override
@@ -65,28 +64,40 @@ public class ComputerBlockEntity extends KineticTileEntity {
 					ComputerBlockEntity.this.outputDisplay = List.of(RoboScriptObjectConversions.stringify(args[0]));
 					return null;
 				});
-				this.defineNativeFunction("emitLinkSignal", 3, (args) -> {
-					Item item1 = RoboScriptArgumentPredicates.asItem(args[0]);
-					Item item2 = RoboScriptArgumentPredicates.asItem(args[1]);
-					int signalStrength = RoboScriptArgumentPredicates.asPositiveFullNumber(args[2], true);
+				this.defineNativeFunction("setLinkPower", 1, (args) -> {
+					int signalStrength = RoboScriptArgumentPredicates.asPositiveFullNumber(args[0], true);
 
-					this.handlePrintMessage(item1.toString());
-					this.handlePrintMessage(item2.toString());
-					if (signalStrength > 15) signalStrength = 15;
-
-					ComputerBlockEntity.this.redstoneLinkBehavior.signalStrength = (int) Math.round(
-							signalStrength);
-					ComputerBlockEntity.this.redstoneLinkBehavior.frequency = Couple.create(
-							RedstoneLinkNetworkHandler.Frequency.of(item1.getDefaultInstance()),
-							RedstoneLinkNetworkHandler.Frequency.of(item2.getDefaultInstance()));
-					ComputerBlockEntity.this.redstoneLinkBehavior.blockPos = ComputerBlockEntity.this.getBlockPos();
+					ComputerBlockEntity.this.redstoneLinkBehavior.signalStrength = Math.min(
+							signalStrength, 15);
 
 					Create.REDSTONE_LINK_NETWORK_HANDLER.updateNetworkOf(ComputerBlockEntity.this.level,
 							ComputerBlockEntity.this.redstoneLinkBehavior);
 					return null;
 				});
+				this.defineNativeFunction("setLinkFrequency", 2, (args) -> {
+					Create.REDSTONE_LINK_NETWORK_HANDLER.removeFromNetwork(ComputerBlockEntity.this.level,
+							ComputerBlockEntity.this.redstoneLinkBehavior);
+
+					Item item1 = RoboScriptArgumentPredicates.asItem(args[0]);
+					Item item2 = RoboScriptArgumentPredicates.asItem(args[1]);
+
+					// TODO Use RedstoneLinkNetworkHandler.Frequency.EMPTY when null asItem
+					ComputerBlockEntity.this.redstoneLinkBehavior.frequency = Couple.create(
+							RedstoneLinkNetworkHandler.Frequency.of(item1.getDefaultInstance()),
+							RedstoneLinkNetworkHandler.Frequency.of(item2.getDefaultInstance()));
+
+					Create.REDSTONE_LINK_NETWORK_HANDLER.addToNetwork(ComputerBlockEntity.this.level,
+							ComputerBlockEntity.this.redstoneLinkBehavior);
+					return null;
+				});
 			}
 		};
+	}
+
+	@Override
+	public void onLoad() {
+		super.onLoad();
+		Create.REDSTONE_LINK_NETWORK_HANDLER.addToNetwork(this.getLevel(), this.redstoneLinkBehavior);
 	}
 
 	public void runScript() {
