@@ -47,11 +47,6 @@ public class RedstoneDetectorBlockEntity extends SyncedTileEntity implements IOB
 	}
 
 	@Override
-	public void setTargetPos(BlockPos targetPos) {
-		this.targetPos = targetPos;
-	}
-
-	@Override
 	public BlockPos getBlockEntityPos() {
 		return this.getBlockPos();
 	}

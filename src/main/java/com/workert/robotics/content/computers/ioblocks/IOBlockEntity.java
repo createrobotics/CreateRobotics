@@ -10,8 +10,6 @@ public interface IOBlockEntity {
 
 	BlockPos getTargetPos();
 
-	void setTargetPos(BlockPos targetPos);
-
 	BlockPos getBlockEntityPos();
 
 	SyncedTileEntity getBlockEntity();

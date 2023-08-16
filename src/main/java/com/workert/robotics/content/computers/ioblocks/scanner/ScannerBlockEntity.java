@@ -79,11 +79,6 @@ public class ScannerBlockEntity extends KineticTileEntity implements ScannerBeha
 	}
 
 	@Override
-	public void setTargetPos(BlockPos targetPos) {
-		this.targetPos = targetPos;
-	}
-
-	@Override
 	public BlockPos getBlockEntityPos() {
 		return this.getBlockPos();
 	}
