@@ -6,15 +6,15 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 
-public class ConfigureInputSignalPacket extends TileEntityConfigurationPacket<SyncedTileEntity> {
+public class ConfigureIOBlockSignalPacket extends TileEntityConfigurationPacket<SyncedTileEntity> {
 	private String signalName;
 
-	public ConfigureInputSignalPacket(BlockPos pos, String signalName) {
+	public ConfigureIOBlockSignalPacket(BlockPos pos, String signalName) {
 		super(pos);
 		this.signalName = signalName;
 	}
 
-	public ConfigureInputSignalPacket(FriendlyByteBuf buffer) {
+	public ConfigureIOBlockSignalPacket(FriendlyByteBuf buffer) {
 		super(buffer);
 	}
 

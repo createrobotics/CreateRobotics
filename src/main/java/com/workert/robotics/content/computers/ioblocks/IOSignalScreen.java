@@ -103,7 +103,7 @@ public class IOSignalScreen extends AbstractSimiScreen {
 	}
 
 	private void confirm() {
-		PacketRegistry.CHANNEL.sendToServer(new ConfigureInputSignalPacket(this.blockPos, this.nameField.getValue()));
+		PacketRegistry.CHANNEL.sendToServer(new ConfigureIOBlockSignalPacket(this.blockPos, this.nameField.getValue()));
 		this.onClose();
 	}
 }

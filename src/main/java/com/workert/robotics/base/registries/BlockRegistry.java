@@ -10,7 +10,7 @@ import com.workert.robotics.Robotics;
 import com.workert.robotics.content.computers.computer.ComputerBlock;
 import com.workert.robotics.content.computers.computer.ComputerDisplaySource;
 import com.workert.robotics.content.computers.computer.TerminalDisplaySource;
-import com.workert.robotics.content.computers.ioblocks.InputBlockItem;
+import com.workert.robotics.content.computers.ioblocks.IOBlockItem;
 import com.workert.robotics.content.computers.ioblocks.redstonedetector.RedstoneDetectorBlock;
 import com.workert.robotics.content.computers.ioblocks.scanner.ScannerBlock;
 import com.workert.robotics.content.robotics.codeeditor.CodeEditorBlock;
@@ -158,7 +158,7 @@ public class BlockRegistry {
 							provider.models().getExistingFile(provider.modLoc("block/redstone_detector")))))
 			.initialProperties(() -> Blocks.STONE)
 			.transform(TagGen.pickaxeOnly())
-			.item(InputBlockItem::new)
+			.item(IOBlockItem::new)
 			.build()
 			.register();
 	public static final BlockEntry<ScannerBlock> SCANNER = Robotics.REGISTRATE
@@ -169,7 +169,7 @@ public class BlockRegistry {
 			.initialProperties(() -> Blocks.STONE)
 			.transform(TagGen.pickaxeOnly())
 			.properties(BlockBehaviour.Properties::noOcclusion)
-			.item(InputBlockItem::new)
+			.item(IOBlockItem::new)
 			.build()
 			.register();
 }
