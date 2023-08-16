@@ -1,4 +1,4 @@
-package com.workert.robotics.content.computers.inputs.redstonedetector;
+package com.workert.robotics.content.computers.ioblocks.redstonedetector;
 
 import com.simibubi.create.AllItems;
 import com.simibubi.create.foundation.block.ITE;
@@ -6,7 +6,7 @@ import com.simibubi.create.foundation.gui.ScreenOpener;
 import com.simibubi.create.foundation.utility.Iterate;
 import com.workert.robotics.base.registries.BlockEntityRegistry;
 import com.workert.robotics.content.computers.computer.ComputerBlockEntity;
-import com.workert.robotics.content.computers.inputs.InputSignalScreen;
+import com.workert.robotics.content.computers.ioblocks.IOSignalScreen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -87,7 +87,7 @@ public class RedstoneDetectorBlock extends Block implements EntityBlock, ITE<Red
 
 	@OnlyIn(value = Dist.CLIENT)
 	protected void displayScreen(RedstoneDetectorBlockEntity redstoneDetector, Player player) {
-		if (player instanceof LocalPlayer) ScreenOpener.open(new InputSignalScreen(redstoneDetector));
+		if (player instanceof LocalPlayer) ScreenOpener.open(new IOSignalScreen(redstoneDetector));
 	}
 
 	@Override

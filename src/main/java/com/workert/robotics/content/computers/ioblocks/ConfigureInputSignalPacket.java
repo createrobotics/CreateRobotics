@@ -1,4 +1,4 @@
-package com.workert.robotics.content.computers.inputs;
+package com.workert.robotics.content.computers.ioblocks;
 
 import com.simibubi.create.foundation.networking.TileEntityConfigurationPacket;
 import com.simibubi.create.foundation.tileEntity.SyncedTileEntity;
@@ -33,7 +33,7 @@ public class ConfigureInputSignalPacket extends TileEntityConfigurationPacket<Sy
 
 	@Override
 	protected void applySettings(SyncedTileEntity be) {
-		if (!(be instanceof InputBlockEntity input)) return;
+		if (!(be instanceof IOBlockEntity input)) return;
 		input.setSignalName(this.signalName);
 		input.getBlockEntity().sendData();
 	}

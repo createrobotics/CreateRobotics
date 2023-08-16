@@ -5,10 +5,10 @@ import com.workert.robotics.Robotics;
 import com.workert.robotics.content.computers.computer.ComputerBlockEntity;
 import com.workert.robotics.content.computers.computer.ComputerInstance;
 import com.workert.robotics.content.computers.computer.ComputerRenderer;
-import com.workert.robotics.content.computers.inputs.redstonedetector.RedstoneDetectorBlockEntity;
-import com.workert.robotics.content.computers.inputs.scanner.ScannerBlockEntity;
-import com.workert.robotics.content.computers.inputs.scanner.ScannerInstance;
-import com.workert.robotics.content.computers.inputs.scanner.ScannerRenderer;
+import com.workert.robotics.content.computers.ioblocks.redstonedetector.RedstoneDetectorBlockEntity;
+import com.workert.robotics.content.computers.ioblocks.scanner.ScannerBlockEntity;
+import com.workert.robotics.content.computers.ioblocks.scanner.ScannerInstance;
+import com.workert.robotics.content.computers.ioblocks.scanner.ScannerRenderer;
 import com.workert.robotics.unused.smasher.SmasherBlockEntity;
 
 public class BlockEntityRegistry {

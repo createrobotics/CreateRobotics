@@ -1,4 +1,4 @@
-package com.workert.robotics.content.computers.inputs;
+package com.workert.robotics.content.computers.ioblocks;
 import com.simibubi.create.CreateClient;
 import com.workert.robotics.content.computers.computer.ComputerBlockEntity;
 import net.minecraft.ChatFormatting;
@@ -63,7 +63,7 @@ public class InputBlockItem extends BlockItem {
 			InteractionResult result = super.useOn(pContext);
 			pContext.getItemInHand().getTag().remove("BlockEntityTag");
 			if (pContext.getLevel().isClientSide)
-				InputTargetHandler.flush();
+				IOTargetHandler.flush();
 			return result;
 		}
 	}

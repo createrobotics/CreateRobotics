@@ -1,4 +1,4 @@
-package com.workert.robotics.content.computers.inputs.scanner;
+package com.workert.robotics.content.computers.ioblocks.scanner;
 
 import com.simibubi.create.content.contraptions.base.KineticTileEntity;
 import com.simibubi.create.content.contraptions.relays.belt.transport.TransportedItemStack;
@@ -7,7 +7,7 @@ import com.simibubi.create.foundation.tileEntity.TileEntityBehaviour;
 import com.workert.robotics.base.registries.BlockEntityRegistry;
 import com.workert.robotics.base.roboscript.util.RoboScriptObjectConversions;
 import com.workert.robotics.content.computers.computer.ComputerBlockEntity;
-import com.workert.robotics.content.computers.inputs.InputBlockEntity;
+import com.workert.robotics.content.computers.ioblocks.IOBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -16,7 +16,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.List;
 
-public class ScannerBlockEntity extends KineticTileEntity implements ScannerBehaviour.ScanningBehaviorSpecifics, InputBlockEntity {
+public class ScannerBlockEntity extends KineticTileEntity implements ScannerBehaviour.ScanningBehaviorSpecifics, IOBlockEntity {
 	public ScannerBehaviour processingBehaviour;
 	private BlockPos targetPos = this.getBlockPos();
 	private String signalName = "";

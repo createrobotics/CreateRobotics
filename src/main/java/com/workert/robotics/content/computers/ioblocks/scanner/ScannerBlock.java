@@ -1,4 +1,4 @@
-package com.workert.robotics.content.computers.inputs.scanner;
+package com.workert.robotics.content.computers.ioblocks.scanner;
 
 import com.simibubi.create.AllItems;
 import com.simibubi.create.AllShapes;
@@ -6,7 +6,7 @@ import com.simibubi.create.content.contraptions.base.HorizontalKineticBlock;
 import com.simibubi.create.foundation.block.ITE;
 import com.simibubi.create.foundation.gui.ScreenOpener;
 import com.workert.robotics.base.registries.BlockEntityRegistry;
-import com.workert.robotics.content.computers.inputs.InputSignalScreen;
+import com.workert.robotics.content.computers.ioblocks.IOSignalScreen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -57,7 +57,7 @@ public class ScannerBlock extends HorizontalKineticBlock implements ITE<ScannerB
 
 	@OnlyIn(value = Dist.CLIENT)
 	protected void displayScreen(ScannerBlockEntity scanner, Player player) {
-		if (player instanceof LocalPlayer) ScreenOpener.open(new InputSignalScreen(scanner));
+		if (player instanceof LocalPlayer) ScreenOpener.open(new IOSignalScreen(scanner));
 	}
 
 	@Override

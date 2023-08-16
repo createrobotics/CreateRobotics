@@ -5,7 +5,7 @@ import com.workert.robotics.Robotics;
 import com.workert.robotics.content.computers.computer.ComputerClearTerminalPacket;
 import com.workert.robotics.content.computers.computer.ComputerToggleRunningPacket;
 import com.workert.robotics.content.computers.computer.ConfigureComputerScriptPacket;
-import com.workert.robotics.content.computers.inputs.ConfigureInputSignalPacket;
+import com.workert.robotics.content.computers.ioblocks.ConfigureInputSignalPacket;
 import com.workert.robotics.content.robotics.codeeditor.ReturnEditedCodePacket;
 import com.workert.robotics.content.robotics.flyingtoolbox.FlyingToolboxEquipPacket;
 import com.workert.robotics.content.robotics.flyingtoolbox.FlyingToolboxGetSelectedToolboxEntityIdPacket;

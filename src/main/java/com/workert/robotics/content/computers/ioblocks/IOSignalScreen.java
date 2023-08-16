@@ -1,4 +1,4 @@
-package com.workert.robotics.content.computers.inputs;
+package com.workert.robotics.content.computers.ioblocks;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.AllItems;
@@ -17,7 +17,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.lwjgl.glfw.GLFW;
 
-public class InputSignalScreen extends AbstractSimiScreen {
+public class IOSignalScreen extends AbstractSimiScreen {
 
 	private AllGuiTextures background;
 	private EditBox nameField;
@@ -30,7 +30,7 @@ public class InputSignalScreen extends AbstractSimiScreen {
 
 	private BlockEntity be;
 
-	public InputSignalScreen(BlockEntity be) {
+	public IOSignalScreen(BlockEntity be) {
 		super(Component.literal("Edit Signal Name"));
 		this.background = AllGuiTextures.SCHEMATIC_PROMPT;
 
@@ -40,7 +40,7 @@ public class InputSignalScreen extends AbstractSimiScreen {
 
 	@Override
 	protected void init() {
-		if (!(this.be instanceof InputBlockEntity inputBlock)) {
+		if (!(this.be instanceof IOBlockEntity inputBlock)) {
 			this.onClose();
 			return;
 		}

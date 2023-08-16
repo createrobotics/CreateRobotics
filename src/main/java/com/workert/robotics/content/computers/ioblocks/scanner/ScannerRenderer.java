@@ -1,4 +1,4 @@
-package com.workert.robotics.content.computers.inputs.scanner;
+package com.workert.robotics.content.computers.ioblocks.scanner;
 
 import com.jozufozu.flywheel.backend.Backend;
 import com.mojang.blaze3d.vertex.PoseStack;

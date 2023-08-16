@@ -1,4 +1,4 @@
-package com.workert.robotics.content.computers.inputs;
+package com.workert.robotics.content.computers.ioblocks;
 import com.simibubi.create.AllItems;
 import com.simibubi.create.CreateClient;
 import com.workert.robotics.content.computers.computer.ComputerBlockEntity;
@@ -20,7 +20,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT)
-public class InputTargetHandler {
+public class IOTargetHandler {
 	static BlockPos currentSelection;
 	static ItemStack currentItem;
 	static long lastHoveredBlockPos;
@@ -97,7 +97,7 @@ public class InputTargetHandler {
 		BlockPos resultPos = result.getBlockPos();
 
 		BlockEntity te = Minecraft.getInstance().level.getBlockEntity(resultPos);
-		if (!(te instanceof InputBlockEntity inputBlockEntity)) {
+		if (!(te instanceof IOBlockEntity inputBlockEntity)) {
 			lastHoveredBlockPos = -1;
 			currentSelection = null;
 			return;

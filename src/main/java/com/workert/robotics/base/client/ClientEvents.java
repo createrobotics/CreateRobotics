@@ -1,5 +1,5 @@
 package com.workert.robotics.base.client;
-import com.workert.robotics.content.computers.inputs.InputTargetHandler;
+import com.workert.robotics.content.computers.ioblocks.IOTargetHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.TickEvent;
@@ -13,7 +13,7 @@ public class ClientEvents {
 		if (!isGameActive())
 			return;
 
-		InputTargetHandler.tick();
+		IOTargetHandler.tick();
 	}
 
 	protected static boolean isGameActive() {
