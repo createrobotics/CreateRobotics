@@ -3,7 +3,6 @@ package com.workert.robotics.base.registries;
 import com.simibubi.create.content.AllSections;
 import com.simibubi.create.content.logistics.block.display.AllDisplayBehaviours;
 import com.simibubi.create.foundation.block.BlockStressDefaults;
-import com.simibubi.create.foundation.data.SharedProperties;
 import com.simibubi.create.foundation.data.TagGen;
 import com.tterrag.registrate.providers.loot.RegistrateBlockLootTables;
 import com.tterrag.registrate.util.entry.BlockEntry;
@@ -11,8 +10,6 @@ import com.workert.robotics.Robotics;
 import com.workert.robotics.content.computers.computer.ComputerBlock;
 import com.workert.robotics.content.computers.computer.ComputerDisplaySource;
 import com.workert.robotics.content.computers.computer.TerminalDisplaySource;
-import com.workert.robotics.content.computers.datalink.DataLinkBlock;
-import com.workert.robotics.content.computers.datalink.DataLinkBlockItem;
 import com.workert.robotics.content.computers.inputs.InputBlockItem;
 import com.workert.robotics.content.computers.inputs.redstonedetector.RedstoneDetectorBlock;
 import com.workert.robotics.content.computers.inputs.scanner.ScannerBlock;
@@ -173,16 +170,6 @@ public class BlockRegistry {
 			.transform(TagGen.pickaxeOnly())
 			.properties(BlockBehaviour.Properties::noOcclusion)
 			.item(InputBlockItem::new)
-			.build()
-			.register();
-	public static final BlockEntry<DataLinkBlock> DATA_LINK = Robotics.REGISTRATE
-			.block("data_link", DataLinkBlock::new)
-			.lang("Data Link")
-			.blockstate((dataGenContext, provider) -> provider.simpleBlock(dataGenContext.get(),
-					provider.models().getExistingFile(provider.modLoc("block/data_link"))))
-			.initialProperties(() -> SharedProperties.softMetal())
-			.transform(TagGen.pickaxeOnly())
-			.item(DataLinkBlockItem::new)
 			.build()
 			.register();
 }

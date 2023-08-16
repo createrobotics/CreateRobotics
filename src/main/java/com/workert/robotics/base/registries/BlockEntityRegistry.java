@@ -5,7 +5,6 @@ import com.workert.robotics.Robotics;
 import com.workert.robotics.content.computers.computer.ComputerBlockEntity;
 import com.workert.robotics.content.computers.computer.ComputerInstance;
 import com.workert.robotics.content.computers.computer.ComputerRenderer;
-import com.workert.robotics.content.computers.datalink.DataLinkBlockEntity;
 import com.workert.robotics.content.computers.inputs.redstonedetector.RedstoneDetectorBlockEntity;
 import com.workert.robotics.content.computers.inputs.scanner.ScannerBlockEntity;
 import com.workert.robotics.content.computers.inputs.scanner.ScannerInstance;
@@ -37,10 +36,5 @@ public class BlockEntityRegistry {
 			.instance(() -> ScannerInstance::new)
 			.validBlocks(BlockRegistry.SCANNER)
 			.renderer(() -> ScannerRenderer::new)
-			.register();
-	public static final BlockEntityEntry<DataLinkBlockEntity> DATA_LINK = Robotics.REGISTRATE
-			.tileEntity("data_link", DataLinkBlockEntity::new)
-			.validBlock(BlockRegistry.DATA_LINK)
-			// TODO: add renderer once texture is created
 			.register();
 }
