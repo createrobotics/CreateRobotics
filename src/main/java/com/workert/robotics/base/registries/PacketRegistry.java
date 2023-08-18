@@ -5,7 +5,7 @@ import com.workert.robotics.Robotics;
 import com.workert.robotics.content.computers.computer.ComputerClearTerminalPacket;
 import com.workert.robotics.content.computers.computer.ComputerToggleRunningPacket;
 import com.workert.robotics.content.computers.computer.ConfigureComputerScriptPacket;
-import com.workert.robotics.content.computers.ioblocks.ConfigureInputSignalPacket;
+import com.workert.robotics.content.computers.ioblocks.ConfigureIOBlockSignalPacket;
 import com.workert.robotics.content.robotics.codeeditor.ReturnEditedCodePacket;
 import com.workert.robotics.content.robotics.flyingtoolbox.FlyingToolboxEquipPacket;
 import com.workert.robotics.content.robotics.flyingtoolbox.FlyingToolboxGetSelectedToolboxEntityIdPacket;
@@ -30,7 +30,7 @@ public enum PacketRegistry {
 	CHANGE_EXTEND_O_BOOTS_HEIGHT(ChangeExtendOBootsHeightPacket.class, ChangeExtendOBootsHeightPacket::new,
 			PLAY_TO_SERVER),
 	RETURN_EDITED_CODE(ReturnEditedCodePacket.class, ReturnEditedCodePacket::new, PLAY_TO_SERVER),
-	CONFIGURE_INPUT_SIGNAL(ConfigureInputSignalPacket.class, ConfigureInputSignalPacket::new, PLAY_TO_SERVER),
+	CONFIGURE_INPUT_SIGNAL(ConfigureIOBlockSignalPacket.class, ConfigureIOBlockSignalPacket::new, PLAY_TO_SERVER),
 	CONFIGURE_COMPUTER_SCRIPT(ConfigureComputerScriptPacket.class, ConfigureComputerScriptPacket::new, PLAY_TO_SERVER),
 	CLEAR_COMPUTER_TERMINAL(ComputerClearTerminalPacket.class, ComputerClearTerminalPacket::new, PLAY_TO_SERVER),
 	COMPUTER_SET_RUNNING(ComputerToggleRunningPacket.class, ComputerToggleRunningPacket::new, PLAY_TO_SERVER),

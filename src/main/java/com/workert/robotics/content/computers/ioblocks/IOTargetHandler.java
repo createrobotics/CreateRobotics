@@ -75,7 +75,7 @@ public class IOTargetHandler {
 		if (player == null)
 			return;
 		ItemStack heldItem = player.getMainHandItem();
-		if (!(heldItem.getItem() instanceof InputBlockItem)) {
+		if (!(heldItem.getItem() instanceof IOBlockItem)) {
 			currentItem = null;
 		} else {
 			if (heldItem != currentItem) {

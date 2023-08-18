@@ -19,8 +19,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class InputBlockItem extends BlockItem {
-	public InputBlockItem(Block pBlock, Properties pProperties) {
+public class IOBlockItem extends BlockItem {
+	public IOBlockItem(Block pBlock, Properties pProperties) {
 		super(pBlock, pProperties);
 	}
 
