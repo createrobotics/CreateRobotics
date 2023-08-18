@@ -65,11 +65,6 @@ public final class VirtualMachine {
 	final Map<String, Object> signals = new HashMap<>();
 
 	/**
-	 * The queue of signals to not mess anything up in the vm.
-	 */
-	private final Queue<Object> signalQueue = new LinkedList<>();
-
-	/**
 	 * Global functions that are defined natively and use Java code.
 	 */
 	RoboScript.NativeFunction[] nativeFunctions = new RoboScript.NativeFunction[Short.MAX_VALUE];
@@ -132,7 +127,6 @@ public final class VirtualMachine {
 				this.stopQueued = false;
 				return;
 			}
-			this.executeSignalQueue();
 			switch (this.readByte()) {
 				case OP_CONSTANT -> this.pushStack(this.chunk.finalConstants[this.readShort()]);
 
@@ -540,81 +534,8 @@ public final class VirtualMachine {
 
 					clazz.superclass = superclass;
 				}
-				case OP_MAKE_SIGNAL -> {
-					Object function = this.popStack();
-					String name = (String) this.popStack();
-					if (!(function instanceof RoboScriptFunction || function instanceof RoboScript.NativeFunction))
-						throw new RuntimeError("Object set to signal must be a function.");
-					this.signals.put(name, function);
-				}
 			}
 		}
-	}
-
-
-	/**
-	 * Executes all current signals in the signal queue.
-	 */
-	private void executeSignalQueue() {
-		while (this.signalQueue.size() > 0) {
-			Object cs = this.signalQueue.remove();
-			if (!(cs instanceof ComputerSignal computerSignal))
-				throw new IllegalArgumentException("Unexpected object in signal queue.");
-			this.runSignal(computerSignal);
-		}
-	}
-
-	/**
-	 * Runs a signal function.
-	 *
-	 * @param computerSignal The signal being ran.
-	 */
-	private void runSignal(ComputerSignal computerSignal) {
-		this.runningState = true;
-		for (Object object : computerSignal.args) {
-			this.pushStack(object);
-		}
-		Object signalFunction = this.signals.get(computerSignal.name);
-		if (signalFunction instanceof RoboScriptFunction function) {
-			if (function.argumentCount != computerSignal.args.length) throw new RuntimeError(
-					"The function connected to the signal '" + computerSignal.name +
-							"' does not match the arity of the signal caller. Expected '" +
-							computerSignal.args.length +
-							"' parameters.");
-
-			// push return address and base pointer
-			this.pushStack(this.ip);
-			this.pushStack(this.bp);
-
-			this.ip = function.address;
-			this.bp = this.stackSize - function.argumentCount - 2;
-
-		} else if (signalFunction instanceof RoboScript.NativeFunction function) {
-			if (function.argumentCount != computerSignal.args.length) {
-				throw new RuntimeError(
-						"The function connected to the signal '" + computerSignal.name +
-								"' does not match the arity of the signal caller. Expected '" +
-								computerSignal.args.length +
-								"' parameters.");
-			}
-			Object returnValue = function.call(this);
-			this.pushStack(returnValue);
-
-		} else throw new IllegalArgumentException(
-				"Somehow got a non callable in the signal queue. Probably not great. Object: " + signalFunction.getClass());
-		this.executeSignalQueue();
-		this.runningState = false;
-	}
-
-	/**
-	 * Adds a signal to the signal queue and executes if the program is not currently running.
-	 * If the program is currently running, it will run it after the current instruction finishes.
-	 */
-	void addSignalToQueue(ComputerSignal s) {
-		if (this.signals.containsKey(s.name))
-			if (this.runningState)
-				this.signalQueue.add(s);
-			else new Thread(() -> this.runSignal(s)).start();
 	}
 
 

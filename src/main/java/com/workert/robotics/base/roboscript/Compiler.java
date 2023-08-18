@@ -83,8 +83,6 @@ public final class Compiler {
 				this.varDeclaration();
 			} else if (this.checkAndConsumeIfMatches(FUNCTION)) {
 				this.funcDeclaration();
-			} else if (this.checkAndConsumeIfMatches(SIGNAL)) {
-				this.signalDeclaration();
 			} else {
 				this.statement();
 			}
@@ -92,17 +90,7 @@ public final class Compiler {
 			this.synchronize();
 		}
 	}
-
-	private void signalDeclaration() {
-		this.consumeOrThrow(IDENTIFIER, "Expected signal name.");
-		String signalName = this.previous.lexeme;
-		this.emitConstant(signalName);
-		this.consumeOrThrow(LEFT_PAREN, "Expected '(' after signal name.");
-		this.expression();
-		this.consumeOrThrow(RIGHT_PAREN, "Expected ')' after function expression.");
-		this.consumeOrInsertSemicolon("Expected ';' or new line after signal declaration.");
-		this.emitByte(OP_MAKE_SIGNAL);
-	}
+	
 
 	private void methodDeclaration(RoboScriptClass methodOwner, boolean hasSuper) {
 		this.consumeOrThrow(IDENTIFIER, "Expected method name");

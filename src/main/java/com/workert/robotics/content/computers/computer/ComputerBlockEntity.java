@@ -69,9 +69,10 @@ public class ComputerBlockEntity extends KineticTileEntity {
 	}
 
 	public void interpretSignal(String function, Object[] args) {
-		if (!function.isBlank())
+		/*if (!function.isBlank())
 			if (this.running)
 				this.roboScript.queueSignal(function, args);
+		*/
 	}
 
 	@Override
