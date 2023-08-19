@@ -1,10 +1,8 @@
 package com.workert.robotics.base.roboscript;
-public abstract class RoboScriptNativeMethod<T> {
-	T object;
+public abstract class RoboScriptNativeMethod {
 	byte argumentCount;
 
-	RoboScriptNativeMethod(T object, byte argumentCount) {
-		this.object = object;
+	RoboScriptNativeMethod(byte argumentCount) {
 		this.argumentCount = argumentCount;
 	}
 

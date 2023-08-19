@@ -300,7 +300,7 @@ public final class VirtualMachine {
 						break;
 					}
 
-					if (callable instanceof RoboScriptNativeMethod<?> function) {
+					if (callable instanceof RoboScriptNativeMethod function) {
 						if (function.argumentCount != argumentCount)
 							throw new RuntimeError(
 									"Expected " + function.argumentCount + " argument(s) but got " + argumentCount + ".");
@@ -542,10 +542,10 @@ public final class VirtualMachine {
 	 * @param key  The name of the method being gotten.
 	 * @return The method gotten from the list.
 	 */
-	private RoboScriptNativeMethod<List> getListNative(List list, String key) {
+	private RoboScriptNativeMethod getListNative(List list, String key) {
 		switch (key) {
 			case "add", "append" -> {
-				return new RoboScriptNativeMethod<>(list, (byte) 1) {
+				return new RoboScriptNativeMethod((byte) 1) {
 					@Override
 					Object run() {
 						list.add(VirtualMachine.this.popStack());
@@ -557,10 +557,10 @@ public final class VirtualMachine {
 		}
 	}
 
-	private RoboScriptNativeMethod<String> getStringNative(String string, String key) {
+	private RoboScriptNativeMethod getStringNative(String string, String key) {
 		switch (key) {
 			case "replaceAt" -> {
-				return new RoboScriptNativeMethod<>(string, (byte) 2) {
+				return new RoboScriptNativeMethod((byte) 2) {
 					@Override
 					Object run() {
 						if (!(VirtualMachine.this.popStack() instanceof String s))
@@ -581,7 +581,7 @@ public final class VirtualMachine {
 				};
 			}
 			case "split" -> {
-				return new RoboScriptNativeMethod<>(string, (byte) 1) {
+				return new RoboScriptNativeMethod((byte) 1) {
 					@Override
 					Object run() {
 						if (!(VirtualMachine.this.popStack() instanceof String regex))
