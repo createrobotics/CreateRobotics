@@ -244,10 +244,6 @@ final class Scanner {
 			case 't' -> {
 				return this.checkKeyword(1, 3, "rue", TRUE);
 			}
-			// lambda
-			case 'l' -> {
-				return this.checkKeyword(1, 5, "ambda", LAMBDA);
-			}
 
 			case 's' -> {
 				return this.checkKeyword(1, 5, "ignal", SIGNAL);

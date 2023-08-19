@@ -59,7 +59,7 @@ final class Token {
 		// Keywords.
 		CLASS(empty()),
 		SIGNAL(empty()),
-		FUNCTION(empty()),
+		FUNCTION(new Compiler.ParseRule(Compiler::lambda, null, NONE)),
 
 		FOR(empty()),
 		FOREACH(empty()),
@@ -81,8 +81,6 @@ final class Token {
 		VAR(empty()),
 
 		INSTANCEOF(empty()),
-
-		LAMBDA(new Compiler.ParseRule(Compiler::lambda, null, NONE)),
 
 		STRING(empty()),
 		DOUBLE(empty()),
