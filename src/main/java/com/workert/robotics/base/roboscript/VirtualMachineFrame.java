@@ -1,4 +1,7 @@
 package com.workert.robotics.base.roboscript;
+import java.util.HashMap;
+import java.util.Map;
+
 public class VirtualMachineFrame {
 	/**
 	 * The current chunk being interpreted.
@@ -19,7 +22,11 @@ public class VirtualMachineFrame {
 	 * Variables defined in the global scope; Can be accessed from anywhere.
 	 */
 	final Object[] globalVariables = new Object[256];
-	
+
+	/**
+	 * Signals that can be called externally using a string that
+	 */
+	final Map<String, Object> signals = new HashMap<>();
 
 	/**
 	 * Global functions that are defined natively and use Java code.
