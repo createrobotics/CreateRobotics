@@ -326,68 +326,14 @@ public final class VirtualMachine {
 					byte argumentCount = this.readByte();
 
 					Object callable = this.peekStack(argumentCount);
-
-
-					if (callable instanceof RoboScript.NativeFunction function) {
-						if (function.argumentCount != argumentCount)
-							throw new RuntimeError(
-									"Expected " + function.argumentCount + " argument(s) but got " + argumentCount + ".");
-						Object returnValue = function.call(this);
-						this.stack[this.stackSize - 1] = returnValue;
+					if (callable instanceof RoboScriptCallable c) {
+						c.call(this, argumentCount);
 						break;
 					}
-
-					if (callable instanceof RoboScriptNativeMethod function) {
-						if (function.argumentCount != argumentCount)
-							throw new RuntimeError(
-									"Expected " + function.argumentCount + " argument(s) but got " + argumentCount + ".");
-						Object returnValue = function.run();
-						this.stack[this.stackSize - 1] = returnValue;
-						break;
-					}
-
-					if (callable instanceof RoboScriptClass clazz) {
-						RoboScriptObject object = new RoboScriptObject(clazz);
-						if ((callable = this.getFunctionInClass(clazz, object, "init")) != null) {
-							this.stack[this.stackSize - 1 - argumentCount] = object;
-						} else {
-							this.pushStack(object);
-							break;
-						}
-					}
-
-
-					if (!(callable instanceof RoboScriptFunction function)) {
-						if (callable != null)
-							throw new RuntimeError(
-									"Can only call functions, instead got '" + callable.getClass() + "'.");
-						else
-							throw new RuntimeError("Can only call functions, instead got 'null'.");
-					}
-					if (argumentCount != function.argumentCount)
-						throw new RuntimeError(
-								"Expected " + function.argumentCount + " argument(s) but got " + argumentCount + ".");
-
-					if (callable instanceof RoboScriptMethod method) {
-						RoboScriptObject instance;
-						if (method.instance.settable)
-							instance = method.instance;
-						else
-							instance = ((RoboScriptSuper) method.instance).subclassObject;
-						this.pushStack(instance);
-						if (instance.clazz.superclass != null)
-							this.pushStack(new RoboScriptSuper(instance.clazz.superclass, instance));
-						else this.pushStack(null);
-
-						argumentCount += 2;
-					}
-
-					// push return address and base pointer
-					this.pushStack(this.ip);
-					this.pushStack(this.bp);
-
-					this.ip = function.address;
-					this.bp = this.stackSize - argumentCount - 2;
+					if (callable != null)
+						throw new RuntimeError("Can only call functions, instead got '" + callable.getClass() + "'.");
+					else
+						throw new RuntimeError("Can only call functions, instead got 'null'.");
 				}
 
 				case OP_RETURN -> {
@@ -563,7 +509,7 @@ public final class VirtualMachine {
 	 * @param fieldName The name of the function
 	 * @return The method after the function is bound, or null if the function is never found.
 	 */
-	private RoboScriptMethod getFunctionInClass(RoboScriptClass clazz, RoboScriptObject object, String fieldName) {
+	RoboScriptMethod getFunctionInClass(RoboScriptClass clazz, RoboScriptObject object, String fieldName) {
 		if (clazz.functions.containsKey(fieldName))
 			return new RoboScriptMethod(clazz.functions.get(fieldName), object);
 		if (clazz.superclass != null) {

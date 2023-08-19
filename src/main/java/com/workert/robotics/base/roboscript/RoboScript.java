@@ -88,7 +88,7 @@ public abstract class RoboScript {
 	protected abstract void handleErrorMessage(String error);
 
 
-	abstract static class NativeFunction {
+	abstract static class NativeFunction implements RoboScriptCallable {
 		int argumentCount = 0;
 
 		/**
@@ -98,5 +98,12 @@ public abstract class RoboScript {
 		 * @return The return value of the function (automatically gets pushed, do not worry about that)
 		 */
 		abstract Object call(VirtualMachine vm);
+
+		@Override
+		public final void call(VirtualMachine vm, byte argumentCount) {
+			if (this.argumentCount != argumentCount) throw new RuntimeError(
+					"Expected " + this.argumentCount + " argument(s) but got " + argumentCount + ".");
+			vm.stack[vm.stackSize - 1] = this.call(vm);
+		}
 	}
 }
