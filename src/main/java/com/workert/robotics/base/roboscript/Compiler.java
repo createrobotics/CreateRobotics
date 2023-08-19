@@ -90,7 +90,7 @@ public final class Compiler {
 			this.synchronize();
 		}
 	}
-	
+
 
 	private void methodDeclaration(RoboScriptClass methodOwner, boolean hasSuper) {
 		this.consumeOrThrow(IDENTIFIER, "Expected method name");
@@ -404,6 +404,22 @@ public final class Compiler {
 		this.patchJump(thenJump);
 		this.emitByte(OP_POP);
 		if (this.checkAndConsumeIfMatches(ELSE)) this.statementOrBlock();
+		this.patchJump(elseJump);
+	}
+
+	void ternary(boolean canAssign) {
+		this.consumeOrThrow(LEFT_PAREN, "Expected '(' after 'if'.");
+		this.expression();
+		this.consumeOrThrow(RIGHT_PAREN, "Expected ')' after condition.");
+
+		int thenJump = this.emitJump(OP_JUMP_IF_FALSE);
+		this.emitByte(OP_POP);
+		this.expression();
+		int elseJump = this.emitJump(OP_JUMP);
+		this.patchJump(thenJump);
+		this.emitByte(OP_POP);
+		this.consumeOrThrow(ELSE, "Expected 'else' after expression.");
+		this.expression();
 		this.patchJump(elseJump);
 	}
 
@@ -1005,16 +1021,16 @@ public final class Compiler {
 	protected interface Precedence {
 		byte NONE = 0;
 		byte ASSIGNMENT = 1; // =
-		byte OR = 2; // or
-		byte AND = 3; // and
-		byte EQUALITY = 4; // == !=
-		byte COMPARISON = 5; // < > <= >=
-		byte TERM = 6; // + -
-		byte FACTOR = 7; // * /
-		byte UNARY = 8; // ! -
-		byte POWER = 9; // ^
-		byte CALL = 10; // . ()
-		byte PRIMARY = 11;
+		byte TERNARY = 2;
+		byte OR = 3; // or
+		byte AND = 4; // and
+		byte EQUALITY = 5; // == !=
+		byte COMPARISON = 6; // < > <= >=
+		byte TERM = 7; // + -
+		byte FACTOR = 8; // * /
+		byte UNARY = 9; // ! -
+		byte POWER = 10; // ^
+		byte CALL = 11; // . ()
 	}
 
 
