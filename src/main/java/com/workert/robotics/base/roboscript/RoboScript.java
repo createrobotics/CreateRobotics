@@ -51,7 +51,7 @@ public abstract class RoboScript {
 	}
 
 	public final void defineNativeFunction(String name, int argumentCount, NativeFunctionFunctionalInterface function) {
-		RoboScriptNativeFunction nativeFunctionWrapper = new RoboScriptNativeFunction() {
+		RoboScriptNativeFunction nativeFunctionWrapper = new RoboScriptNativeFunction((byte) argumentCount) {
 			@Override
 			Object call() {
 				Object functionOutput;
@@ -67,7 +67,6 @@ public abstract class RoboScript {
 				return RoboScriptObjectConversions.prepareForRoboScriptUse(functionOutput);
 			}
 		};
-		nativeFunctionWrapper.argumentCount = (byte) argumentCount;
 		this.virtualMachine.nativeFunctions[this.virtualMachine.nativeFunctionSize] = nativeFunctionWrapper;
 		this.compiler.nativeFunctionLookup.put(name, (byte) this.virtualMachine.nativeFunctionSize++);
 	}

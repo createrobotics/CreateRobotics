@@ -523,10 +523,10 @@ public final class VirtualMachine {
 	 * @param key  The name of the method being gotten.
 	 * @return The method gotten from the list.
 	 */
-	private RoboScriptNativeMethod getListNative(List list, String key) {
+	private RoboScriptNativeFunction getListNative(List list, String key) {
 		switch (key) {
 			case "add", "append" -> {
-				return new RoboScriptNativeMethod((byte) 1) {
+				return new RoboScriptNativeFunction((byte) 1) {
 					@Override
 					Object call() {
 						list.add(VirtualMachine.this.popStack());
@@ -538,42 +538,39 @@ public final class VirtualMachine {
 		}
 	}
 
-	private RoboScriptNativeMethod getStringNative(String string, String key) {
-		switch (key) {
-			case "replaceAt" -> {
-				return new RoboScriptNativeMethod((byte) 2) {
-					@Override
-					Object call() {
-						if (!(VirtualMachine.this.popStack() instanceof String s))
-							throw new RuntimeError("Expected a string as the second argument of 'replaceAt'.");
-						if (!(VirtualMachine.this.popStack() instanceof Double location))
-							throw new RuntimeError("Expected a number as the first argument of 'replaceAt'.");
+	private RoboScriptNativeFunction getStringNative(String string, String key) {
+		return switch (key) {
+			case "replaceAt" -> new RoboScriptNativeFunction((byte) 2) {
+				@Override
+				Object call() {
+					if (!(VirtualMachine.this.popStack() instanceof String s))
+						throw new RuntimeError("Expected a string as the second argument of 'replaceAt'.");
+					if (!(VirtualMachine.this.popStack() instanceof Double location))
+						throw new RuntimeError("Expected a number as the first argument of 'replaceAt'.");
 
-						if (!isWhole(location) || isNegative(location)) throw new RuntimeError(
-								"Index value for string in first argument of 'replaceAt' must be a whole number greater or equal to 0.");
-						if (location >= string.length())
-							throw new RuntimeError(
-									"String index in first argument of 'replaceAt' out of range of '" + (string.length() - 1) + "'.");
+					if (!isWhole(location) || isNegative(location)) throw new RuntimeError(
+							"Index value for string in first argument of 'replaceAt' must be a whole number greater or equal to 0.");
+					if (location >= string.length())
+						throw new RuntimeError(
+								"String index in first argument of 'replaceAt' out of range of '" + (string.length() - 1) + "'.");
 
-						StringBuilder builder = new StringBuilder(string);
-						builder.replace((int) Math.round(location), (int) Math.round(location) + 1, s);
-						return builder.toString();
-					}
-				};
-			}
-			case "split" -> {
-				return new RoboScriptNativeMethod((byte) 1) {
-					@Override
-					Object call() {
-						if (!(VirtualMachine.this.popStack() instanceof String regex))
-							throw new RuntimeError(
-									"Expected a Regular Expression string as the argument of 'split'.");
-						return Arrays.asList(string.split(regex));
-					}
-				};
-			}
+					StringBuilder builder = new StringBuilder(string);
+					builder.replace((int) Math.round(location), (int) Math.round(location) + 1, s);
+					return builder.toString();
+				}
+			};
+
+			case "split" -> new RoboScriptNativeFunction((byte) 1) {
+				@Override
+				Object call() {
+					if (!(VirtualMachine.this.popStack() instanceof String regex))
+						throw new RuntimeError(
+								"Expected a Regular Expression string as the argument of 'split'.");
+					return Arrays.asList(string.split(regex));
+				}
+			};
 			default -> throw new RuntimeError("Built-in type 'String' does not have method '" + key + "'.");
-		}
+		};
 	}
 
 
