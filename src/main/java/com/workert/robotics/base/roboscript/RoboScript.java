@@ -7,8 +7,7 @@ import javax.annotation.Nonnull;
 
 public abstract class RoboScript {
 	Compiler compiler = new Compiler(this);
-	private VirtualMachineFrame frame = new VirtualMachineFrame();
-	VirtualMachine virtualMachine = new VirtualMachine(this, this.frame);
+	VirtualMachine virtualMachine = new VirtualMachine(this);
 
 	private boolean hadError = false;
 
@@ -16,7 +15,7 @@ public abstract class RoboScript {
 		new Thread(() -> {
 			this.hadError = false;
 			this.compiler = new Compiler(this);
-			this.virtualMachine = new VirtualMachine(this, this.frame = new VirtualMachineFrame());
+			this.virtualMachine = new VirtualMachine(this);
 			this.defineNativeFunctions();
 			this.compiler.compile(source);
 			if (this.hadError) {
@@ -69,8 +68,8 @@ public abstract class RoboScript {
 			}
 		};
 		nativeFunctionWrapper.argumentCount = argumentCount;
-		this.frame.nativeFunctions[this.frame.nativeFunctionSize] = nativeFunctionWrapper;
-		this.compiler.nativeFunctionLookup.put(name, (byte) this.frame.nativeFunctionSize++);
+		this.virtualMachine.nativeFunctions[this.virtualMachine.nativeFunctionSize] = nativeFunctionWrapper;
+		this.compiler.nativeFunctionLookup.put(name, (byte) this.virtualMachine.nativeFunctionSize++);
 	}
 
 	@FunctionalInterface

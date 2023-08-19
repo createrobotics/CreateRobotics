@@ -1,10 +1,7 @@
 package com.workert.robotics.base.roboscript;
 import com.workert.robotics.base.roboscript.util.RoboScriptObjectConversions;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.workert.robotics.base.roboscript.OpCode.*;
 
@@ -28,10 +25,19 @@ public final class VirtualMachine {
 	private final RoboScript roboScriptInstance;
 
 	/**
-	 * The current running frame of the virtual machine.
-	 * This is not a call frame, just a class with information on the vm.
+	 * The current chunk being interpreted.
 	 */
-	private final VirtualMachineFrame frame;
+	private Chunk chunk;
+
+	/**
+	 * The main stack of the program.
+	 */
+	final Object[] stack = new Object[256];
+
+	/**
+	 * The current stack size
+	 */
+	int stackSize = 0;
 
 	/**
 	 * The index of the current instruction.
@@ -39,17 +45,46 @@ public final class VirtualMachine {
 	int ip = 0;
 
 	/**
+	 * The running state of WRITTEN program.
+	 */
+	boolean runningState = false;
+
+	/**
 	 * The size of the stack when a new function is entered.
 	 */
 	int bp = 0;
+
+	/**
+	 * Variables defined in the global scope; Can be accessed from anywhere.
+	 */
+	private final Object[] globalVariables = new Object[256];
+
+	/**
+	 * Signals that can be called externally using a string that
+	 */
+	final Map<String, Object> signals = new HashMap<>();
+
+	/**
+	 * Global functions that are defined natively and use Java code.
+	 */
+	RoboScript.NativeFunction[] nativeFunctions = new RoboScript.NativeFunction[Short.MAX_VALUE];
+
+	/**
+	 * Halts the program when true.
+	 */
+	boolean stopQueued = false;
+
+	/**
+	 * The amount of all Native Functions in the `nativeFunctions` array.
+	 */
+	int nativeFunctionSize = 0;
 
 	/**
 	 * Creates a static virtual machine.
 	 *
 	 * @param instance The instance of RoboScript running the virtual machine.
 	 */
-	VirtualMachine(RoboScript instance, VirtualMachineFrame frame) {
-		this.frame = frame;
+	VirtualMachine(RoboScript instance) {
 		this.roboScriptInstance = instance;
 	}
 
@@ -59,18 +94,20 @@ public final class VirtualMachine {
 	 * @param chunk The chunk being interpreted.
 	 */
 	void interpret(Chunk chunk, int instructionPointer) {
-		this.frame.chunk = chunk;
+		this.chunk = chunk;
 		this.ip = instructionPointer;
 		this.bp = 3;
-		this.frame.stackSize = 0;
+		this.stackSize = 0;
 		try {
+			this.runningState = true;
 			this.pushStack(-1);
 			this.pushStack(-1);
 			this.pushStack(null);
 			this.run();
+			this.runningState = false;
 		} catch (RuntimeError e) {
 			this.roboScriptInstance.handleErrorMessage(
-					"[line " + this.frame.chunk.finalLines[this.ip] + "] " + e.message);
+					"[line " + this.chunk.finalLines[this.ip] + "] " + e.message);
 		}
 	}
 
@@ -78,7 +115,7 @@ public final class VirtualMachine {
 	 * Makes the program stop after the current instruction is finished.
 	 */
 	void queueStop() {
-		this.frame.stopQueued = true;
+		this.stopQueued = true;
 	}
 
 	/**
@@ -86,12 +123,12 @@ public final class VirtualMachine {
 	 */
 	private void run() {
 		while (true) {
-			if (this.frame.stopQueued) {
-				this.frame.stopQueued = false;
+			if (this.stopQueued) {
+				this.stopQueued = false;
 				return;
 			}
 			switch (this.readByte()) {
-				case OP_CONSTANT -> this.pushStack(this.frame.chunk.finalConstants[this.readShort()]);
+				case OP_CONSTANT -> this.pushStack(this.chunk.finalConstants[this.readShort()]);
 
 				case OP_NULL -> this.pushStack(null);
 
@@ -101,17 +138,17 @@ public final class VirtualMachine {
 
 				case OP_POP -> this.popStack();
 
-				case OP_GET_LOCAL -> this.pushStack(this.frame.stack[this.bp + this.readByte()]);
+				case OP_GET_LOCAL -> this.pushStack(this.stack[this.bp + this.readByte()]);
 
-				case OP_SET_LOCAL -> this.frame.stack[this.bp + this.readByte()] = this.peekStack();
+				case OP_SET_LOCAL -> this.stack[this.bp + this.readByte()] = this.peekStack();
 
-				case OP_GET_NATIVE -> this.pushStack(this.frame.nativeFunctions[this.readByte()]);
+				case OP_GET_NATIVE -> this.pushStack(this.nativeFunctions[this.readByte()]);
 
-				case OP_GET_GLOBAL -> this.pushStack(this.frame.globalVariables[this.readByte()]);
+				case OP_GET_GLOBAL -> this.pushStack(this.globalVariables[this.readByte()]);
 
-				case OP_DEFINE_GLOBAL -> this.frame.globalVariables[this.readByte()] = this.popStack();
+				case OP_DEFINE_GLOBAL -> this.globalVariables[this.readByte()] = this.popStack();
 
-				case OP_SET_GLOBAL -> this.frame.globalVariables[this.readByte()] = this.peekStack();
+				case OP_SET_GLOBAL -> this.globalVariables[this.readByte()] = this.peekStack();
 
 				case OP_EQUAL -> this.binaryEqual();
 
@@ -129,18 +166,18 @@ public final class VirtualMachine {
 
 				case OP_INCREMENT_GLOBAL -> {
 					byte global = this.readByte();
-					if (!(this.frame.globalVariables[global] instanceof Double increment))
+					if (!(this.globalVariables[global] instanceof Double increment))
 						throw new RuntimeError("Incrementing variable must be a number.");
 
-					this.frame.globalVariables[global] = increment + 1;
+					this.globalVariables[global] = increment + 1;
 					this.pushStack(increment);
 				}
 
 				case OP_INCREMENT_LOCAL -> {
 					byte local = this.readByte();
-					if (!(this.frame.stack[this.bp + local] instanceof Double increment))
+					if (!(this.stack[this.bp + local] instanceof Double increment))
 						throw new RuntimeError("Incrementing variable must be a number.");
-					this.frame.stack[this.bp + local] = increment + 1;
+					this.stack[this.bp + local] = increment + 1;
 					this.pushStack(increment);
 				}
 
@@ -192,18 +229,18 @@ public final class VirtualMachine {
 
 				case OP_DECREMENT_GLOBAL -> {
 					byte global = this.readByte();
-					if (!(this.frame.globalVariables[global] instanceof Double increment))
+					if (!(this.globalVariables[global] instanceof Double increment))
 						throw new RuntimeError("Decrementing variable must be a number.");
 
-					this.frame.globalVariables[global] = increment - 1;
+					this.globalVariables[global] = increment - 1;
 					this.pushStack(increment);
 				}
 
 				case OP_DECREMENT_LOCAL -> {
 					byte local = this.readByte();
-					if (!(this.frame.stack[this.bp + local] instanceof Double increment))
+					if (!(this.stack[this.bp + local] instanceof Double increment))
 						throw new RuntimeError("Decrementing variable must be a number.");
-					this.frame.stack[this.bp + local] = increment - 1;
+					this.stack[this.bp + local] = increment - 1;
 					this.pushStack(increment);
 				}
 
@@ -263,11 +300,11 @@ public final class VirtualMachine {
 
 				case OP_POWER -> this.binaryPower();
 
-				case OP_NOT -> this.frame.stack[this.frame.stackSize - 1] = !isTruthy(this.peekStack());
+				case OP_NOT -> this.stack[this.stackSize - 1] = !isTruthy(this.peekStack());
 
 				case OP_NEGATE -> {
 					if (!(this.peekStack() instanceof Double d)) throw new RuntimeError("Can only negate numbers.");
-					this.frame.stack[this.frame.stackSize - 1] = -(double) d;
+					this.stack[this.stackSize - 1] = -(double) d;
 				}
 
 				case OP_JUMP -> {
@@ -296,7 +333,7 @@ public final class VirtualMachine {
 							throw new RuntimeError(
 									"Expected " + function.argumentCount + " argument(s) but got " + argumentCount + ".");
 						Object returnValue = function.call(this);
-						this.frame.stack[this.frame.stackSize - 1] = returnValue;
+						this.stack[this.stackSize - 1] = returnValue;
 						break;
 					}
 
@@ -305,14 +342,14 @@ public final class VirtualMachine {
 							throw new RuntimeError(
 									"Expected " + function.argumentCount + " argument(s) but got " + argumentCount + ".");
 						Object returnValue = function.run();
-						this.frame.stack[this.frame.stackSize - 1] = returnValue;
+						this.stack[this.stackSize - 1] = returnValue;
 						break;
 					}
 
 					if (callable instanceof RoboScriptClass clazz) {
 						RoboScriptObject object = new RoboScriptObject(clazz);
 						if ((callable = this.getFunctionInClass(clazz, object, "init")) != null) {
-							this.frame.stack[this.frame.stackSize - 1 - argumentCount] = object;
+							this.stack[this.stackSize - 1 - argumentCount] = object;
 						} else {
 							this.pushStack(object);
 							break;
@@ -350,7 +387,7 @@ public final class VirtualMachine {
 					this.pushStack(this.bp);
 
 					this.ip = function.address;
-					this.bp = this.frame.stackSize - argumentCount - 2;
+					this.bp = this.stackSize - argumentCount - 2;
 				}
 
 				case OP_RETURN -> {
@@ -359,16 +396,16 @@ public final class VirtualMachine {
 					this.bp = (int) this.popStack();
 					this.ip = (int) this.popStack();
 					if (this.bp == -1 && this.ip == -1) return;
-					this.frame.stackSize -= argCount; // pops args
+					this.stackSize -= argCount; // pops args
 					if (this.peekStack() instanceof RoboScriptFunction) {
-						this.frame.stackSize--; // pops function
+						this.stackSize--; // pops function
 						// TODO: somehow fix signals returning values to not mess around with the stack.
 						this.pushStack(returnValue);
 					} else if (!(this.peekStack() instanceof RoboScriptObject)) {
 						// this.stackSize--;
 						throw new IllegalArgumentException(
 								"Expected a function or object in this place. Rework the compiler. Got '" + this.peekStack()
-										.getClass() + "'. At line " + this.frame.chunk.finalLines[
+										.getClass() + "'. At line " + this.chunk.finalLines[
 										this.ip] + "'.");
 					}
 				}
@@ -393,7 +430,7 @@ public final class VirtualMachine {
 					for (int i = listSize - 1; i >= 0; i--) {
 						list.add(this.peekStack(i));
 					}
-					this.frame.stackSize -= listSize;
+					this.stackSize -= listSize;
 				}
 
 				case OP_GET_MAP -> {
@@ -602,7 +639,7 @@ public final class VirtualMachine {
 	 * @return The byte at the current index of instructionPointer.
 	 */
 	private byte readByte() {
-		return this.frame.chunk.finalCode[this.ip++];
+		return this.chunk.finalCode[this.ip++];
 	}
 
 	/**
@@ -611,8 +648,8 @@ public final class VirtualMachine {
 	 * @return The short value of the current and next byte.
 	 */
 	private short readShort() {
-		return (short) ((this.frame.chunk.finalCode[this.ip++] << 8)
-				| this.frame.chunk.finalCode[this.ip++]);
+		return (short) ((this.chunk.finalCode[this.ip++] << 8)
+				| this.chunk.finalCode[this.ip++]);
 	}
 
 	/**
@@ -621,7 +658,7 @@ public final class VirtualMachine {
 	 * @param object The value pushed to the stack.
 	 */
 	void pushStack(Object object) {
-		this.frame.stack[this.frame.stackSize++] = object;
+		this.stack[this.stackSize++] = object;
 	}
 
 	/**
@@ -630,7 +667,7 @@ public final class VirtualMachine {
 	 * @return The value at the top of the stack.
 	 */
 	Object popStack() {
-		return this.frame.stack[--this.frame.stackSize];
+		return this.stack[--this.stackSize];
 	}
 
 	/**
@@ -639,7 +676,7 @@ public final class VirtualMachine {
 	 * @return The value at the top of the stack.
 	 */
 	Object peekStack() {
-		return this.frame.stack[this.frame.stackSize - 1];
+		return this.stack[this.stackSize - 1];
 	}
 
 
@@ -650,7 +687,7 @@ public final class VirtualMachine {
 	 * @return The value at the top of the stack minus the distance without removing it.
 	 */
 	Object peekStack(int distance) {
-		return this.frame.stack[this.frame.stackSize - 1 - distance];
+		return this.stack[this.stackSize - 1 - distance];
 	}
 
 
