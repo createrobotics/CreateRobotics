@@ -67,7 +67,7 @@ public abstract class RoboScript {
 				return RoboScriptObjectConversions.prepareForRoboScriptUse(functionOutput);
 			}
 		};
-		nativeFunctionWrapper.argumentCount = argumentCount;
+		nativeFunctionWrapper.argumentCount = (byte) argumentCount;
 		this.virtualMachine.nativeFunctions[this.virtualMachine.nativeFunctionSize] = nativeFunctionWrapper;
 		this.compiler.nativeFunctionLookup.put(name, (byte) this.virtualMachine.nativeFunctionSize++);
 	}

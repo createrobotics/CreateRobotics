@@ -1,9 +1,9 @@
 package com.workert.robotics.base.roboscript;
 public class RoboScriptFunction implements RoboScriptCallable {
 	int address;
-	int argumentCount;
+	byte argumentCount;
 
-	RoboScriptFunction(int address, int argumentCount) {
+	RoboScriptFunction(int address, byte argumentCount) {
 		this.address = address;
 		this.argumentCount = argumentCount;
 	}

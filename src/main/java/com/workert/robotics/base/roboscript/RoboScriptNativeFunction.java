@@ -1,6 +1,6 @@
 package com.workert.robotics.base.roboscript;
 public abstract class RoboScriptNativeFunction implements RoboScriptCallable {
-	int argumentCount = 0;
+	byte argumentCount = 0;
 
 	/**
 	 * Calls a native function and automatically pushes the return value.

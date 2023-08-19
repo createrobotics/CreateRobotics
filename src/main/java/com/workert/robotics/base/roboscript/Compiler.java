@@ -107,7 +107,7 @@ public final class Compiler {
 		this.beginScope();
 		this.consumeOrThrow(LEFT_PAREN, "Expected '(' after function name.");
 
-		int argumentCount = 0;
+		byte argumentCount = 0;
 		if (!this.isNextToken(RIGHT_PAREN)) {
 			do {
 				byte constant = this.parseVariable("Expected parameter name.");
@@ -232,7 +232,7 @@ public final class Compiler {
 		this.beginScope();
 		this.consumeOrThrow(LEFT_PAREN, "Expected '(' after function name.");
 
-		int argumentCount = 0;
+		byte argumentCount = 0;
 		if (!this.isNextToken(RIGHT_PAREN)) {
 			do {
 				byte constant = this.parseVariable("Expected parameter name.");
@@ -628,7 +628,7 @@ public final class Compiler {
 		this.beginScope();
 		this.consumeOrThrow(LEFT_PAREN, "Expected '(' after 'lambda'.");
 
-		int argumentCount = 0;
+		byte argumentCount = 0;
 		if (!this.isNextToken(RIGHT_PAREN)) {
 			do {
 				byte constant = this.parseVariable("Expected parameter name.");
@@ -973,9 +973,9 @@ public final class Compiler {
 		private final List<Integer> lines;
 		private final RoboScriptClass methodOwner;
 		private final String name;
-		private final int argumentCount;
+		private final byte argumentCount;
 
-		CompilerFunction(List<Byte> code, List<Integer> lines, int argumentCount) {
+		CompilerFunction(List<Byte> code, List<Integer> lines, byte argumentCount) {
 			this.code = code;
 			this.lines = lines;
 			this.argumentCount = argumentCount;
@@ -983,7 +983,7 @@ public final class Compiler {
 			this.name = null;
 		}
 
-		CompilerFunction(List<Byte> code, List<Integer> lines, int argumentCount, RoboScriptClass methodOwner, String name) {
+		CompilerFunction(List<Byte> code, List<Integer> lines, byte argumentCount, RoboScriptClass methodOwner, String name) {
 			this.code = code;
 			this.lines = lines;
 			this.argumentCount = argumentCount;
