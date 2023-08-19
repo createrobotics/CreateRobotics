@@ -324,11 +324,9 @@ public final class VirtualMachine {
 					byte argumentCount = this.readByte();
 
 					Object callable = this.peekStack(argumentCount);
-					if (callable instanceof RoboScriptCallable c) {
+					if (callable instanceof RoboScriptCallable c)
 						c.call(this, argumentCount);
-						break;
-					}
-					if (callable != null)
+					else if (callable != null)
 						throw new RuntimeError("Can only call functions, instead got '" + callable.getClass() + "'.");
 					else
 						throw new RuntimeError("Can only call functions, instead got 'null'.");
@@ -346,7 +344,6 @@ public final class VirtualMachine {
 						// TODO: somehow fix signals returning values to not mess around with the stack.
 						this.pushStack(returnValue);
 					} else if (!(this.peekStack() instanceof RoboScriptObject)) {
-						// this.stackSize--;
 						throw new IllegalArgumentException(
 								"Expected a function or object in this place. Rework the compiler. Got '" + this.peekStack()
 										.getClass() + "'. At line " + this.chunk.finalLines[
@@ -810,5 +807,11 @@ public final class VirtualMachine {
 	 */
 	public static boolean isNegative(double d) {
 		return d < 0;
+	}
+
+
+	@Override
+	public String toString() {
+		return "VirtualMachine, you must have really done something wrong for this to show up.";
 	}
 }

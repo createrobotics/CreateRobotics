@@ -4,6 +4,7 @@ import com.workert.robotics.base.roboscript.util.RoboScriptArgumentPredicates;
 import com.workert.robotics.base.roboscript.util.RoboScriptObjectConversions;
 
 import javax.annotation.Nonnull;
+import java.util.Arrays;
 
 public abstract class RoboScript {
 	Compiler compiler = new Compiler(this);
@@ -34,6 +35,7 @@ public abstract class RoboScript {
 	protected void defineNativeFunctions() {
 		this.defineNativeFunction("print", 1, args -> {
 			RoboScript.this.handlePrintMessage(RoboScriptObjectConversions.stringify(args[0]));
+			System.out.println(Arrays.toString(this.virtualMachine.stack));
 			return null;
 		});
 

@@ -20,12 +20,11 @@ public class RoboScriptMethod extends RoboScriptFunction {
 		if (instance.clazz.superclass != null)
 			vm.pushStack(new RoboScriptSuper(instance.clazz.superclass, instance));
 		else vm.pushStack(null);
-
+		argumentCount += 2;
 		vm.pushStack(vm.ip);
 		vm.pushStack(vm.bp);
 
 		vm.ip = this.address;
-		// do not subtract two here because two extras have already been added above without adding to argumentCount.
-		vm.bp = vm.stackSize - argumentCount;
+		vm.bp = vm.stackSize - argumentCount - 2;
 	}
 }
