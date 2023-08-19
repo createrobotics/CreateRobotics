@@ -1,7 +1,10 @@
 package com.workert.robotics.base.roboscript;
 import com.workert.robotics.base.roboscript.util.RoboScriptObjectConversions;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 import static com.workert.robotics.base.roboscript.OpCode.*;
 
@@ -60,14 +63,9 @@ public final class VirtualMachine {
 	private final Object[] globalVariables = new Object[256];
 
 	/**
-	 * Signals that can be called externally using a string that
-	 */
-	final Map<String, Object> signals = new HashMap<>();
-
-	/**
 	 * Global functions that are defined natively and use Java code.
 	 */
-	RoboScript.NativeFunction[] nativeFunctions = new RoboScript.NativeFunction[Short.MAX_VALUE];
+	RoboScriptNativeFunction[] nativeFunctions = new RoboScriptNativeFunction[Short.MAX_VALUE];
 
 	/**
 	 * Halts the program when true.
@@ -530,7 +528,7 @@ public final class VirtualMachine {
 			case "add", "append" -> {
 				return new RoboScriptNativeMethod((byte) 1) {
 					@Override
-					Object run() {
+					Object call() {
 						list.add(VirtualMachine.this.popStack());
 						return null;
 					}
@@ -545,7 +543,7 @@ public final class VirtualMachine {
 			case "replaceAt" -> {
 				return new RoboScriptNativeMethod((byte) 2) {
 					@Override
-					Object run() {
+					Object call() {
 						if (!(VirtualMachine.this.popStack() instanceof String s))
 							throw new RuntimeError("Expected a string as the second argument of 'replaceAt'.");
 						if (!(VirtualMachine.this.popStack() instanceof Double location))
@@ -566,7 +564,7 @@ public final class VirtualMachine {
 			case "split" -> {
 				return new RoboScriptNativeMethod((byte) 1) {
 					@Override
-					Object run() {
+					Object call() {
 						if (!(VirtualMachine.this.popStack() instanceof String regex))
 							throw new RuntimeError(
 									"Expected a Regular Expression string as the argument of 'split'.");

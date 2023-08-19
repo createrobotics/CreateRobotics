@@ -51,15 +51,15 @@ public abstract class RoboScript {
 	}
 
 	public final void defineNativeFunction(String name, int argumentCount, NativeFunctionFunctionalInterface function) {
-		NativeFunction nativeFunctionWrapper = new NativeFunction() {
+		RoboScriptNativeFunction nativeFunctionWrapper = new RoboScriptNativeFunction() {
 			@Override
-			Object call(VirtualMachine vm) {
+			Object call() {
 				Object functionOutput;
 
 				if (this.argumentCount > 0) {
 					Object[] functionArgs = new Object[this.argumentCount];
 					for (int i = this.argumentCount - 1; i >= 0; i--) {
-						functionArgs[i] = vm.popStack();
+						functionArgs[i] = RoboScript.this.virtualMachine.popStack();
 					}
 
 					functionOutput = function.call(functionArgs);
@@ -86,24 +86,4 @@ public abstract class RoboScript {
 	protected abstract void handlePrintMessage(String message);
 
 	protected abstract void handleErrorMessage(String error);
-
-
-	abstract static class NativeFunction implements RoboScriptCallable {
-		int argumentCount = 0;
-
-		/**
-		 * Calls a native function and automatically pushes the return value.
-		 *
-		 * @param vm The current virtual machine of the executing function.
-		 * @return The return value of the function (automatically gets pushed, do not worry about that)
-		 */
-		abstract Object call(VirtualMachine vm);
-
-		@Override
-		public final void call(VirtualMachine vm, byte argumentCount) {
-			if (this.argumentCount != argumentCount) throw new RuntimeError(
-					"Expected " + this.argumentCount + " argument(s) but got " + argumentCount + ".");
-			vm.stack[vm.stackSize - 1] = this.call(vm);
-		}
-	}
 }

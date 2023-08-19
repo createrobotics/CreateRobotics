@@ -10,8 +10,8 @@ public abstract class RoboScriptNativeMethod implements RoboScriptCallable {
 	public final void call(VirtualMachine vm, byte argumentCount) {
 		if (this.argumentCount != argumentCount)
 			throw new RuntimeError("Expected " + this.argumentCount + " argument(s) but got " + argumentCount + ".");
-		vm.stack[vm.stackSize - 1] = this.run();
+		vm.stack[vm.stackSize - 1] = this.call();
 	}
 
-	abstract Object run();
+	abstract Object call();
 }
