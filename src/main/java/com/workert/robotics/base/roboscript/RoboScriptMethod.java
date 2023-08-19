@@ -1,6 +1,6 @@
 package com.workert.robotics.base.roboscript;
 public class RoboScriptMethod extends RoboScriptFunction {
-	RoboScriptObject instance;
+	final RoboScriptObject instance;
 
 	RoboScriptMethod(RoboScriptFunction function, RoboScriptObject instance) {
 		super(function.address, function.argumentCount);
