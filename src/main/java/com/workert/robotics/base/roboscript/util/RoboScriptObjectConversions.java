@@ -1,4 +1,5 @@
 package com.workert.robotics.base.roboscript.util;
+import com.workert.robotics.base.roboscript.RoboScriptObject;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -79,6 +80,9 @@ public final class RoboScriptObjectConversions {
 
 		if (object instanceof ItemStack itemStack)
 			return RoboScriptObjectConversions.itemStack(itemStack);
+		if (object instanceof RoboScriptObject) {
+			return object;
+		}
 
 		throw new IllegalArgumentException("Illegal RoboScript method return type");
 	}

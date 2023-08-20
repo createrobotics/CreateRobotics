@@ -61,7 +61,7 @@ final class Chunk {
 	}
 
 	Object getConstant(int i) {
-		return this.constants.get(Math.abs(i));
+		return this.constants.get(i);
 	}
 
 	void finishChunk() {

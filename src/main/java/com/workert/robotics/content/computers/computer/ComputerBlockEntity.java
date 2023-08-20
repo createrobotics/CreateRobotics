@@ -3,7 +3,9 @@ package com.workert.robotics.content.computers.computer;
 import com.simibubi.create.content.contraptions.base.KineticTileEntity;
 import com.workert.robotics.base.roboscript.RoboScript;
 import com.workert.robotics.base.roboscript.ingame.LineLimitedString;
+import com.workert.robotics.base.roboscript.util.RoboScriptArgumentPredicates;
 import com.workert.robotics.base.roboscript.util.RoboScriptObjectConversions;
+import com.workert.robotics.content.computers.ioblocks.IOBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -12,7 +14,9 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ComputerBlockEntity extends KineticTileEntity {
 	public final RoboScript roboScript;
@@ -24,6 +28,8 @@ public class ComputerBlockEntity extends KineticTileEntity {
 	private boolean running = false;
 
 	private List<String> outputDisplay = new ArrayList<>();
+
+	public Map<String, BlockPos> connectedBlocks = new HashMap<>();
 
 
 	public ComputerBlockEntity(BlockEntityType<?> type, BlockPos blockPos, BlockState blockState) {
@@ -51,6 +57,15 @@ public class ComputerBlockEntity extends KineticTileEntity {
 						return null;
 					}
 					ComputerBlockEntity.this.outputDisplay = List.of(RoboScriptObjectConversions.stringify(args[0]));
+					return null;
+				});
+				this.defineNativeFunction("getConnectedBlock", 1, (args) -> {
+					String signalName = RoboScriptArgumentPredicates.asString(args[0]);
+					BlockPos pos = ComputerBlockEntity.this.connectedBlocks.get(signalName);
+					if (pos == null) return null;
+					if (ComputerBlockEntity.this.getLevel().getExistingBlockEntity(pos) instanceof IOBlockEntity be) {
+						return be.getRoboScriptObject();
+					}
 					return null;
 				});
 			}

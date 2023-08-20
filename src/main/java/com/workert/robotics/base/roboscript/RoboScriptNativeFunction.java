@@ -1,9 +1,9 @@
 package com.workert.robotics.base.roboscript;
 public class RoboScriptNativeFunction implements RoboScriptCallable {
 	final byte argumentCount;
-	Caller function;
+	public Caller function;
 
-	RoboScriptNativeFunction(byte argumentCount) {
+	public RoboScriptNativeFunction(byte argumentCount) {
 		this.argumentCount = argumentCount;
 	}
 
@@ -17,7 +17,7 @@ public class RoboScriptNativeFunction implements RoboScriptCallable {
 
 
 	@FunctionalInterface
-	interface Caller {
+	public interface Caller {
 		Object call();
 	}
 }

@@ -126,7 +126,14 @@ public final class VirtualMachine {
 				return;
 			}
 			switch (this.readByte()) {
-				case OP_CONSTANT -> this.pushStack(this.chunk.finalConstants[this.readShort()]);
+				case OP_CONSTANT -> {
+					Object o = this.chunk.finalConstants[this.readShort()];
+					if (o instanceof List l) {
+						this.pushStack(new ArrayList<Object>(l));
+						break;
+					}
+					this.pushStack(o);
+				}
 
 				case OP_NULL -> this.pushStack(null);
 
@@ -506,12 +513,13 @@ public final class VirtualMachine {
 	 */
 	RoboScriptCallable getFunctionInClass(RoboScriptClass clazz, RoboScriptObject object, String fieldName) {
 		if (clazz.functions.containsKey(fieldName)) {
-			// TODO: make sure to change this
-
-			RoboScriptCallable returnCallable;
-
 			if (clazz.functions.get(fieldName) instanceof RoboScriptFunction f) {
 				return new RoboScriptMethod(f, object);
+			} else if (clazz.functions.get(fieldName) instanceof RoboScriptNativeFunction f) {
+				return new RoboScriptNativeMethod(f, object);
+			} else {
+				throw new IllegalArgumentException(
+						"why is there not a proper function in the functions part of a class??");
 			}
 
 		}
@@ -595,8 +603,9 @@ public final class VirtualMachine {
 	 * @return The short value of the current and next byte.
 	 */
 	private short readShort() {
-		return (short) ((this.chunk.finalCode[this.ip++] << 8)
-				| this.chunk.finalCode[this.ip++]);
+		this.ip += 2;
+		return (short) ((this.chunk.finalCode[this.ip - 2] << 8)
+				| this.chunk.finalCode[this.ip - 1]);
 	}
 
 	/**

@@ -38,6 +38,15 @@ public abstract class RoboScript {
 		});
 
 		this.defineNativeFunction("toString", 1, args -> RoboScriptObjectConversions.stringify(args[0]));
+		this.defineNativeFunction("sleep", 1, args -> {
+			try {
+				Thread.sleep(
+						(long) (RoboScriptArgumentPredicates.asNumber(args[0]) * 1000));
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			return null;
+		});
 
 		this.defineNativeFunction("sin", 1, args -> Math.sin(RoboScriptArgumentPredicates.asNumber(args[0])));
 		this.defineNativeFunction("cos", 1, args -> Math.cos(RoboScriptArgumentPredicates.asNumber(args[0])));

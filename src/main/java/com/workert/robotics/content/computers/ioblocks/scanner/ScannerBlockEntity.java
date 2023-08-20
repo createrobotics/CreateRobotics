@@ -5,6 +5,7 @@ import com.simibubi.create.content.contraptions.relays.belt.transport.Transporte
 import com.simibubi.create.foundation.tileEntity.SyncedTileEntity;
 import com.simibubi.create.foundation.tileEntity.TileEntityBehaviour;
 import com.workert.robotics.base.registries.BlockEntityRegistry;
+import com.workert.robotics.base.roboscript.RoboScriptObject;
 import com.workert.robotics.base.roboscript.util.RoboScriptObjectConversions;
 import com.workert.robotics.content.computers.computer.ComputerBlockEntity;
 import com.workert.robotics.content.computers.ioblocks.IOBlockEntity;
@@ -86,5 +87,10 @@ public class ScannerBlockEntity extends KineticTileEntity implements ScannerBeha
 	@Override
 	public SyncedTileEntity getBlockEntity() {
 		return this;
+	}
+
+	@Override
+	public RoboScriptObject getRoboScriptObject() {
+		return null;
 	}
 }

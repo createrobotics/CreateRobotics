@@ -1,6 +1,7 @@
 package com.workert.robotics.content.computers.ioblocks;
 
 import com.simibubi.create.foundation.tileEntity.SyncedTileEntity;
+import com.workert.robotics.base.roboscript.RoboScriptObject;
 import net.minecraft.core.BlockPos;
 
 public interface IOBlockEntity {
@@ -13,4 +14,6 @@ public interface IOBlockEntity {
 	BlockPos getBlockEntityPos();
 
 	SyncedTileEntity getBlockEntity();
+
+	RoboScriptObject getRoboScriptObject();
 }

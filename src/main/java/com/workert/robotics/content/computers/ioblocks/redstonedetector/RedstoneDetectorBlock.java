@@ -5,7 +5,6 @@ import com.simibubi.create.foundation.block.ITE;
 import com.simibubi.create.foundation.gui.ScreenOpener;
 import com.simibubi.create.foundation.utility.Iterate;
 import com.workert.robotics.base.registries.BlockEntityRegistry;
-import com.workert.robotics.content.computers.computer.ComputerBlockEntity;
 import com.workert.robotics.content.computers.ioblocks.IOSignalScreen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
@@ -107,10 +106,6 @@ public class RedstoneDetectorBlock extends Block implements EntityBlock, ITE<Red
 	}
 
 	private void getRedstoneSignalUpdate(int power, ServerLevel level, BlockPos blockPos) {
-		RedstoneDetectorBlockEntity redstoneDetector = (RedstoneDetectorBlockEntity) level.getBlockEntity(blockPos);
-		Object[] args = {(double) power};
-		if (level.getBlockEntity(redstoneDetector.getTargetPos()) instanceof ComputerBlockEntity computer) {
-			computer.interpretSignal(redstoneDetector.getSignalName(), args);
-		}
+		this.withTileEntityDo(level, blockPos, (be) -> be.setRedstoneLevel(power));
 	}
 }

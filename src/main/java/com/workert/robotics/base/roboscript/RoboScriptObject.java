@@ -5,12 +5,12 @@ import java.util.Map;
 public class RoboScriptObject {
 
 	RoboScriptClass clazz;
-	Map<String, Object> fields = new HashMap<>();
+	public Map<String, Object> fields = new HashMap<>();
 
 	boolean settable;
 
 
-	RoboScriptObject(RoboScriptClass clazz) {
+	public RoboScriptObject(RoboScriptClass clazz) {
 		this.clazz = clazz;
 		this.settable = true;
 	}
