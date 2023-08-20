@@ -2,6 +2,7 @@ package com.workert.robotics.content.computers.ioblocks.redstonedetector;
 
 import com.simibubi.create.foundation.tileEntity.SyncedTileEntity;
 import com.workert.robotics.base.registries.BlockEntityRegistry;
+import com.workert.robotics.base.roboscript.RoboScriptClass;
 import com.workert.robotics.content.computers.ioblocks.IOBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -10,6 +11,9 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class RedstoneDetectorBlockEntity extends SyncedTileEntity implements IOBlockEntity {
+
+	public static RoboScriptClass roboScriptBlockClass = makeClass();
+
 	private String signalName = "";
 	private BlockPos targetPos = this.getBlockPos();
 
@@ -54,5 +58,14 @@ public class RedstoneDetectorBlockEntity extends SyncedTileEntity implements IOB
 	@Override
 	public SyncedTileEntity getBlockEntity() {
 		return this;
+	}
+
+
+	private static RoboScriptClass makeClass() {
+		RoboScriptClass clazz = new RoboScriptClass();
+		// clazz.functions.put("getPower", new RoboScriptNativeMethod() {
+
+		//});
+		return clazz;
 	}
 }

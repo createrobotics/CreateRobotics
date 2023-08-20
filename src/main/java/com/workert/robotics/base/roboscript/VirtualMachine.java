@@ -490,7 +490,7 @@ public final class VirtualMachine {
 	private Object getFieldInObject(RoboScriptObject object, String fieldName) {
 		if (object.fields.containsKey(fieldName))
 			return object.fields.get(fieldName);
-		RoboScriptMethod function = this.getFunctionInClass(object.clazz, object, fieldName);
+		RoboScriptCallable function = this.getFunctionInClass(object.clazz, object, fieldName);
 		if (function == null)
 			throw new RuntimeError("Class does not contain field '" + fieldName + "'.");
 		return function;
@@ -504,9 +504,17 @@ public final class VirtualMachine {
 	 * @param fieldName The name of the function
 	 * @return The method after the function is bound, or null if the function is never found.
 	 */
-	RoboScriptMethod getFunctionInClass(RoboScriptClass clazz, RoboScriptObject object, String fieldName) {
-		if (clazz.functions.containsKey(fieldName))
-			return new RoboScriptMethod(clazz.functions.get(fieldName), object);
+	RoboScriptCallable getFunctionInClass(RoboScriptClass clazz, RoboScriptObject object, String fieldName) {
+		if (clazz.functions.containsKey(fieldName)) {
+			// TODO: make sure to change this
+
+			RoboScriptCallable returnCallable;
+
+			if (clazz.functions.get(fieldName) instanceof RoboScriptFunction f) {
+				return new RoboScriptMethod(f, object);
+			}
+
+		}
 		if (clazz.superclass != null) {
 			return this.getFunctionInClass(clazz.superclass, object, fieldName);
 		}
@@ -523,23 +531,22 @@ public final class VirtualMachine {
 	private RoboScriptNativeMethod getListNative(List list, String key) {
 		switch (key) {
 			case "add", "append" -> {
-				return new RoboScriptNativeMethod(list, (byte) 1) {
-					@Override
-					Object call() {
-						((List) this.instance).add(VirtualMachine.this.popStack());
-						return null;
-					}
+				RoboScriptNativeMethod method = new RoboScriptNativeMethod(list, (byte) 1);
+				method.function = () -> {
+					((List) method.instance).add(VirtualMachine.this.popStack());
+					return null;
 				};
+				return method;
 			}
 			default -> throw new RuntimeError("Built-in type 'List' does not have method '" + key + "'.");
 		}
 	}
 
 	private RoboScriptNativeMethod getStringNative(String string, String key) {
-		return switch (key) {
-			case "replaceAt" -> new RoboScriptNativeMethod(string, (byte) 2) {
-				@Override
-				Object call() {
+		switch (key) {
+			case "replaceAt" -> {
+				RoboScriptNativeMethod method = new RoboScriptNativeMethod(string, (byte) 2);
+				method.function = () -> {
 					if (!(VirtualMachine.this.popStack() instanceof String s))
 						throw new RuntimeError("Expected a string as the second argument of 'replaceAt'.");
 					if (!(VirtualMachine.this.popStack() instanceof Double location))
@@ -547,27 +554,29 @@ public final class VirtualMachine {
 
 					if (!isWhole(location) || isNegative(location)) throw new RuntimeError(
 							"Index value for string in first argument of 'replaceAt' must be a whole number greater or equal to 0.");
-					if (location >= ((String) this.instance).length())
+					if (location >= ((String) method.instance).length())
 						throw new RuntimeError(
-								"String index in first argument of 'replaceAt' out of range of '" + (((String) this.instance).length() - 1) + "'.");
+								"String index in first argument of 'replaceAt' out of range of '" + (((String) method.instance).length() - 1) + "'.");
 
-					StringBuilder builder = new StringBuilder((String) this.instance);
+					StringBuilder builder = new StringBuilder((String) method.instance);
 					builder.replace((int) Math.round(location), (int) Math.round(location) + 1, s);
 					return builder.toString();
-				}
-			};
+				};
+				return method;
+			}
 
-			case "split" -> new RoboScriptNativeMethod(string, (byte) 1) {
-				@Override
-				Object call() {
+			case "split" -> {
+				RoboScriptNativeMethod method = new RoboScriptNativeMethod(string, (byte) 1);
+				method.function = () -> {
 					if (!(VirtualMachine.this.popStack() instanceof String regex))
 						throw new RuntimeError(
 								"Expected a Regular Expression string as the argument of 'split'.");
-					return Arrays.asList(((String) this.instance).split(regex));
-				}
-			};
+					return Arrays.asList(((String) method.instance).split(regex));
+				};
+				return method;
+			}
 			default -> throw new RuntimeError("Built-in type 'String' does not have method '" + key + "'.");
-		};
+		}
 	}
 
 

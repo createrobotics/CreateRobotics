@@ -51,21 +51,19 @@ public abstract class RoboScript {
 	}
 
 	public final void defineNativeFunction(String name, int argumentCount, NativeFunctionFunctionalInterface function) {
-		RoboScriptNativeFunction nativeFunctionWrapper = new RoboScriptNativeFunction((byte) argumentCount) {
-			@Override
-			Object call() {
-				Object functionOutput;
+		RoboScriptNativeFunction nativeFunctionWrapper = new RoboScriptNativeFunction((byte) argumentCount);
+		nativeFunctionWrapper.function = () -> {
+			Object functionOutput;
 
-				if (this.argumentCount > 0) {
-					Object[] functionArgs = new Object[this.argumentCount];
-					for (int i = this.argumentCount - 1; i >= 0; i--) {
-						functionArgs[i] = RoboScript.this.virtualMachine.popStack();
-					}
+			if (nativeFunctionWrapper.argumentCount > 0) {
+				Object[] functionArgs = new Object[nativeFunctionWrapper.argumentCount];
+				for (int i = nativeFunctionWrapper.argumentCount - 1; i >= 0; i--) {
+					functionArgs[i] = RoboScript.this.virtualMachine.popStack();
+				}
 
-					functionOutput = function.call(functionArgs);
-				} else functionOutput = function.call(new Object[] {});
-				return RoboScriptObjectConversions.prepareForRoboScriptUse(functionOutput);
-			}
+				functionOutput = function.call(functionArgs);
+			} else functionOutput = function.call(new Object[] {});
+			return RoboScriptObjectConversions.prepareForRoboScriptUse(functionOutput);
 		};
 		this.virtualMachine.nativeFunctions[this.virtualMachine.nativeFunctionSize] = nativeFunctionWrapper;
 		this.compiler.nativeFunctionLookup.put(name, (byte) this.virtualMachine.nativeFunctionSize++);
