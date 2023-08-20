@@ -8,11 +8,14 @@ public class RoboScriptNativeFunction implements RoboScriptCallable {
 	}
 
 	@Override
-	public void call(VirtualMachine vm, byte argumentCount) {
+	public void call(VirtualMachine vm, byte argumentCount, boolean asSignal) {
 		if (this.argumentCount != argumentCount)
 			throw new RuntimeError("Expected " + this.argumentCount + " argument(s) but got " + argumentCount + ".");
 		Object returnValue = this.function.call();
-		vm.stack[vm.stackSize - 1] = returnValue;
+		if (!asSignal)
+			vm.stack[vm.stackSize - 1] = returnValue;
+		else
+			vm.queueStop();
 	}
 
 

@@ -6,7 +6,6 @@ import com.simibubi.create.foundation.tileEntity.SyncedTileEntity;
 import com.simibubi.create.foundation.tileEntity.TileEntityBehaviour;
 import com.workert.robotics.base.registries.BlockEntityRegistry;
 import com.workert.robotics.base.roboscript.RoboScriptObject;
-import com.workert.robotics.base.roboscript.util.RoboScriptObjectConversions;
 import com.workert.robotics.content.computers.computer.ComputerBlockEntity;
 import com.workert.robotics.content.computers.ioblocks.IOBlockEntity;
 import net.minecraft.core.BlockPos;
@@ -53,8 +52,7 @@ public class ScannerBlockEntity extends KineticTileEntity implements ScannerBeha
 	public boolean scanOnBelt(TransportedItemStack itemStack) {
 		if (this.level.getBlockEntity(this.targetPos) instanceof ComputerBlockEntity computer) {
 			// TODO: Make this a class system
-			computer.interpretSignal(this.getSignalName(),
-					new Object[] {RoboScriptObjectConversions.itemStack(itemStack.stack)});
+			// computer.interpretSignal(this.getSignalName(), new Object[] {RoboScriptObjectConversions.itemStack(itemStack.stack)});
 		}
 		return true;
 	}

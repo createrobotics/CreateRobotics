@@ -2,6 +2,7 @@ package com.workert.robotics.content.computers.computer;
 
 import com.simibubi.create.content.contraptions.base.KineticTileEntity;
 import com.workert.robotics.base.roboscript.RoboScript;
+import com.workert.robotics.base.roboscript.RoboScriptCallable;
 import com.workert.robotics.base.roboscript.ingame.LineLimitedString;
 import com.workert.robotics.base.roboscript.util.RoboScriptArgumentPredicates;
 import com.workert.robotics.base.roboscript.util.RoboScriptObjectConversions;
@@ -83,11 +84,9 @@ public class ComputerBlockEntity extends KineticTileEntity {
 		this.running = false;
 	}
 
-	public void interpretSignal(String function, Object[] args) {
-		/*if (!function.isBlank())
-			if (this.running)
-				this.roboScript.queueSignal(function, args);
-		*/
+	public void interpretSignal(RoboScriptCallable callable, Object[] args) {
+		if (this.running)
+			this.roboScript.queueSignal(callable, args);
 	}
 
 	@Override

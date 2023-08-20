@@ -1,10 +1,7 @@
 package com.workert.robotics.base.roboscript;
 import com.workert.robotics.base.roboscript.util.RoboScriptObjectConversions;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.workert.robotics.base.roboscript.OpCode.*;
 
@@ -50,7 +47,12 @@ public final class VirtualMachine {
 	/**
 	 * The running state of WRITTEN program.
 	 */
-	boolean runningState = false;
+	boolean running = false;
+
+	boolean threadRunning = false;
+
+	boolean inSignal = false;
+
 
 	/**
 	 * The size of the stack when a new function is entered.
@@ -72,10 +74,13 @@ public final class VirtualMachine {
 	 */
 	boolean stopQueued = false;
 
+
 	/**
 	 * The amount of all Native Functions in the `nativeFunctions` array.
 	 */
 	int nativeFunctionSize = 0;
+
+	Queue<ExecutingSignal> signalQueue = new LinkedList<>();
 
 	/**
 	 * Creates a static virtual machine.
@@ -91,22 +96,62 @@ public final class VirtualMachine {
 	 *
 	 * @param chunk The chunk being interpreted.
 	 */
-	void interpret(Chunk chunk, int instructionPointer) {
+	void interpret(Chunk chunk) {
 		this.chunk = chunk;
-		this.ip = instructionPointer;
+		this.ip = 0;
 		this.bp = 3;
 		this.stackSize = 0;
 		try {
-			this.runningState = true;
+			this.running = true;
+			this.threadRunning = true;
 			this.pushStack(-1);
 			this.pushStack(-1);
 			this.pushStack(null);
 			this.run();
-			this.runningState = false;
+			this.threadRunning = false;
 		} catch (RuntimeError e) {
 			this.roboScriptInstance.handleErrorMessage(
 					"[line " + this.chunk.finalLines[this.ip] + "] " + e.message);
 		}
+	}
+
+	private void interpretButDontRun() {
+		this.ip = 0;
+		this.stackSize = 0;
+		this.bp = 0;
+		try {
+			this.threadRunning = true;
+			this.run();
+			this.threadRunning = false;
+		} catch (RuntimeError e) {
+			this.roboScriptInstance.handleErrorMessage(
+					"[line " + this.chunk.finalLines[this.ip] + "] " + e.message);
+		}
+	}
+
+	/**
+	 * Executes the signal queue. Should only call while the program is running
+	 */
+	void executeSignal() {
+		if (this.signalQueue.isEmpty() || this.inSignal) return;
+
+		ExecutingSignal signal = this.signalQueue.remove();
+
+		for (Object arg : signal.args) {
+			this.pushStack(arg);
+		}
+		signal.callable.call(this, (byte) signal.args.length, true);
+	}
+
+	void addSignalToQueue(ExecutingSignal signal) {
+		this.signalQueue.add(signal);
+		if (this.threadRunning)
+			return;
+
+		new Thread(() -> {
+			this.running = false; // it should be false already but its always nice to make sure
+			this.interpretButDontRun();
+		}).start();
 	}
 
 	/**
@@ -125,6 +170,7 @@ public final class VirtualMachine {
 				this.stopQueued = false;
 				return;
 			}
+			this.executeSignal();
 			switch (this.readByte()) {
 				case OP_CONSTANT -> {
 					Object o = this.chunk.finalConstants[this.readShort()];
@@ -226,10 +272,12 @@ public final class VirtualMachine {
 						throw new RuntimeError("Cannot edit fields of a 'super' keyword.");
 					if (!object.fields.containsKey(key))
 						throw new RuntimeError("Object does not contain field '" + key + "'.");
-					if (!(object.fields.get(key) instanceof Double increment))
+					RoboScriptField field = object.fields.get(key);
+					if (field.isFinal) throw new RuntimeError("Field '" + key + "' is final and cannot be edited.");
+					if (!(field.value instanceof Double increment))
 						throw new RuntimeError("Incrementing field must be a number.");
 					this.pushStack(increment);
-					object.fields.put(key, increment + 1);
+					field.value = increment + 1;
 				}
 
 				case OP_DECREMENT_GLOBAL -> {
@@ -289,10 +337,12 @@ public final class VirtualMachine {
 						throw new RuntimeError("Cannot edit fields of a 'super' keyword.");
 					if (!object.fields.containsKey(key))
 						throw new RuntimeError("Object does not contain field '" + key + "'.");
-					if (!(object.fields.get(key) instanceof Double increment))
+					RoboScriptField field = object.fields.get(key);
+					if (field.isFinal) throw new RuntimeError("Field '" + key + "' is final and cannot be edited.");
+					if (!(field.value instanceof Double increment))
 						throw new RuntimeError("Decrementing field must be a number.");
 					this.pushStack(increment);
-					object.fields.put(key, increment - 1);
+					field.value = increment - 1;
 				}
 
 				case OP_SUBTRACT -> this.binarySubtract();
@@ -332,7 +382,7 @@ public final class VirtualMachine {
 
 					Object callable = this.peekStack(argumentCount);
 					if (callable instanceof RoboScriptCallable c)
-						c.call(this, argumentCount);
+						c.call(this, argumentCount, false);
 					else if (callable != null)
 						throw new RuntimeError("Can only call functions, instead got '" + callable.getClass() + "'.");
 					else
@@ -344,12 +394,22 @@ public final class VirtualMachine {
 					Object returnValue = this.popStack();
 					this.bp = (int) this.popStack();
 					this.ip = (int) this.popStack();
-					if (this.bp == -1 && this.ip == -1) return;
+					if (this.bp == -1 && this.ip == -1) {
+						this.running = false;
+						this.inSignal = false;
+						this.executeSignal();
+						return;
+					}
 					this.stackSize -= argCount; // pops args
-					if (this.peekStack() instanceof RoboScriptFunction) {
+					if (this.peekStack() instanceof RoboScriptFunction f) {
 						this.stackSize--; // pops function
-						// TODO: somehow fix signals returning values to not mess around with the stack.
-						this.pushStack(returnValue);
+						if (!f.runningAsSignal)
+							this.pushStack(returnValue);
+						else {
+							f.runningAsSignal = false;
+							this.inSignal = false;
+
+						}
 					} else if (!(this.peekStack() instanceof RoboScriptObject)) {
 						throw new IllegalArgumentException(
 								"Expected a function or object in this place. Rework the compiler. Got '" + this.peekStack()
@@ -452,6 +512,10 @@ public final class VirtualMachine {
 						this.pushStack(this.getStringNative(s, key));
 						break;
 					}
+					if (gettable instanceof RoboScriptSignal s) {
+						this.pushStack(this.getSignalNative(s, key));
+						break;
+					}
 
 					if (!(gettable instanceof RoboScriptObject object))
 						throw new RuntimeError(
@@ -471,7 +535,14 @@ public final class VirtualMachine {
 								"Can only use '.' to set fields from an object. Instead got '" + settable.getClass() + "'.");
 					if (!object.settable)
 						throw new RuntimeError("Cannot edit fields of a 'super' keyword.");
-					object.fields.put(key, value);
+					if (object.fields.containsKey(key) && object.fields.get(key).isFinal)
+
+
+						if (object.fields.containsKey(key)) {
+							if (object.fields.get(key).isFinal)
+								throw new RuntimeError("Field '" + key + "' is final and cannot be edited.");
+							else object.fields.get(key).value = value;
+						} else object.fields.put(key, new RoboScriptField(value, false));
 				}
 				case OP_INHERIT -> {
 					Object superclassObject = this.popStack();
@@ -496,7 +567,7 @@ public final class VirtualMachine {
 	 */
 	private Object getFieldInObject(RoboScriptObject object, String fieldName) {
 		if (object.fields.containsKey(fieldName))
-			return object.fields.get(fieldName);
+			return object.fields.get(fieldName).value;
 		RoboScriptCallable function = this.getFunctionInClass(object.clazz, object, fieldName);
 		if (function == null)
 			throw new RuntimeError("Class does not contain field '" + fieldName + "'.");
@@ -584,6 +655,24 @@ public final class VirtualMachine {
 				return method;
 			}
 			default -> throw new RuntimeError("Built-in type 'String' does not have method '" + key + "'.");
+		}
+	}
+
+	private RoboScriptNativeMethod getSignalNative(RoboScriptSignal signal, String key) {
+		switch (key) {
+			case "connect" -> {
+				RoboScriptNativeMethod method = new RoboScriptNativeMethod(signal, (byte) 1);
+				method.function = () -> {
+					if (!(this.popStack() instanceof RoboScriptCallable callable))
+						throw new RuntimeError("Expected a function or method as the first argument of 'connect'.");
+					if (callable instanceof RoboScriptClass)
+						throw new RuntimeError("Expected a function or method as the first argument of 'connect'.");
+					((RoboScriptSignal) method.instance).callable = callable;
+					return null;
+				};
+				return method;
+			}
+			default -> throw new RuntimeError("Built-in type 'Signal' does not have method '" + key + "'.");
 		}
 	}
 
@@ -831,5 +920,23 @@ public final class VirtualMachine {
 	@Override
 	public String toString() {
 		return "VirtualMachine, you must have really done something wrong for this to show up.";
+	}
+
+
+	static class ExecutingSignal {
+		Object[] args;
+		RoboScriptCallable callable;
+
+		ExecutingSignal(RoboScriptCallable callable, Object[] args) {
+			this.callable = callable;
+			this.args = args;
+		}
+	}
+
+	enum RunningState {
+		STOPPED,
+		RUNNING,
+		RUNNING_SIGNAL,
+		RUNNING_EXTERNAL_SIGNAL
 	}
 }

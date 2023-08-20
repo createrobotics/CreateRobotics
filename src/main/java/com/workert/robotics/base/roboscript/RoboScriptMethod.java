@@ -8,7 +8,7 @@ public class RoboScriptMethod extends RoboScriptFunction {
 	}
 
 	@Override
-	public void call(VirtualMachine vm, byte argumentCount) {
+	public void call(VirtualMachine vm, byte argumentCount, boolean asSignal) {
 		if (this.argumentCount != argumentCount)
 			throw new RuntimeError("Expected " + this.argumentCount + " argument(s) but got " + argumentCount + ".");
 		RoboScriptObject instance;
@@ -21,8 +21,19 @@ public class RoboScriptMethod extends RoboScriptFunction {
 			vm.pushStack(new RoboScriptSuper(instance.clazz.superclass, instance));
 		else vm.pushStack(null);
 		argumentCount += 2;
-		vm.pushStack(vm.ip);
-		vm.pushStack(vm.bp);
+
+		this.runningAsSignal = asSignal;
+		if (!vm.inSignal && asSignal) {
+			vm.inSignal = true;
+		}
+
+		if (vm.running) {
+			vm.pushStack(vm.ip);
+			vm.pushStack(vm.bp);
+		} else {
+			vm.pushStack(-1);
+			vm.pushStack(-1);
+		}
 
 		vm.ip = this.address;
 		vm.bp = vm.stackSize - argumentCount - 2;

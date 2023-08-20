@@ -106,6 +106,8 @@ public class RedstoneDetectorBlock extends Block implements EntityBlock, ITE<Red
 	}
 
 	private void getRedstoneSignalUpdate(int power, ServerLevel level, BlockPos blockPos) {
-		this.withTileEntityDo(level, blockPos, (be) -> be.setRedstoneLevel(power));
+		this.withTileEntityDo(level, blockPos, (be) -> {
+			be.setRedstoneLevel(power);
+		});
 	}
 }

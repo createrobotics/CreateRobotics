@@ -5,7 +5,7 @@ import java.util.Map;
 public class RoboScriptObject {
 
 	RoboScriptClass clazz;
-	public Map<String, Object> fields = new HashMap<>();
+	public Map<String, RoboScriptField> fields = new HashMap<>();
 
 	boolean settable;
 

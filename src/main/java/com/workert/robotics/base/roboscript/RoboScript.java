@@ -21,13 +21,18 @@ public abstract class RoboScript {
 			if (this.hadError) {
 				return;
 			}
-			this.virtualMachine.interpret(this.compiler.chunk, 0);
+			this.virtualMachine.interpret(this.compiler.chunk);
 		}).start();
 
 	}
 
 	public final void queueStopForProgram() {
 		this.virtualMachine.queueStop();
+	}
+
+	public final void queueSignal(RoboScriptCallable c, Object[] args) {
+		if (c == null) return;
+		this.virtualMachine.addSignalToQueue(new VirtualMachine.ExecutingSignal(c, args));
 	}
 
 
