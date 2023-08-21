@@ -3,6 +3,7 @@ package com.workert.robotics.content.computers.ioblocks.redstonedetector;
 import com.simibubi.create.foundation.tileEntity.SyncedTileEntity;
 import com.workert.robotics.base.registries.BlockEntityRegistry;
 import com.workert.robotics.base.roboscript.*;
+import com.workert.robotics.base.roboscript.util.RoboScriptObjectConversions;
 import com.workert.robotics.content.computers.computer.ComputerBlockEntity;
 import com.workert.robotics.content.computers.ioblocks.IOBlockEntity;
 import net.minecraft.core.BlockPos;
@@ -29,7 +30,7 @@ public class RedstoneDetectorBlockEntity extends SyncedTileEntity implements IOB
 		if (redstoneLevel != this.redstoneLevel && this.getConnectedComputer() != null) {
 			this.getConnectedComputer().interpretSignal(
 					((RoboScriptSignal) (this.roboScriptBlockInstance.fields.get("powerChanged").value)).callable,
-					new Object[] {redstoneLevel});
+					new Object[] {RoboScriptObjectConversions.prepareForRoboScriptUse(redstoneLevel)});
 		}
 		this.redstoneLevel = redstoneLevel;
 	}
