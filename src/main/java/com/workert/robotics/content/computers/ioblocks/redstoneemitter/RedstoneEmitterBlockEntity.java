@@ -83,14 +83,19 @@ public class RedstoneEmitterBlockEntity extends SyncedTileEntity implements IOBl
 		return this.getLevel().getExistingBlockEntity(this.targetPos) instanceof ComputerBlockEntity e ? e : null;
 	}
 
+	private void setRedstoneLevel(int redstoneLevel) {
+		this.redstoneLevel = redstoneLevel;
+		this.level.scheduleTick(this.getBlockPos(), this.getBlockState().getBlock(), 0);
+	}
+
 
 	private static RoboScriptClass makeClass() {
 		RoboScriptClass clazz = new RoboScriptClass();
 		RoboScriptNativeMethod setPower = new RoboScriptNativeMethod((byte) 1);
 		setPower.function = (vm, fun) ->
 		{
-			getBlockEntityFromMethod((RoboScriptNativeMethod) fun).redstoneLevel = Math.min(
-					RoboScriptArgumentPredicates.asPositiveFullNumber(vm.popStack(), true), 15);
+			getBlockEntityFromMethod((RoboScriptNativeMethod) fun).setRedstoneLevel(Math.min(
+					RoboScriptArgumentPredicates.asPositiveFullNumber(vm.popStack(), true), 15));
 			return null;
 		};
 		RoboScriptNativeMethod getPower = new RoboScriptNativeMethod((byte) 0);
