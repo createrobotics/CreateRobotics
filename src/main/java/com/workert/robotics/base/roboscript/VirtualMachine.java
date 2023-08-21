@@ -140,7 +140,12 @@ public final class VirtualMachine {
 		for (Object arg : signal.args) {
 			this.pushStack(arg);
 		}
-		signal.callable.call(this, (byte) signal.args.length, true);
+		try {
+			signal.callable.call(this, (byte) signal.args.length, true);
+		} catch (RuntimeError e) {
+			this.roboScriptInstance.handleErrorMessage(
+					"[line " + this.chunk.finalLines[this.ip] + "] " + e.message);
+		}
 	}
 
 	void addSignalToQueue(ExecutingSignal signal) {
@@ -150,7 +155,9 @@ public final class VirtualMachine {
 
 		new Thread(() -> {
 			this.running = false; // it should be false already but its always nice to make sure
-			this.interpretButDontRun();
+			this.threadRunning = true;
+			this.executeSignal();
+			this.threadRunning = false;
 		}).start();
 	}
 
@@ -164,7 +171,7 @@ public final class VirtualMachine {
 	/**
 	 * The main part of the VM
 	 */
-	private void run() {
+	void run() {
 		while (true) {
 			if (this.stopQueued) {
 				this.stopQueued = false;
