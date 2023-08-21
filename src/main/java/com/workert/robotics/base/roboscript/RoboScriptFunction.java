@@ -28,5 +28,8 @@ public class RoboScriptFunction implements RoboScriptCallable {
 
 		vm.ip = this.address;
 		vm.bp = vm.stackSize - argumentCount - 2;
+
+		if (!vm.running)
+			vm.run();
 	}
 }
