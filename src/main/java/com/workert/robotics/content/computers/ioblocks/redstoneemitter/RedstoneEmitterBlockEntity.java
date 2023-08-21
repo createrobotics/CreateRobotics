@@ -1,8 +1,11 @@
-package com.workert.robotics.content.computers.ioblocks.redstonedetector;
-
+package com.workert.robotics.content.computers.ioblocks.redstoneemitter;
 import com.simibubi.create.foundation.tileEntity.SyncedTileEntity;
-import com.workert.robotics.base.registries.BlockEntityRegistry;
-import com.workert.robotics.base.roboscript.*;
+import com.workert.robotics.base.roboscript.RoboScriptClass;
+import com.workert.robotics.base.roboscript.RoboScriptField;
+import com.workert.robotics.base.roboscript.RoboScriptNativeMethod;
+import com.workert.robotics.base.roboscript.RoboScriptObject;
+import com.workert.robotics.base.roboscript.util.RoboScriptArgumentPredicates;
+import com.workert.robotics.base.roboscript.util.RoboScriptObjectConversions;
 import com.workert.robotics.content.computers.computer.ComputerBlockEntity;
 import com.workert.robotics.content.computers.ioblocks.IOBlockEntity;
 import net.minecraft.core.BlockPos;
@@ -12,26 +15,18 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
-public class RedstoneDetectorBlockEntity extends SyncedTileEntity implements IOBlockEntity {
+public class RedstoneEmitterBlockEntity extends SyncedTileEntity implements IOBlockEntity {
 
 	public static RoboScriptClass roboScriptBlockClass = makeClass();
-	int redstoneLevel = 0;
 
 	private String signalName = "";
 	private BlockPos targetPos = this.getBlockPos();
 	public RoboScriptObject roboScriptBlockInstance = this.makeInstance();
 
-	public RedstoneDetectorBlockEntity(BlockEntityType<?> type, BlockPos blockPos, BlockState blockState) {
-		super(BlockEntityRegistry.REDSTONE_DETECTOR.get(), blockPos, blockState);
-	}
+	int redstoneLevel = 0;
 
-	public void setRedstoneLevel(int redstoneLevel) {
-		if (redstoneLevel != this.redstoneLevel && this.getConnectedComputer() != null) {
-			this.getConnectedComputer().interpretSignal(
-					((RoboScriptSignal) (this.roboScriptBlockInstance.fields.get("powerChanged").value)).callable,
-					new Object[] {redstoneLevel});
-		}
-		this.redstoneLevel = redstoneLevel;
+	public RedstoneEmitterBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+		super(type, pos, state);
 	}
 
 	@Override
@@ -63,11 +58,6 @@ public class RedstoneDetectorBlockEntity extends SyncedTileEntity implements IOB
 		}
 	}
 
-	@Nullable
-	public ComputerBlockEntity getConnectedComputer() {
-		return this.getLevel().getExistingBlockEntity(this.targetPos) instanceof ComputerBlockEntity e ? e : null;
-	}
-
 	@Override
 	public BlockPos getTargetPos() {
 		return this.targetPos;
@@ -88,12 +78,26 @@ public class RedstoneDetectorBlockEntity extends SyncedTileEntity implements IOB
 		return this.roboScriptBlockInstance;
 	}
 
+	@Nullable
+	public ComputerBlockEntity getConnectedComputer() {
+		return this.getLevel().getExistingBlockEntity(this.targetPos) instanceof ComputerBlockEntity e ? e : null;
+	}
+
 
 	private static RoboScriptClass makeClass() {
 		RoboScriptClass clazz = new RoboScriptClass();
+		RoboScriptNativeMethod setPower = new RoboScriptNativeMethod((byte) 1);
+		setPower.function = (vm, fun) ->
+		{
+			getBlockEntityFromMethod((RoboScriptNativeMethod) fun).redstoneLevel = Math.min(
+					RoboScriptArgumentPredicates.asPositiveFullNumber(vm.popStack(), true), 15);
+			return null;
+		};
 		RoboScriptNativeMethod getPower = new RoboScriptNativeMethod((byte) 0);
-		getPower.function = (vm, fun) -> getBlockEntityFromMethod((RoboScriptNativeMethod) fun).redstoneLevel;
+		getPower.function = (vm, fun) -> RoboScriptObjectConversions.prepareForRoboScriptUse(
+				getBlockEntityFromMethod((RoboScriptNativeMethod) fun).redstoneLevel);
 
+		clazz.functions.put("setPower", setPower);
 		clazz.functions.put("getPower", getPower);
 		return clazz;
 	}
@@ -101,11 +105,11 @@ public class RedstoneDetectorBlockEntity extends SyncedTileEntity implements IOB
 	private RoboScriptObject makeInstance() {
 		RoboScriptObject object = new RoboScriptObject(roboScriptBlockClass);
 		object.fields.put("", new RoboScriptField(this, true));
-		object.fields.put("powerChanged", new RoboScriptField(new RoboScriptSignal(), true));
 		return object;
 	}
 
-	private static RedstoneDetectorBlockEntity getBlockEntityFromMethod(RoboScriptNativeMethod method) {
-		return ((RedstoneDetectorBlockEntity) ((RoboScriptObject) method.getInstance()).fields.get("").value);
+	private static RedstoneEmitterBlockEntity getBlockEntityFromMethod(RoboScriptNativeMethod method) {
+		return ((RedstoneEmitterBlockEntity) ((RoboScriptObject) method.getInstance()).fields.get("").value);
 	}
+
 }

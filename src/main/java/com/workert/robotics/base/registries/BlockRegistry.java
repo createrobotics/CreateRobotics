@@ -12,6 +12,7 @@ import com.workert.robotics.content.computers.computer.ComputerDisplaySource;
 import com.workert.robotics.content.computers.computer.TerminalDisplaySource;
 import com.workert.robotics.content.computers.ioblocks.IOBlockItem;
 import com.workert.robotics.content.computers.ioblocks.redstonedetector.RedstoneDetectorBlock;
+import com.workert.robotics.content.computers.ioblocks.redstoneemitter.RedstoneEmitterBlock;
 import com.workert.robotics.content.computers.ioblocks.scanner.ScannerBlock;
 import com.workert.robotics.content.robotics.codeeditor.CodeEditorBlock;
 import com.workert.robotics.unused.smasher.SmasherBlock;
@@ -151,6 +152,19 @@ public class BlockRegistry {
 	public static final BlockEntry<RedstoneDetectorBlock> REDSTONE_DETECTOR = Robotics.REGISTRATE
 			.block("redstone_detector", RedstoneDetectorBlock::new)
 			.lang("Redstone Detector")
+			.blockstate((dataGenContext, provider) -> provider.getVariantBuilder(dataGenContext.get()).partialState()
+					.with(RedstoneDetectorBlock.LIT, true).addModels(new ConfiguredModel(
+							provider.models().getExistingFile(provider.modLoc("block/redstone_detector_on"))))
+					.partialState().with(RedstoneDetectorBlock.LIT, false).addModels(new ConfiguredModel(
+							provider.models().getExistingFile(provider.modLoc("block/redstone_detector")))))
+			.initialProperties(() -> Blocks.STONE)
+			.transform(TagGen.pickaxeOnly())
+			.item(IOBlockItem::new)
+			.build()
+			.register();
+	public static final BlockEntry<RedstoneEmitterBlock> REDSTONE_EMITTER = Robotics.REGISTRATE
+			.block("redstone_emitter", RedstoneEmitterBlock::new)
+			.lang("Redstone Emitter")
 			.blockstate((dataGenContext, provider) -> provider.getVariantBuilder(dataGenContext.get()).partialState()
 					.with(RedstoneDetectorBlock.LIT, true).addModels(new ConfiguredModel(
 							provider.models().getExistingFile(provider.modLoc("block/redstone_detector_on"))))

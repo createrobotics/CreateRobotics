@@ -66,7 +66,7 @@ public abstract class RoboScript {
 
 	public final void defineNativeFunction(String name, int argumentCount, NativeFunctionFunctionalInterface function) {
 		RoboScriptNativeFunction nativeFunctionWrapper = new RoboScriptNativeFunction((byte) argumentCount);
-		nativeFunctionWrapper.function = () -> {
+		nativeFunctionWrapper.function = (vm, fun) -> {
 			Object functionOutput;
 
 			if (nativeFunctionWrapper.argumentCount > 0) {

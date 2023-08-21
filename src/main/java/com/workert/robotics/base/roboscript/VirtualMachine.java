@@ -611,7 +611,7 @@ public final class VirtualMachine {
 		switch (key) {
 			case "add", "append" -> {
 				RoboScriptNativeMethod method = new RoboScriptNativeMethod(list, (byte) 1);
-				method.function = () -> {
+				method.function = (vm, fun) -> {
 					((List) method.instance).add(VirtualMachine.this.popStack());
 					return null;
 				};
@@ -625,7 +625,7 @@ public final class VirtualMachine {
 		switch (key) {
 			case "replaceAt" -> {
 				RoboScriptNativeMethod method = new RoboScriptNativeMethod(string, (byte) 2);
-				method.function = () -> {
+				method.function = (vm, fun) -> {
 					if (!(VirtualMachine.this.popStack() instanceof String s))
 						throw new RuntimeError("Expected a string as the second argument of 'replaceAt'.");
 					if (!(VirtualMachine.this.popStack() instanceof Double location))
@@ -633,11 +633,11 @@ public final class VirtualMachine {
 
 					if (!isWhole(location) || isNegative(location)) throw new RuntimeError(
 							"Index value for string in first argument of 'replaceAt' must be a whole number greater or equal to 0.");
-					if (location >= ((String) method.instance).length())
+					if (location >= ((String) method.getInstance()).length())
 						throw new RuntimeError(
-								"String index in first argument of 'replaceAt' out of range of '" + (((String) method.instance).length() - 1) + "'.");
+								"String index in first argument of 'replaceAt' out of range of '" + (((String) method.getInstance()).length() - 1) + "'.");
 
-					StringBuilder builder = new StringBuilder((String) method.instance);
+					StringBuilder builder = new StringBuilder((String) method.getInstance());
 					builder.replace((int) Math.round(location), (int) Math.round(location) + 1, s);
 					return builder.toString();
 				};
@@ -646,11 +646,11 @@ public final class VirtualMachine {
 
 			case "split" -> {
 				RoboScriptNativeMethod method = new RoboScriptNativeMethod(string, (byte) 1);
-				method.function = () -> {
+				method.function = (vm, fun) -> {
 					if (!(VirtualMachine.this.popStack() instanceof String regex))
 						throw new RuntimeError(
 								"Expected a Regular Expression string as the argument of 'split'.");
-					return Arrays.asList(((String) method.instance).split(regex));
+					return Arrays.asList(((String) method.getInstance()).split(regex));
 				};
 				return method;
 			}
@@ -662,12 +662,12 @@ public final class VirtualMachine {
 		switch (key) {
 			case "connect" -> {
 				RoboScriptNativeMethod method = new RoboScriptNativeMethod(signal, (byte) 1);
-				method.function = () -> {
+				method.function = (vm, fun) -> {
 					if (!(this.popStack() instanceof RoboScriptCallable callable))
 						throw new RuntimeError("Expected a function or method as the first argument of 'connect'.");
 					if (callable instanceof RoboScriptClass)
 						throw new RuntimeError("Expected a function or method as the first argument of 'connect'.");
-					((RoboScriptSignal) method.instance).callable = callable;
+					((RoboScriptSignal) method.getInstance()).callable = callable;
 					return null;
 				};
 				return method;
@@ -711,7 +711,7 @@ public final class VirtualMachine {
 	 *
 	 * @return The value at the top of the stack.
 	 */
-	Object popStack() {
+	public Object popStack() {
 		return this.stack[--this.stackSize];
 	}
 

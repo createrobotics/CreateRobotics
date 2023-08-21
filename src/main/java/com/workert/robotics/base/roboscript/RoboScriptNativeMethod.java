@@ -21,5 +21,9 @@ public class RoboScriptNativeMethod extends RoboScriptNativeFunction {
 		this.function = function.function;
 		this.instance = instance;
 	}
+
+	public Object getInstance() {
+		return this.instance;
+	}
 }
 

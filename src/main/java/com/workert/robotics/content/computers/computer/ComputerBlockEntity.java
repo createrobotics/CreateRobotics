@@ -10,6 +10,7 @@ import com.workert.robotics.content.computers.ioblocks.IOBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -95,6 +96,7 @@ public class ComputerBlockEntity extends KineticTileEntity {
 		this.script = compound.getString("Script");
 		this.terminal = new LineLimitedString(TERMINAL_LINE_LIMIT, compound.getString("Terminal"));
 		this.running = compound.getBoolean("Running");
+		this.connectedBlocks = getConnectedBlocksFromTag(compound.getCompound("ConnectedBlocks"));
 	}
 
 	@Override
@@ -103,6 +105,7 @@ public class ComputerBlockEntity extends KineticTileEntity {
 		compound.putString("Script", this.script);
 		compound.putString("Terminal", this.terminal.getString());
 		compound.putBoolean("Running", this.running);
+		compound.put("ConnectedBlocks", getConnectedBlocksToTag(this.connectedBlocks));
 	}
 
 	@Override
@@ -156,5 +159,21 @@ public class ComputerBlockEntity extends KineticTileEntity {
 			listTag.add(StringTag.valueOf(s));
 		}
 		return listTag;
+	}
+
+	private static CompoundTag getConnectedBlocksToTag(Map<String, BlockPos> connectedBlocks) {
+		CompoundTag compoundTag = new CompoundTag();
+		for (Map.Entry<String, BlockPos> entry : connectedBlocks.entrySet()) {
+			compoundTag.put(entry.getKey(), NbtUtils.writeBlockPos(entry.getValue()));
+		}
+		return compoundTag;
+	}
+
+	private static Map<String, BlockPos> getConnectedBlocksFromTag(CompoundTag compoundTag) {
+		Map<String, BlockPos> connectedBlocks = new HashMap<>();
+		for (String key : compoundTag.getAllKeys()) {
+			connectedBlocks.put(key, NbtUtils.readBlockPos(compoundTag.getCompound(key)));
+		}
+		return connectedBlocks;
 	}
 }
