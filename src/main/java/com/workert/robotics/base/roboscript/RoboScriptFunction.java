@@ -18,18 +18,19 @@ public class RoboScriptFunction implements RoboScriptCallable {
 		if (!vm.inSignal && asSignal) {
 			vm.inSignal = true;
 		}
-		if (vm.running) {
+
+		if (!vm.running && asSignal) {
+			vm.pushStack(-1);
+			vm.pushStack(-1);
+		} else {
 			vm.pushStack(vm.ip);
 			vm.pushStack(vm.bp);
-		} else {
-			vm.pushStack(-1);
-			vm.pushStack(-1);
 		}
 
 		vm.ip = this.address;
 		vm.bp = vm.stackSize - argumentCount - 2;
 
-		if (!vm.running)
+		if (!vm.running && asSignal)
 			vm.run();
 	}
 }
