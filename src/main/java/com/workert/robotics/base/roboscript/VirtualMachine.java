@@ -700,8 +700,7 @@ public final class VirtualMachine {
 	 */
 	private short readShort() {
 		this.ip += 2;
-		return (short) ((this.chunk.finalCode[this.ip - 2] << 8)
-				| this.chunk.finalCode[this.ip - 1]);
+		return (short) ((this.chunk.finalCode[this.ip - 2] << 8) | (this.chunk.finalCode[this.ip - 1] & 0xFF));
 	}
 
 	/**
