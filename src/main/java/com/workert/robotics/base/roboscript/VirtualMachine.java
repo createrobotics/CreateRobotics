@@ -1,4 +1,5 @@
 package com.workert.robotics.base.roboscript;
+import com.workert.robotics.base.roboscript.util.RoboScriptArgumentPredicates;
 import com.workert.robotics.base.roboscript.util.RoboScriptObjectConversions;
 
 import java.util.*;
@@ -630,11 +631,43 @@ public final class VirtualMachine {
 	 */
 	private RoboScriptNativeMethod getListNative(List list, String key) {
 		switch (key) {
-			case "add", "append" -> {
+			case "add", "append", "push" -> {
 				RoboScriptNativeMethod method = new RoboScriptNativeMethod(list, (byte) 1);
 				method.function = (vm, fun) -> {
 					((List) method.instance).add(VirtualMachine.this.popStack());
 					return null;
+				};
+				return method;
+			}
+			case "size" -> {
+				RoboScriptNativeMethod method = new RoboScriptNativeMethod(list, (byte) 0);
+				method.function = (vm, fun) -> (double) (((List) (method.instance)).size());
+				return method;
+			}
+			case "pop" -> {
+				RoboScriptNativeMethod method = new RoboScriptNativeMethod(list, (byte) 0);
+				method.function = (vm, fun) -> {
+					List l = ((List) method.instance);
+					Object ret = l.get(l.size() - 1);
+					l.remove(l.size() - 1);
+					return ret;
+				};
+				return method;
+			}
+			case "peek" -> {
+				RoboScriptNativeMethod method = new RoboScriptNativeMethod(list, (byte) 0);
+				method.function = (vm, fun) -> ((List) method.instance).get(((List) method.instance).size() - 1);
+				return method;
+			}
+			case "remove" -> {
+				RoboScriptNativeMethod method = new RoboScriptNativeMethod(list, (byte) 1);
+				method.function = (vm, fun) -> {
+					int i = RoboScriptArgumentPredicates.asPositiveFullNumber(VirtualMachine.this.popStack(), true);
+					List l = ((List) method.instance);
+					if (i >= l.size()) throw new RuntimeError("List index out of range of '" + (l.size() - 1) + "'.");
+					Object ret = l.get(l.size() - 1);
+					l.remove(i);
+					return ret;
 				};
 				return method;
 			}
