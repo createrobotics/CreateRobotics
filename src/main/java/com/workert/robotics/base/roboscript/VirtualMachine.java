@@ -899,6 +899,7 @@ public final class VirtualMachine {
 	public static boolean isTruthy(Object o) {
 		if (o == null) return false;
 		if (o instanceof Boolean b) return b;
+		if (o instanceof Double d) return d != 0;
 		return true;
 	}
 
