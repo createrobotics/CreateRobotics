@@ -648,6 +648,7 @@ public final class VirtualMachine {
 				RoboScriptNativeMethod method = new RoboScriptNativeMethod(list, (byte) 0);
 				method.function = (vm, fun) -> {
 					List l = ((List) method.instance);
+					if (l.isEmpty()) throw new RuntimeError("List is empty and cannot pop.");
 					Object ret = l.get(l.size() - 1);
 					l.remove(l.size() - 1);
 					return ret;
@@ -656,7 +657,10 @@ public final class VirtualMachine {
 			}
 			case "peek" -> {
 				RoboScriptNativeMethod method = new RoboScriptNativeMethod(list, (byte) 0);
-				method.function = (vm, fun) -> ((List) method.instance).get(((List) method.instance).size() - 1);
+				method.function = (vm, fun) -> {
+					if (((List) method.instance).isEmpty()) throw new RuntimeError("List is empty and cannot peek.");
+					return ((List) method.instance).get(((List) method.instance).size() - 1);
+				};
 				return method;
 			}
 			case "remove" -> {
