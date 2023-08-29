@@ -20,6 +20,8 @@ public class OpCodeGenerator {
 		opCodes.add("OP_GET_GLOBAL");
 		opCodes.add("OP_DEFINE_GLOBAL");
 		opCodes.add("OP_SET_GLOBAL");
+		opCodes.add("OP_ADD_CONSTANT");
+		opCodes.add("OP_GET_CONSTANT");
 		opCodes.add("OP_EQUAL");
 		opCodes.add("OP_NOT_EQUAL");
 		opCodes.add("OP_GREATER");

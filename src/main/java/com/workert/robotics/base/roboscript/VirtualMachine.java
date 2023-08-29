@@ -40,6 +40,16 @@ public final class VirtualMachine {
 	int stackSize = 0;
 
 	/**
+	 * The constants defined during runtime
+	 */
+	final Object[] runtimeConstants = new Object[256];
+
+	/**
+	 * The size of runtimeConstants
+	 */
+	int runtimeConstantsSize = 0;
+
+	/**
 	 * The index of the current instruction.
 	 */
 	int ip = 0;
@@ -207,6 +217,10 @@ public final class VirtualMachine {
 				case OP_DEFINE_GLOBAL -> this.globalVariables[this.readByte()] = this.popStack();
 
 				case OP_SET_GLOBAL -> this.globalVariables[this.readByte()] = this.peekStack();
+
+				case OP_ADD_CONSTANT -> this.pushConstant(this.popStack());
+
+				case OP_GET_CONSTANT -> this.pushStack(this.runtimeConstants[this.readByte()]);
 
 				case OP_EQUAL -> this.binaryEqual();
 
@@ -741,6 +755,9 @@ public final class VirtualMachine {
 		return this.stack[this.stackSize - 1 - distance];
 	}
 
+	void pushConstant(Object o) {
+		this.runtimeConstants[this.runtimeConstantsSize++] = o;
+	}
 
 	/**
 	 * Adds two numbers.
