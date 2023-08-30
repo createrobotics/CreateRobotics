@@ -1,0 +1,6 @@
+{
+  "robotics.ioblock.set": "Targeted Computer selected",
+  "robotics.ioblock.invalid": "Target is not a Computer",
+  "robotics.ioblock.missing": "Select a Computer as Target first",
+  "robotics.ioblock.too_far": "Target Computer is too far from here"
+}

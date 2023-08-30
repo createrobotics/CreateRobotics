@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+	"bottom": "robotics:block/redstone_emitter_bottom",
+	"side": "robotics:block/redstone_emitter_side",
+	"top": "robotics:block/redstone_emitter_top"
+  }
+}

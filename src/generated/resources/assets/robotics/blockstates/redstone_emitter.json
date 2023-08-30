@@ -1,0 +1,10 @@
+{
+  "variants": {
+	"lit=false": {
+	  "model": "robotics:block/redstone_emitter"
+	},
+	"lit=true": {
+	  "model": "robotics:block/redstone_emitter"
+	}
+  }
+}

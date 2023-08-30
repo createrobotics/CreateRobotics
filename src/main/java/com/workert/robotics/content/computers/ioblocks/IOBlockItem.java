@@ -35,7 +35,7 @@ public class IOBlockItem extends BlockItem {
 		if (player.isShiftKeyDown()) {
 			if (!(pContext.getLevel()
 					.getBlockEntity(pContext.getClickedPos()) instanceof ComputerBlockEntity)) {
-				player.displayClientMessage(Component.literal("Target is not a computer")
+				player.displayClientMessage(Component.translatable("robotics.ioblock.invalid")
 						.withStyle(ChatFormatting.RED), true);
 				return InteractionResult.FAIL;
 			}
@@ -44,13 +44,14 @@ public class IOBlockItem extends BlockItem {
 			CompoundTag blockEntityTag = new CompoundTag();
 			blockEntityTag.put("TargetPosition", NbtUtils.writeBlockPos(pContext.getClickedPos()));
 			pContext.getItemInHand().getOrCreateTag().put("BlockEntityTag", blockEntityTag);
-			player.displayClientMessage(Component.literal("Target set").withStyle(ChatFormatting.GOLD), true);
+			player.displayClientMessage(Component.translatable("robotics.ioblock.set").withStyle(ChatFormatting.GOLD),
+					true);
 
 
 			return InteractionResult.SUCCESS;
 		} else {
 			if (!pContext.getItemInHand().getOrCreateTag().contains("BlockEntityTag")) {
-				player.displayClientMessage(Component.literal("Select a Computer as Target first")
+				player.displayClientMessage(Component.translatable("robotics.ioblock.missing")
 						.withStyle(ChatFormatting.RED), true);
 				return InteractionResult.FAIL;
 
@@ -59,7 +60,7 @@ public class IOBlockItem extends BlockItem {
 					.distManhattan(new Vec3i(pContext.getClickedPos().getX(), pContext.getClickedPos().getY(),
 							pContext.getClickedPos()
 									.getZ())) > RoboticsConfigs.SERVER.maxIOBlocksPlacementRange.get() + 1) {
-				player.displayClientMessage(Component.literal("Target Computer is too far from here")
+				player.displayClientMessage(Component.translatable("robotics.ioblock.too_far")
 						.withStyle(ChatFormatting.RED), true);
 				return InteractionResult.FAIL;
 			}
@@ -70,7 +71,6 @@ public class IOBlockItem extends BlockItem {
 			return result;
 		}
 	}
-
 
 	@Override
 	public boolean canAttackBlock(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer) {
@@ -97,11 +97,10 @@ public class IOBlockItem extends BlockItem {
 		if (selection == null)
 			return;
 
-		BlockPos pos = selection;
-		BlockState state = world.getBlockState(pos);
-		VoxelShape shape = state.getShape(world, pos);
+		BlockState state = world.getBlockState(selection);
+		VoxelShape shape = state.getShape(world, selection);
 		AABB boundingBox = shape.isEmpty() ? new AABB(BlockPos.ZERO) : shape.bounds();
-		CreateClient.OUTLINER.showAABB("target", boundingBox.move(pos))
+		CreateClient.OUTLINER.showAABB("target", boundingBox.move(selection))
 				.colored(0xffcb74)
 				.lineWidth(1 / 16f);
 	}

@@ -7,6 +7,7 @@
   "block.robotics.computer": "Computer",
   "block.robotics.deepslate_tin_ore": "Deepslate tin ore",
   "block.robotics.redstone_detector": "Redstone Detector",
+  "block.robotics.redstone_emitter": "Redstone Emitter",
   "block.robotics.scanner": "Scanner",
   "block.robotics.smasher": "Smasher",
   "block.robotics.tin_block": "Tin block",
@@ -30,6 +31,11 @@
 
   "itemGroup.robotics": "Create Robotics",
 
+  "robotics.ioblock.set": "Targeted Computer selected",
+  "robotics.ioblock.invalid": "Target is not a Computer",
+  "robotics.ioblock.missing": "Select a Computer as Target first",
+  "robotics.ioblock.too_far": "Target Computer is too far from here",
+
   "item.robotics.extend_o_boots.tooltip": "EXTEND-O-BOOTS",
   "item.robotics.extend_o_boots.tooltip.summary": "Your _equipable Scaffolding_! Allows you to create an _extendable temporary scaffolding_ under you.",
   "item.robotics.extend_o_boots.tooltip.control1": "Hold Ctrl while wearing",
@@ -51,6 +57,13 @@
   "robotics.ponder.programming.text_1": "To change the contents of a Program you need a code editor.",
   "robotics.ponder.programming.text_2": "Right click the code editor with the program to get started!",
   "robotics.ponder.programming.text_3": "When you're finished coding right click with the program on a programmable robot to apply your code to it.",
+
+  "_": "->------------------------]  Interface  [------------------------<-",
+
+  "robotics.ioblock.set": "Targeted Computer selected",
+  "robotics.ioblock.invalid": "Target is not a Computer",
+  "robotics.ioblock.missing": "Select a Computer as Target first",
+  "robotics.ioblock.too_far": "Target Computer is too far from here",
 
   "_": "->------------------------]  Tooltips  [------------------------<-",
 

@@ -9,6 +9,7 @@ import com.workert.robotics.Robotics;
 import java.util.function.Supplier;
 
 public enum LangPartials implements LangPartial {
+	INTERFACE("Interface"),
 	TOOLTIPS("Tooltips");
 
 	private String display;

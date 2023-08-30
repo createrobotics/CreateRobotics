@@ -1,11 +1,12 @@
 {
   "values": [
-    "robotics:tin_ore",
-    "robotics:deepslate_tin_ore",
-    "robotics:tin_block",
-    "robotics:bronze_block",
-    "robotics:computer",
-    "robotics:redstone_detector",
-    "robotics:scanner"
+	"robotics:tin_ore",
+	"robotics:deepslate_tin_ore",
+	"robotics:tin_block",
+	"robotics:bronze_block",
+	"robotics:computer",
+	"robotics:redstone_detector",
+	"robotics:redstone_emitter",
+	"robotics:scanner"
   ]
 }

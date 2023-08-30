@@ -152,11 +152,14 @@ public class BlockRegistry {
 	public static final BlockEntry<RedstoneDetectorBlock> REDSTONE_DETECTOR = Robotics.REGISTRATE
 			.block("redstone_detector", RedstoneDetectorBlock::new)
 			.lang("Redstone Detector")
-			.blockstate((dataGenContext, provider) -> provider.getVariantBuilder(dataGenContext.get()).partialState()
-					.with(RedstoneDetectorBlock.LIT, true).addModels(new ConfiguredModel(
-							provider.models().getExistingFile(provider.modLoc("block/redstone_detector_on"))))
+			.blockstate((dataGenContext, provider) -> provider.getVariantBuilder(dataGenContext.get())
+					.partialState().with(RedstoneDetectorBlock.LIT, true).addModels(new ConfiguredModel(
+							provider.models()
+									.cubeAll("redstone_detector_on", provider.modLoc("block/redstone_detector_on"))))
 					.partialState().with(RedstoneDetectorBlock.LIT, false).addModels(new ConfiguredModel(
-							provider.models().getExistingFile(provider.modLoc("block/redstone_detector")))))
+							provider.models()
+									.cubeAll("redstone_detector", provider.modLoc("block/redstone_detector"))))
+			)
 			.initialProperties(() -> Blocks.STONE)
 			.transform(TagGen.pickaxeOnly())
 			.item(IOBlockItem::new)
@@ -167,14 +170,28 @@ public class BlockRegistry {
 			.lang("Redstone Emitter")
 			.blockstate((dataGenContext, provider) -> provider.getVariantBuilder(dataGenContext.get()).partialState()
 					.with(RedstoneDetectorBlock.LIT, true).addModels(new ConfiguredModel(
-							provider.models().getExistingFile(provider.modLoc("block/redstone_detector_on"))))
+							provider.models().cubeBottomTop("redstone_emitter",
+									provider.modLoc("block/redstone_emitter_side"),
+									provider.modLoc("block/redstone_emitter_bottom"),
+									provider.modLoc("block/redstone_emitter_top"))))
 					.partialState().with(RedstoneDetectorBlock.LIT, false).addModels(new ConfiguredModel(
-							provider.models().getExistingFile(provider.modLoc("block/redstone_detector")))))
-			.initialProperties(() -> Blocks.STONE)
-			.transform(TagGen.pickaxeOnly())
-			.item(IOBlockItem::new)
-			.build()
-			.register();
+							provider.models().getExistingFile(provider.modLoc("block/redstone_emitter")))))
+					.
+
+			initialProperties(() -> Blocks.STONE)
+					.
+
+			transform(TagGen.pickaxeOnly())
+					.
+
+			item(IOBlockItem::new)
+					.
+
+			build()
+					.
+
+			register();
+
 	public static final BlockEntry<ScannerBlock> SCANNER = Robotics.REGISTRATE
 			.block("scanner", ScannerBlock::new)
 			.lang("Scanner")
