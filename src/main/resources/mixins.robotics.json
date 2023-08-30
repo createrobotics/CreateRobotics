@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_17",
   "refmap": "robotics.refmap.json",
   "mixins": [
+	"ConfigBaseAccessor",
 	"ToolboxContainerMixin",
 	"ToolboxHandlerMixin",
 	"ToolboxInventoryAccessor",

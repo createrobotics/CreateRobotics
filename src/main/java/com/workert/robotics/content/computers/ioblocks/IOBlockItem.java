@@ -1,9 +1,11 @@
 package com.workert.robotics.content.computers.ioblocks;
 import com.simibubi.create.CreateClient;
+import com.workert.robotics.base.config.RoboticsConfigs;
 import com.workert.robotics.content.computers.computer.ComputerBlockEntity;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
@@ -54,8 +56,9 @@ public class IOBlockItem extends BlockItem {
 
 			} else if (NbtUtils.readBlockPos(
 							pContext.getItemInHand().getTag().getCompound("BlockEntityTag").getCompound("TargetPosition"))
-					.distToCenterSqr(pContext.getClickedPos().getX(), pContext.getClickedPos().getY(),
-							pContext.getClickedPos().getZ()) > 96) {
+					.distManhattan(new Vec3i(pContext.getClickedPos().getX(), pContext.getClickedPos().getY(),
+							pContext.getClickedPos()
+									.getZ())) > RoboticsConfigs.SERVER.maxIOBlocksPlacementRange.get() + 1) {
 				player.displayClientMessage(Component.literal("Target Computer is too far from here")
 						.withStyle(ChatFormatting.RED), true);
 				return InteractionResult.FAIL;

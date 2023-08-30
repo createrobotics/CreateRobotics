@@ -7,6 +7,7 @@ import com.simibubi.create.foundation.ponder.PonderLocalization;
 import com.workert.robotics.base.client.ClientHandler;
 import com.workert.robotics.base.client.KeybindList;
 import com.workert.robotics.base.client.LangPartials;
+import com.workert.robotics.base.config.RoboticsConfigs;
 import com.workert.robotics.base.registries.*;
 import com.workert.robotics.base.world.feature.RoboticsConfiguredFeatures;
 import com.workert.robotics.base.world.feature.RoboticsPlacedFeatures;
@@ -15,6 +16,7 @@ import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -51,7 +53,7 @@ public class Robotics {
 
 		PacketRegistry.registerPackets();
 
-		// CodeHelper.registerDefaultCommands();
+		RoboticsConfigs.register(ModLoadingContext.get());
 	}
 
 	private static void clientSetup(final FMLClientSetupEvent event) {
