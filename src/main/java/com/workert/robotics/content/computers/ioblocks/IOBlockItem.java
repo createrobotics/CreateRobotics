@@ -55,7 +55,7 @@ public class IOBlockItem extends BlockItem {
 			} else if (NbtUtils.readBlockPos(
 							pContext.getItemInHand().getTag().getCompound("BlockEntityTag").getCompound("TargetPosition"))
 					.distToCenterSqr(pContext.getClickedPos().getX(), pContext.getClickedPos().getY(),
-							pContext.getClickedPos().getZ()) > 64) {
+							pContext.getClickedPos().getZ()) > 96) {
 				player.displayClientMessage(Component.literal("Target Computer is too far from here")
 						.withStyle(ChatFormatting.RED), true);
 				return InteractionResult.FAIL;
