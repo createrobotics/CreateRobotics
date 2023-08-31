@@ -620,20 +620,20 @@ public final class VirtualMachine {
 			case "add", "append", "push" -> {
 				RoboScriptNativeMethod method = new RoboScriptNativeMethod(list, (byte) 1);
 				method.function = (vm, fun) -> {
-					((List) method.instance).add(VirtualMachine.this.popStack());
+					((List) method.parentClassInstance).add(VirtualMachine.this.popStack());
 					return null;
 				};
 				return method;
 			}
 			case "size" -> {
 				RoboScriptNativeMethod method = new RoboScriptNativeMethod(list, (byte) 0);
-				method.function = (vm, fun) -> (double) (((List) (method.instance)).size());
+				method.function = (vm, fun) -> (double) (((List) (method.parentClassInstance)).size());
 				return method;
 			}
 			case "pop" -> {
 				RoboScriptNativeMethod method = new RoboScriptNativeMethod(list, (byte) 0);
 				method.function = (vm, fun) -> {
-					List l = ((List) method.instance);
+					List l = ((List) method.parentClassInstance);
 					if (l.isEmpty()) throw new RuntimeError("List is empty and cannot pop.");
 					Object ret = l.get(l.size() - 1);
 					l.remove(l.size() - 1);
@@ -644,8 +644,9 @@ public final class VirtualMachine {
 			case "peek" -> {
 				RoboScriptNativeMethod method = new RoboScriptNativeMethod(list, (byte) 0);
 				method.function = (vm, fun) -> {
-					if (((List) method.instance).isEmpty()) throw new RuntimeError("List is empty and cannot peek.");
-					return ((List) method.instance).get(((List) method.instance).size() - 1);
+					if (((List) method.parentClassInstance).isEmpty())
+						throw new RuntimeError("List is empty and cannot peek.");
+					return ((List) method.parentClassInstance).get(((List) method.parentClassInstance).size() - 1);
 				};
 				return method;
 			}
@@ -653,7 +654,7 @@ public final class VirtualMachine {
 				RoboScriptNativeMethod method = new RoboScriptNativeMethod(list, (byte) 1);
 				method.function = (vm, fun) -> {
 					int i = RoboScriptArgumentPredicates.asPositiveFullNumber(VirtualMachine.this.popStack(), true);
-					List l = ((List) method.instance);
+					List l = ((List) method.parentClassInstance);
 					if (i >= l.size()) throw new RuntimeError("List index out of range of '" + (l.size() - 1) + "'.");
 					Object ret = l.get(l.size() - 1);
 					l.remove(i);
@@ -677,11 +678,11 @@ public final class VirtualMachine {
 
 					if (!isWhole(location) || isNegative(location)) throw new RuntimeError(
 							"Index value for string in first argument of 'replaceAt' must be a whole number greater or equal to 0.");
-					if (location >= ((String) method.getInstance()).length())
+					if (location >= ((String) method.getParentClassInstance()).length())
 						throw new RuntimeError(
-								"String index in first argument of 'replaceAt' out of range of '" + (((String) method.getInstance()).length() - 1) + "'.");
+								"String index in first argument of 'replaceAt' out of range of '" + (((String) method.getParentClassInstance()).length() - 1) + "'.");
 
-					StringBuilder builder = new StringBuilder((String) method.getInstance());
+					StringBuilder builder = new StringBuilder((String) method.getParentClassInstance());
 					builder.replace((int) Math.round(location), (int) Math.round(location) + 1, s);
 					return builder.toString();
 				};
@@ -694,7 +695,7 @@ public final class VirtualMachine {
 					if (!(VirtualMachine.this.popStack() instanceof String regex))
 						throw new RuntimeError(
 								"Expected a Regular Expression string as the argument of 'split'.");
-					return Arrays.asList(((String) method.getInstance()).split(regex));
+					return Arrays.asList(((String) method.getParentClassInstance()).split(regex));
 				};
 				return method;
 			}
@@ -711,7 +712,7 @@ public final class VirtualMachine {
 						throw new RuntimeError("Expected a function or method as the first argument of 'connect'.");
 					if (callable instanceof RoboScriptClass)
 						throw new RuntimeError("Expected a function or method as the first argument of 'connect'.");
-					((RoboScriptSignal) method.getInstance()).callable = callable;
+					((RoboScriptSignal) method.getParentClassInstance()).callable = callable;
 					return null;
 				};
 				return method;

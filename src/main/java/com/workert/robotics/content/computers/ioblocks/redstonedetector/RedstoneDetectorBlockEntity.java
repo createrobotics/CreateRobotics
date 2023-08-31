@@ -107,6 +107,7 @@ public class RedstoneDetectorBlockEntity extends SyncedTileEntity implements IOB
 	}
 
 	private static RedstoneDetectorBlockEntity getBlockEntityFromMethod(RoboScriptNativeMethod method) {
-		return ((RedstoneDetectorBlockEntity) ((RoboScriptObject) method.getInstance()).fields.get("").value);
+		return ((RedstoneDetectorBlockEntity) ((RoboScriptObject) method.getParentClassInstance()).fields.get(
+				"").value);
 	}
 }

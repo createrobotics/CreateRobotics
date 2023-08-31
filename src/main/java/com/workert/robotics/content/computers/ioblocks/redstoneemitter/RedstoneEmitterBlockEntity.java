@@ -114,7 +114,7 @@ public class RedstoneEmitterBlockEntity extends SyncedTileEntity implements IOBl
 	}
 
 	private static RedstoneEmitterBlockEntity getBlockEntityFromMethod(RoboScriptNativeMethod method) {
-		return ((RedstoneEmitterBlockEntity) ((RoboScriptObject) method.getInstance()).fields.get("").value);
+		return ((RedstoneEmitterBlockEntity) ((RoboScriptObject) method.getParentClassInstance()).fields.get("").value);
 	}
 
 }
