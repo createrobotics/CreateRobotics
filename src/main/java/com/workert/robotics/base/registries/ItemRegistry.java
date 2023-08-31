@@ -4,6 +4,7 @@ import com.simibubi.create.AllTags;
 import com.simibubi.create.content.AllSections;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import com.workert.robotics.Robotics;
+import com.workert.robotics.content.computers.punchcard.PunchCardItem;
 import com.workert.robotics.content.robotics.BaseRobotItem;
 import com.workert.robotics.content.utility.extendoboots.ExtendOBootsItem;
 import net.minecraft.world.item.CreativeModeTab;
@@ -88,5 +89,10 @@ public class ItemRegistry {
 			.item("extend_o_boots",
 					ExtendOBootsItem::new)
 			.lang("Extend-O-Boots")
+			.register();
+
+	public static final ItemEntry<PunchCardItem> PUNCH_CARD = Robotics.REGISTRATE
+			.item("punch_card", PunchCardItem::new)
+			.lang("Punch Card")
 			.register();
 }
