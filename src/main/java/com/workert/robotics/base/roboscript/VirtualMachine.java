@@ -126,20 +126,6 @@ public final class VirtualMachine {
 		}
 	}
 
-	private void interpretButDontRun() {
-		this.ip = 0;
-		this.stackSize = 0;
-		this.bp = 0;
-		try {
-			this.threadRunning = true;
-			this.run();
-			this.threadRunning = false;
-		} catch (RuntimeError e) {
-			this.roboScriptInstance.handleErrorMessage(
-					"[line " + this.chunk.finalLines[this.ip] + "] " + e.message);
-		}
-	}
-
 	/**
 	 * Executes the signal queue. Should only call while the program is running
 	 */
@@ -147,7 +133,7 @@ public final class VirtualMachine {
 		if (this.signalQueue.isEmpty() || this.inSignal) return;
 
 		ExecutingSignal signal = this.signalQueue.remove();
-
+		if (!this.running && this.threadRunning) this.stackSize = 0;
 		for (Object arg : signal.args) {
 			this.pushStack(arg);
 		}
