@@ -1,4 +1,5 @@
 package com.workert.robotics.base.roboscript;
+import com.workert.robotics.base.registries.ItemRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
@@ -162,6 +163,8 @@ public class RoboScriptHelper {
 		itemMap.put("id", Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(itemStack.getItem())).toString());
 		itemMap.put("name", itemStack.getHoverName().getString());
 		itemMap.put("count", RoboScriptHelper.numToDouble(itemStack.getCount()));
+		if (ItemRegistry.PUNCH_CARD.isIn(itemStack))
+			itemMap.put("value", itemStack.getOrCreateTag().getString("Value"));
 		return itemMap;
 	}
 
