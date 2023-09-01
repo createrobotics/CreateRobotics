@@ -41,7 +41,15 @@ public abstract class RoboScript {
 
 		this.defineNativeFunction("toString", 1, args -> RoboScriptHelper.stringify(args[0]));
 		this.defineNativeFunction("toNumber", 1,
-				args -> Double.parseDouble(RoboScriptHelper.asNonEmptyString(args[0])));
+				args -> {
+					String s = RoboScriptHelper.asNonEmptyString(args[0]);
+					try {
+						return Double.parseDouble(s);
+					} catch (NumberFormatException e) {
+						throw new RuntimeError(
+								"Argument of 'toNumber' should be a number as a string. Instead got '" + s + "'.");
+					}
+				});
 		this.defineNativeFunction("sleep", 1, args -> {
 			try {
 				Thread.sleep(
