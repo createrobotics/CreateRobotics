@@ -2,6 +2,7 @@ package com.workert.robotics.content.computers.ioblocks;
 
 import com.simibubi.create.foundation.tileEntity.SyncedTileEntity;
 import com.workert.robotics.base.roboscript.RoboScriptObject;
+import com.workert.robotics.content.computers.computer.ComputerBlockEntity;
 import net.minecraft.core.BlockPos;
 
 public interface IOBlockEntity {
@@ -16,4 +17,9 @@ public interface IOBlockEntity {
 	SyncedTileEntity getBlockEntity();
 
 	RoboScriptObject getRoboScriptObject();
+
+	default ComputerBlockEntity getConnectedComputer() {
+		return this.getBlockEntity().getLevel()
+				.getExistingBlockEntity(this.getTargetPos()) instanceof ComputerBlockEntity e ? e : null;
+	}
 }

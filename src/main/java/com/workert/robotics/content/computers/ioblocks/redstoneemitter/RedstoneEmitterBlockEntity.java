@@ -3,7 +3,6 @@ import com.simibubi.create.foundation.tileEntity.SyncedTileEntity;
 import com.workert.robotics.base.roboscript.RoboScriptClass;
 import com.workert.robotics.base.roboscript.RoboScriptHelper;
 import com.workert.robotics.base.roboscript.RoboScriptObject;
-import com.workert.robotics.content.computers.computer.ComputerBlockEntity;
 import com.workert.robotics.content.computers.ioblocks.IOBlockEntity;
 import com.workert.robotics.content.computers.ioblocks.IORoboScriptBlockHelper;
 import net.minecraft.core.BlockPos;
@@ -11,7 +10,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.Nullable;
 
 public class RedstoneEmitterBlockEntity extends SyncedTileEntity implements IOBlockEntity {
 
@@ -85,11 +83,6 @@ public class RedstoneEmitterBlockEntity extends SyncedTileEntity implements IOBl
 	@Override
 	public RoboScriptObject getRoboScriptObject() {
 		return this.roboScriptBlockInstance;
-	}
-
-	@Nullable
-	public ComputerBlockEntity getConnectedComputer() {
-		return this.getLevel().getExistingBlockEntity(this.targetPos) instanceof ComputerBlockEntity e ? e : null;
 	}
 
 	private void setRedstoneLevel(int redstoneLevel) {
