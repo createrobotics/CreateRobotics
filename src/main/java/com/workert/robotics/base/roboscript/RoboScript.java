@@ -40,6 +40,8 @@ public abstract class RoboScript {
 		});
 
 		this.defineNativeFunction("toString", 1, args -> RoboScriptHelper.stringify(args[0]));
+		this.defineNativeFunction("toNumber", 1,
+				args -> Double.parseDouble(RoboScriptHelper.asNonEmptyString(args[0])));
 		this.defineNativeFunction("sleep", 1, args -> {
 			try {
 				Thread.sleep(
