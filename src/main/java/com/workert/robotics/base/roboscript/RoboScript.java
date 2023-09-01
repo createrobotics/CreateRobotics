@@ -1,8 +1,5 @@
 package com.workert.robotics.base.roboscript;
 
-import com.workert.robotics.base.roboscript.util.RoboScriptArgumentPredicates;
-import com.workert.robotics.base.roboscript.util.RoboScriptHelper;
-
 import javax.annotation.Nonnull;
 
 public abstract class RoboScript {
@@ -46,22 +43,22 @@ public abstract class RoboScript {
 		this.defineNativeFunction("sleep", 1, args -> {
 			try {
 				Thread.sleep(
-						(long) (RoboScriptArgumentPredicates.asNumber(args[0]) * 1000));
+						(long) (RoboScriptHelper.asDouble(args[0]) * 1000));
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 			return null;
 		});
 
-		this.defineNativeFunction("sin", 1, args -> Math.sin(RoboScriptArgumentPredicates.asNumber(args[0])));
-		this.defineNativeFunction("cos", 1, args -> Math.cos(RoboScriptArgumentPredicates.asNumber(args[0])));
-		this.defineNativeFunction("tan", 1, args -> Math.tan(RoboScriptArgumentPredicates.asNumber(args[0])));
-		this.defineNativeFunction("asin", 1, args -> Math.asin(RoboScriptArgumentPredicates.asNumber(args[0])));
-		this.defineNativeFunction("acos", 1, args -> Math.acos(RoboScriptArgumentPredicates.asNumber(args[0])));
-		this.defineNativeFunction("atan", 1, args -> Math.atan(RoboScriptArgumentPredicates.asNumber(args[0])));
-		this.defineNativeFunction("abs", 1, args -> Math.abs(RoboScriptArgumentPredicates.asNumber(args[0])));
-		this.defineNativeFunction("floor", 1, args -> Math.floor(RoboScriptArgumentPredicates.asNumber(args[0])));
-		this.defineNativeFunction("ceil", 1, args -> Math.ceil(RoboScriptArgumentPredicates.asNumber(args[0])));
+		this.defineNativeFunction("sin", 1, args -> Math.sin(RoboScriptHelper.asDouble(args[0])));
+		this.defineNativeFunction("cos", 1, args -> Math.cos(RoboScriptHelper.asDouble(args[0])));
+		this.defineNativeFunction("tan", 1, args -> Math.tan(RoboScriptHelper.asDouble(args[0])));
+		this.defineNativeFunction("asin", 1, args -> Math.asin(RoboScriptHelper.asDouble(args[0])));
+		this.defineNativeFunction("acos", 1, args -> Math.acos(RoboScriptHelper.asDouble(args[0])));
+		this.defineNativeFunction("atan", 1, args -> Math.atan(RoboScriptHelper.asDouble(args[0])));
+		this.defineNativeFunction("abs", 1, args -> Math.abs(RoboScriptHelper.asDouble(args[0])));
+		this.defineNativeFunction("floor", 1, args -> Math.floor(RoboScriptHelper.asDouble(args[0])));
+		this.defineNativeFunction("ceil", 1, args -> Math.ceil(RoboScriptHelper.asDouble(args[0])));
 	}
 
 	public final void defineNativeFunction(String name, int argumentCount, NativeFunctionFunctionalInterface function) {

@@ -1,6 +1,4 @@
 package com.workert.robotics.base.roboscript;
-import com.workert.robotics.base.roboscript.util.RoboScriptArgumentPredicates;
-import com.workert.robotics.base.roboscript.util.RoboScriptHelper;
 
 import java.util.*;
 
@@ -627,16 +625,15 @@ public final class VirtualMachine {
 			}
 			case "size" -> {
 				RoboScriptNativeMethod<List<Object>> method = new RoboScriptNativeMethod<>(list, (byte) 0);
-				method.function = (vm, fun) -> (double) (((List) (method.instance)).size());
+				method.function = (vm, fun) -> RoboScriptHelper.numToDouble(method.instance.size());
 				return method;
 			}
 			case "pop" -> {
 				RoboScriptNativeMethod<List<Object>> method = new RoboScriptNativeMethod<>(list, (byte) 0);
 				method.function = (vm, fun) -> {
-					List l = ((List) method.instance);
-					if (l.isEmpty()) throw new RuntimeError("List is empty and cannot pop.");
-					Object ret = l.get(l.size() - 1);
-					l.remove(l.size() - 1);
+					if (method.instance.isEmpty()) throw new RuntimeError("List is empty and cannot pop.");
+					Object ret = method.instance.get(method.instance.size() - 1);
+					method.instance.remove(method.instance.size() - 1);
 					return ret;
 				};
 				return method;
@@ -644,19 +641,20 @@ public final class VirtualMachine {
 			case "peek" -> {
 				RoboScriptNativeMethod<List<Object>> method = new RoboScriptNativeMethod<>(list, (byte) 0);
 				method.function = (vm, fun) -> {
-					if (((List) method.instance).isEmpty()) throw new RuntimeError("List is empty and cannot peek.");
-					return ((List) method.instance).get(((List) method.instance).size() - 1);
+					if (method.instance.isEmpty()) throw new RuntimeError("List is empty and cannot peek.");
+					return method.instance.get(method.instance.size() - 1);
 				};
 				return method;
 			}
 			case "remove" -> {
 				RoboScriptNativeMethod<List<Object>> method = new RoboScriptNativeMethod<>(list, (byte) 1);
 				method.function = (vm, fun) -> {
-					int i = RoboScriptArgumentPredicates.asPositiveFullNumber(VirtualMachine.this.popStack(), true);
-					List l = ((List) method.instance);
-					if (i >= l.size()) throw new RuntimeError("List index out of range of '" + (l.size() - 1) + "'.");
-					Object ret = l.get(l.size() - 1);
-					l.remove(i);
+					int i = RoboScriptHelper.doubleToInt(
+							RoboScriptHelper.asPositiveWholeDouble(VirtualMachine.this.popStack()));
+					if (i >= method.instance.size())
+						throw new RuntimeError("List index out of range of '" + (method.instance.size() - 1) + "'.");
+					Object ret = method.instance.get(method.instance.size() - 1);
+					method.instance.remove(i);
 					return ret;
 				};
 				return method;

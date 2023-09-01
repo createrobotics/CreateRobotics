@@ -1,11 +1,17 @@
-package com.workert.robotics.base.roboscript.util;
-import com.workert.robotics.base.roboscript.RoboScriptObject;
-import com.workert.robotics.base.roboscript.RuntimeError;
+package com.workert.robotics.base.roboscript;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.registries.ForgeRegistries;
 
+import javax.annotation.Nonnull;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Function;
 
 public class RoboScriptHelper {
 
@@ -137,6 +143,26 @@ public class RoboScriptHelper {
 
 	public static BlockPos asBlockPos(Object a, Object b, Object c) {
 		return asBlockPos(a, b, c, "Argument must be a whole number.");
+	}
+
+	public static Item asItem(Object object) {
+		String itemId = asNonEmptyString(object);
+		return getItemById(itemId);
+	}
+
+	public static Item getItemById(@Nonnull String id) {
+		return Registry.ITEM.get(new ResourceLocation(id.trim().split(":")[0], id.trim().split(":")[1]));
+	}
+
+	public static <ReturnType> ReturnType optional(Object object, @Nonnull Function<Object, ReturnType> predicateFunction) {
+		if (object == null) return null;
+		return predicateFunction.apply(object);
+	}
+
+	public static List<Object> itemStackToRoboScriptList(@Nonnull ItemStack itemStack) {
+		return List.of(
+				Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(itemStack.getItem())).toString(),
+				(double) itemStack.getCount());
 	}
 
 

@@ -1,9 +1,8 @@
 package com.workert.robotics.content.computers.ioblocks.redstoneemitter;
 import com.simibubi.create.foundation.tileEntity.SyncedTileEntity;
 import com.workert.robotics.base.roboscript.RoboScriptClass;
+import com.workert.robotics.base.roboscript.RoboScriptHelper;
 import com.workert.robotics.base.roboscript.RoboScriptObject;
-import com.workert.robotics.base.roboscript.util.RoboScriptArgumentPredicates;
-import com.workert.robotics.base.roboscript.util.RoboScriptHelper;
 import com.workert.robotics.content.computers.computer.ComputerBlockEntity;
 import com.workert.robotics.content.computers.ioblocks.IOBlockEntity;
 import com.workert.robotics.content.computers.ioblocks.IORoboScriptBlockHelper;
@@ -20,7 +19,8 @@ public class RedstoneEmitterBlockEntity extends SyncedTileEntity implements IOBl
 			.addMethod("setPower", 1, (vm, fun) ->
 			{
 				((RedstoneEmitterBlockEntity) IORoboScriptBlockHelper.getBlockEntityFromMethod(fun)).setRedstoneLevel(
-						Math.min(RoboScriptArgumentPredicates.asPositiveFullNumber(vm.popStack(), true), 15));
+						Math.min(RoboScriptHelper.doubleToInt(RoboScriptHelper.asPositiveWholeDouble(vm.popStack())),
+								15));
 				return null;
 			})
 			.addMethod("getPower", 0, (vm, fun) -> RoboScriptHelper.numToDouble(
