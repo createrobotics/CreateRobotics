@@ -1,7 +1,7 @@
 package com.workert.robotics.base.roboscript;
 
 import com.workert.robotics.base.roboscript.util.RoboScriptArgumentPredicates;
-import com.workert.robotics.base.roboscript.util.RoboScriptObjectConversions;
+import com.workert.robotics.base.roboscript.util.RoboScriptHelper;
 
 import javax.annotation.Nonnull;
 
@@ -38,11 +38,11 @@ public abstract class RoboScript {
 
 	protected void defineNativeFunctions() {
 		this.defineNativeFunction("print", 1, args -> {
-			RoboScript.this.handlePrintMessage(RoboScriptObjectConversions.stringify(args[0]));
+			RoboScript.this.handlePrintMessage(RoboScriptHelper.stringify(args[0]));
 			return null;
 		});
 
-		this.defineNativeFunction("toString", 1, args -> RoboScriptObjectConversions.stringify(args[0]));
+		this.defineNativeFunction("toString", 1, args -> RoboScriptHelper.stringify(args[0]));
 		this.defineNativeFunction("sleep", 1, args -> {
 			try {
 				Thread.sleep(
@@ -77,7 +77,7 @@ public abstract class RoboScript {
 
 				functionOutput = function.call(functionArgs);
 			} else functionOutput = function.call(new Object[] {});
-			return RoboScriptObjectConversions.prepareForRoboScriptUse(functionOutput);
+			return RoboScriptHelper.prepareForRoboScriptUse(functionOutput);
 		};
 		this.virtualMachine.nativeFunctions[this.virtualMachine.nativeFunctionSize] = nativeFunctionWrapper;
 		this.compiler.nativeFunctionLookup.put(name, (byte) this.virtualMachine.nativeFunctionSize++);

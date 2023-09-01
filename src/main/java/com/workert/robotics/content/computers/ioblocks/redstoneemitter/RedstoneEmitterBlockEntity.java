@@ -1,13 +1,12 @@
 package com.workert.robotics.content.computers.ioblocks.redstoneemitter;
 import com.simibubi.create.foundation.tileEntity.SyncedTileEntity;
 import com.workert.robotics.base.roboscript.RoboScriptClass;
-import com.workert.robotics.base.roboscript.RoboScriptField;
-import com.workert.robotics.base.roboscript.RoboScriptNativeMethod;
 import com.workert.robotics.base.roboscript.RoboScriptObject;
 import com.workert.robotics.base.roboscript.util.RoboScriptArgumentPredicates;
-import com.workert.robotics.base.roboscript.util.RoboScriptObjectConversions;
+import com.workert.robotics.base.roboscript.util.RoboScriptHelper;
 import com.workert.robotics.content.computers.computer.ComputerBlockEntity;
 import com.workert.robotics.content.computers.ioblocks.IOBlockEntity;
+import com.workert.robotics.content.computers.ioblocks.IORoboScriptBlockHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -17,11 +16,21 @@ import org.jetbrains.annotations.Nullable;
 
 public class RedstoneEmitterBlockEntity extends SyncedTileEntity implements IOBlockEntity {
 
-	public static RoboScriptClass roboScriptBlockClass = makeClass();
+	public static RoboScriptClass roboScriptBlockClass = IORoboScriptBlockHelper.createClass()
+			.addMethod("setPower", 1, (vm, fun) ->
+			{
+				((RedstoneEmitterBlockEntity) IORoboScriptBlockHelper.getBlockEntityFromMethod(fun)).setRedstoneLevel(
+						Math.min(RoboScriptArgumentPredicates.asPositiveFullNumber(vm.popStack(), true), 15));
+				return null;
+			})
+			.addMethod("getPower", 0, (vm, fun) -> RoboScriptHelper.numToDouble(
+					((RedstoneEmitterBlockEntity) IORoboScriptBlockHelper.getBlockEntityFromMethod(fun)).redstoneLevel))
+			.build();
 
 	private String signalName = "";
 	private BlockPos targetPos = this.getBlockPos();
-	public RoboScriptObject roboScriptBlockInstance = this.makeInstance();
+	public RoboScriptObject roboScriptBlockInstance = IORoboScriptBlockHelper.createObject(roboScriptBlockClass, this)
+			.build();
 
 	int redstoneLevel = 0;
 
@@ -86,35 +95,6 @@ public class RedstoneEmitterBlockEntity extends SyncedTileEntity implements IOBl
 	private void setRedstoneLevel(int redstoneLevel) {
 		this.redstoneLevel = redstoneLevel;
 		this.level.scheduleTick(this.getBlockPos(), this.getBlockState().getBlock(), 0);
-	}
-
-
-	private static RoboScriptClass makeClass() {
-		RoboScriptClass clazz = new RoboScriptClass();
-		RoboScriptNativeMethod setPower = new RoboScriptNativeMethod((byte) 1);
-		setPower.function = (vm, fun) ->
-		{
-			getBlockEntityFromMethod((RoboScriptNativeMethod) fun).setRedstoneLevel(Math.min(
-					RoboScriptArgumentPredicates.asPositiveFullNumber(vm.popStack(), true), 15));
-			return null;
-		};
-		RoboScriptNativeMethod getPower = new RoboScriptNativeMethod((byte) 0);
-		getPower.function = (vm, fun) -> RoboScriptObjectConversions.prepareForRoboScriptUse(
-				getBlockEntityFromMethod((RoboScriptNativeMethod) fun).redstoneLevel);
-
-		clazz.functions.put("setPower", setPower);
-		clazz.functions.put("getPower", getPower);
-		return clazz;
-	}
-
-	private RoboScriptObject makeInstance() {
-		RoboScriptObject object = new RoboScriptObject(roboScriptBlockClass);
-		object.fields.put("", new RoboScriptField(this, true));
-		return object;
-	}
-
-	private static RedstoneEmitterBlockEntity getBlockEntityFromMethod(RoboScriptNativeMethod method) {
-		return ((RedstoneEmitterBlockEntity) ((RoboScriptObject) method.getInstance()).fields.get("").value);
 	}
 
 }

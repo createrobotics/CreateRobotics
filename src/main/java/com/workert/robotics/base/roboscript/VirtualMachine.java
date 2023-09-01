@@ -1,6 +1,6 @@
 package com.workert.robotics.base.roboscript;
 import com.workert.robotics.base.roboscript.util.RoboScriptArgumentPredicates;
-import com.workert.robotics.base.roboscript.util.RoboScriptObjectConversions;
+import com.workert.robotics.base.roboscript.util.RoboScriptHelper;
 
 import java.util.*;
 
@@ -615,23 +615,23 @@ public final class VirtualMachine {
 	 * @param key  The name of the method being gotten.
 	 * @return The method gotten from the list.
 	 */
-	private RoboScriptNativeMethod getListNative(List list, String key) {
+	private RoboScriptNativeMethod<List<Object>> getListNative(List<Object> list, String key) {
 		switch (key) {
 			case "add", "append", "push" -> {
-				RoboScriptNativeMethod method = new RoboScriptNativeMethod(list, (byte) 1);
+				RoboScriptNativeMethod<List<Object>> method = new RoboScriptNativeMethod<>(list, (byte) 1);
 				method.function = (vm, fun) -> {
-					((List) method.instance).add(VirtualMachine.this.popStack());
+					method.instance.add(VirtualMachine.this.popStack());
 					return null;
 				};
 				return method;
 			}
 			case "size" -> {
-				RoboScriptNativeMethod method = new RoboScriptNativeMethod(list, (byte) 0);
+				RoboScriptNativeMethod<List<Object>> method = new RoboScriptNativeMethod<>(list, (byte) 0);
 				method.function = (vm, fun) -> (double) (((List) (method.instance)).size());
 				return method;
 			}
 			case "pop" -> {
-				RoboScriptNativeMethod method = new RoboScriptNativeMethod(list, (byte) 0);
+				RoboScriptNativeMethod<List<Object>> method = new RoboScriptNativeMethod<>(list, (byte) 0);
 				method.function = (vm, fun) -> {
 					List l = ((List) method.instance);
 					if (l.isEmpty()) throw new RuntimeError("List is empty and cannot pop.");
@@ -642,7 +642,7 @@ public final class VirtualMachine {
 				return method;
 			}
 			case "peek" -> {
-				RoboScriptNativeMethod method = new RoboScriptNativeMethod(list, (byte) 0);
+				RoboScriptNativeMethod<List<Object>> method = new RoboScriptNativeMethod<>(list, (byte) 0);
 				method.function = (vm, fun) -> {
 					if (((List) method.instance).isEmpty()) throw new RuntimeError("List is empty and cannot peek.");
 					return ((List) method.instance).get(((List) method.instance).size() - 1);
@@ -650,7 +650,7 @@ public final class VirtualMachine {
 				return method;
 			}
 			case "remove" -> {
-				RoboScriptNativeMethod method = new RoboScriptNativeMethod(list, (byte) 1);
+				RoboScriptNativeMethod<List<Object>> method = new RoboScriptNativeMethod<>(list, (byte) 1);
 				method.function = (vm, fun) -> {
 					int i = RoboScriptArgumentPredicates.asPositiveFullNumber(VirtualMachine.this.popStack(), true);
 					List l = ((List) method.instance);
@@ -665,10 +665,10 @@ public final class VirtualMachine {
 		}
 	}
 
-	private RoboScriptNativeMethod getStringNative(String string, String key) {
+	private RoboScriptNativeMethod<String> getStringNative(String string, String key) {
 		switch (key) {
 			case "replaceAt" -> {
-				RoboScriptNativeMethod method = new RoboScriptNativeMethod(string, (byte) 2);
+				RoboScriptNativeMethod<String> method = new RoboScriptNativeMethod<>(string, (byte) 2);
 				method.function = (vm, fun) -> {
 					if (!(VirtualMachine.this.popStack() instanceof String s))
 						throw new RuntimeError("Expected a string as the second argument of 'replaceAt'.");
@@ -677,11 +677,11 @@ public final class VirtualMachine {
 
 					if (!isWhole(location) || isNegative(location)) throw new RuntimeError(
 							"Index value for string in first argument of 'replaceAt' must be a whole number greater or equal to 0.");
-					if (location >= ((String) method.getInstance()).length())
+					if (location >= method.instance.length())
 						throw new RuntimeError(
-								"String index in first argument of 'replaceAt' out of range of '" + (((String) method.getInstance()).length() - 1) + "'.");
+								"String index in first argument of 'replaceAt' out of range of '" + (method.instance.length() - 1) + "'.");
 
-					StringBuilder builder = new StringBuilder((String) method.getInstance());
+					StringBuilder builder = new StringBuilder(method.instance);
 					builder.replace((int) Math.round(location), (int) Math.round(location) + 1, s);
 					return builder.toString();
 				};
@@ -689,12 +689,12 @@ public final class VirtualMachine {
 			}
 
 			case "split" -> {
-				RoboScriptNativeMethod method = new RoboScriptNativeMethod(string, (byte) 1);
+				RoboScriptNativeMethod<String> method = new RoboScriptNativeMethod<>(string, (byte) 1);
 				method.function = (vm, fun) -> {
 					if (!(VirtualMachine.this.popStack() instanceof String regex))
 						throw new RuntimeError(
 								"Expected a Regular Expression string as the argument of 'split'.");
-					return Arrays.asList(((String) method.getInstance()).split(regex));
+					return Arrays.asList(method.instance.split(regex));
 				};
 				return method;
 			}
@@ -702,16 +702,16 @@ public final class VirtualMachine {
 		}
 	}
 
-	private RoboScriptNativeMethod getSignalNative(RoboScriptSignal signal, String key) {
+	private RoboScriptNativeMethod<RoboScriptSignal> getSignalNative(RoboScriptSignal signal, String key) {
 		switch (key) {
 			case "connect" -> {
-				RoboScriptNativeMethod method = new RoboScriptNativeMethod(signal, (byte) 1);
+				RoboScriptNativeMethod<RoboScriptSignal> method = new RoboScriptNativeMethod<>(signal, (byte) 1);
 				method.function = (vm, fun) -> {
 					if (!(this.popStack() instanceof RoboScriptCallable callable))
 						throw new RuntimeError("Expected a function or method as the first argument of 'connect'.");
 					if (callable instanceof RoboScriptClass)
 						throw new RuntimeError("Expected a function or method as the first argument of 'connect'.");
-					((RoboScriptSignal) method.getInstance()).callable = callable;
+					method.instance.callable = callable;
 					return null;
 				};
 				return method;
@@ -789,7 +789,7 @@ public final class VirtualMachine {
 		Object b = this.popStack();
 		Object a = this.popStack();
 		if (a instanceof String || b instanceof String) {
-			this.pushStack(RoboScriptObjectConversions.stringify(a) + RoboScriptObjectConversions.stringify(b));
+			this.pushStack(RoboScriptHelper.stringify(a) + RoboScriptHelper.stringify(b));
 			return;
 		} else if (!(a instanceof Double && b instanceof Double))
 			throw new RuntimeError("Addition must be between two numbers or a string.");

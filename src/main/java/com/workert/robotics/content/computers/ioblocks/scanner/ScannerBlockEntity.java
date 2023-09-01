@@ -51,7 +51,7 @@ public class ScannerBlockEntity extends KineticTileEntity implements ScannerBeha
 	@Override
 	public boolean scanOnBelt(TransportedItemStack itemStack) {
 		if (this.level.getBlockEntity(this.targetPos) instanceof ComputerBlockEntity computer) {
-			// TODO: Make this a class system
+			// TODO: someone implement this i dont feel like it, also its completely wrong rn so good luck 😁
 			// computer.interpretSignal(this.getSignalName(), new Object[] {RoboScriptObjectConversions.itemStack(itemStack.stack)});
 		}
 		return true;
