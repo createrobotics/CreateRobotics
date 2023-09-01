@@ -8,9 +8,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Function;
 
 public class RoboScriptHelper {
@@ -159,10 +157,12 @@ public class RoboScriptHelper {
 		return predicateFunction.apply(object);
 	}
 
-	public static List<Object> itemStackToRoboScriptList(@Nonnull ItemStack itemStack) {
-		return List.of(
-				Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(itemStack.getItem())).toString(),
-				(double) itemStack.getCount());
+	public static Map<Object, Object> itemStackToRoboScriptList(@Nonnull ItemStack itemStack) {
+		Map<Object, Object> itemMap = new HashMap<>();
+		itemMap.put("id", Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(itemStack.getItem())).toString());
+		itemMap.put("name", itemStack.getHoverName().getString());
+		itemMap.put("count", RoboScriptHelper.numToDouble(itemStack.getCount()));
+		return itemMap;
 	}
 
 
