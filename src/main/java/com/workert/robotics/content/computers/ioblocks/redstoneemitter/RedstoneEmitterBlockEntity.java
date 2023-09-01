@@ -54,7 +54,7 @@ public class RedstoneEmitterBlockEntity extends SyncedTileEntity implements IOBl
 	public void setSignalName(String signalName) {
 		this.signalName = signalName;
 		if (this.getConnectedComputer() != null) {
-			this.getConnectedComputer().connectedBlocks.put(this.signalName, this.getBlockEntityPos());
+			this.getConnectedComputer().connectedIOBlocks.put(this.signalName, this.getBlockEntityPos());
 		}
 	}
 

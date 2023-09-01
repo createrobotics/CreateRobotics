@@ -31,7 +31,7 @@ public class ComputerBlockEntity extends KineticTileEntity {
 
 	private List<String> outputDisplay = new ArrayList<>();
 
-	public Map<String, BlockPos> connectedBlocks = new HashMap<>();
+	public Map<String, BlockPos> connectedIOBlocks = new HashMap<>();
 
 
 	public ComputerBlockEntity(BlockEntityType<?> type, BlockPos blockPos, BlockState blockState) {
@@ -61,9 +61,9 @@ public class ComputerBlockEntity extends KineticTileEntity {
 					ComputerBlockEntity.this.outputDisplay = List.of(RoboScriptObjectConversions.stringify(args[0]));
 					return null;
 				});
-				this.defineNativeFunction("getConnectedBlock", 1, (args) -> {
+				this.defineNativeFunction("getIO", 1, (args) -> {
 					String signalName = RoboScriptArgumentPredicates.asString(args[0]);
-					BlockPos pos = ComputerBlockEntity.this.connectedBlocks.get(signalName);
+					BlockPos pos = ComputerBlockEntity.this.connectedIOBlocks.get(signalName);
 					if (pos == null) return null;
 					if (ComputerBlockEntity.this.getLevel().getExistingBlockEntity(pos) instanceof IOBlockEntity be) {
 						return be.getRoboScriptObject();
@@ -96,7 +96,7 @@ public class ComputerBlockEntity extends KineticTileEntity {
 		this.script = compound.getString("Script");
 		this.terminal = new LineLimitedString(TERMINAL_LINE_LIMIT, compound.getString("Terminal"));
 		this.running = compound.getBoolean("Running");
-		this.connectedBlocks = getConnectedBlocksFromTag(compound.getCompound("ConnectedBlocks"));
+		this.connectedIOBlocks = getConnectedBlocksFromTag(compound.getCompound("ConnectedBlocks"));
 	}
 
 	@Override
@@ -105,7 +105,7 @@ public class ComputerBlockEntity extends KineticTileEntity {
 		compound.putString("Script", this.script);
 		compound.putString("Terminal", this.terminal.getString());
 		compound.putBoolean("Running", this.running);
-		compound.put("ConnectedBlocks", getConnectedBlocksToTag(this.connectedBlocks));
+		compound.put("ConnectedBlocks", getConnectedBlocksToTag(this.connectedIOBlocks));
 	}
 
 	@Override

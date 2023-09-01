@@ -60,7 +60,7 @@ public class RedstoneDetectorBlockEntity extends SyncedTileEntity implements IOB
 	public void setSignalName(String signalName) {
 		this.signalName = signalName;
 		if (this.getConnectedComputer() != null) {
-			this.getConnectedComputer().connectedBlocks.put(this.signalName, this.getBlockEntityPos());
+			this.getConnectedComputer().connectedIOBlocks.put(this.signalName, this.getBlockEntityPos());
 		}
 	}
 
