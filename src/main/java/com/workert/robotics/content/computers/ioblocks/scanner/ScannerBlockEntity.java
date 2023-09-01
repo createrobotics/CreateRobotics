@@ -82,6 +82,9 @@ public class ScannerBlockEntity extends KineticTileEntity implements ScannerBeha
 	@Override
 	public void setSignalName(String signalName) {
 		this.signalName = signalName;
+		if (this.getConnectedComputer() != null) {
+			this.getConnectedComputer().connectedBlocks.put(this.signalName, this.getBlockEntityPos());
+		}
 	}
 
 	@Override
@@ -101,6 +104,6 @@ public class ScannerBlockEntity extends KineticTileEntity implements ScannerBeha
 
 	@Override
 	public RoboScriptObject getRoboScriptObject() {
-		return null;
+		return this.roboScriptBlockInstance;
 	}
 }
