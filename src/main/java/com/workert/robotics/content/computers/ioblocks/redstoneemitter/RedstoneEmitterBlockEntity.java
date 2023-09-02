@@ -61,7 +61,7 @@ public class RedstoneEmitterBlockEntity extends SyncedTileEntity implements IOBl
 	public void setSignalName(String signalName) {
 		this.signalName = signalName;
 		if (this.getConnectedComputer() != null) {
-			this.getConnectedComputer().connectedBlocks.put(this.signalName, this.getBlockEntityPos());
+			this.getConnectedComputer().connectedIOBlocks.put(this.signalName, this.getBlockEntityPos());
 		}
 	}
 
@@ -90,4 +90,31 @@ public class RedstoneEmitterBlockEntity extends SyncedTileEntity implements IOBl
 		this.level.scheduleTick(this.getBlockPos(), this.getBlockState().getBlock(), 0);
 	}
 
+	private static RoboScriptClass makeClass() {
+		RoboScriptClass clazz = new RoboScriptClass();
+		RoboScriptNativeMethod setPower = new RoboScriptNativeMethod((byte) 1);
+		setPower.function = (vm, fun) ->
+		{
+			getBlockEntityFromMethod((RoboScriptNativeMethod) fun).setRedstoneLevel(Math.min(
+					RoboScriptArgumentPredicates.asPositiveFullNumber(vm.popStack(), true), 15));
+			return null;
+		};
+		RoboScriptNativeMethod getPower = new RoboScriptNativeMethod((byte) 0);
+		getPower.function = (vm, fun) -> RoboScriptObjectConversions.prepareForRoboScriptUse(
+				getBlockEntityFromMethod((RoboScriptNativeMethod) fun).redstoneLevel);
+
+		clazz.functions.put("setPower", setPower);
+		clazz.functions.put("getPower", getPower);
+		return clazz;
+	}
+
+	private RoboScriptObject makeInstance() {
+		RoboScriptObject object = new RoboScriptObject(roboScriptBlockClass);
+		object.fields.put("", new RoboScriptField(this, true));
+		return object;
+	}
+
+	private static RedstoneEmitterBlockEntity getBlockEntityFromMethod(RoboScriptNativeMethod method) {
+		return ((RedstoneEmitterBlockEntity) ((RoboScriptObject) method.getParentClassInstance()).fields.get("").value);
+	}
 }

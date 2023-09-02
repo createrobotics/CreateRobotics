@@ -69,7 +69,7 @@ public class RedstoneDetectorBlockEntity extends SyncedTileEntity implements IOB
 	public void setSignalName(String signalName) {
 		this.signalName = signalName;
 		if (this.getConnectedComputer() != null) {
-			this.getConnectedComputer().connectedBlocks.put(this.signalName, this.getBlockEntityPos());
+			this.getConnectedComputer().connectedIOBlocks.put(this.signalName, this.getBlockEntityPos());
 		}
 	}
 
@@ -93,4 +93,24 @@ public class RedstoneDetectorBlockEntity extends SyncedTileEntity implements IOB
 		return this.roboScriptBlockInstance;
 	}
 
+	private static RoboScriptClass makeClass() {
+		RoboScriptClass clazz = new RoboScriptClass();
+		RoboScriptNativeMethod getPower = new RoboScriptNativeMethod((byte) 0);
+		getPower.function = (vm, fun) -> getBlockEntityFromMethod((RoboScriptNativeMethod) fun).redstoneLevel;
+
+		clazz.functions.put("getPower", getPower);
+		return clazz;
+	}
+
+	private RoboScriptObject makeInstance() {
+		RoboScriptObject object = new RoboScriptObject(roboScriptBlockClass);
+		object.fields.put("", new RoboScriptField(this, true));
+		object.fields.put("powerChanged", new RoboScriptField(new RoboScriptSignal(), true));
+		return object;
+	}
+
+	private static RedstoneDetectorBlockEntity getBlockEntityFromMethod(RoboScriptNativeMethod method) {
+		return ((RedstoneDetectorBlockEntity) ((RoboScriptObject) method.getParentClassInstance()).fields.get(
+				"").value);
+	}
 }
