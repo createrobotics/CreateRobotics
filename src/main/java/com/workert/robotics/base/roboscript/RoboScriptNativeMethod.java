@@ -1,12 +1,12 @@
 package com.workert.robotics.base.roboscript;
-public class RoboScriptNativeMethod extends RoboScriptNativeFunction {
+public class RoboScriptNativeMethod<C> extends RoboScriptNativeFunction {
 
 	/**
 	 * Use this to get the object you are applying the function to. DO NOT USE FUNCTION ARGUMENTS IN PLACE OF THIS FIELD.
 	 */
-	public final Object parentClassInstance;
+	public final C instance;
 
-	public RoboScriptNativeMethod(Object parentClassInstance, byte argumentCount) {
+	public RoboScriptNativeMethod(C instance, byte argumentCount) {
 		super(argumentCount);
 		this.parentClassInstance = parentClassInstance;
 	}
@@ -16,14 +16,10 @@ public class RoboScriptNativeMethod extends RoboScriptNativeFunction {
 		this.parentClassInstance = null;
 	}
 
-	public RoboScriptNativeMethod(RoboScriptNativeFunction function, Object parentClassInstance) {
+	public RoboScriptNativeMethod(RoboScriptNativeFunction function, C instance) {
 		super(function.argumentCount);
 		this.function = function.function;
 		this.parentClassInstance = parentClassInstance;
-	}
-
-	public Object getParentClassInstance() {
-		return this.parentClassInstance;
 	}
 }
 

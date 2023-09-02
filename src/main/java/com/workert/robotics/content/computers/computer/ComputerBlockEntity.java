@@ -3,9 +3,8 @@ package com.workert.robotics.content.computers.computer;
 import com.simibubi.create.content.contraptions.base.KineticTileEntity;
 import com.workert.robotics.base.roboscript.RoboScript;
 import com.workert.robotics.base.roboscript.RoboScriptCallable;
+import com.workert.robotics.base.roboscript.RoboScriptHelper;
 import com.workert.robotics.base.roboscript.ingame.LineLimitedString;
-import com.workert.robotics.base.roboscript.util.RoboScriptArgumentPredicates;
-import com.workert.robotics.base.roboscript.util.RoboScriptObjectConversions;
 import com.workert.robotics.content.computers.ioblocks.IOBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -55,14 +54,14 @@ public class ComputerBlockEntity extends KineticTileEntity {
 				super.defineNativeFunctions();
 				this.defineNativeFunction("display", 1, (args) -> {
 					if (args[0] instanceof List l) {
-						ComputerBlockEntity.this.outputDisplay = RoboScriptObjectConversions.stringifyAllElements(l);
+						ComputerBlockEntity.this.outputDisplay = RoboScriptHelper.stringifyAllElements(l);
 						return null;
 					}
-					ComputerBlockEntity.this.outputDisplay = List.of(RoboScriptObjectConversions.stringify(args[0]));
+					ComputerBlockEntity.this.outputDisplay = List.of(RoboScriptHelper.stringify(args[0]));
 					return null;
 				});
 				this.defineNativeFunction("getIO", 1, (args) -> {
-					String signalName = RoboScriptArgumentPredicates.asString(args[0]);
+					String signalName = RoboScriptHelper.asString(args[0]);
 					BlockPos pos = ComputerBlockEntity.this.connectedIOBlocks.get(signalName);
 					if (pos == null) return null;
 					if (ComputerBlockEntity.this.getLevel().getExistingBlockEntity(pos) instanceof IOBlockEntity be) {

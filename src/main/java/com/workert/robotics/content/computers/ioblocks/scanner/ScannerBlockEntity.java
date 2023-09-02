@@ -5,9 +5,12 @@ import com.simibubi.create.content.contraptions.relays.belt.transport.Transporte
 import com.simibubi.create.foundation.tileEntity.SyncedTileEntity;
 import com.simibubi.create.foundation.tileEntity.TileEntityBehaviour;
 import com.workert.robotics.base.registries.BlockEntityRegistry;
+import com.workert.robotics.base.roboscript.RoboScriptClass;
+import com.workert.robotics.base.roboscript.RoboScriptHelper;
 import com.workert.robotics.base.roboscript.RoboScriptObject;
-import com.workert.robotics.content.computers.computer.ComputerBlockEntity;
+import com.workert.robotics.base.roboscript.RoboScriptSignal;
 import com.workert.robotics.content.computers.ioblocks.IOBlockEntity;
+import com.workert.robotics.content.computers.ioblocks.IORoboScriptBlockHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -20,6 +23,15 @@ public class ScannerBlockEntity extends KineticTileEntity implements ScannerBeha
 	public ScannerBehaviour processingBehaviour;
 	private BlockPos targetPos = this.getBlockPos();
 	private String signalName = "";
+
+	public static RoboScriptClass roboScriptBlockClass = IORoboScriptBlockHelper.createClass()
+			.build();
+
+	public RoboScriptSignal scan = new RoboScriptSignal();
+
+	public RoboScriptObject roboScriptBlockInstance = IORoboScriptBlockHelper.createObject(roboScriptBlockClass, this)
+			.addField("scan", this.scan, true)
+			.build();
 
 	public ScannerBlockEntity(BlockEntityType<?> typeIn, BlockPos pos, BlockState state) {
 		super(BlockEntityRegistry.SCANNER.get(), pos, state);
@@ -50,9 +62,9 @@ public class ScannerBlockEntity extends KineticTileEntity implements ScannerBeha
 
 	@Override
 	public boolean scanOnBelt(TransportedItemStack itemStack) {
-		if (this.level.getBlockEntity(this.targetPos) instanceof ComputerBlockEntity computer) {
-			// TODO: Make this a class system
-			// computer.interpretSignal(this.getSignalName(), new Object[] {RoboScriptObjectConversions.itemStack(itemStack.stack)});
+		if (this.getConnectedComputer() != null) {
+			this.getConnectedComputer().interpretSignal(this.scan.callable,
+					new Object[] {RoboScriptHelper.itemStackToRoboScriptList(itemStack.stack)});
 		}
 		return true;
 	}
@@ -70,6 +82,9 @@ public class ScannerBlockEntity extends KineticTileEntity implements ScannerBeha
 	@Override
 	public void setSignalName(String signalName) {
 		this.signalName = signalName;
+		if (this.getConnectedComputer() != null) {
+			this.getConnectedComputer().connectedBlocks.put(this.signalName, this.getBlockEntityPos());
+		}
 	}
 
 	@Override
@@ -89,6 +104,6 @@ public class ScannerBlockEntity extends KineticTileEntity implements ScannerBeha
 
 	@Override
 	public RoboScriptObject getRoboScriptObject() {
-		return null;
+		return this.roboScriptBlockInstance;
 	}
 }

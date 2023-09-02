@@ -2,25 +2,35 @@ package com.workert.robotics.content.computers.ioblocks.redstonedetector;
 
 import com.simibubi.create.foundation.tileEntity.SyncedTileEntity;
 import com.workert.robotics.base.registries.BlockEntityRegistry;
-import com.workert.robotics.base.roboscript.*;
-import com.workert.robotics.base.roboscript.util.RoboScriptObjectConversions;
-import com.workert.robotics.content.computers.computer.ComputerBlockEntity;
+import com.workert.robotics.base.roboscript.RoboScriptClass;
+import com.workert.robotics.base.roboscript.RoboScriptHelper;
+import com.workert.robotics.base.roboscript.RoboScriptObject;
+import com.workert.robotics.base.roboscript.RoboScriptSignal;
 import com.workert.robotics.content.computers.ioblocks.IOBlockEntity;
+import com.workert.robotics.content.computers.ioblocks.IORoboScriptBlockHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import org.jetbrains.annotations.Nullable;
 
 public class RedstoneDetectorBlockEntity extends SyncedTileEntity implements IOBlockEntity {
 
-	public static RoboScriptClass roboScriptBlockClass = makeClass();
+	public static RoboScriptClass roboScriptBlockClass = IORoboScriptBlockHelper.createClass()
+			.addMethod("getPower", 0,
+					(vm, fun) -> ((RedstoneDetectorBlockEntity) IORoboScriptBlockHelper.getBlockEntityFromMethod(
+							fun)).redstoneLevel)
+			.build();
 	int redstoneLevel = 0;
 
 	private String signalName = "";
 	private BlockPos targetPos = this.getBlockPos();
-	public RoboScriptObject roboScriptBlockInstance = this.makeInstance();
+
+	public RoboScriptSignal powerChanged = new RoboScriptSignal();
+	public RoboScriptObject roboScriptBlockInstance = IORoboScriptBlockHelper.createObject(roboScriptBlockClass, this)
+			.addField("powerChanged", this.powerChanged, true)
+			.build();
+
 
 	public RedstoneDetectorBlockEntity(BlockEntityType<?> type, BlockPos blockPos, BlockState blockState) {
 		super(BlockEntityRegistry.REDSTONE_DETECTOR.get(), blockPos, blockState);
@@ -28,9 +38,8 @@ public class RedstoneDetectorBlockEntity extends SyncedTileEntity implements IOB
 
 	public void setRedstoneLevel(int redstoneLevel) {
 		if (redstoneLevel != this.redstoneLevel && this.getConnectedComputer() != null) {
-			this.getConnectedComputer().interpretSignal(
-					((RoboScriptSignal) (this.roboScriptBlockInstance.fields.get("powerChanged").value)).callable,
-					new Object[] {RoboScriptObjectConversions.prepareForRoboScriptUse(redstoneLevel)});
+			this.getConnectedComputer().interpretSignal(this.powerChanged.callable,
+					new Object[] {RoboScriptHelper.numToDouble(redstoneLevel)});
 		}
 		this.redstoneLevel = redstoneLevel;
 	}
@@ -64,11 +73,6 @@ public class RedstoneDetectorBlockEntity extends SyncedTileEntity implements IOB
 		}
 	}
 
-	@Nullable
-	public ComputerBlockEntity getConnectedComputer() {
-		return this.getLevel().getExistingBlockEntity(this.targetPos) instanceof ComputerBlockEntity e ? e : null;
-	}
-
 	@Override
 	public BlockPos getTargetPos() {
 		return this.targetPos;
@@ -88,7 +92,6 @@ public class RedstoneDetectorBlockEntity extends SyncedTileEntity implements IOB
 	public RoboScriptObject getRoboScriptObject() {
 		return this.roboScriptBlockInstance;
 	}
-
 
 	private static RoboScriptClass makeClass() {
 		RoboScriptClass clazz = new RoboScriptClass();
