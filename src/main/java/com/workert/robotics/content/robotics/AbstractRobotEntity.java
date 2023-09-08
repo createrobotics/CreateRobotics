@@ -82,6 +82,7 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 									itemList.add(RoboScriptHelper.itemStackToRoboScriptList(itemStack));
 								}
 								return itemList;
+
 							});
 
 					this.defineNativeFunction("goTo", 3, (parameters) -> {
