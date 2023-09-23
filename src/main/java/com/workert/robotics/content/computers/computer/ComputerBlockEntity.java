@@ -23,7 +23,7 @@ public class ComputerBlockEntity extends KineticTileEntity {
 	public final RoboScript roboScript;
 	private String script = "";
 
-	private static final int TERMINAL_LINE_LIMIT = 2048;
+	public static final int TERMINAL_LINE_LIMIT = 2048;
 	private LineLimitedString terminal = new LineLimitedString(TERMINAL_LINE_LIMIT);
 
 	private boolean running = false;
