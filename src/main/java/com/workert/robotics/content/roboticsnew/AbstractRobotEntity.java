@@ -9,6 +9,8 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
 
+import java.util.List;
+
 public abstract class AbstractRobotEntity extends Mob {
 	private static final int maxAir = BackTankUtil.maxAirWithoutEnchants() * 10;
 	private int air;
@@ -33,6 +35,16 @@ public abstract class AbstractRobotEntity extends Mob {
 
 			@Override
 			protected void handleErrorMessage(String error) {
+
+			}
+
+			@Override
+			protected void defineNativeFunctions() {
+				super.defineNativeFunctions();
+				this.defineNativeFunction("getAir", 0, (args) -> AbstractRobotEntity.this.air);
+				this.defineNativeFunction("getPosition", 0,
+						(args) -> List.of(AbstractRobotEntity.this.getX(), AbstractRobotEntity.this.getY(),
+								AbstractRobotEntity.this.getZ()));
 
 			}
 		};
