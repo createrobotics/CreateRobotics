@@ -17,14 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v3
-
-      - name: Send building message to discord
-        if: github.event_name == 'push'
-        uses: realRobotix/action-discord-notifier@release-master
-        with:
-          webhook: ${{ secrets.DISCORD_WEBHOOK }}
-          message-title: Building mod from branch ${{ steps.get_branch.outputs.branch }}
+      - uses: actions/checkout@v4
 
       - name: Get branch name
         id: get_branch
@@ -33,6 +26,13 @@ jobs:
       - name: Get latest commit hash
         id: get_hash
         run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Send building message to discord
+        if: github.event_name == 'push'
+        uses: realRobotix/action-discord-notifier@release-master
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          message-title: Building mod from branch ${{ steps.get_branch.outputs.branch }}
 
       - name: Get MC version
         uses: christian-draeger/read-properties@908f99d3334be3802ec7cb528395a69d19914e7b
