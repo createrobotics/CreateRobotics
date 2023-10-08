@@ -693,7 +693,7 @@ public final class VirtualMachine {
 						throw new RuntimeError("Expected a number as the first argument of 'charAt'.");
 					if (!isWhole(index) || isNegative(index)) throw new RuntimeError(
 							"Index value in 'charAt' must be a whole number greater or equal to 0.");
-					return method.instance.charAt(RoboScriptHelper.doubleToInt(index));
+					return Character.toString(method.instance.charAt(RoboScriptHelper.doubleToInt(index)));
 				};
 				return method;
 			}
