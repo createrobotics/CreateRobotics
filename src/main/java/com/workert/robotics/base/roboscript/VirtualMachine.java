@@ -692,7 +692,7 @@ public final class VirtualMachine {
 					if (!(VirtualMachine.this.popStack() instanceof Double index))
 						throw new RuntimeError("Expected a number as the first argument of 'charAt'.");
 					if (!isWhole(index) || isNegative(index)) throw new RuntimeError(
-							"Index value in 'getCharAt' must be a whole number greater or equal to 0.");
+							"Index value in 'charAt' must be a whole number greater or equal to 0.");
 					return method.instance.charAt(RoboScriptHelper.doubleToInt(index));
 				};
 				return method;
