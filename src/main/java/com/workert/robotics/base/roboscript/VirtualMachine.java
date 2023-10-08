@@ -686,6 +686,18 @@ public final class VirtualMachine {
 				return method;
 			}
 
+			case "charAt" -> {
+				RoboScriptNativeMethod<String> method = new RoboScriptNativeMethod<>(string, (byte) 1);
+				method.function = (vm, fun) -> {
+					if (!(VirtualMachine.this.popStack() instanceof Double index))
+						throw new RuntimeError("Expected a number as the first argument of 'charAt'.");
+					if (!isWhole(index) || isNegative(index)) throw new RuntimeError(
+							"Index value in 'getCharAt' must be a whole number greater or equal to 0.");
+					return method.instance.charAt(RoboScriptHelper.doubleToInt(index));
+				};
+				return method;
+			}
+
 			case "split" -> {
 				RoboScriptNativeMethod<String> method = new RoboScriptNativeMethod<>(string, (byte) 1);
 				method.function = (vm, fun) -> {
@@ -694,6 +706,12 @@ public final class VirtualMachine {
 								"Expected a Regular Expression string as the argument of 'split'.");
 					return Arrays.asList(method.instance.split(regex));
 				};
+				return method;
+			}
+
+			case "size" -> {
+				RoboScriptNativeMethod<String> method = new RoboScriptNativeMethod<>(string, (byte) 1);
+				method.function = (vm, fun) -> RoboScriptHelper.numToDouble(method.instance.length());
 				return method;
 			}
 			default -> throw new RuntimeError("Built-in type 'String' does not have method '" + key + "'.");
