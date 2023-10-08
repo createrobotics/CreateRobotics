@@ -85,6 +85,11 @@ public class RedstoneEmitterBlockEntity extends SyncedTileEntity implements IOBl
 		return this.roboScriptBlockInstance;
 	}
 
+	@Override
+	public void resetSignals() {
+
+	}
+
 	private void setRedstoneLevel(int redstoneLevel) {
 		this.redstoneLevel = redstoneLevel;
 		this.level.scheduleTick(this.getBlockPos(), this.getBlockState().getBlock(), 0);

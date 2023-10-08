@@ -106,4 +106,9 @@ public class ScannerBlockEntity extends KineticTileEntity implements ScannerBeha
 	public RoboScriptObject getRoboScriptObject() {
 		return this.roboScriptBlockInstance;
 	}
+
+	@Override
+	public void resetSignals() {
+		this.scan = new RoboScriptSignal();
+	}
 }

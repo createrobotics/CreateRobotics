@@ -18,6 +18,8 @@ public interface IOBlockEntity {
 
 	RoboScriptObject getRoboScriptObject();
 
+	void resetSignals();
+
 	default ComputerBlockEntity getConnectedComputer() {
 		return this.getBlockEntity().getLevel()
 				.getExistingBlockEntity(this.getTargetPos()) instanceof ComputerBlockEntity e ? e : null;

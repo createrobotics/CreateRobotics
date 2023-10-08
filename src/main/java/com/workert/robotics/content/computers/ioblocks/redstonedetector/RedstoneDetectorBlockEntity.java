@@ -93,4 +93,9 @@ public class RedstoneDetectorBlockEntity extends SyncedTileEntity implements IOB
 		return this.roboScriptBlockInstance;
 	}
 
+	@Override
+	public void resetSignals() {
+		this.powerChanged = new RoboScriptSignal();
+	}
+
 }
