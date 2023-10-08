@@ -75,11 +75,11 @@ public class ComputerBlockEntity extends KineticTileEntity {
 
 
 	public void runScript() {
-		for (BlockPos pos : this.connectedBlocks.values()) {
+		/*for (BlockPos pos : this.connectedBlocks.values()) {
 			if (this.getLevel().getExistingBlockEntity(pos) instanceof IOBlockEntity be) {
 				be.resetSignals();
 			}
-		}
+		}*/
 		this.roboScript.runString(this.script);
 		this.running = true;
 	}
