@@ -13,6 +13,7 @@ import com.workert.robotics.content.computers.computer.TerminalDisplaySource;
 import com.workert.robotics.content.computers.ioblocks.IOBlockItem;
 import com.workert.robotics.content.computers.ioblocks.redstonedetector.RedstoneDetectorBlock;
 import com.workert.robotics.content.computers.ioblocks.redstoneemitter.RedstoneEmitterBlock;
+import com.workert.robotics.content.computers.ioblocks.redstonepulser.RedstonePulserBlock;
 import com.workert.robotics.content.computers.ioblocks.scanner.ScannerBlock;
 import com.workert.robotics.content.robotics.codeeditor.CodeEditorBlock;
 import com.workert.robotics.unused.smasher.SmasherBlock;
@@ -165,6 +166,7 @@ public class BlockRegistry {
 			.item(IOBlockItem::new)
 			.build()
 			.register();
+
 	public static final BlockEntry<RedstoneEmitterBlock> REDSTONE_EMITTER = Robotics.REGISTRATE
 			.block("redstone_emitter", RedstoneEmitterBlock::new)
 			.lang("Redstone Emitter")
@@ -176,21 +178,27 @@ public class BlockRegistry {
 									provider.modLoc("block/redstone_emitter_top"))))
 					.partialState().with(RedstoneDetectorBlock.LIT, false).addModels(new ConfiguredModel(
 							provider.models().getExistingFile(provider.modLoc("block/redstone_emitter")))))
-					.
-
-			initialProperties(() -> Blocks.STONE)
-					.
-
-			transform(TagGen.pickaxeOnly())
-					.
-
-			item(IOBlockItem::new)
-					.
-
-			build()
-					.
-
-			register();
+			.initialProperties(() -> Blocks.STONE)
+			.transform(TagGen.pickaxeOnly())
+			.item(IOBlockItem::new)
+			.build()
+			.register();
+	public static final BlockEntry<RedstonePulserBlock> REDSTONE_PULSER = Robotics.REGISTRATE
+			.block("redstone_pulser", RedstonePulserBlock::new)
+			.lang("Redstone Pulser")
+			.blockstate((dataGenContext, provider) -> provider.getVariantBuilder(dataGenContext.get())
+					.partialState().with(RedstonePulserBlock.LIT, true).addModels(new ConfiguredModel(
+							provider.models()
+									.cubeAll("redstone_detector_on", provider.modLoc("block/redstone_detector_on"))))
+					.partialState().with(RedstonePulserBlock.LIT, false).addModels(new ConfiguredModel(
+							provider.models()
+									.cubeAll("redstone_detector", provider.modLoc("block/redstone_detector"))))
+			)
+			.initialProperties(() -> Blocks.STONE)
+			.transform(TagGen.pickaxeOnly())
+			.item(IOBlockItem::new)
+			.build()
+			.register();
 
 	public static final BlockEntry<ScannerBlock> SCANNER = Robotics.REGISTRATE
 			.block("scanner", ScannerBlock::new)

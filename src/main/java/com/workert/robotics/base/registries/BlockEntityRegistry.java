@@ -7,6 +7,7 @@ import com.workert.robotics.content.computers.computer.ComputerInstance;
 import com.workert.robotics.content.computers.computer.ComputerRenderer;
 import com.workert.robotics.content.computers.ioblocks.redstonedetector.RedstoneDetectorBlockEntity;
 import com.workert.robotics.content.computers.ioblocks.redstoneemitter.RedstoneEmitterBlockEntity;
+import com.workert.robotics.content.computers.ioblocks.redstonepulser.RedstonePulserBlockEntity;
 import com.workert.robotics.content.computers.ioblocks.scanner.ScannerBlockEntity;
 import com.workert.robotics.content.computers.ioblocks.scanner.ScannerInstance;
 import com.workert.robotics.content.computers.ioblocks.scanner.ScannerRenderer;
@@ -35,6 +36,10 @@ public class BlockEntityRegistry {
 	public static final BlockEntityEntry<RedstoneEmitterBlockEntity> REDSTONE_EMITTER = Robotics.REGISTRATE
 			.tileEntity("redstone_emitter", RedstoneEmitterBlockEntity::new)
 			.validBlock(BlockRegistry.REDSTONE_EMITTER)
+			.register();
+	public static final BlockEntityEntry<RedstonePulserBlockEntity> REDSTONE_PULSER = Robotics.REGISTRATE
+			.tileEntity("redstone_pulser", RedstonePulserBlockEntity::new)
+			.validBlock(BlockRegistry.REDSTONE_PULSER)
 			.register();
 	public static final BlockEntityEntry<ScannerBlockEntity> SCANNER = Robotics.REGISTRATE
 			.tileEntity("scanner", ScannerBlockEntity::new)
