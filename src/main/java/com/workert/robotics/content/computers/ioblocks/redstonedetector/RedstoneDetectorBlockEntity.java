@@ -18,8 +18,9 @@ public class RedstoneDetectorBlockEntity extends SyncedTileEntity implements IOB
 
 	public static RoboScriptClass roboScriptBlockClass = IORoboScriptBlockHelper.createClass()
 			.addMethod("getPower", 0,
-					(vm, fun) -> (double) ((RedstoneDetectorBlockEntity) IORoboScriptBlockHelper.getBlockEntityFromMethod(
-							fun)).redstoneLevel)
+					(vm, fun) -> RoboScriptHelper.numToDouble(
+							((RedstoneDetectorBlockEntity) IORoboScriptBlockHelper.getBlockEntityFromMethod(
+									fun)).redstoneLevel))
 			.build();
 	int redstoneLevel = 0;
 
