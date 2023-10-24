@@ -23,7 +23,7 @@ For help with RoboScript you can look <a href="https://github.com/Worker20/Creat
 ## Variable Declaration
 Variables can be declared using the `var` keyword, initialized with an `=` following the name and an expression afterwards, and new to RoboScript, can be set to a specific type.
 ```go
-var my_variable; // declare variable with the default 'any' type; allowed to be null
+var my_variable; // declare variable with the default 'any?' type; allowed to be null
 var my_variable: any = 0; // redeclare my_variable; not allowed to be null and must be defined
 var my_number: number; // variable can only be set to numbers; starts at 0
 var my_string: string; // variable can only be set to string; starts at ""
