@@ -64,13 +64,13 @@ abstract class Statement {
 	}
 
 	static class While extends Statement {
-		While(com.workert.robotics.base.roboscript.Expression condition, Statement body) {
+		While(com.workert.robotics.base.roboscript.Expression condition, List<Statement> body) {
 			this.condition = condition;
 			this.body = body;
 		}
 
 		final com.workert.robotics.base.roboscript.Expression condition;
-		final Statement body;
+		final List<Statement> body;
 	}
 
 	static class For extends Statement {

@@ -120,6 +120,13 @@ public final class Parser {
 		return new Statement.If(condition, thenBlock, elseBlock);
 	}
 
+	private Statement.While whileStatement() {
+		Expression condition = this.expression();
+		this.consumeOrThrow(LEFT_BRACE, "Expected '{' after while condition expression.");
+		List<Statement> body = this.block();
+		return new Statement.While(condition, body);
+	}
+
 	private Statement.Expression expressionStatement() {
 		Expression expression = this.expression();
 		this.consumeOrThrow(SEMICOLON, "Expected ';' after expression.");
