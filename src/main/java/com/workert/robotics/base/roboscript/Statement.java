@@ -73,6 +73,14 @@ abstract class Statement {
 		final List<Statement> body;
 	}
 
+	static class Loop extends Statement {
+		Loop(List<Statement> body) {
+			this.body = body;
+		}
+
+		final List<Statement> body;
+	}
+
 	static class For extends Statement {
 		For(VarDeclaration declaration, com.workert.robotics.base.roboscript.Expression iteratable, List<Statement> body) {
 			this.declaration = declaration;

@@ -136,6 +136,11 @@ public final class Parser {
 		return new Statement.For(loopVariable, iterable, body);
 	}
 
+	private Statement.Loop loopStatement() {
+		this.consumeOrThrow(LEFT_BRACE, "Expected '{' after 'loop'.");
+		return new Statement.Loop(this.block());
+	}
+
 	private Statement.Expression expressionStatement() {
 		Expression expression = this.expression();
 		this.consumeOrThrow(SEMICOLON, "Expected ';' after expression.");
