@@ -106,6 +106,20 @@ public final class Parser {
 		}
 	}
 
+	private Statement.If ifStatement() {
+		Expression condition = this.expression();
+		this.consumeOrThrow(LEFT_BRACE, "Expected '{' after if condition expression.");
+		List<Statement> thenBlock = this.block();
+		List<Statement> elseBlock = null;
+		if (this.checkAndConsumeIfMatches(ELSE)) {
+			this.consumeOrThrow(LEFT_BRACE, "Expected '{' after 'else'.");
+			elseBlock = this.block();
+		} else if (this.checkAndConsumeIfMatches(ELIF)) {
+			elseBlock = List.of(this.ifStatement());
+		}
+		return new Statement.If(condition, thenBlock, elseBlock);
+	}
+
 	private Statement.Expression expressionStatement() {
 		Expression expression = this.expression();
 		this.consumeOrThrow(SEMICOLON, "Expected ';' after expression.");

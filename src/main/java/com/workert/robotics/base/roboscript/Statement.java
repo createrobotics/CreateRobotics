@@ -52,15 +52,15 @@ abstract class Statement {
 	}
 
 	static class If extends Statement {
-		If(Expression condition, Statement thenBranch, Statement elseBranch) {
+		If(com.workert.robotics.base.roboscript.Expression condition, List<Statement> thenBranch, List<Statement> elseBranch) {
 			this.condition = condition;
 			this.thenBranch = thenBranch;
 			this.elseBranch = elseBranch;
 		}
 
-		final Expression condition;
-		final Statement thenBranch;
-		final Statement elseBranch;
+		final com.workert.robotics.base.roboscript.Expression condition;
+		final List<Statement> thenBranch;
+		final List<Statement> elseBranch;
 	}
 
 	static class While extends Statement {
