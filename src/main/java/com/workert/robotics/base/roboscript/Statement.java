@@ -17,23 +17,26 @@ abstract class Statement {
 	}
 
 	static class Var extends Statement {
-		Var(VarDeclaration declaration, Expression initializer) {
+		Var(VarDeclaration declaration, com.workert.robotics.base.roboscript.Expression initializer) {
 			this.declaration = declaration;
 			this.initializer = initializer;
 		}
 
 		final VarDeclaration declaration;
-		final Expression initializer;
+		final com.workert.robotics.base.roboscript.Expression initializer;
 	}
 
 	static class VarDeclaration extends Statement {
-		VarDeclaration(Token name, Token type) {
+		VarDeclaration(Token name, Token type, boolean nullSafe) {
 			this.name = name;
 			this.type = type;
+			this.nullSafe = nullSafe;
 		}
 
 		final Token name;
 		final Token type;
+
+		final boolean nullSafe;
 	}
 
 	static class Function extends Statement {
@@ -61,33 +64,33 @@ abstract class Statement {
 	}
 
 	static class While extends Statement {
-		While(Expression condition, Statement body) {
+		While(com.workert.robotics.base.roboscript.Expression condition, Statement body) {
 			this.condition = condition;
 			this.body = body;
 		}
 
-		final Expression condition;
+		final com.workert.robotics.base.roboscript.Expression condition;
 		final Statement body;
 	}
 
 	static class For extends Statement {
-		For(Var declaration, Expression iteratable) {
+		For(Var declaration, com.workert.robotics.base.roboscript.Expression iteratable) {
 			this.declaration = declaration;
 			this.iterable = iteratable;
 		}
 
 		final Var declaration;
-		final Expression iterable;
+		final com.workert.robotics.base.roboscript.Expression iterable;
 	}
 
 	static class Return extends Statement {
-		Return(Token keyword, Token value) {
+		Return(Token keyword, com.workert.robotics.base.roboscript.Expression value) {
 			this.keyword = keyword;
 			this.value = value;
 		}
 
 		final Token keyword;
-		final Token value;
+		final com.workert.robotics.base.roboscript.Expression value;
 	}
 
 	static class Break extends Statement {

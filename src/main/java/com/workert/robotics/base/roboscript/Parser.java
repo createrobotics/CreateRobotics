@@ -26,7 +26,16 @@ public final class Parser {
 		return statements;
 	}
 
-	Statement declaration() {
+	private List<Statement> block() {
+		List<Statement> block = new ArrayList<>();
+		while (!this.isNextToken(RIGHT_BRACE) && !this.isAtEnd()) {
+			block.add(this.declaration());
+		}
+		this.consumeOrThrow(RIGHT_BRACE, "Expected '}' after block.");
+		return block;
+	}
+
+	private Statement declaration() {
 		try {
 			if (this.checkAndConsumeIfMatches(VAR)) {
 				return this.varDeclaration();
@@ -39,6 +48,46 @@ public final class Parser {
 			// eventually synchronize
 			return null;
 		}
+	}
+
+	private Statement.Var varDeclaration() {
+		// Token var = this.previous;
+		Statement.VarDeclaration declaration = this.parseVariable("variable");
+		Expression initializer = this.checkAndConsumeIfMatches(EQUAL) ? this.expression() : null;
+		return new Statement.Var(declaration, initializer);
+	}
+
+	private Statement.Function functionDeclaration() {
+		this.consumeOrThrow(IDENTIFIER, "Expected function name after 'func'.");
+		Token name = this.previous;
+
+		this.consumeOrThrow(LEFT_PAREN, "Expected '(' after function name.");
+		List<Statement.VarDeclaration> parameters = new ArrayList<>();
+		if (!this.isNextToken(RIGHT_PAREN)) {
+			do {
+				parameters.add(this.parseVariable("parameter"));
+			} while (this.checkAndConsumeIfMatches(COMMA));
+		}
+		List<Statement> body = this.block();
+		this.consumeOrThrow(RIGHT_PAREN, "Expected ')' after function parameters.");
+
+		return new Statement.Function(name, body, parameters);
+	}
+
+	private Statement.VarDeclaration parseVariable(String variableType) {
+		this.consumeOrThrow(IDENTIFIER, "Expected " + variableType + " name after 'var'.");
+		Token name = this.previous;
+		Token type = null;
+		boolean nullSafe = false;
+		if (this.checkAndConsumeIfMatches(COLON)) {
+			// a type is defined
+			if (!this.checkAndConsumeIfMatches(IDENTIFIER, ANY, NUMBER, STRING, BOOL, LIST, RANGE)) {
+				throw this.error("Expected a type after ':' in variable declaration.");
+			}
+			type = this.previous;
+			if (this.checkAndConsumeIfMatches(QUESTION)) nullSafe = true;
+		}
+		return new Statement.VarDeclaration(name, type, nullSafe);
 	}
 
 	private Statement statement() {

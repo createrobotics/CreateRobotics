@@ -32,6 +32,7 @@ final class Token {
 
 		COLON(empty()),
 		SEMICOLON(empty()),
+		QUESTION(empty()),
 
 		// One or two character tokens.
 		BANG(new Compiler.ParseRule(Compiler::unary, null, NONE)),
@@ -83,11 +84,12 @@ final class Token {
 
 		INSTANCEOF(empty()),
 
+		ANY(empty()),
 		STRING(empty()),
-		DOUBLE(empty()),
-		BOOLEAN(empty()),
-		ARRAY(empty()),
-		OBJECT(empty()),
+		NUMBER(empty()),
+		BOOL(empty()),
+		RANGE(empty()),
+		LIST(empty()),
 
 
 		EOF(empty()),
