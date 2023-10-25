@@ -74,13 +74,15 @@ abstract class Statement {
 	}
 
 	static class For extends Statement {
-		For(Var declaration, com.workert.robotics.base.roboscript.Expression iteratable) {
+		For(VarDeclaration declaration, com.workert.robotics.base.roboscript.Expression iteratable, List<Statement> body) {
 			this.declaration = declaration;
 			this.iterable = iteratable;
+			this.body = body;
 		}
 
-		final Var declaration;
+		final VarDeclaration declaration;
 		final com.workert.robotics.base.roboscript.Expression iterable;
+		final List<Statement> body;
 	}
 
 	static class Return extends Statement {

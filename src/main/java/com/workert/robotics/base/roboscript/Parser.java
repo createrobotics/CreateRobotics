@@ -127,6 +127,15 @@ public final class Parser {
 		return new Statement.While(condition, body);
 	}
 
+	private Statement.For forStatement() {
+		Statement.VarDeclaration loopVariable = this.parseVariable("variable");
+		this.consumeOrThrow(COLON, "Expected colon after for loop variable declaration.");
+		Expression iterable = this.expression();
+		this.consumeOrThrow(LEFT_BRACE, "Expected '{' after for loop iterable.");
+		List<Statement> body = this.block();
+		return new Statement.For(loopVariable, iterable, body);
+	}
+
 	private Statement.Expression expressionStatement() {
 		Expression expression = this.expression();
 		this.consumeOrThrow(SEMICOLON, "Expected ';' after expression.");
