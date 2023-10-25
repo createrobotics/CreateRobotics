@@ -67,6 +67,7 @@ final class Token {
 		IF(new Compiler.ParseRule(Compiler::ternary, null, TERNARY)),
 		ELSE(empty()),
 		WHILE(empty()),
+		LOOP(empty()),
 
 		TRUE(new Compiler.ParseRule(Compiler::literal, null, NONE)),
 		FALSE(new Compiler.ParseRule(Compiler::literal, null, NONE)),

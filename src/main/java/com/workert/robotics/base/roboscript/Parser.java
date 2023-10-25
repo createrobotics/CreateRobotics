@@ -1,0 +1,321 @@
+package com.workert.robotics.base.roboscript;
+import java.io.Serial;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.workert.robotics.base.roboscript.Token.TokenType.*;
+
+public final class Parser {
+	final RoboScript roboScriptInstance;
+	Scanner scanner;
+	Chunk chunk = new Chunk();
+
+	Token current;
+	Token previous;
+
+
+	Parser(RoboScript roboScriptInstance) {
+		this.roboScriptInstance = roboScriptInstance;
+	}
+
+	List<Statement> parse() {
+		List<Statement> statements = new ArrayList<>();
+		while (!this.isAtEnd()) {
+			statements.add(this.declaration());
+		}
+		return statements;
+	}
+
+	Statement declaration() {
+		try {
+			if (this.checkAndConsumeIfMatches(VAR)) {
+				return this.varDeclaration();
+			} else if (this.checkAndConsumeIfMatches(FUNCTION)) {
+				return this.functionDeclaration();
+			} else {
+				return this.statement();
+			}
+		} catch (ParseError error) {
+			// eventually synchronize
+			return null;
+		}
+	}
+
+	private Statement statement() {
+		if (this.checkAndConsumeIfMatches(IF)) {
+			return this.ifStatement();
+		} else if (this.checkAndConsumeIfMatches(WHILE)) {
+			return this.whileStatement();
+		} else if (this.checkAndConsumeIfMatches(FOR)) {
+			return this.forStatement();
+		} else if (this.checkAndConsumeIfMatches(LOOP)) {
+			return this.loopStatement();
+		} else if (this.checkAndConsumeIfMatches(RETURN)) {
+			return this.returnStatement();
+		} else {
+			return this.expressionStatement();
+		}
+	}
+
+	private Statement.Expression expressionStatement() {
+		Expression expression = this.expression();
+		this.consumeOrThrow(SEMICOLON, "Expected ';' after expression.");
+		return new Statement.Expression(expression);
+	}
+
+	private Expression expression() {
+		return this.assignment(); // start the precedence chain
+	}
+
+	private Expression assignment() {
+		Expression expression = this.or();
+		if (this.checkAndConsumeIfMatches(EQUAL)) {
+			Token equals = this.previous;
+			Expression value = this.assignment();
+			if (expression instanceof Expression.Variable var)
+				return new Expression.Assign(var, value);
+			this.errorAt(equals, "Invalid assignment target.");
+		}
+		return expression;
+	}
+
+	private Expression or() {
+		Expression expression = this.and();
+		while (this.checkAndConsumeIfMatches(OR)) {
+			Token operator = this.previous;
+			Expression right = this.and();
+			expression = new Expression.Logical(expression, operator, right);
+		}
+		return expression;
+	}
+
+	private Expression and() {
+		Expression expression = this.equality();
+		while (this.checkAndConsumeIfMatches(OR)) {
+			Token operator = this.previous;
+			Expression right = this.and();
+			expression = new Expression.Logical(expression, operator, right);
+		}
+		return expression;
+	}
+
+	private Expression equality() {
+		Expression expression = this.comparison();
+		while (this.checkAndConsumeIfMatches(BANG_EQUAL, EQUAL_EQUAL)) {
+			Token operator = this.previous;
+			Expression right = this.comparison();
+			expression = new Expression.Binary(expression, operator, right);
+		}
+		return expression;
+	}
+
+	private Expression comparison() {
+		Expression expression = this.modulo();
+		while (this.checkAndConsumeIfMatches(GREATER, GREATER_EQUAL, LESS, LESS_EQUAL)) {
+			Token operator = this.previous;
+			Expression right = this.modulo();
+			expression = new Expression.Binary(expression, operator, right);
+		}
+		return expression;
+	}
+
+	private Expression modulo() {
+		Expression expression = this.term();
+		while (this.checkAndConsumeIfMatches(PERCENT)) {
+			Token operator = this.previous;
+			Expression right = this.term();
+			expression = new Expression.Binary(expression, operator, right);
+		}
+		return expression;
+	}
+
+	private Expression term() {
+		Expression expression = this.factor();
+		while (this.checkAndConsumeIfMatches(MINUS, PLUS)) {
+			Token operator = this.previous;
+			Expression right = this.factor();
+			expression = new Expression.Binary(expression, operator, right);
+		}
+		return expression;
+	}
+
+	private Expression factor() {
+		Expression expression = this.exponent();
+		while (this.checkAndConsumeIfMatches(SLASH, STAR)) {
+			Token operator = this.previous;
+			Expression right = this.exponent();
+			expression = new Expression.Binary(expression, operator, right);
+		}
+		return expression;
+	}
+
+	private Expression exponent() {
+		Expression expression = this.unary();
+		return expression;
+	}
+
+	private Expression unary() {
+		if (this.checkAndConsumeIfMatches(BANG, MINUS)) {
+			Token operator = this.previous;
+			Expression right = this.unary();
+			return new Expression.Unary(operator, right);
+		}
+		return this.call();
+	}
+
+	private Expression call() {
+		Expression expression = this.primary();
+
+		while (true) {
+			if (this.checkAndConsumeIfMatches(LEFT_PAREN)) {
+				expression = this.finishCall(expression);
+			} else if (this.checkAndConsumeIfMatches(DOT)) {
+				// getting from classes
+			} else if (this.checkAndConsumeIfMatches(LEFT_BRACKET)) {
+				// getting from iterables
+			} else {
+				break;
+			}
+		}
+		return expression;
+	}
+
+	private Expression primary() {
+		if (this.checkAndConsumeIfMatches(FALSE)) return new Expression.BoolLiteral(false);
+		if (this.checkAndConsumeIfMatches(TRUE)) return new Expression.BoolLiteral(true);
+		if (this.checkAndConsumeIfMatches(NULL)) return new Expression.NullLiteral();
+
+		if (this.checkAndConsumeIfMatches(DOUBLE_VALUE))
+			return new Expression.DoubleLiteral(Double.parseDouble(this.previous.lexeme));
+
+		if (this.checkAndConsumeIfMatches(IDENTIFIER))
+			return new Expression.Variable(this.previous);
+		if (this.checkAndConsumeIfMatches(LEFT_PAREN)) {
+			// TODO: if i feel like adding tuples come back and fix this
+			Expression expression = this.expression();
+			this.consumeOrThrow(RIGHT_PAREN, "Expected ')' after expression.");
+			return new Expression.Grouping(expression);
+		}
+
+		if (this.checkAndConsumeIfMatches(LEFT_BRACKET)) {
+			// TODO: Come back for arrays
+		}
+
+		if (this.checkAndConsumeIfMatches(LEFT_BRACE)) {
+			// TODO: Come back for maps
+		}
+		throw this.errorAtCurrent("Expected expression.");
+	}
+
+	/**
+	 * Generates an Expression.Call for any expressions that are called using () (functions, classes).
+	 *
+	 * @param callee The expression being called
+	 * @return An Expression.Call syntax node.
+	 */
+	private Expression.Call finishCall(Expression callee) {
+		List<Expression> arguments = new ArrayList<>();
+		if (!this.isNextToken(RIGHT_PAREN)) {
+			do {
+				arguments.add(this.expression());
+			} while (this.checkAndConsumeIfMatches(COMMA));
+		}
+		this.consumeOrThrow(RIGHT_PAREN, "Expected ')' after arguments.");
+
+		return new Expression.Call(callee, this.previous, arguments);
+	}
+
+
+	boolean isAtEnd() {
+		return this.current.type == EOF;
+	}
+
+
+	private void advance() {
+		this.previous = this.current;
+
+		this.current = this.scanner.scanToken();
+		if (this.current.type == ERROR)
+			throw this.errorAtCurrent(this.current.lexeme);
+	}
+
+
+	private void consumeOrThrow(Token.TokenType type, String message) {
+		if (this.current.type == type) {
+			this.advance();
+			return;
+		}
+		throw this.errorAtCurrent(message);
+	}
+
+	private boolean checkAndConsumeIfMatches(Token.TokenType type) {
+		if (this.current.type != type) return false;
+		this.advance();
+		return true;
+	}
+
+	private boolean checkAndConsumeIfMatches(Token.TokenType... types) {
+		if (this.isNextToken(types)) {
+			this.advance();
+			return true;
+		}
+		return false;
+	}
+
+	private boolean isNextToken(Token.TokenType type) {
+		return this.current.type == type;
+	}
+
+	private boolean isNextToken(Token.TokenType... types) {
+		for (Token.TokenType type : types) {
+			if (this.current.type == type) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+
+	private ParseError error(String message) {
+		return this.errorAt(this.previous, message);
+	}
+
+	private ParseError errorAtCurrent(String message) {
+		return this.errorAt(this.current, message);
+	}
+
+	private ParseError errorAt(Token token, String message) {
+		String finalMessage = "Error";
+		if (token.type == EOF) {
+			finalMessage += " at end";
+		} else if (token.type != ERROR) {
+			finalMessage += " at " + token.lexeme;
+		} else {
+			finalMessage += " with scanning";
+		}
+		finalMessage += ": '" + message + "'";
+		this.roboScriptInstance.reportCompileError(token.line, finalMessage);
+		return new ParseError();
+	}
+
+
+	private static class ParseError extends RuntimeException {
+		@Serial
+		private static final long serialVersionUID = -187581590684984588L;
+	}
+
+	protected interface Precedence {
+		byte NONE = 0;
+		byte ASSIGNMENT = 1; // =
+		byte TERNARY = 2;
+		byte OR = 3; // or
+		byte AND = 4; // and
+		byte EQUALITY = 5; // == !=
+		byte COMPARISON = 6; // < > <= >=
+		byte TERM = 7; // + -
+		byte FACTOR = 8; // * /
+		byte UNARY = 9; // ! -
+		byte POWER = 10; // ^
+		byte CALL = 11; // . ()
+	}
+}
