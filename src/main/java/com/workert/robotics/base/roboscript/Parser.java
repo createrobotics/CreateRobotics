@@ -54,6 +54,7 @@ public final class Parser {
 		// Token var = this.previous;
 		Statement.VarDeclaration declaration = this.parseVariable("variable");
 		Expression initializer = this.checkAndConsumeIfMatches(EQUAL) ? this.expression() : null;
+		this.consumeOrThrow(SEMICOLON, "Expected ';' after variable declaration.");
 		return new Statement.Var(declaration, initializer);
 	}
 
@@ -78,14 +79,14 @@ public final class Parser {
 		this.consumeOrThrow(IDENTIFIER, "Expected " + variableType + " name after 'var'.");
 		Token name = this.previous;
 		Token type = null;
-		boolean nullSafe = false;
+		boolean nullSafe = true;
 		if (this.checkAndConsumeIfMatches(COLON)) {
 			// a type is defined
 			if (!this.checkAndConsumeIfMatches(IDENTIFIER, ANY, NUMBER, STRING, BOOL, LIST, RANGE)) {
 				throw this.error("Expected a type after ':' in variable declaration.");
 			}
 			type = this.previous;
-			if (this.checkAndConsumeIfMatches(QUESTION)) nullSafe = true;
+			nullSafe = this.checkAndConsumeIfMatches(QUESTION);
 		}
 		return new Statement.VarDeclaration(name, type, nullSafe);
 	}
