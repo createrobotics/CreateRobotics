@@ -29,7 +29,6 @@ class Resolver implements Statement.Visitor<Void> {
 	public Void visitVarStatement(Statement.Var statement) {
 		if (this.isGlobal()) {
 			this.globalVariables.put(statement.declaration.name.lexeme, statement.declaration);
-
 		}
 		return null;
 	}
@@ -72,6 +71,41 @@ class Resolver implements Statement.Visitor<Void> {
 	@Override
 	public Void visitBreakStatement(Statement.Break breakStatement) {
 		return null;
+	}
+
+
+	private void declareVariable(Statement.VarDeclaration declaration) {
+		if (!this.isGlobal()) return;
+		for (int i = this.locals.size() - 1; i >= 0; i--) {
+			Local local = this.locals.get(i);
+			if (local.depth != -1 && local.depth < this.scopeDepth) break;
+			if (declaration.name.lexeme.equals(local.local.name.lexeme)) {
+				local.local = declaration;
+				local.depth = -1;
+				return;
+			}
+		}
+		this.addLocal(declaration);
+	}
+
+	private void defineVariable(Statement.VarDeclaration declaration) {
+		if (!this.isGlobal()) {
+			this.markInitialized();
+			return;
+		}
+		this.globalVariables.put(declaration.name.lexeme, declaration);
+	}
+
+	private void addLocal(Statement.VarDeclaration declaration) {
+		if (this.locals.size() >= 127) {
+			// throw error
+		}
+		this.locals.add(new Local(declaration, -1));
+	}
+
+	private void markInitialized() {
+		if (this.scopeDepth == 0) return;
+		this.locals.get(this.locals.size() - 1).depth = this.scopeDepth;
 	}
 
 	private Statement.VarDeclaration findVariable(String name) {
