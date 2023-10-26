@@ -141,6 +141,16 @@ public final class Parser {
 		return new Statement.Loop(this.block());
 	}
 
+	private Statement.Return returnStatement() {
+		Token keyword = this.previous;
+		Expression returnValue = null;
+		if (!this.isNextToken(SEMICOLON)) {
+			returnValue = this.expression();
+		}
+		this.consumeOrThrow(SEMICOLON, "Expected semicolon after return statement.");
+		return new Statement.Return(keyword, returnValue);
+	}
+
 	private Statement.Expression expressionStatement() {
 		Expression expression = this.expression();
 		this.consumeOrThrow(SEMICOLON, "Expected ';' after expression.");
