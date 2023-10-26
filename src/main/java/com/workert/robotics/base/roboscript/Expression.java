@@ -2,6 +2,44 @@ package com.workert.robotics.base.roboscript;
 import java.util.List;
 
 abstract class Expression {
+	interface Visitor<R> {
+		R visitAssignExpression(Assign expression);
+
+		R visitGroupingExpression(Grouping expression);
+
+		R visitBinaryExpression(Binary expression);
+
+		R visitLogicalExpression(Logical expression);
+
+		R visitUnaryExpression(Unary expression);
+
+		R visitCallExpression(Call expression);
+
+		R visitListGetExpression(ListGet expression);
+
+		R visitListSetExpression(ListSet expression);
+
+		R visitClassGetExpression(ClassGet expression);
+
+		R visitClassSetExpression(ClassSet expression);
+
+		R visitVariableExpression(Variable expression);
+
+		R visitDoubleLiteralExpression(DoubleLiteral expression);
+
+		R visitStringLiteralExpression(StringLiteral expression);
+
+		R visitBoolLiteralExpression(BoolLiteral expression);
+
+		R visitListLiteralExpression(ListLiteral expression);
+
+		R visitRangeLiteralExpression(RangeLiteral expression);
+
+		R visitMapLiteralExpression(MapLiteral expression);
+
+		R visitNullLiteralExpression(NullLiteral expression);
+	}
+
 	static class Assign extends Expression {
 		Assign(Expression.Variable name, Expression value) {
 			this.name = name;
@@ -10,6 +48,11 @@ abstract class Expression {
 
 		final Expression.Variable name;
 		final Expression value;
+
+		@Override
+		<R> R accept(Visitor<R> visitor) {
+			return visitor.visitAssignExpression(this);
+		}
 	}
 
 	static class Grouping extends Expression {
@@ -18,6 +61,11 @@ abstract class Expression {
 		}
 
 		final Expression expression;
+
+		@Override
+		<R> R accept(Visitor<R> visitor) {
+			return visitor.visitGroupingExpression(this);
+		}
 	}
 
 	static class Binary extends Expression {
@@ -31,6 +79,11 @@ abstract class Expression {
 		final Expression left;
 		final Expression right;
 		final Token operator;
+
+		@Override
+		<R> R accept(Visitor<R> visitor) {
+			return visitor.visitBinaryExpression(this);
+		}
 	}
 
 	static class Logical extends Expression {
@@ -44,6 +97,11 @@ abstract class Expression {
 		final Expression left;
 		final Expression right;
 		final Token operator;
+
+		@Override
+		<R> R accept(Visitor<R> visitor) {
+			return visitor.visitLogicalExpression(this);
+		}
 	}
 
 	static class Unary extends Expression {
@@ -54,6 +112,11 @@ abstract class Expression {
 
 		final Token operator;
 		final Expression right;
+
+		@Override
+		<R> R accept(Visitor<R> visitor) {
+			return visitor.visitUnaryExpression(this);
+		}
 	}
 
 	static class Call extends Expression {
@@ -66,22 +129,43 @@ abstract class Expression {
 		final Expression callee;
 		final Token paren;
 		final List<Expression> arguments;
+
+		@Override
+		<R> R accept(Visitor<R> visitor) {
+			return visitor.visitCallExpression(this);
+		}
 	}
 
 	static class ListGet extends Expression {
 
+		@Override
+		<R> R accept(Visitor<R> visitor) {
+			return visitor.visitListGetExpression(this);
+		}
 	}
 
 	static class ListSet extends Expression {
 
+		@Override
+		<R> R accept(Visitor<R> visitor) {
+			return visitor.visitListSetExpression(this);
+		}
 	}
 
 	static class ClassGet extends Expression {
 
+		@Override
+		<R> R accept(Visitor<R> visitor) {
+			return visitor.visitClassGetExpression(this);
+		}
 	}
 
 	static class ClassSet extends Expression {
 
+		@Override
+		<R> R accept(Visitor<R> visitor) {
+			return visitor.visitClassSetExpression(this);
+		}
 	}
 
 	static class Variable extends Expression {
@@ -90,6 +174,11 @@ abstract class Expression {
 		}
 
 		final Token name;
+
+		@Override
+		<R> R accept(Visitor<R> visitor) {
+			return visitor.visitVariableExpression(this);
+		}
 	}
 
 	static class DoubleLiteral extends Expression {
@@ -98,6 +187,11 @@ abstract class Expression {
 		}
 
 		final double value;
+
+		@Override
+		<R> R accept(Visitor<R> visitor) {
+			return visitor.visitDoubleLiteralExpression(this);
+		}
 	}
 
 	static class StringLiteral extends Expression {
@@ -106,6 +200,11 @@ abstract class Expression {
 		}
 
 		final String value;
+
+		@Override
+		<R> R accept(Visitor<R> visitor) {
+			return visitor.visitStringLiteralExpression(this);
+		}
 	}
 
 	static class BoolLiteral extends Expression {
@@ -114,6 +213,11 @@ abstract class Expression {
 		}
 
 		final boolean value;
+
+		@Override
+		<R> R accept(Visitor<R> visitor) {
+			return visitor.visitBoolLiteralExpression(this);
+		}
 	}
 
 	static class ListLiteral extends Expression {
@@ -122,6 +226,11 @@ abstract class Expression {
 		}
 
 		final List<Expression> elements;
+
+		@Override
+		<R> R accept(Visitor<R> visitor) {
+			return visitor.visitListLiteralExpression(this);
+		}
 	}
 
 	static class RangeLiteral extends Expression {
@@ -132,6 +241,11 @@ abstract class Expression {
 
 		final Expression startValue;
 		final Expression upperRange;
+
+		@Override
+		<R> R accept(Visitor<R> visitor) {
+			return visitor.visitRangeLiteralExpression(this);
+		}
 	}
 
 
@@ -143,8 +257,19 @@ abstract class Expression {
 
 		final List<Expression> keys;
 		final List<Expression> values;
+
+		@Override
+		<R> R accept(Visitor<R> visitor) {
+			return visitor.visitMapLiteralExpression(this);
+		}
 	}
 
 	static class NullLiteral extends Expression {
+		@Override
+		<R> R accept(Visitor<R> visitor) {
+			return visitor.visitNullLiteralExpression(this);
+		}
 	}
+
+	abstract <R> R accept(Visitor<R> visitor);
 }
