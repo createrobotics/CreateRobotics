@@ -106,6 +106,8 @@ final class Scanner {
 				return this.addToken(this.consumeIfNextCharMatches('=') ? CARET_EQUAL : CARET);
 			case ':':
 				return this.addToken(COLON);
+			case '?':
+				return this.addToken(QUESTION);
 			case ';':
 				return this.addToken(SEMICOLON);
 			case '!':
@@ -205,8 +207,21 @@ final class Scanner {
 			// one path keywords ; initial characters that only share on keyword
 
 			// and
+			// any
 			case 'a' -> {
-				return this.checkKeyword(1, 2, "nd", AND);
+				if (this.current - this.start > 1)
+					if (this.source.charAt(this.start + 1) == 'n') {
+						switch (this.source.charAt(this.start + 2)) {
+							case 'd':
+								return AND;
+							case 'y':
+								return ANY;
+						}
+					}
+			}
+			// bool
+			case 'b' -> {
+				return this.checkKeyword(1, 3, "ool", BOOL);
 			}
 			// class
 			case 'c' -> {
@@ -214,23 +229,53 @@ final class Scanner {
 			}
 			// else
 			case 'e' -> {
-				return this.checkKeyword(1, 3, "lse", ELSE);
+				if (this.current - this.start > 1)
+					if (this.source.charAt(this.start + 1) == 'l')
+						switch (this.source.charAt(this.start + 2)) {
+							case 'i':
+								return this.checkKeyword(3, 1, "f", ELIF);
+							case 's':
+								return this.checkKeyword(3, 1, "e", ELSE);
+						}
 			}
 			// if
 			case 'i' -> {
 				return this.checkKeyword(1, 1, "f", IF);
 			}
+			case 'l' -> {
+				return this.checkKeyword(1, 3, "ist", LIST);
+			}
 			// null
+			// number
 			case 'n' -> {
-				return this.checkKeyword(1, 3, "ull", NULL);
+				if (this.current - this.start > 1)
+					if (this.source.charAt(this.start + 1) == 'u') {
+						switch (this.source.charAt(this.start + 2)) {
+							case 'l':
+								return this.checkKeyword(3, 1, "l", NULL);
+							case 'm':
+								return this.checkKeyword(3, 3, "ber", NUMBER);
+						}
+					}
 			}
 			// or
 			case 'o' -> {
 				return this.checkKeyword(1, 1, "r", OR);
 			}
 			// return
+			// range
 			case 'r' -> {
-				return this.checkKeyword(1, 5, "eturn", RETURN);
+				if (this.current - this.start > 1)
+					switch (this.source.charAt(this.start + 1)) {
+						case 'e':
+							return this.checkKeyword(2, 4, "turn", RETURN);
+						case 'a':
+							return this.checkKeyword(2, 3, "nge", RANGE);
+					}
+			}
+			// string
+			case 's' -> {
+				return this.checkKeyword(1, 5, "tring", STRING);
 			}
 			// var
 			case 'v' -> {
@@ -243,10 +288,6 @@ final class Scanner {
 			// true
 			case 't' -> {
 				return this.checkKeyword(1, 3, "rue", TRUE);
-			}
-
-			case 's' -> {
-				return this.checkKeyword(1, 5, "ignal", SIGNAL);
 			}
 			// false
 			// for

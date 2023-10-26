@@ -8,7 +8,6 @@ import static com.workert.robotics.base.roboscript.Token.TokenType.*;
 public final class Parser {
 	final RoboScript roboScriptInstance;
 	Scanner scanner;
-	Chunk chunk = new Chunk();
 
 	Token current;
 	Token previous;
