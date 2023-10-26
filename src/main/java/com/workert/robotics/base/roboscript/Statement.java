@@ -3,6 +3,28 @@ import java.util.List;
 
 abstract class Statement {
 
+	interface Visitor<R> {
+		R visitExpressionStatement(Expression statement);
+
+		R visitVarStatement(Var statement);
+
+		R visitVarDeclarationStatement(VarDeclaration statement);
+
+		R visitFunctionDeclaration(Function statement);
+
+		R visitIfStatement(If statement);
+
+		R visitWhileStatement(While statement);
+
+		R visitLoopStatement(Loop statement);
+
+		R visitForStatement(For statement);
+
+		R visitReturnStatement(Return statement);
+
+		R visitBreakStatement(Break breakStatement);
+	}
+
 
 	static class Class {
 
@@ -14,6 +36,11 @@ abstract class Statement {
 		}
 
 		final com.workert.robotics.base.roboscript.Expression expression;
+
+		@Override
+		<R> R accept(Visitor<R> visitor) {
+			return visitor.visitExpressionStatement(this);
+		}
 	}
 
 	static class Var extends Statement {
@@ -24,19 +51,29 @@ abstract class Statement {
 
 		final VarDeclaration declaration;
 		final com.workert.robotics.base.roboscript.Expression initializer;
+
+		@Override
+		<R> R accept(Visitor<R> visitor) {
+			return visitor.visitVarStatement(this);
+		}
 	}
 
 	static class VarDeclaration extends Statement {
 		VarDeclaration(Token name, Token type, boolean nullSafe) {
 			this.name = name;
 			this.type = type;
-			this.nullSafe = nullSafe;
+			this.nullable = nullSafe;
 		}
 
 		final Token name;
 		final Token type;
 
-		final boolean nullSafe;
+		final boolean nullable;
+
+		@Override
+		<R> R accept(Visitor<R> visitor) {
+			return visitor.visitVarDeclarationStatement(this);
+		}
 	}
 
 	static class Function extends Statement {
@@ -49,6 +86,11 @@ abstract class Statement {
 		final Token name;
 		final List<Statement> body;
 		final List<VarDeclaration> params;
+
+		@Override
+		<R> R accept(Visitor<R> visitor) {
+			return visitor.visitFunctionDeclaration(this);
+		}
 	}
 
 	static class If extends Statement {
@@ -61,6 +103,11 @@ abstract class Statement {
 		final com.workert.robotics.base.roboscript.Expression condition;
 		final List<Statement> thenBranch;
 		final List<Statement> elseBranch;
+
+		@Override
+		<R> R accept(Visitor<R> visitor) {
+			return visitor.visitIfStatement(this);
+		}
 	}
 
 	static class While extends Statement {
@@ -71,6 +118,11 @@ abstract class Statement {
 
 		final com.workert.robotics.base.roboscript.Expression condition;
 		final List<Statement> body;
+
+		@Override
+		<R> R accept(Visitor<R> visitor) {
+			return visitor.visitWhileStatement(this);
+		}
 	}
 
 	static class Loop extends Statement {
@@ -79,6 +131,11 @@ abstract class Statement {
 		}
 
 		final List<Statement> body;
+
+		@Override
+		<R> R accept(Visitor<R> visitor) {
+			return visitor.visitLoopStatement(this);
+		}
 	}
 
 	static class For extends Statement {
@@ -91,6 +148,11 @@ abstract class Statement {
 		final VarDeclaration declaration;
 		final com.workert.robotics.base.roboscript.Expression iterable;
 		final List<Statement> body;
+
+		@Override
+		<R> R accept(Visitor<R> visitor) {
+			return visitor.visitForStatement(this);
+		}
 	}
 
 	static class Return extends Statement {
@@ -101,6 +163,11 @@ abstract class Statement {
 
 		final Token keyword;
 		final com.workert.robotics.base.roboscript.Expression value;
+
+		@Override
+		<R> R accept(Visitor<R> visitor) {
+			return visitor.visitReturnStatement(this);
+		}
 	}
 
 	static class Break extends Statement {
@@ -109,5 +176,12 @@ abstract class Statement {
 		}
 
 		final Token keyword;
+
+		@Override
+		<R> R accept(Visitor<R> visitor) {
+			return visitor.visitBreakStatement(this);
+		}
 	}
+
+	abstract <R> R accept(Visitor<R> visitor);
 }

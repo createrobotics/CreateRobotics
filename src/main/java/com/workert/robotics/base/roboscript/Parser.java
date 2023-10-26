@@ -78,16 +78,16 @@ public final class Parser {
 		this.consumeOrThrow(IDENTIFIER, "Expected " + variableType + " name after 'var'.");
 		Token name = this.previous;
 		Token type = null;
-		boolean nullSafe = true;
+		boolean nullable = true;
 		if (this.checkAndConsumeIfMatches(COLON)) {
 			// a type is defined
 			if (!this.checkAndConsumeIfMatches(IDENTIFIER, ANY, NUMBER, STRING, BOOL, LIST, RANGE)) {
 				throw this.error("Expected a type after ':' in variable declaration.");
 			}
 			type = this.previous;
-			nullSafe = this.checkAndConsumeIfMatches(QUESTION);
+			nullable = this.checkAndConsumeIfMatches(QUESTION);
 		}
-		return new Statement.VarDeclaration(name, type, nullSafe);
+		return new Statement.VarDeclaration(name, type, nullable);
 	}
 
 	private Statement statement() {

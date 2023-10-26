@@ -124,6 +124,17 @@ abstract class Expression {
 		final List<Expression> elements;
 	}
 
+	static class RangeLiteral extends Expression {
+		RangeLiteral(Expression startValue, Expression upperRange) {
+			this.startValue = startValue;
+			this.upperRange = upperRange;
+		}
+
+		final Expression startValue;
+		final Expression upperRange;
+	}
+
+
 	static class MapLiteral extends Expression {
 		MapLiteral(List<Expression> keys, List<Expression> values) {
 			this.keys = keys;

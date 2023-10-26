@@ -1,4 +1,5 @@
 package com.workert.robotics.base.roboscript;
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -993,6 +994,8 @@ public final class Compiler {
 	}
 
 	protected static class CompileError extends RuntimeException {
+		@Serial
+		private static final long serialVersionUID = -2518787898906861074L;
 	}
 
 	protected static class ParseRule {
