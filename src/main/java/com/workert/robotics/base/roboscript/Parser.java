@@ -397,19 +397,4 @@ public final class Parser {
 		@Serial
 		private static final long serialVersionUID = -187581590684984588L;
 	}
-
-	protected interface Precedence {
-		byte NONE = 0;
-		byte ASSIGNMENT = 1; // =
-		byte TERNARY = 2;
-		byte OR = 3; // or
-		byte AND = 4; // and
-		byte EQUALITY = 5; // == !=
-		byte COMPARISON = 6; // < > <= >=
-		byte TERM = 7; // + -
-		byte FACTOR = 8; // * /
-		byte UNARY = 9; // ! -
-		byte POWER = 10; // ^
-		byte CALL = 11; // . ()
-	}
 }
