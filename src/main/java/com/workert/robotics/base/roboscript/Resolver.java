@@ -16,8 +16,18 @@ class Resolver implements Statement.Visitor<Void> {
 		}
 	}
 
+	void resolveBlock(List<Statement> statements) {
+		this.beginScope();
+		this.resolve(statements);
+		this.endScope();
+	}
+
 	private void resolve(Statement statement) {
 		statement.accept(this);
+	}
+
+	private void resolve(Expression expression) {
+		// expression.accept(this);
 	}
 
 	@Override
@@ -27,14 +37,35 @@ class Resolver implements Statement.Visitor<Void> {
 
 	@Override
 	public Void visitVarStatement(Statement.Var statement) {
-		if (this.isGlobal()) {
-			this.globalVariables.put(statement.declaration.name.lexeme, statement.declaration);
+		this.resolve(statement.declaration);
+		this.declareVariable(statement.declaration);
+		if (!statement.declaration.nullable) {
+			switch (statement.declaration.type.type) {
+				case RANGE, IDENTIFIER, ANY -> {
+					if (statement.initializer == null) {
+						// throw an error here about these types needing to be initialized if not nullable
+					}
+				}
+			}
 		}
+		if (statement.initializer != null) {
+			this.resolve(statement.initializer);
+			if (!this.areCompatibleTypes(statement.declaration, statement.initializer)) {
+				// throw error about incompatibility
+			}
+		}
+		this.defineVariable(statement.declaration);
 		return null;
 	}
 
 	@Override
 	public Void visitVarDeclarationStatement(Statement.VarDeclaration statement) {
+		if (statement.nullable && statement.type != null) {
+			if (statement.type.type == Token.TokenType.BOOL || statement.type.type == Token.TokenType.NUMBER) {
+				// throw error saying numbers and bools cannot be nullable
+			}
+		}
+
 		return null;
 	}
 
@@ -45,21 +76,33 @@ class Resolver implements Statement.Visitor<Void> {
 
 	@Override
 	public Void visitIfStatement(Statement.If statement) {
+		this.resolve(statement.condition);
+		this.resolveBlock(statement.thenBranch);
+		if (statement.elseBranch != null) this.resolveBlock(statement.elseBranch);
 		return null;
 	}
 
 	@Override
 	public Void visitWhileStatement(Statement.While statement) {
+		this.resolve(statement.condition);
+		this.resolveBlock(statement.body);
 		return null;
 	}
 
 	@Override
 	public Void visitLoopStatement(Statement.Loop statement) {
+		this.resolveBlock(statement.body);
 		return null;
 	}
 
 	@Override
 	public Void visitForStatement(Statement.For statement) {
+		this.resolve(statement.iterable);
+		this.beginScope();
+		this.declareVariable(statement.declaration);
+		this.defineVariable(statement.declaration);
+		this.resolve(statement.body);
+		this.endScope();
 		return null;
 	}
 
@@ -80,9 +123,7 @@ class Resolver implements Statement.Visitor<Void> {
 			Local local = this.locals.get(i);
 			if (local.depth != -1 && local.depth < this.scopeDepth) break;
 			if (declaration.name.lexeme.equals(local.local.name.lexeme)) {
-				local.local = declaration;
-				local.depth = -1;
-				return;
+				// throw an error because you cant have the same whatever
 			}
 		}
 		this.addLocal(declaration);
@@ -92,6 +133,9 @@ class Resolver implements Statement.Visitor<Void> {
 		if (!this.isGlobal()) {
 			this.markInitialized();
 			return;
+		}
+		if (this.globalVariables.containsKey(declaration.name.lexeme)) {
+			// throw error because you cant have the same thing
 		}
 		this.globalVariables.put(declaration.name.lexeme, declaration);
 	}
@@ -122,6 +166,9 @@ class Resolver implements Statement.Visitor<Void> {
 	}
 
 	private boolean areCompatibleTypes(Statement.VarDeclaration declaration, Expression expression) {
+		if (declaration.type == null) return true;
+
+
 		if (!declaration.nullable) {
 			if (expression instanceof Expression.NullLiteral) return false;
 
@@ -133,7 +180,7 @@ class Resolver implements Statement.Visitor<Void> {
 
 		}
 
-		if (declaration.type != null && declaration.type.type != Token.TokenType.IDENTIFIER) {
+		if (declaration.type.type != Token.TokenType.IDENTIFIER) {
 			return switch (declaration.type.type) {
 				case STRING -> {
 					if (expression instanceof Expression.StringLiteral) yield true;
