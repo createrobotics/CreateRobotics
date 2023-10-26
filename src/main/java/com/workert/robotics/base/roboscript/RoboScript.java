@@ -3,7 +3,7 @@ package com.workert.robotics.base.roboscript;
 import javax.annotation.Nonnull;
 
 public abstract class RoboScript {
-	Compiler compiler = new Compiler(this);
+	LegacyCompiler compiler = new LegacyCompiler(this);
 	VirtualMachine virtualMachine = new VirtualMachine(this);
 
 	private boolean hadError = false;
@@ -11,7 +11,7 @@ public abstract class RoboScript {
 	public final void runString(String source) {
 		new Thread(() -> {
 			this.hadError = false;
-			this.compiler = new Compiler(this);
+			this.compiler = new LegacyCompiler(this);
 			this.virtualMachine = new VirtualMachine(this);
 			this.defineNativeFunctions();
 			this.compiler.compile(source);

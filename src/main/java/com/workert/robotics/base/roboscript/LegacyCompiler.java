@@ -20,7 +20,7 @@ import static com.workert.robotics.base.roboscript.Token.TokenType.*;
  * <p>
  * If you want to make your own Scripting Language the Create Robotics Team recommends reading <a href="https://craftinginterpreters.com/">Crafting Interpreters</a>, a Book which has helped us a lot with implementing RoboScript.
  */
-public final class Compiler {
+public final class LegacyCompiler {
 	final RoboScript roboScriptInstance;
 	Scanner scanner;
 	Chunk chunk = new Chunk();
@@ -44,7 +44,7 @@ public final class Compiler {
 
 	private final List<Integer> postCompileInstructions = new ArrayList<>();
 
-	Compiler(RoboScript roboScriptInstance) {
+	LegacyCompiler(RoboScript roboScriptInstance) {
 		this.roboScriptInstance = roboScriptInstance;
 	}
 
