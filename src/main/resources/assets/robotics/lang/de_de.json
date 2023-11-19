@@ -38,8 +38,8 @@
 
   "block.robotics.code_editor.tooltip": "PROGRAMM-SCHREIBER",
   "block.robotics.code_editor.tooltip.summary": "Ein Block, mit dem du den _Inhalt_ eines Programms _bearbeiten_ kannst!",
-  "block.robotics.code_editor.tooltip.condition1": "Bei R-Klick mit einem Programm",
-  "block.robotics.code_editor.tooltip.behaviour1": "Lässt sich das _Programm verändern_",
+  "block.robotics.code_editor.tooltip.condition1": "Ein R-Klick mit einem Programm",
+  "block.robotics.code_editor.tooltip.behaviour1": "Lässt dich das _Programm verändern_",
 
   "robotics.ponder.programming.header": "Programiern mit einem Programm-Schreiber.",
   "robotics.ponder.programming.text_1": "Um den Inhalt eines Programmes zu ändern, brauchst du einen Programm-Schreiber.",
