@@ -7,6 +7,7 @@
 	"robotics:computer",
 	"robotics:redstone_detector",
 	"robotics:redstone_emitter",
+	"robotics:redstone_pulser",
 	"robotics:scanner"
   ]
 }

@@ -1,0 +1,93 @@
+{
+  "type": "create:sequenced_assembly",
+  "ingredient": {
+	"item": "robotics:bronze_block"
+  },
+  "loops": 3,
+  "results": [
+	{
+	  "item": "robotics:code_drone"
+	}
+  ],
+  "sequence": [
+	{
+	  "type": "create:cutting",
+	  "ingredients": [
+		{
+		  "item": "robotics:incomplete_code_drone"
+		}
+	  ],
+	  "processingTime": 400,
+	  "results": [
+		{
+		  "item": "robotics:incomplete_code_drone"
+		}
+	  ]
+	},
+	{
+	  "type": "create:deploying",
+	  "ingredients": [
+		{
+		  "item": "robotics:incomplete_code_drone"
+		},
+		{
+		  "item": "create:cogwheel"
+		}
+	  ],
+	  "results": [
+		{
+		  "item": "robotics:incomplete_code_drone"
+		}
+	  ]
+	},
+	{
+	  "type": "create:deploying",
+	  "ingredients": [
+		{
+		  "item": "robotics:incomplete_code_drone"
+		},
+		{
+		  "item": "create:large_cogwheel"
+		}
+	  ],
+	  "results": [
+		{
+		  "item": "robotics:incomplete_code_drone"
+		}
+	  ]
+	},
+	{
+	  "type": "create:deploying",
+	  "ingredients": [
+		{
+		  "item": "robotics:incomplete_code_drone"
+		},
+		{
+		  "item": "robotics:tin_nugget"
+		}
+	  ],
+	  "results": [
+		{
+		  "item": "robotics:incomplete_code_drone"
+		}
+	  ]
+	},
+	{
+	  "type": "create:pressing",
+	  "ingredients": [
+		{
+		  "item": "robotics:incomplete_code_drone"
+		}
+	  ],
+	  "processingTime": 200,
+	  "results": [
+		{
+		  "item": "robotics:incomplete_code_drone"
+		}
+	  ]
+	}
+  ],
+  "transitionalItem": {
+	"item": "robotics:incomplete_code_drone"
+  }
+}

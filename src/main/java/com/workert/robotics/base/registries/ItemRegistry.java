@@ -2,6 +2,7 @@ package com.workert.robotics.base.registries;
 
 import com.simibubi.create.AllTags;
 import com.simibubi.create.content.AllSections;
+import com.simibubi.create.content.contraptions.itemAssembly.SequencedAssemblyItem;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import com.workert.robotics.Robotics;
 import com.workert.robotics.content.computers.punchcard.PunchCardItem;
@@ -90,6 +91,12 @@ public class ItemRegistry {
 					ExtendOBootsItem::new)
 			.lang("Extend-O-Boots")
 			.register();
+
+	public static final ItemEntry<SequencedAssemblyItem> INCOMPLETE_CLOCKCOPTER = Robotics.REGISTRATE.item(
+			"incomplete_clockcopter", SequencedAssemblyItem::new).register();
+
+	public static final ItemEntry<SequencedAssemblyItem> INCOMPLETE_CODE_DRONE = Robotics.REGISTRATE.item(
+			"incomplete_code_drone", SequencedAssemblyItem::new).register();
 
 	public static final ItemEntry<PunchCardItem> PUNCH_CARD = Robotics.REGISTRATE
 			.item("punch_card", PunchCardItem::new)

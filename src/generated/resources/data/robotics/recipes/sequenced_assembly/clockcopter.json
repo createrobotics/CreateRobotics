@@ -1,0 +1,109 @@
+{
+  "type": "create:sequenced_assembly",
+  "ingredient": {
+	"item": "robotics:bronze_block"
+  },
+  "loops": 1,
+  "results": [
+	{
+	  "item": "robotics:clockcopter"
+	}
+  ],
+  "sequence": [
+	{
+	  "type": "create:cutting",
+	  "ingredients": [
+		{
+		  "item": "robotics:incomplete_clockcopter"
+		}
+	  ],
+	  "processingTime": 400,
+	  "results": [
+		{
+		  "item": "robotics:incomplete_clockcopter"
+		}
+	  ]
+	},
+	{
+	  "type": "create:deploying",
+	  "ingredients": [
+		{
+		  "item": "robotics:incomplete_clockcopter"
+		},
+		{
+		  "item": "create:cogwheel"
+		}
+	  ],
+	  "results": [
+		{
+		  "item": "robotics:incomplete_clockcopter"
+		}
+	  ]
+	},
+	{
+	  "type": "create:deploying",
+	  "ingredients": [
+		{
+		  "item": "robotics:incomplete_clockcopter"
+		},
+		{
+		  "item": "create:large_cogwheel"
+		}
+	  ],
+	  "results": [
+		{
+		  "item": "robotics:incomplete_clockcopter"
+		}
+	  ]
+	},
+	{
+	  "type": "create:deploying",
+	  "ingredients": [
+		{
+		  "item": "robotics:incomplete_clockcopter"
+		},
+		{
+		  "item": "create:large_cogwheel"
+		}
+	  ],
+	  "results": [
+		{
+		  "item": "robotics:incomplete_clockcopter"
+		}
+	  ]
+	},
+	{
+	  "type": "create:deploying",
+	  "ingredients": [
+		{
+		  "item": "robotics:incomplete_clockcopter"
+		},
+		{
+		  "item": "robotics:tin_nugget"
+		}
+	  ],
+	  "results": [
+		{
+		  "item": "robotics:incomplete_clockcopter"
+		}
+	  ]
+	},
+	{
+	  "type": "create:pressing",
+	  "ingredients": [
+		{
+		  "item": "robotics:incomplete_clockcopter"
+		}
+	  ],
+	  "processingTime": 200,
+	  "results": [
+		{
+		  "item": "robotics:incomplete_clockcopter"
+		}
+	  ]
+	}
+  ],
+  "transitionalItem": {
+	"item": "robotics:incomplete_clockcopter"
+  }
+}

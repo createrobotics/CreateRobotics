@@ -1,0 +1,241 @@
+{
+  "credit": "Made with Blockbench",
+  "textures": {
+	"0": "create:block/brass_block",
+	"1": "create:block/brass_casing",
+	"particle": "create:block/brass_casing"
+  },
+  "elements": [
+	{
+	  "name": "Top",
+	  "from": [
+		0,
+		14,
+		0
+	  ],
+	  "to": [
+		16,
+		16,
+		16
+	  ],
+	  "faces": {
+		"north": {
+		  "uv": [
+			0,
+			0,
+			16,
+			2
+		  ],
+		  "texture": "#1"
+		},
+		"east": {
+		  "uv": [
+			0,
+			0,
+			16,
+			2
+		  ],
+		  "texture": "#1"
+		},
+		"south": {
+		  "uv": [
+			0,
+			0,
+			16,
+			2
+		  ],
+		  "texture": "#1"
+		},
+		"west": {
+		  "uv": [
+			0,
+			0,
+			16,
+			2
+		  ],
+		  "texture": "#1"
+		},
+		"up": {
+		  "uv": [
+			0,
+			0,
+			16,
+			16
+		  ],
+		  "texture": "#0"
+		},
+		"down": {
+		  "uv": [
+			0,
+			0,
+			16,
+			16
+		  ],
+		  "texture": "#missing"
+		}
+	  }
+	},
+	{
+	  "name": "Core",
+	  "from": [
+		2,
+		4,
+		0.95
+	  ],
+	  "to": [
+		14,
+		14,
+		15.05
+	  ],
+	  "faces": {
+		"north": {
+		  "uv": [
+			2,
+			5,
+			14,
+			15
+		  ],
+		  "texture": "#1"
+		},
+		"south": {
+		  "uv": [
+			2,
+			5,
+			14,
+			15
+		  ],
+		  "texture": "#1"
+		},
+		"down": {
+		  "uv": [
+			2,
+			1,
+			14,
+			15.1
+		  ],
+		  "texture": "#1"
+		}
+	  }
+	},
+	{
+	  "name": "Side",
+	  "from": [
+		0,
+		2,
+		0
+	  ],
+	  "to": [
+		2,
+		14,
+		16
+	  ],
+	  "faces": {
+		"north": {
+		  "uv": [
+			14,
+			2,
+			16,
+			14
+		  ],
+		  "texture": "#1"
+		},
+		"east": {
+		  "uv": [
+			0,
+			4,
+			16,
+			16
+		  ],
+		  "texture": "#1"
+		},
+		"south": {
+		  "uv": [
+			0,
+			2,
+			2,
+			14
+		  ],
+		  "texture": "#1"
+		},
+		"west": {
+		  "uv": [
+			0,
+			4,
+			16,
+			16
+		  ],
+		  "texture": "#1"
+		},
+		"down": {
+		  "uv": [
+			0,
+			0,
+			2,
+			16
+		  ],
+		  "texture": "#1"
+		}
+	  }
+	},
+	{
+	  "name": "Side",
+	  "from": [
+		14,
+		2,
+		0
+	  ],
+	  "to": [
+		16,
+		14,
+		16
+	  ],
+	  "faces": {
+		"north": {
+		  "uv": [
+			0,
+			2,
+			2,
+			14
+		  ],
+		  "texture": "#1"
+		},
+		"east": {
+		  "uv": [
+			0,
+			4,
+			16,
+			16
+		  ],
+		  "texture": "#1"
+		},
+		"south": {
+		  "uv": [
+			14,
+			2,
+			16,
+			14
+		  ],
+		  "texture": "#1"
+		},
+		"west": {
+		  "uv": [
+			0,
+			4,
+			16,
+			16
+		  ],
+		  "texture": "#1"
+		},
+		"down": {
+		  "uv": [
+			14,
+			0,
+			16,
+			16
+		  ],
+		  "texture": "#1"
+		}
+	  }
+	}
+  ]
+}
