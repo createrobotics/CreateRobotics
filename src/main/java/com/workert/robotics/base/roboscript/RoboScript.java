@@ -1,7 +1,5 @@
 package com.workert.robotics.base.roboscript;
 
-import javax.annotation.Nonnull;
-
 public abstract class RoboScript {
 	LegacyCompiler compiler = new LegacyCompiler(this);
 	VirtualMachine virtualMachine = new VirtualMachine(this);
@@ -92,7 +90,7 @@ public abstract class RoboScript {
 
 	@FunctionalInterface
 	public interface NativeFunctionFunctionalInterface {
-		Object call(@Nonnull Object[] parameters);
+		Object call(Object[] parameters);
 	}
 
 	protected final void reportCompileError(int line, String message) {
