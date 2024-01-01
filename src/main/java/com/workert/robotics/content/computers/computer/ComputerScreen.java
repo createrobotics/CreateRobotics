@@ -1,12 +1,12 @@
 package com.workert.robotics.content.computers.computer;
 
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.foundation.gui.AbstractSimiScreen;
 import com.simibubi.create.foundation.gui.AllIcons;
 import com.simibubi.create.foundation.gui.widget.IconButton;
 import com.simibubi.create.foundation.utility.Components;
 import com.workert.robotics.base.registries.PacketRegistry;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.MultiLineEditBox;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -104,7 +104,7 @@ public class ComputerScreen extends AbstractSimiScreen {
 
 
 	@Override
-	protected void renderWindow(PoseStack ms, int mouseX, int mouseY, float partialTicks) {
+	protected void renderWindow(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
 	}
 
 	@Override

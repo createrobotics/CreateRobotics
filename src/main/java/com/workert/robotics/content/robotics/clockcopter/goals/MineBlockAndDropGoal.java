@@ -48,7 +48,7 @@ public class MineBlockAndDropGoal extends MoveToBlockGoal {
 	@Override
 	public void tick() {
 		super.tick();
-		Level level = this.mob.level;
+		Level level = this.mob.level();
 		RandomSource random = this.mob.getRandom();
 
 		if (this.blockPos != null && this.isValidTarget(level, this.blockPos) && this.blockPos.closerToCenterThan(

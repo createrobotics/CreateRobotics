@@ -111,7 +111,6 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
 	maven {
-		name 'tterrag maven'
 		url 'https://maven.tterrag.com'
 	}
 	maven {
@@ -120,7 +119,9 @@ repositories {
 			includeGroup "curse.maven"
 		}
 	}
-	maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
+	maven {
+		url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
+	}
 }
 
 dependencies {
@@ -130,7 +131,7 @@ dependencies {
 	implementation fg.deobf("com.jozufozu.flywheel:flywheel-forge-${mc_version}:${flywheel_version}")
 	implementation fg.deobf("com.tterrag.registrate:Registrate:${registrate_version}")
 
-	implementation fg.deobf('software.bernie.geckolib:geckolib-forge-1.19:3.1.39')
+	implementation fg.deobf("software.bernie.geckolib:geckolib-forge-${mc_version}:${geckolib_version}")
 
 	if (System.getProperty('idea.sync.active') != 'true') {
 		annotationProcessor "org.spongepowered:mixin:${mixin_version}:processor"
@@ -143,15 +144,16 @@ mixin {
 }
 
 // Example for how to get properties into the manifest for reading at runtime.
+// TODO do we need a vendor?
 jar {
 	manifest {
 		attributes([
 				"Specification-Title"     : "robotics",
-				"Specification-Vendor"    : "workert",
+				"Specification-Vendor"    : "CreateRoboticsModTeam",
 				"Specification-Version"   : "1", // We are version 1 of ourselves
 				"Implementation-Title"    : project.name,
 				"Implementation-Version"  : project.jar.archiveVersion,
-				"Implementation-Vendor"   : "workert",
+				"Implementation-Vendor"   : "CreateRoboticsModTeam",
 				"Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
 		])
 	}
@@ -175,14 +177,6 @@ publishing {
 	repositories {
 		maven {
 			url "file://${project.projectDir}/mcmodsrepo"
-		}
-		maven {
-			name = "GitHubPackages"
-			url = "https://maven.pkg.github.com/worker20/createrobotics"
-			credentials {
-				username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
-				password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
-			}
 		}
 	}
 }

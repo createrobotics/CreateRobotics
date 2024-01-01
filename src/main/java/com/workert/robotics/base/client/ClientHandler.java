@@ -1,8 +1,8 @@
 package com.workert.robotics.base.client;
 
-import com.simibubi.create.foundation.config.AllConfigs;
 import com.simibubi.create.foundation.item.TooltipHelper;
 import com.simibubi.create.foundation.ponder.PonderRegistrationHelper;
+import com.simibubi.create.infrastructure.config.AllConfigs;
 import com.workert.robotics.Robotics;
 import com.workert.robotics.base.registries.ItemRegistry;
 import com.workert.robotics.content.robotics.clockcopter.ClockcopterModel;
@@ -38,14 +38,14 @@ public class ClientHandler {
 
 	@SubscribeEvent
 	public static void addToItemTooltip(ItemTooltipEvent event) {
-		if (!AllConfigs.CLIENT.tooltips.get()) return;
+		if (!AllConfigs.client().tooltips.get()) return;
 		if (event.getEntity() == null) return;
 
 		ItemStack stack = event.getItemStack();
 		String translationKey = stack.getItem().getDescriptionId(stack);
 
 		if (translationKey.startsWith("item." + Robotics.MOD_ID) || translationKey.startsWith(
-				"block." + Robotics.MOD_ID)) if (TooltipHelper.hasTooltip(stack, event.getEntity())) {
+				"block." + Robotics.MOD_ID)) {
 			List<Component> itemTooltip = event.getToolTip();
 			List<Component> toolTip = new ArrayList<>();
 			toolTip.add(itemTooltip.remove(0));

@@ -1,10 +1,10 @@
 package com.workert.robotics.content.robotics;
 
 import com.simibubi.create.Create;
-import com.simibubi.create.content.contraptions.components.deployer.DeployerFakePlayer;
-import com.simibubi.create.content.contraptions.components.deployer.DeployerHandler;
-import com.simibubi.create.content.curiosities.armor.BackTankUtil;
-import com.simibubi.create.content.logistics.RedstoneLinkNetworkHandler;
+import com.simibubi.create.content.equipment.armor.BacktankUtil;
+import com.simibubi.create.content.kinetics.deployer.DeployerFakePlayer;
+import com.simibubi.create.content.kinetics.deployer.DeployerHandler;
+import com.simibubi.create.content.redstone.link.RedstoneLinkNetworkHandler;
 import com.simibubi.create.foundation.utility.Couple;
 import com.workert.robotics.base.registries.ItemRegistry;
 import com.workert.robotics.base.roboscript.RoboScript;
@@ -44,7 +44,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AbstractRobotEntity extends PathfinderMob implements InventoryCarrier {
-	private static final int maxAir = BackTankUtil.maxAirWithoutEnchants() * 10;
+	private static final int maxAir = BacktankUtil.maxAirWithoutEnchants() * 10;
 	private int air;
 	private final SimpleContainer inventory = new SimpleContainer(9);
 	private CodeHelper.RobotFrequencyEntry robotFrequencyEntry = null;
@@ -120,11 +120,11 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 						if (!pos.closerToCenterThan(robot.position(), 5))
 							this.handleErrorMessage("The container is too far away. Ignored the command.");
 
-						if (robot.getLevel().getExistingBlockEntity(pos) == null)
+						if (robot.level().getExistingBlockEntity(pos) == null)
 							this.handleErrorMessage(
 									"The block at the specified coordinates has no tile entity (is no container). Ignored the command.");
 
-						robot.getLevel().getExistingBlockEntity(pos).getCapability(ForgeCapabilities.ITEM_HANDLER)
+						robot.level().getExistingBlockEntity(pos).getCapability(ForgeCapabilities.ITEM_HANDLER)
 								.ifPresent(handler -> {
 									for (int slot = 0; slot < handler.getSlots(); slot++) {
 										while (!handler.getStackInSlot(slot).isEmpty()
@@ -135,7 +135,7 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 										}
 									}
 								});
-						robot.getLevel().blockUpdated(pos, robot.getLevel().getBlockState(pos).getBlock());
+						robot.level().blockUpdated(pos, robot.level().getBlockState(pos).getBlock());
 						return null;
 					});
 					this.defineNativeFunction("pushItems", 4, (parameters) -> {
@@ -147,11 +147,11 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 						if (!pos.closerToCenterThan(robot.position(), 5))
 							this.handleErrorMessage("The container is too far away. Ignored the command.");
 
-						if (robot.getLevel().getExistingBlockEntity(pos) == null)
+						if (robot.level().getExistingBlockEntity(pos) == null)
 							this.handleErrorMessage(
 									"The block at the specified coordinates has no tile entity (is no container). Ignored the command.");
 
-						robot.getLevel().getExistingBlockEntity(pos).getCapability(ForgeCapabilities.ITEM_HANDLER)
+						robot.level().getExistingBlockEntity(pos).getCapability(ForgeCapabilities.ITEM_HANDLER)
 								.ifPresent(handler -> {
 									for (int slot = 0; slot < robot.getInventory().getContainerSize(); slot++) {
 										if (itemToPush.equals(Items.AIR) || (robot.getInventory()
@@ -166,7 +166,7 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 										}
 									}
 								});
-						robot.getLevel().blockUpdated(pos, robot.getLevel().getBlockState(pos).getBlock());
+						robot.level().blockUpdated(pos, robot.level().getBlockState(pos).getBlock());
 						return null;
 					});
 
@@ -274,7 +274,7 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 	}
 
 	public static void click(AbstractRobotEntity robot, BlockPos posToClick, @Nullable Direction direction, boolean use, @Nullable Item itemToClickWith) throws ClassNotFoundException, NoSuchMethodException, InterruptedException, InvocationTargetException, IllegalAccessException {
-		DeployerFakePlayer fakePlayer = new DeployerFakePlayer((ServerLevel) robot.getLevel());
+		DeployerFakePlayer fakePlayer = new DeployerFakePlayer((ServerLevel) robot.level(), robot.uuid);
 
 		if (itemToClickWith != null) {
 			if (robot.getInventory().countItem(itemToClickWith) <= 0) return;
@@ -321,7 +321,7 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 
 	@Override
 	public boolean hurt(DamageSource pSource, float pAmount) {
-		if (pSource == DamageSource.OUT_OF_WORLD) return super.hurt(pSource, pAmount);
+		if (pSource == this.damageSources().fellOutOfWorld()) return super.hurt(pSource, pAmount);
 		this.consumeAir((int) pAmount * 2);
 		return false;
 	}
@@ -396,14 +396,14 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 			this.discard();
 		} else if (this.isProgrammable() && pPlayer.getItemInHand(pHand)
 				.is(com.simibubi.create.AllItems.WRENCH.get().asItem()) && !pPlayer.isCrouching()) {
-			if (!this.level.isClientSide) this.roboScript.runString(this.script);
+			if (!this.level().isClientSide) this.roboScript.runString(this.script);
 			return InteractionResult.SUCCESS;
 		} /*else if (this.isProgrammable() && pPlayer.isCrouching()) {
 			DistExecutor.unsafeRunWhenOn(Dist.CLIENT,
 					() -> () -> ScreenOpener.open(new ConsoleScreen(this.roboScript)));
 		}*/ else if (this.isProgrammable() && pPlayer.getItemInHand(pHand)
 				.is(ItemRegistry.PROGRAM.get()) && !pPlayer.isCrouching()) {
-			if (!this.level.isClientSide)
+			if (!this.level().isClientSide)
 				this.script = pPlayer.getItemInHand(pHand).getOrCreateTag().getString("code");
 			return InteractionResult.SUCCESS;
 		}/* else if (this.isProgrammable() && (pPlayer.getItemInHand(pHand)
@@ -433,8 +433,7 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 	public CodeHelper.RobotFrequencyEntry getRobotFrequencyEntry() {
 		if (!this.isProgrammable()) return null;
 		if (this.robotFrequencyEntry == null) this.robotFrequencyEntry = new CodeHelper.RobotFrequencyEntry(this,
-				Couple.create(RedstoneLinkNetworkHandler.Frequency.EMPTY,
-						RedstoneLinkNetworkHandler.Frequency.EMPTY),
+				Couple.create(RedstoneLinkNetworkHandler.Frequency.EMPTY, RedstoneLinkNetworkHandler.Frequency.EMPTY),
 				0);
 		return this.robotFrequencyEntry;
 	}
@@ -496,7 +495,7 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 	}
 
 	@Override
-	public void animateHurt() {
+	public void animateHurt(float pYaw) {
 	}
 
 	@Override

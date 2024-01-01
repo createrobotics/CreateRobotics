@@ -5,7 +5,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -25,13 +24,8 @@ public class Miner extends AbstractRobotEntity {
 	}
 
 	@Override
-	public void calculateEntityAnimation(LivingEntity p_21044_, boolean p_21045_) {
-		super.calculateEntityAnimation(p_21044_, p_21045_);
-	}
-
-	@Override
 	public void remove(RemovalReason pReason) {
-		ServerLevel crashlol = (ServerLevel) this.level;
+		ServerLevel crashlol = (ServerLevel) this.level();
 		super.remove(pReason);
 	}
 

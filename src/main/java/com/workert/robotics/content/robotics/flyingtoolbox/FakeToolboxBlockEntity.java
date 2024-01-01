@@ -1,23 +1,22 @@
 package com.workert.robotics.content.robotics.flyingtoolbox;
-import com.simibubi.create.AllTileEntities;
-import com.simibubi.create.content.curiosities.toolbox.ToolboxTileEntity;
+import com.simibubi.create.AllBlockEntityTypes;
+import com.simibubi.create.content.equipment.toolbox.ToolboxBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
-public class FakeToolboxTileEntity extends ToolboxTileEntity {
+public class FakeToolboxBlockEntity extends ToolboxBlockEntity {
 	public final FlyingToolbox flyingToolbox;
 
-	public FakeToolboxTileEntity(FlyingToolbox flyingToolbox) {
-		super(AllTileEntities.TOOLBOX.get(), BlockPos.ZERO, null);
+	public FakeToolboxBlockEntity(FlyingToolbox flyingToolbox) {
+		super(AllBlockEntityTypes.TOOLBOX.get(), BlockPos.ZERO, null);
 		this.flyingToolbox = flyingToolbox;
 		this.setUniqueId(UUID.randomUUID());
-		this.setLevel(flyingToolbox.level);
+		this.setLevel(flyingToolbox.level());
 	}
 
 	@Override
@@ -43,16 +42,6 @@ public class FakeToolboxTileEntity extends ToolboxTileEntity {
 	@Override
 	public void sendData() {
 		this.flyingToolbox.sendData();
-	}
-
-	@Override
-	public void sendToContainer(FriendlyByteBuf buffer) {
-		super.sendToContainer(buffer);
-		buffer.writeInt(this.flyingToolbox.getId());
-	}
-
-	@Override
-	public void causeBlockUpdate() {
 	}
 
 	@Override

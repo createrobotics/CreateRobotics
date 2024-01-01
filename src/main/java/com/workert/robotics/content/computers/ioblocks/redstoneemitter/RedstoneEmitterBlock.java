@@ -1,6 +1,6 @@
 package com.workert.robotics.content.computers.ioblocks.redstoneemitter;
 import com.simibubi.create.AllItems;
-import com.simibubi.create.foundation.block.ITE;
+import com.simibubi.create.foundation.block.IBE;
 import com.simibubi.create.foundation.gui.ScreenOpener;
 import com.workert.robotics.base.registries.BlockEntityRegistry;
 import com.workert.robotics.content.computers.ioblocks.IOSignalScreen;
@@ -28,7 +28,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.DistExecutor;
 import org.jetbrains.annotations.Nullable;
 
-public class RedstoneEmitterBlock extends Block implements EntityBlock, ITE<RedstoneEmitterBlockEntity> {
+public class RedstoneEmitterBlock extends Block implements EntityBlock, IBE<RedstoneEmitterBlockEntity> {
 	public static final BooleanProperty LIT = BooleanProperty.create("lit");
 
 	public RedstoneEmitterBlock(Properties pProperties) {
@@ -36,12 +36,12 @@ public class RedstoneEmitterBlock extends Block implements EntityBlock, ITE<Reds
 	}
 
 	@Override
-	public Class<RedstoneEmitterBlockEntity> getTileEntityClass() {
+	public Class<RedstoneEmitterBlockEntity> getBlockEntityClass() {
 		return RedstoneEmitterBlockEntity.class;
 	}
 
 	@Override
-	public BlockEntityType<? extends RedstoneEmitterBlockEntity> getTileEntityType() {
+	public BlockEntityType<? extends RedstoneEmitterBlockEntity> getBlockEntityType() {
 		return BlockEntityRegistry.REDSTONE_EMITTER.get();
 	}
 
@@ -57,7 +57,7 @@ public class RedstoneEmitterBlock extends Block implements EntityBlock, ITE<Reds
 		ItemStack held = player.getMainHandItem();
 		if (AllItems.WRENCH.isIn(held)) return InteractionResult.PASS;
 		DistExecutor.unsafeRunWhenOn(Dist.CLIENT,
-				() -> () -> this.withTileEntityDo(level, blockPos, te -> this.displayScreen(te, player)));
+				() -> () -> this.withBlockEntityDo(level, blockPos, te -> this.displayScreen(te, player)));
 
 
 		return InteractionResult.SUCCESS;
@@ -76,7 +76,7 @@ public class RedstoneEmitterBlock extends Block implements EntityBlock, ITE<Reds
 
 	@Override
 	public int getSignal(BlockState pState, BlockGetter pLevel, BlockPos pPos, Direction pDirection) {
-		return this.getTileEntityOptional(pLevel, pPos).map(al -> al.redstoneLevel).orElse(0);
+		return this.getBlockEntityOptional(pLevel, pPos).map(al -> al.redstoneLevel).orElse(0);
 	}
 
 	@OnlyIn(value = Dist.CLIENT)

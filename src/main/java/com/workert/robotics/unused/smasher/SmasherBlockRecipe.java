@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.workert.robotics.Robotics;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -31,7 +32,7 @@ public class SmasherBlockRecipe implements Recipe<SimpleContainer> {
 	}
 
 	@Override
-	public ItemStack assemble(SimpleContainer pContainer) {
+	public ItemStack assemble(SimpleContainer container, RegistryAccess registryAccess) {
 		return this.output;
 	}
 
@@ -41,7 +42,7 @@ public class SmasherBlockRecipe implements Recipe<SimpleContainer> {
 	}
 
 	@Override
-	public ItemStack getResultItem() {
+	public ItemStack getResultItem(RegistryAccess registryAccess) {
 		return this.output.copy();
 	}
 
@@ -104,7 +105,7 @@ public class SmasherBlockRecipe implements Recipe<SimpleContainer> {
 			for (Ingredient ing : recipe.getIngredients()) {
 				ing.toNetwork(buf);
 			}
-			buf.writeItemStack(recipe.getResultItem(), false);
+			buf.writeItemStack(recipe.getResultItem(RegistryAccess.EMPTY), false);
 		}
 
 		// Need this wrapper, because generics

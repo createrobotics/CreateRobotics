@@ -1,5 +1,5 @@
 package com.workert.robotics.content.computers.ioblocks.redstoneemitter;
-import com.simibubi.create.foundation.tileEntity.SyncedTileEntity;
+import com.simibubi.create.foundation.blockEntity.SyncedBlockEntity;
 import com.workert.robotics.base.roboscript.RoboScriptClass;
 import com.workert.robotics.base.roboscript.RoboScriptHelper;
 import com.workert.robotics.base.roboscript.RoboScriptObject;
@@ -11,7 +11,7 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class RedstoneEmitterBlockEntity extends SyncedTileEntity implements IOBlockEntity {
+public class RedstoneEmitterBlockEntity extends SyncedBlockEntity implements IOBlockEntity {
 
 	public static RoboScriptClass roboScriptBlockClass = IORoboScriptBlockHelper.createClass()
 			.addMethod("setPower", 1, (vm, fun) ->
@@ -76,7 +76,7 @@ public class RedstoneEmitterBlockEntity extends SyncedTileEntity implements IOBl
 	}
 
 	@Override
-	public SyncedTileEntity getBlockEntity() {
+	public SyncedBlockEntity getBlockEntity() {
 		return this;
 	}
 

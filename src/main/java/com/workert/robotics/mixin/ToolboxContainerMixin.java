@@ -1,6 +1,6 @@
 package com.workert.robotics.mixin;
-import com.simibubi.create.content.curiosities.toolbox.ToolboxContainer;
-import com.simibubi.create.content.curiosities.toolbox.ToolboxTileEntity;
+import com.simibubi.create.content.equipment.toolbox.ToolboxBlockEntity;
+import com.simibubi.create.content.equipment.toolbox.ToolboxMenu;
 import com.workert.robotics.content.robotics.flyingtoolbox.FlyingToolbox;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -15,14 +15,14 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-@Mixin(value = ToolboxContainer.class, remap = false)
+@Mixin(value = ToolboxMenu.class, remap = false)
 public abstract class ToolboxContainerMixin {
-	@Inject(method = "createOnClient(Lnet/minecraft/network/FriendlyByteBuf;)Lcom/simibubi/create/content/curiosities/toolbox/ToolboxTileEntity;", at = @At("TAIL"), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-	private void createOnClient(FriendlyByteBuf extraData, CallbackInfoReturnable<ToolboxTileEntity> cir, BlockPos readBlockPos, CompoundTag readNbt, ClientLevel world, BlockEntity tileEntity) {
+	@Inject(method = "createOnClient(Lnet/minecraft/network/FriendlyByteBuf;)Lcom/simibubi/create/content/equipment/toolbox/ToolboxBlockEntity;", at = @At("TAIL"), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
+	private void createOnClient(FriendlyByteBuf extraData, CallbackInfoReturnable<ToolboxBlockEntity> cir, BlockPos readBlockPos, CompoundTag readNbt, ClientLevel world, BlockEntity tileEntity) {
 		if (extraData.isReadable()) {
 			Entity entity = Minecraft.getInstance().level.getEntity(extraData.readInt());
 			if (entity instanceof FlyingToolbox flyingToolbox) {
-				ToolboxTileEntity toolbox = flyingToolbox.getFakeToolboxTileEntity();
+				ToolboxBlockEntity toolbox = flyingToolbox.getFakeToolboxBlockEntity();
 				toolbox.readClient(readNbt);
 				cir.setReturnValue(toolbox);
 			}

@@ -26,7 +26,7 @@ public class Clockcopter extends AbstractRobotEntity implements FlyingAnimal {
 
 	@Override
 	public boolean isFlying() {
-		return !this.isOnGround();
+		return !this.onGround();
 	}
 
 	@Override

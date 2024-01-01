@@ -6,8 +6,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 import net.minecraftforge.network.NetworkEvent;
 
-import java.util.function.Supplier;
-
 public class ReturnEditedCodePacket extends SimplePacketBase {
 	private final String code;
 
@@ -25,15 +23,13 @@ public class ReturnEditedCodePacket extends SimplePacketBase {
 	}
 
 	@Override
-	public void handle(Supplier<NetworkEvent.Context> context) {
-		context.get().enqueueWork(() -> {
-			if (context.get().getSender().getItemInHand(InteractionHand.MAIN_HAND).is(ItemRegistry.PROGRAM.get()))
-				context.get().getSender().getItemInHand(InteractionHand.MAIN_HAND).getOrCreateTag()
-						.putString("code", this.code);
-			else if (context.get().getSender().getItemInHand(InteractionHand.OFF_HAND).is(ItemRegistry.PROGRAM.get()))
-				context.get().getSender().getItemInHand(InteractionHand.OFF_HAND).getOrCreateTag()
-						.putString("code", this.code);
-		});
-		context.get().setPacketHandled(true);
+	public boolean handle(NetworkEvent.Context context) {
+		if (context.getSender().getItemInHand(InteractionHand.MAIN_HAND).is(ItemRegistry.PROGRAM.get()))
+			context.getSender().getItemInHand(InteractionHand.MAIN_HAND).getOrCreateTag()
+					.putString("code", this.code);
+		else if (context.getSender().getItemInHand(InteractionHand.OFF_HAND).is(ItemRegistry.PROGRAM.get()))
+			context.getSender().getItemInHand(InteractionHand.OFF_HAND).getOrCreateTag()
+					.putString("code", this.code);
+		return true;
 	}
 }

@@ -2,8 +2,8 @@ package com.workert.robotics.content.computers.ioblocks.scanner;
 
 import com.simibubi.create.AllItems;
 import com.simibubi.create.AllShapes;
-import com.simibubi.create.content.contraptions.base.HorizontalKineticBlock;
-import com.simibubi.create.foundation.block.ITE;
+import com.simibubi.create.content.kinetics.base.HorizontalKineticBlock;
+import com.simibubi.create.foundation.block.IBE;
 import com.simibubi.create.foundation.gui.ScreenOpener;
 import com.workert.robotics.base.registries.BlockEntityRegistry;
 import com.workert.robotics.content.computers.ioblocks.IOSignalScreen;
@@ -28,19 +28,19 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.DistExecutor;
 
-public class ScannerBlock extends HorizontalKineticBlock implements ITE<ScannerBlockEntity> {
+public class ScannerBlock extends HorizontalKineticBlock implements IBE<ScannerBlockEntity> {
 
 	public ScannerBlock(Properties properties) {
 		super(properties);
 	}
 
 	@Override
-	public Class<ScannerBlockEntity> getTileEntityClass() {
+	public Class<ScannerBlockEntity> getBlockEntityClass() {
 		return ScannerBlockEntity.class;
 	}
 
 	@Override
-	public BlockEntityType getTileEntityType() {
+	public BlockEntityType getBlockEntityType() {
 		return BlockEntityRegistry.SCANNER.get();
 	}
 
@@ -49,7 +49,7 @@ public class ScannerBlock extends HorizontalKineticBlock implements ITE<ScannerB
 		ItemStack held = player.getMainHandItem();
 		if (AllItems.WRENCH.isIn(held)) return InteractionResult.PASS;
 		DistExecutor.unsafeRunWhenOn(Dist.CLIENT,
-				() -> () -> this.withTileEntityDo(level, blockPos, te -> this.displayScreen(te, player)));
+				() -> () -> this.withBlockEntityDo(level, blockPos, te -> this.displayScreen(te, player)));
 
 
 		return InteractionResult.SUCCESS;

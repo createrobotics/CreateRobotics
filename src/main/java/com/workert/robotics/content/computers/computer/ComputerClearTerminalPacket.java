@@ -1,9 +1,9 @@
 package com.workert.robotics.content.computers.computer;
-import com.simibubi.create.foundation.networking.TileEntityConfigurationPacket;
+import com.simibubi.create.foundation.networking.BlockEntityConfigurationPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 
-public class ComputerClearTerminalPacket extends TileEntityConfigurationPacket<ComputerBlockEntity> {
+public class ComputerClearTerminalPacket extends BlockEntityConfigurationPacket<ComputerBlockEntity> {
 
 	public ComputerClearTerminalPacket(FriendlyByteBuf buffer) {
 		super(buffer);

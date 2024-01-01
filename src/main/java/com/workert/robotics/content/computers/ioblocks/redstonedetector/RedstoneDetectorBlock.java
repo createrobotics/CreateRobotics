@@ -1,7 +1,7 @@
 package com.workert.robotics.content.computers.ioblocks.redstonedetector;
 
 import com.simibubi.create.AllItems;
-import com.simibubi.create.foundation.block.ITE;
+import com.simibubi.create.foundation.block.IBE;
 import com.simibubi.create.foundation.gui.ScreenOpener;
 import com.simibubi.create.foundation.utility.Iterate;
 import com.workert.robotics.base.registries.BlockEntityRegistry;
@@ -29,7 +29,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.DistExecutor;
 import org.jetbrains.annotations.Nullable;
 
-public class RedstoneDetectorBlock extends Block implements EntityBlock, ITE<RedstoneDetectorBlockEntity> {
+public class RedstoneDetectorBlock extends Block implements EntityBlock, IBE<RedstoneDetectorBlockEntity> {
 	public static final BooleanProperty LIT = BooleanProperty.create("lit");
 
 	public RedstoneDetectorBlock(Properties properties) {
@@ -38,12 +38,12 @@ public class RedstoneDetectorBlock extends Block implements EntityBlock, ITE<Red
 	}
 
 	@Override
-	public Class<RedstoneDetectorBlockEntity> getTileEntityClass() {
+	public Class<RedstoneDetectorBlockEntity> getBlockEntityClass() {
 		return RedstoneDetectorBlockEntity.class;
 	}
 
 	@Override
-	public BlockEntityType<? extends RedstoneDetectorBlockEntity> getTileEntityType() {
+	public BlockEntityType<? extends RedstoneDetectorBlockEntity> getBlockEntityType() {
 		return BlockEntityRegistry.REDSTONE_DETECTOR.get();
 	}
 
@@ -78,7 +78,7 @@ public class RedstoneDetectorBlock extends Block implements EntityBlock, ITE<Red
 		ItemStack held = player.getMainHandItem();
 		if (AllItems.WRENCH.isIn(held)) return InteractionResult.PASS;
 		DistExecutor.unsafeRunWhenOn(Dist.CLIENT,
-				() -> () -> this.withTileEntityDo(level, blockPos, te -> this.displayScreen(te, player)));
+				() -> () -> this.withBlockEntityDo(level, blockPos, te -> this.displayScreen(te, player)));
 
 
 		return InteractionResult.SUCCESS;
@@ -106,7 +106,7 @@ public class RedstoneDetectorBlock extends Block implements EntityBlock, ITE<Red
 	}
 
 	private void getRedstoneSignalUpdate(int power, ServerLevel level, BlockPos blockPos) {
-		this.withTileEntityDo(level, blockPos, (be) -> {
+		this.withBlockEntityDo(level, blockPos, (be) -> {
 			be.setRedstoneLevel(power);
 		});
 	}

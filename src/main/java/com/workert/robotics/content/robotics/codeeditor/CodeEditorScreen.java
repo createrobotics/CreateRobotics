@@ -1,16 +1,16 @@
 package com.workert.robotics.content.robotics.codeeditor;
 
 import com.jozufozu.flywheel.util.transform.TransformStack;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.simibubi.create.content.logistics.trains.management.edgePoint.station.NoShadowFontWrapper;
+import com.simibubi.create.content.trains.station.NoShadowFontWrapper;
 import com.simibubi.create.foundation.gui.AbstractSimiScreen;
 import com.simibubi.create.foundation.gui.AllGuiTextures;
 import com.simibubi.create.foundation.gui.AllIcons;
 import com.simibubi.create.foundation.gui.widget.IconButton;
+import com.simibubi.create.foundation.utility.Color;
 import com.workert.robotics.base.registries.PacketRegistry;
 import com.workert.robotics.unused.CodeHelper;
 import net.minecraft.Util;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import org.apache.commons.io.IOUtils;
 
@@ -76,39 +76,41 @@ public class CodeEditorScreen extends AbstractSimiScreen {
 				AllIcons.I_CONFIRM).withCallback((mouseX, mouseY) -> this.onClose());
 		this.addRenderableWidget(this.confirmButton);
 
-		this.minecraft.keyboardHandler.setSendRepeatsToGui(false);
+		// this.minecraft.keyboardHandler.setSendRepeatsToGui(false);
 	}
 
 	@Override
-	protected void renderWindow(PoseStack ms, int mouseX, int mouseY, float partialTicks) {
+	protected void renderWindow(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
 		int x = this.guiLeft;
 		int y = this.guiTop;
 
-		this.background.render(ms, x, y, this);
+		this.background.render(graphics, x, y, Color.BLACK);
 
-		ms.pushPose();
-		TransformStack msr = TransformStack.cast(ms);
+		graphics.pose().pushPose();
+		TransformStack msr = TransformStack.cast(graphics.pose());
 		msr.pushPose().translate(x + this.background.width + 4, y + this.background.height + 4, 100).scale(40)
 				.rotateX(-22).rotateY(63);
 
-		ms.popPose();
+		graphics.pose().popPose();
 
-		GuiComponent.drawCenteredString(ms, new NoShadowFontWrapper(this.font), "Drone Programmer", this.width / 2,
+		graphics.drawCenteredString(new NoShadowFontWrapper(this.font), "Drone Programmer",
+				this.width / 2,
 				this.guiTop + 4, 0x442000);
 
-		GuiComponent.drawCenteredString(ms, new NoShadowFontWrapper(this.font), "yes I will make", this.width / 2,
+		graphics.drawCenteredString(new NoShadowFontWrapper(this.font), "yes I will make", this.width / 2,
 				this.guiTop + 64, 0x4a4a4a);
-		GuiComponent.drawCenteredString(ms, new NoShadowFontWrapper(this.font), "my own background!", this.width / 2,
+		graphics.drawCenteredString(new NoShadowFontWrapper(this.font), "my own background!",
+				this.width / 2,
 				this.guiTop + 73, 0x4a4a4a);
 
-		GuiComponent.drawCenteredString(ms, new NoShadowFontWrapper(this.font), "Click this to edit code ->",
+		graphics.drawCenteredString(new NoShadowFontWrapper(this.font), "Click this to edit code ->",
 				this.width / 2 - 27, this.guiTop + 109, 0x442000);
 	}
 
 	@Override
-	public void render(PoseStack ms, int pMouseX, int pMouseY, float pPartialTick) {
-		this.renderBackground(ms);
-		super.render(ms, pMouseX, pMouseY, pPartialTick);
+	public void render(GuiGraphics graphics, int pMouseX, int pMouseY, float pPartialTick) {
+		this.renderBackground(graphics);
+		super.render(graphics, pMouseX, pMouseY, pPartialTick);
 	}
 
 	@Override

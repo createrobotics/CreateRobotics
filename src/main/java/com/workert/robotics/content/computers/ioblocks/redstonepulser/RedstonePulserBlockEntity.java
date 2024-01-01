@@ -1,7 +1,7 @@
 package com.workert.robotics.content.computers.ioblocks.redstonepulser;
-import com.simibubi.create.foundation.tileEntity.SmartTileEntity;
-import com.simibubi.create.foundation.tileEntity.SyncedTileEntity;
-import com.simibubi.create.foundation.tileEntity.TileEntityBehaviour;
+import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
+import com.simibubi.create.foundation.blockEntity.SyncedBlockEntity;
+import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.workert.robotics.base.roboscript.RoboScriptClass;
 import com.workert.robotics.base.roboscript.RoboScriptHelper;
 import com.workert.robotics.base.roboscript.RoboScriptObject;
@@ -15,7 +15,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.List;
 
-public class RedstonePulserBlockEntity extends SmartTileEntity implements IOBlockEntity {
+public class RedstonePulserBlockEntity extends SmartBlockEntity implements IOBlockEntity {
 
 
 	public static RoboScriptClass roboScriptBlockClass = IORoboScriptBlockHelper.createClass()
@@ -53,8 +53,7 @@ public class RedstonePulserBlockEntity extends SmartTileEntity implements IOBloc
 	}
 
 	@Override
-	public void addBehaviours(List<TileEntityBehaviour> behaviours) {
-
+	public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
 	}
 
 
@@ -129,7 +128,7 @@ public class RedstonePulserBlockEntity extends SmartTileEntity implements IOBloc
 	}
 
 	@Override
-	public SyncedTileEntity getBlockEntity() {
+	public SyncedBlockEntity getBlockEntity() {
 		return this;
 	}
 

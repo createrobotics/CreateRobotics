@@ -1,9 +1,9 @@
 package com.workert.robotics.content.computers.ioblocks.scanner;
 
 import com.simibubi.create.AllSoundEvents;
-import com.simibubi.create.content.contraptions.relays.belt.transport.TransportedItemStack;
-import com.simibubi.create.foundation.tileEntity.SmartTileEntity;
-import com.simibubi.create.foundation.tileEntity.behaviour.belt.BeltProcessingBehaviour;
+import com.simibubi.create.content.kinetics.belt.behaviour.BeltProcessingBehaviour;
+import com.simibubi.create.content.kinetics.belt.transport.TransportedItemStack;
+import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
@@ -25,7 +25,7 @@ public class ScannerBehaviour extends BeltProcessingBehaviour {
 		float getKineticSpeed();
 	}
 
-	public <T extends SmartTileEntity & ScanningBehaviorSpecifics> ScannerBehaviour(ScannerBlockEntity be) {
+	public <T extends SmartBlockEntity & ScanningBehaviorSpecifics> ScannerBehaviour(ScannerBlockEntity be) {
 		super(be);
 		this.specifics = be;
 		this.whenItemEnters((s, i) -> BeltScannerCallbacks.onItemReceived(s, i, this));
@@ -67,13 +67,13 @@ public class ScannerBehaviour extends BeltProcessingBehaviour {
 			else AllSoundEvents.MECHANICAL_PRESS_ACTIVATION.playOnServer(level, worldPosition, .5f,
 					.75f + (Math.abs(this.specifics.getKineticSpeed()) / 1024f));
 
-			if (!level.isClientSide) this.tileEntity.sendData();
+			if (!level.isClientSide) this.blockEntity.sendData();
 		}
 
 		if (!level.isClientSide && this.runningTicks > CYCLE) {
 			this.finished = true;
 			this.running = false;
-			this.tileEntity.sendData();
+			this.blockEntity.sendData();
 			return;
 		}
 
@@ -82,7 +82,7 @@ public class ScannerBehaviour extends BeltProcessingBehaviour {
 		if (this.prevRunningTicks < CYCLE / 2 && this.runningTicks >= CYCLE / 2) {
 			this.runningTicks = CYCLE / 2;
 			// Pause the ticks until a packet is received
-			if (level.isClientSide && !this.tileEntity.isVirtual()) this.runningTicks = -(CYCLE / 2);
+			if (level.isClientSide && !this.blockEntity.isVirtual()) this.runningTicks = -(CYCLE / 2);
 		}
 	}
 
@@ -117,6 +117,6 @@ public class ScannerBehaviour extends BeltProcessingBehaviour {
 		this.running = true;
 		this.prevRunningTicks = 0;
 		this.runningTicks = 0;
-		this.tileEntity.sendData();
+		this.blockEntity.sendData();
 	}
 }

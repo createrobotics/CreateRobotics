@@ -1,6 +1,6 @@
 package com.workert.robotics.content.computers.ioblocks.redstonedetector;
 
-import com.simibubi.create.foundation.tileEntity.SyncedTileEntity;
+import com.simibubi.create.foundation.blockEntity.SyncedBlockEntity;
 import com.workert.robotics.base.registries.BlockEntityRegistry;
 import com.workert.robotics.base.roboscript.RoboScriptClass;
 import com.workert.robotics.base.roboscript.RoboScriptHelper;
@@ -14,7 +14,7 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class RedstoneDetectorBlockEntity extends SyncedTileEntity implements IOBlockEntity {
+public class RedstoneDetectorBlockEntity extends SyncedBlockEntity implements IOBlockEntity {
 
 	public static RoboScriptClass roboScriptBlockClass = IORoboScriptBlockHelper.createClass()
 			.addMethod("getPower", 0,
@@ -85,7 +85,7 @@ public class RedstoneDetectorBlockEntity extends SyncedTileEntity implements IOB
 	}
 
 	@Override
-	public SyncedTileEntity getBlockEntity() {
+	public SyncedBlockEntity getBlockEntity() {
 		return this;
 	}
 

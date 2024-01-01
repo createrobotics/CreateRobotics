@@ -1,6 +1,6 @@
 package com.workert.robotics.content.computers.ioblocks.redstonepulser;
 import com.simibubi.create.AllItems;
-import com.simibubi.create.foundation.block.ITE;
+import com.simibubi.create.foundation.block.IBE;
 import com.simibubi.create.foundation.gui.ScreenOpener;
 import com.workert.robotics.base.registries.BlockEntityRegistry;
 import com.workert.robotics.content.computers.ioblocks.IOSignalScreen;
@@ -27,7 +27,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.DistExecutor;
 
-public class RedstonePulserBlock extends Block implements EntityBlock, ITE<RedstonePulserBlockEntity> {
+public class RedstonePulserBlock extends Block implements EntityBlock, IBE<RedstonePulserBlockEntity> {
 
 	public static final BooleanProperty LIT = BooleanProperty.create("lit");
 
@@ -37,12 +37,12 @@ public class RedstonePulserBlock extends Block implements EntityBlock, ITE<Redst
 	}
 
 	@Override
-	public Class<RedstonePulserBlockEntity> getTileEntityClass() {
+	public Class<RedstonePulserBlockEntity> getBlockEntityClass() {
 		return RedstonePulserBlockEntity.class;
 	}
 
 	@Override
-	public BlockEntityType<? extends RedstonePulserBlockEntity> getTileEntityType() {
+	public BlockEntityType<? extends RedstonePulserBlockEntity> getBlockEntityType() {
 		return BlockEntityRegistry.REDSTONE_PULSER.get();
 	}
 
@@ -56,7 +56,7 @@ public class RedstonePulserBlock extends Block implements EntityBlock, ITE<Redst
 		ItemStack held = player.getMainHandItem();
 		if (AllItems.WRENCH.isIn(held)) return InteractionResult.PASS;
 		DistExecutor.unsafeRunWhenOn(Dist.CLIENT,
-				() -> () -> this.withTileEntityDo(level, blockPos, te -> this.displayScreen(te, player)));
+				() -> () -> this.withBlockEntityDo(level, blockPos, te -> this.displayScreen(te, player)));
 
 
 		return InteractionResult.SUCCESS;
@@ -75,7 +75,7 @@ public class RedstonePulserBlock extends Block implements EntityBlock, ITE<Redst
 
 	@Override
 	public int getSignal(BlockState pState, BlockGetter pLevel, BlockPos pPos, Direction pDirection) {
-		return this.getTileEntityOptional(pLevel, pPos).map(al -> al.redstoneLevel).orElse(0);
+		return this.getBlockEntityOptional(pLevel, pPos).map(al -> al.redstoneLevel).orElse(0);
 	}
 
 	@OnlyIn(value = Dist.CLIENT)

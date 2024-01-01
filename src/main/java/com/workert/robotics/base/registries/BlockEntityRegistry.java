@@ -18,33 +18,33 @@ public class BlockEntityRegistry {
 	}
 
 	public static final BlockEntityEntry<SmasherBlockEntity> SMASHER_BLOCK_ENTITY = Robotics.REGISTRATE
-			.tileEntity("smasher", SmasherBlockEntity::new)
+			.blockEntity("smasher", SmasherBlockEntity::new)
 			.validBlock(() -> BlockRegistry.SMASHER.get())
 			.register();
 
 	public static final BlockEntityEntry<ComputerBlockEntity> COMPUTER = Robotics.REGISTRATE
-			.tileEntity("computer", ComputerBlockEntity::new)
+			.blockEntity("computer", ComputerBlockEntity::new)
 			.instance(() -> ComputerInstance::new)
 			.validBlock(BlockRegistry.COMPUTER)
 			.renderer(() -> ComputerRenderer::new)
 			.register();
 
 	public static final BlockEntityEntry<RedstoneDetectorBlockEntity> REDSTONE_DETECTOR = Robotics.REGISTRATE
-			.tileEntity("redstone_detector", RedstoneDetectorBlockEntity::new)
+			.blockEntity("redstone_detector", RedstoneDetectorBlockEntity::new)
 			.validBlock(BlockRegistry.REDSTONE_DETECTOR)
 			.register();
 	public static final BlockEntityEntry<RedstoneEmitterBlockEntity> REDSTONE_EMITTER = Robotics.REGISTRATE
-			.tileEntity("redstone_emitter", RedstoneEmitterBlockEntity::new)
+			.blockEntity("redstone_emitter", RedstoneEmitterBlockEntity::new)
 			.validBlock(BlockRegistry.REDSTONE_EMITTER)
 			.register();
 	public static final BlockEntityEntry<RedstonePulserBlockEntity> REDSTONE_PULSER = Robotics.REGISTRATE
-			.tileEntity("redstone_pulser", RedstonePulserBlockEntity::new)
+			.blockEntity("redstone_pulser", RedstonePulserBlockEntity::new)
 			.validBlock(BlockRegistry.REDSTONE_PULSER)
 			.register();
 	public static final BlockEntityEntry<ScannerBlockEntity> SCANNER = Robotics.REGISTRATE
-			.tileEntity("scanner", ScannerBlockEntity::new)
+			.blockEntity("scanner", ScannerBlockEntity::new)
 			.instance(() -> ScannerInstance::new)
-			.validBlock(BlockRegistry.SCANNER)
+			.validBlock(BlockRegistry.SCANNER.lazy())
 			.renderer(() -> ScannerRenderer::new)
 			.register();
 }

@@ -1,6 +1,6 @@
 package com.workert.robotics.content.computers.computer;
 
-import com.simibubi.create.content.contraptions.base.KineticTileEntity;
+import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.workert.robotics.base.roboscript.RoboScript;
 import com.workert.robotics.base.roboscript.RoboScriptCallable;
 import com.workert.robotics.base.roboscript.RoboScriptHelper;
@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ComputerBlockEntity extends KineticTileEntity {
+public class ComputerBlockEntity extends KineticBlockEntity {
 	public final RoboScript roboScript;
 	private String script = "";
 

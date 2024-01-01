@@ -31,7 +31,7 @@ public class ExtendOBoots extends LivingEntity {
 	@Override
 	public void tick() {
 		super.tick();
-		Player nearestPlayer = this.level.getNearestPlayer(this, ExtendOBootsItem.MAX_HEIGHT + 1);
+		Player nearestPlayer = this.level().getNearestPlayer(this, ExtendOBootsItem.MAX_HEIGHT + 1);
 		if (nearestPlayer == null) this.discard();
 		else {
 			if (nearestPlayer.position()
@@ -80,11 +80,11 @@ public class ExtendOBoots extends LivingEntity {
 
 	@Override
 	public boolean hurt(DamageSource pSource, float pAmount) {
-		return pSource.isBypassInvul();
+		return pSource.isCreativePlayer();
 	}
 
 	@Override
-	public void animateHurt() {
+	public void animateHurt(float pYaw) {
 	}
 
 	@Override

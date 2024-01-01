@@ -8,6 +8,7 @@ import net.minecraft.data.DataGenerator;
 import net.minecraftforge.data.event.GatherDataEvent;
 
 public class RoboticsDatagen {
+	// TODO Update Translations to 1.20.1 registrate
 	public static void gatherData(GatherDataEvent event) {
 		DataGenerator dataGenerator = event.getGenerator();
 

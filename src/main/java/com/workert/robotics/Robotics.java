@@ -35,7 +35,7 @@ public class Robotics {
 		REGISTRATE.registerEventListeners(this.modEventBus);
 		this.modEventBus.addListener(RoboticsDatagen::gatherData);
 
-		Robotics.REGISTRATE.creativeModeTab(() -> ItemRegistry.ROBOTICS_TAB, "Create Robotics");
+		Robotics.REGISTRATE.defaultCreativeTab();
 		BlockRegistry.register();
 		EntityRegistry.register();
 		ItemRegistry.register();

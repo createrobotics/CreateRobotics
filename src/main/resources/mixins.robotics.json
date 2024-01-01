@@ -6,10 +6,10 @@
   "refmap": "robotics.refmap.json",
   "mixins": [
 	"ConfigBaseAccessor",
+	"ToolboxBlockEntityAccessor",
 	"ToolboxContainerMixin",
 	"ToolboxHandlerMixin",
 	"ToolboxInventoryAccessor",
-	"ToolboxTileEntityAccessor",
 	"ToolboxTileEntityMixin"
   ],
   "client": [

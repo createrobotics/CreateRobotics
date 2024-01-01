@@ -1,17 +1,17 @@
 package com.workert.robotics.unused;
 
 import com.simibubi.create.Create;
-import com.simibubi.create.content.contraptions.components.deployer.DeployerFakePlayer;
-import com.simibubi.create.content.contraptions.components.deployer.DeployerHandler;
-import com.simibubi.create.content.logistics.IRedstoneLinkable;
-import com.simibubi.create.content.logistics.RedstoneLinkNetworkHandler;
+import com.simibubi.create.content.kinetics.deployer.DeployerFakePlayer;
+import com.simibubi.create.content.kinetics.deployer.DeployerHandler;
+import com.simibubi.create.content.redstone.link.IRedstoneLinkable;
+import com.simibubi.create.content.redstone.link.RedstoneLinkNetworkHandler;
 import com.simibubi.create.foundation.utility.Couple;
 import com.workert.robotics.Robotics;
 import com.workert.robotics.content.robotics.AbstractRobotEntity;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
@@ -24,14 +24,12 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.regex.Matcher;
@@ -115,12 +113,13 @@ public class CodeHelper {
 
 		});
 		CodeHelper.registerCommand("getItems", (robot, arguments) -> {
-			BlockPos pos = new BlockPos(CodeHelper.eval(arguments.get(0)), CodeHelper.eval(arguments.get(1)),
-					CodeHelper.eval(arguments.get(2)));
+			BlockPos pos = new BlockPos((int) CodeHelper.eval(arguments.get(0)),
+					(int) CodeHelper.eval(arguments.get(1)),
+					(int) CodeHelper.eval(arguments.get(2)));
 			if (!pos.closerToCenterThan(robot.position(), 5)) return;
-			if (robot.getLevel().getExistingBlockEntity(pos) == null) throw new IllegalArgumentException(
+			if (robot.level().getExistingBlockEntity(pos) == null) throw new IllegalArgumentException(
 					"The block at the specified coordinates has no tile entity (is no container)!");
-			robot.getLevel().getExistingBlockEntity(pos).getCapability(ForgeCapabilities.ITEM_HANDLER)
+			robot.level().getExistingBlockEntity(pos).getCapability(ForgeCapabilities.ITEM_HANDLER)
 					.ifPresent(handler -> {
 						for (int slot = 0; slot < handler.getSlots(); slot++) {
 							while (!handler.getStackInSlot(slot)
@@ -131,15 +130,16 @@ public class CodeHelper {
 							}
 						}
 					});
-			robot.getLevel().blockUpdated(pos, robot.getLevel().getBlockState(pos).getBlock());
+			robot.level().blockUpdated(pos, robot.level().getBlockState(pos).getBlock());
 		});
 		CodeHelper.registerCommand("pushItems", (robot, arguments) -> {
-			BlockPos pos = new BlockPos(CodeHelper.eval(arguments.get(0)), CodeHelper.eval(arguments.get(1)),
-					CodeHelper.eval(arguments.get(2)));
+			BlockPos pos = new BlockPos((int) CodeHelper.eval(arguments.get(0)),
+					(int) CodeHelper.eval(arguments.get(1)),
+					(int) CodeHelper.eval(arguments.get(2)));
 			if (!pos.closerToCenterThan(robot.position(), 5)) return;
-			if (robot.getLevel().getExistingBlockEntity(pos) == null) throw new IllegalArgumentException(
+			if (robot.level().getExistingBlockEntity(pos) == null) throw new IllegalArgumentException(
 					"The block at the specified coordinates has no tile entity (is no container)!");
-			robot.getLevel().getExistingBlockEntity(pos).getCapability(ForgeCapabilities.ITEM_HANDLER)
+			robot.level().getExistingBlockEntity(pos).getCapability(ForgeCapabilities.ITEM_HANDLER)
 					.ifPresent(handler -> {
 						Item itemToPush = Items.AIR;
 						if (arguments.size() > 3) {
@@ -156,13 +156,14 @@ public class CodeHelper {
 							}
 						}
 					});
-			robot.getLevel().blockUpdated(pos, robot.getLevel().getBlockState(pos).getBlock());
+			robot.level().blockUpdated(pos, robot.level().getBlockState(pos).getBlock());
 		});
 		CodeHelper.registerCommand("punch", (robot, arguments) -> {
 			if (arguments.size() < 3)
 				throw new IllegalArgumentException("Expected three or more arguments for command \"punch\"");
-			BlockPos clickPos = new BlockPos(CodeHelper.eval(arguments.get(0)), CodeHelper.eval(arguments.get(1)),
-					CodeHelper.eval(arguments.get(2)));
+			BlockPos clickPos = new BlockPos((int) CodeHelper.eval(arguments.get(0)),
+					(int) CodeHelper.eval(arguments.get(1)),
+					(int) CodeHelper.eval(arguments.get(2)));
 			if (!clickPos.closerToCenterThan(robot.position(), 5)) return;
 
 			Item item = null;
@@ -183,8 +184,9 @@ public class CodeHelper {
 		CodeHelper.registerCommand("use", (robot, arguments) -> {
 			if (arguments.size() < 3)
 				throw new IllegalArgumentException("Expected three or more arguments for command \"use\"");
-			BlockPos clickPos = new BlockPos(CodeHelper.eval(arguments.get(0)), CodeHelper.eval(arguments.get(1)),
-					CodeHelper.eval(arguments.get(2)));
+			BlockPos clickPos = new BlockPos((int) CodeHelper.eval(arguments.get(0)),
+					(int) CodeHelper.eval(arguments.get(1)),
+					(int) CodeHelper.eval(arguments.get(2)));
 			if (!clickPos.closerToCenterThan(robot.position(), 5)) return;
 
 			Item item = null;
@@ -252,8 +254,8 @@ public class CodeHelper {
 			entry.signalStrength = signalStrength;
 
 			System.out.println(entry);
-			System.out.println(Create.REDSTONE_LINK_NETWORK_HANDLER.networksIn(robot.getLevel()).containsKey(entry));
-			Create.REDSTONE_LINK_NETWORK_HANDLER.addToNetwork(robot.getLevel(), entry);
+			System.out.println(Create.REDSTONE_LINK_NETWORK_HANDLER.networksIn(robot.level()).containsKey(entry));
+			Create.REDSTONE_LINK_NETWORK_HANDLER.addToNetwork(robot.level(), entry);
 
 		});
 	}
@@ -382,11 +384,15 @@ public class CodeHelper {
 	}
 
 	public static Item getItemById(String id) {
-		return Registry.ITEM.get(new ResourceLocation(id.trim().split(":")[0], id.trim().split(":")[1]));
+		Optional<Holder.Reference<Item>> itemDelegate = ForgeRegistries.ITEMS.getDelegate(
+				new ResourceLocation(id.trim().split(":")[0], id.trim().split(":")[1]));
+		if (itemDelegate.isEmpty())
+			return Items.AIR;
+		return itemDelegate.orElseThrow().value();
 	}
 
 	public static void click(AbstractRobotEntity robot, BlockPos posToClick, Direction direction, boolean use, @Nullable Item itemToClickWith) throws ClassNotFoundException, NoSuchMethodException, InterruptedException, InvocationTargetException, IllegalAccessException {
-		DeployerFakePlayer fakePlayer = new DeployerFakePlayer((ServerLevel) robot.getLevel());
+		DeployerFakePlayer fakePlayer = new DeployerFakePlayer((ServerLevel) robot.level(), robot.getUUID());
 
 		if (itemToClickWith != null) {
 			if (robot.getInventory().countItem(itemToClickWith) <= 0) return;
@@ -433,7 +439,7 @@ public class CodeHelper {
 
 	public static void broadcastErrorToNearbyPlayers(AbstractRobotEntity robot, String message) {
 		int messageDistance = 256;
-		for (Player player : robot.getLevel().getEntitiesOfClass(Player.class,
+		for (Player player : robot.level().getEntitiesOfClass(Player.class,
 				new AABB(robot.blockPosition().offset(-messageDistance, -messageDistance, -messageDistance),
 						robot.blockPosition().offset(messageDistance, messageDistance, messageDistance)))) {
 			player.displayClientMessage(Component.literal("<!> ").withStyle(ChatFormatting.YELLOW)

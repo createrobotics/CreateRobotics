@@ -2,9 +2,9 @@ package com.workert.robotics.content.robotics.codedrone;
 
 import com.workert.robotics.Robotics;
 import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib.model.GeoModel;
 
-public class CodeDroneModel extends AnimatedGeoModel<CodeDrone> {
+public class CodeDroneModel extends GeoModel<CodeDrone> {
 
 	@Override
 	public ResourceLocation getModelResource(CodeDrone animatable) {

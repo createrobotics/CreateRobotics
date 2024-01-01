@@ -1,10 +1,10 @@
 package com.workert.robotics.content.computers.computer;
 
 
-import com.simibubi.create.content.logistics.block.display.DisplayLinkContext;
-import com.simibubi.create.content.logistics.block.display.source.SingleLineDisplaySource;
-import com.simibubi.create.content.logistics.block.display.target.DisplayTargetStats;
-import com.simibubi.create.content.logistics.trains.management.display.FlapDisplaySection;
+import com.simibubi.create.content.redstone.displayLink.DisplayLinkContext;
+import com.simibubi.create.content.redstone.displayLink.source.SingleLineDisplaySource;
+import com.simibubi.create.content.redstone.displayLink.target.DisplayTargetStats;
+import com.simibubi.create.content.trains.display.FlapDisplaySection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
@@ -13,7 +13,7 @@ public class TerminalDisplaySource extends SingleLineDisplaySource {
 	protected MutableComponent provideLine(DisplayLinkContext context, DisplayTargetStats stats) {
 		if (context.level().isClientSide)
 			return EMPTY_LINE;
-		if (!(context.getSourceTE() instanceof ComputerBlockEntity computer))
+		if (!(context.getSourceBlockEntity() instanceof ComputerBlockEntity computer))
 			return EMPTY_LINE;
 		if (computer.getSpeed() == 0)
 			return EMPTY_LINE;

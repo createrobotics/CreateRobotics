@@ -21,14 +21,15 @@ public class SmasherBlockMenu extends AbstractContainerMenu {
 	private final ContainerData data;
 
 	public SmasherBlockMenu(int pContainerId, Inventory inv, FriendlyByteBuf extraData) {
-		this(pContainerId, inv, inv.player.level.getBlockEntity(extraData.readBlockPos()), new SimpleContainerData(2));
+		this(pContainerId, inv, inv.player.level().getBlockEntity(extraData.readBlockPos()),
+				new SimpleContainerData(2));
 	}
 
 	public SmasherBlockMenu(int pContainerId, Inventory inv, BlockEntity entity, ContainerData data) {
 		super(MenuRegistry.SMASHER_BLOCK_MENU.get(), pContainerId);
 		AbstractContainerMenu.checkContainerSize(inv, 3);
 		this.blockEntity = ((SmasherBlockEntity) entity);
-		this.level = inv.player.level;
+		this.level = inv.player.level();
 		this.data = data;
 
 		this.addPlayerInventory(inv);

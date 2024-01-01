@@ -1,11 +1,11 @@
 package com.workert.robotics.content.computers.computer;
 import com.google.common.collect.ImmutableList;
-import com.simibubi.create.content.logistics.block.display.DisplayLinkContext;
-import com.simibubi.create.content.logistics.block.display.source.DisplaySource;
-import com.simibubi.create.content.logistics.block.display.target.DisplayTargetStats;
-import com.simibubi.create.content.logistics.trains.management.display.FlapDisplayLayout;
-import com.simibubi.create.content.logistics.trains.management.display.FlapDisplaySection;
-import com.simibubi.create.content.logistics.trains.management.display.FlapDisplayTileEntity;
+import com.simibubi.create.content.redstone.displayLink.DisplayLinkContext;
+import com.simibubi.create.content.redstone.displayLink.source.DisplaySource;
+import com.simibubi.create.content.redstone.displayLink.target.DisplayTargetStats;
+import com.simibubi.create.content.trains.display.FlapDisplayBlockEntity;
+import com.simibubi.create.content.trains.display.FlapDisplayLayout;
+import com.simibubi.create.content.trains.display.FlapDisplaySection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
@@ -18,7 +18,7 @@ public class ComputerDisplaySource extends DisplaySource {
 	public List<MutableComponent> provideText(DisplayLinkContext context, DisplayTargetStats stats) {
 		if (context.level().isClientSide)
 			return EMPTY;
-		if (!(context.getSourceTE() instanceof ComputerBlockEntity computer))
+		if (!(context.getSourceBlockEntity() instanceof ComputerBlockEntity computer))
 			return EMPTY;
 		if (computer.getSpeed() == 0)
 			return EMPTY;
@@ -33,7 +33,7 @@ public class ComputerDisplaySource extends DisplaySource {
 	}
 
 	@Override
-	public void loadFlapDisplayLayout(DisplayLinkContext context, FlapDisplayTileEntity flapDisplay,
+	public void loadFlapDisplayLayout(DisplayLinkContext context, FlapDisplayBlockEntity flapDisplay,
 									  FlapDisplayLayout layout) {
 		String layoutKey = "Instant";
 		if (!layout.isLayout(layoutKey))

@@ -1,8 +1,8 @@
 package com.workert.robotics.mixin;
-import com.simibubi.create.content.curiosities.toolbox.ToolboxHandler;
-import com.simibubi.create.content.curiosities.toolbox.ToolboxTileEntity;
+import com.simibubi.create.content.equipment.toolbox.ToolboxBlockEntity;
+import com.simibubi.create.content.equipment.toolbox.ToolboxHandler;
 import com.simibubi.create.foundation.utility.WorldAttached;
-import com.workert.robotics.content.robotics.flyingtoolbox.FakeToolboxTileEntity;
+import com.workert.robotics.content.robotics.flyingtoolbox.FakeToolboxBlockEntity;
 import com.workert.robotics.content.robotics.flyingtoolbox.FlyingToolbox;
 import com.workert.robotics.content.robotics.flyingtoolbox.FlyingToolboxHandler;
 import net.minecraft.core.BlockPos;
@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 public abstract class ToolboxHandlerMixin {
 	@Final
 	@Shadow
-	public static WorldAttached<WeakHashMap<BlockPos, ToolboxTileEntity>> toolboxes;
+	public static WorldAttached<WeakHashMap<BlockPos, ToolboxBlockEntity>> toolboxes;
 
 	@Shadow
 	public static void syncData(Player player) {
@@ -44,17 +44,17 @@ public abstract class ToolboxHandlerMixin {
 	 * @reason Adding fake toolboxes to {@code getNearest}
 	 */
 	@Overwrite
-	public static List<ToolboxTileEntity> getNearest(LevelAccessor world, Player player, int maxAmount) {
+	public static List<ToolboxBlockEntity> getNearest(LevelAccessor world, Player player, int maxAmount) {
 		Vec3 location = player.position();
 		double maxRange = ToolboxHandler.getMaxRange(player);
 
-		HashMap<BlockPos, ToolboxTileEntity> toolboxTileEntities = new HashMap<>();
+		HashMap<BlockPos, ToolboxBlockEntity> toolboxTileEntities = new HashMap<>();
 
 		toolboxTileEntities.putAll(toolboxes.get(world));
 
 		FlyingToolboxHandler.flyingToolboxes.get(world).forEach(
 				flyingToolbox -> toolboxTileEntities.put(flyingToolbox.blockPosition(),
-						flyingToolbox.getFakeToolboxTileEntity()));
+						flyingToolbox.getFakeToolboxBlockEntity()));
 
 		return toolboxTileEntities
 				.keySet()
@@ -64,7 +64,7 @@ public abstract class ToolboxHandlerMixin {
 						ToolboxHandler.distance(location, p2)))
 				.limit(maxAmount)
 				.map(toolboxTileEntities::get)
-				.filter(ToolboxTileEntity::isFullyInitialized)
+				.filter(ToolboxBlockEntity::isFullyInitialized)
 				.collect(Collectors.toList());
 	}
 
@@ -72,7 +72,7 @@ public abstract class ToolboxHandlerMixin {
 	private static void connectFlyingToolboxes(Entity entity, Level world, CallbackInfo ci, ServerPlayer player, boolean sendData, CompoundTag compound, int i, String key, CompoundTag data, BlockPos pos, int slot) {
 		if (data.hasUUID("EntityUUID") && !world.isClientSide) {
 			if (((ServerLevel) world).getEntity(data.getUUID("EntityUUID")) instanceof FlyingToolbox flyingToolbox) {
-				flyingToolbox.getFakeToolboxTileEntity().connectPlayer(slot, player, i);
+				flyingToolbox.getFakeToolboxBlockEntity().connectPlayer(slot, player, i);
 				player.getPersistentData()
 						.getCompound("CreateToolboxData").getCompound(key)
 						.put("Pos", NbtUtils.writeBlockPos(flyingToolbox.blockPosition()));
@@ -90,9 +90,9 @@ public abstract class ToolboxHandlerMixin {
 			Entity entity = ((ServerLevel) world).getEntity(prevData.getUUID("EntityUUID"));
 			if (!(entity instanceof FlyingToolbox flyingToolbox))
 				throw new IllegalStateException("Entity with UUID is not a FlyingToolbox Entity");
-			FakeToolboxTileEntity fakeToolboxTileEntity = flyingToolbox.getFakeToolboxTileEntity();
-			fakeToolboxTileEntity.unequip(prevSlot, player, hotbarSlot,
-					keepItems || !ToolboxHandler.withinRange(player, fakeToolboxTileEntity));
+			FakeToolboxBlockEntity fakeToolboxBlockEntity = flyingToolbox.getFakeToolboxBlockEntity();
+			fakeToolboxBlockEntity.unequip(prevSlot, player, hotbarSlot,
+					keepItems || !ToolboxHandler.withinRange(player, fakeToolboxBlockEntity));
 			syncData(player);
 		}
 	}

@@ -1,8 +1,8 @@
 package com.workert.robotics.content.computers.computer;
 
 import com.simibubi.create.AllItems;
-import com.simibubi.create.content.contraptions.relays.elementary.ICogWheel;
-import com.simibubi.create.foundation.block.ITE;
+import com.simibubi.create.content.kinetics.simpleRelays.ICogWheel;
+import com.simibubi.create.foundation.block.IBE;
 import com.simibubi.create.foundation.gui.ScreenOpener;
 import com.workert.robotics.base.registries.BlockEntityRegistry;
 import com.workert.robotics.base.registries.ItemRegistry;
@@ -28,7 +28,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.DistExecutor;
 import org.jetbrains.annotations.Nullable;
 
-public class ComputerBlock extends Block implements EntityBlock, ICogWheel, ITE<ComputerBlockEntity> {
+public class ComputerBlock extends Block implements EntityBlock, ICogWheel, IBE<ComputerBlockEntity> {
 
 	public ComputerBlock(Properties properties) {
 		super(properties);
@@ -40,12 +40,12 @@ public class ComputerBlock extends Block implements EntityBlock, ICogWheel, ITE<
 		ItemStack held = player.getMainHandItem();
 		if (AllItems.WRENCH.isIn(held)) {
 			if (!level.isClientSide) ((ComputerBlockEntity) level.getBlockEntity(blockPos)).runScript();
-			player.playSound(SoundEvents.NOTE_BLOCK_CHIME);
+			player.playSound(SoundEvents.NOTE_BLOCK_CHIME.get());
 		} else if (ItemRegistry.PROGRAM.isIn(held)) {
 			if (!level.isClientSide) ((ComputerBlockEntity) level.getBlockEntity(blockPos)).setScript(
 					player.getItemInHand(hand).getOrCreateTag().getString("code"));
 
-			player.playSound(SoundEvents.NOTE_BLOCK_BIT);
+			player.playSound(SoundEvents.NOTE_BLOCK_BIT.get());
 		} else {
 			if (!level.isClientSide)
 				player.sendSystemMessage(
@@ -54,7 +54,7 @@ public class ComputerBlock extends Block implements EntityBlock, ICogWheel, ITE<
 			player.playSound(SoundEvents.BEACON_ACTIVATE);
 		}
 		DistExecutor.unsafeRunWhenOn(Dist.CLIENT,
-				() -> () -> this.withTileEntityDo(level, blockPos, te -> this.displayScreen(te, player)));
+				() -> () -> this.withBlockEntityDo(level, blockPos, te -> this.displayScreen(te, player)));
 		return InteractionResult.SUCCESS;
 	}
 
@@ -64,12 +64,12 @@ public class ComputerBlock extends Block implements EntityBlock, ICogWheel, ITE<
 	}
 
 	@Override
-	public Class<ComputerBlockEntity> getTileEntityClass() {
+	public Class<ComputerBlockEntity> getBlockEntityClass() {
 		return ComputerBlockEntity.class;
 	}
 
 	@Override
-	public BlockEntityType<? extends ComputerBlockEntity> getTileEntityType() {
+	public BlockEntityType<? extends ComputerBlockEntity> getBlockEntityType() {
 		return BlockEntityRegistry.COMPUTER.get();
 	}
 

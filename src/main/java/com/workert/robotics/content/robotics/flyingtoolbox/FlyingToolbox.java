@@ -24,14 +24,14 @@ import java.util.WeakHashMap;
 public class FlyingToolbox extends AbstractRobotEntity {
 	Map<Integer, WeakHashMap<Player, Integer>> connectedPlayers;
 
-	FakeToolboxTileEntity fakeToolboxTileEntity;
+	FakeToolboxBlockEntity fakeToolboxBlockEntity;
 
 	DyeColor color = DyeColor.BROWN;
 
 	public FlyingToolbox(EntityType<? extends PathfinderMob> entity, Level world) {
 		super(entity, world);
 		this.connectedPlayers = new HashMap<>();
-		this.fakeToolboxTileEntity = new FakeToolboxTileEntity(this);
+		this.fakeToolboxBlockEntity = new FakeToolboxBlockEntity(this);
 		FlyingToolboxHandler.onLoad(this);
 	}
 
@@ -39,8 +39,8 @@ public class FlyingToolbox extends AbstractRobotEntity {
 	public void tick() {
 		super.tick();
 
-		if (!this.level.isClientSide && this.fakeToolboxTileEntity != null) {
-			this.fakeToolboxTileEntity.tick();
+		if (!this.level().isClientSide && this.fakeToolboxBlockEntity != null) {
+			this.fakeToolboxBlockEntity.tick();
 		}
 	}
 
@@ -54,7 +54,7 @@ public class FlyingToolbox extends AbstractRobotEntity {
 		ItemStack stack = pPlayer.getItemInHand(pHand);
 		DyeColor color = DyeColor.getColor(stack);
 		if (color != null && color != this.color) {
-			if (this.level.isClientSide)
+			if (this.level().isClientSide)
 				return InteractionResult.SUCCESS;
 			this.color = color;
 			return InteractionResult.SUCCESS;
@@ -62,19 +62,18 @@ public class FlyingToolbox extends AbstractRobotEntity {
 
 		if (pPlayer instanceof FakePlayer)
 			return InteractionResult.PASS;
-		if (this.level.isClientSide)
+		if (this.level().isClientSide)
 			return InteractionResult.SUCCESS;
 
-		if (this.fakeToolboxTileEntity != null)
-			NetworkHooks.openScreen((ServerPlayer) pPlayer, this.fakeToolboxTileEntity,
-					this.fakeToolboxTileEntity::sendToContainer);
+		if (this.fakeToolboxBlockEntity != null)
+			NetworkHooks.openScreen((ServerPlayer) pPlayer, this.fakeToolboxBlockEntity);
 		return InteractionResult.SUCCESS;
 	}
 
 	@Override
 	public void remove(@NotNull RemovalReason pReason) {
 		FlyingToolboxHandler.onUnload(this);
-		this.fakeToolboxTileEntity = null;
+		this.fakeToolboxBlockEntity = null;
 		super.remove(pReason);
 	}
 
@@ -82,8 +81,8 @@ public class FlyingToolbox extends AbstractRobotEntity {
 		return this.color;
 	}
 
-	public FakeToolboxTileEntity getFakeToolboxTileEntity() {
-		return this.fakeToolboxTileEntity;
+	public FakeToolboxBlockEntity getFakeToolboxBlockEntity() {
+		return this.fakeToolboxBlockEntity;
 	}
 
 	void sendData() {
@@ -92,16 +91,16 @@ public class FlyingToolbox extends AbstractRobotEntity {
 
 	@Override
 	public void addAdditionalSaveData(CompoundTag pCompound) {
-		if (this.fakeToolboxTileEntity != null) {
-			pCompound.put("FakeToolboxTileEntityNBT", this.fakeToolboxTileEntity.serializeNBT());
+		if (this.fakeToolboxBlockEntity != null) {
+			pCompound.put("FakeToolboxTileEntityNBT", this.fakeToolboxBlockEntity.serializeNBT());
 		}
 		super.addAdditionalSaveData(pCompound);
 	}
 
 	@Override
 	public void readAdditionalSaveData(CompoundTag pCompound) {
-		if (this.fakeToolboxTileEntity != null) {
-			this.fakeToolboxTileEntity.deserializeNBT(pCompound.getCompound("FakeToolboxTileEntityNBT"));
+		if (this.fakeToolboxBlockEntity != null) {
+			this.fakeToolboxBlockEntity.deserializeNBT(pCompound.getCompound("FakeToolboxTileEntityNBT"));
 		}
 		super.readAdditionalSaveData(pCompound);
 	}

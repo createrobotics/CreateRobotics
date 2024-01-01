@@ -1,8 +1,7 @@
 package com.workert.robotics.base.registries;
 
-import com.simibubi.create.content.AllSections;
-import com.simibubi.create.content.logistics.block.display.AllDisplayBehaviours;
-import com.simibubi.create.foundation.block.BlockStressDefaults;
+import com.simibubi.create.content.kinetics.BlockStressDefaults;
+import com.simibubi.create.content.redstone.displayLink.AllDisplayBehaviours;
 import com.simibubi.create.foundation.data.TagGen;
 import com.tterrag.registrate.providers.loot.RegistrateBlockLootTables;
 import com.tterrag.registrate.util.entry.BlockEntry;
@@ -24,7 +23,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.DropExperienceBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
@@ -36,22 +34,17 @@ public class BlockRegistry {
 	public static void register() {
 	}
 
-	static {
-		Robotics.REGISTRATE.startSection(AllSections.SCHEMATICS);
-	}
-
 	public static final BlockEntry<DropExperienceBlock> TIN_ORE = Robotics.REGISTRATE
 			.block("tin_ore", DropExperienceBlock::new)
 			.lang("Tin ore")
-			.properties(properties -> properties
-					.of(Material.STONE)
+			.properties(properties -> properties.of()
 					.sound(SoundType.STONE)
 					.strength(3.0F, 3.0F)
 					.requiresCorrectToolForDrops())
 			.transform(TagGen.pickaxeOnly())
 			.loot((lt, b) -> lt.add(b, RegistrateBlockLootTables.createSilkTouchDispatchTable(b,
-					RegistrateBlockLootTables.applyExplosionDecay(b, LootItem.lootTableItem(ItemRegistry.RAW_TIN.get())
-							.apply(ApplyBonusCount.addOreBonusCount(Enchantments.BLOCK_FORTUNE))))))
+					LootItem.lootTableItem(ItemRegistry.RAW_TIN.get())
+							.apply(ApplyBonusCount.addOreBonusCount(Enchantments.BLOCK_FORTUNE)))))
 			.tag(BlockTags.NEEDS_IRON_TOOL)
 			.tag(Tags.Blocks.ORES)
 			.transform(tagBlockAndItem("ores/tin", "ores_in_ground/stone"))
@@ -69,8 +62,8 @@ public class BlockRegistry {
 					.requiresCorrectToolForDrops())
 			.transform(TagGen.pickaxeOnly())
 			.loot((lt, b) -> lt.add(b, RegistrateBlockLootTables.createSilkTouchDispatchTable(b,
-					RegistrateBlockLootTables.applyExplosionDecay(b, LootItem.lootTableItem(ItemRegistry.RAW_TIN.get())
-							.apply(ApplyBonusCount.addOreBonusCount(Enchantments.BLOCK_FORTUNE))))))
+					LootItem.lootTableItem(ItemRegistry.RAW_TIN.get())
+							.apply(ApplyBonusCount.addOreBonusCount(Enchantments.BLOCK_FORTUNE)))))
 			.tag(BlockTags.NEEDS_IRON_TOOL).tag(Tags.Blocks.ORES)
 			.transform(tagBlockAndItem("ores/tin", "ores_in_ground/deepslate"))
 			.tag(Tags.Items.ORES)
@@ -80,8 +73,7 @@ public class BlockRegistry {
 	public static final BlockEntry<Block> TIN_BLOCK = Robotics.REGISTRATE
 			.block("tin_block", Block::new)
 			.lang("Tin block")
-			.properties(properties -> properties
-					.of(Material.METAL)
+			.properties(properties -> properties.of()
 					.sound(SoundType.METAL)
 					.strength(5.0F, 6.0F)
 					.requiresCorrectToolForDrops())
@@ -97,8 +89,7 @@ public class BlockRegistry {
 	public static final BlockEntry<Block> BRONZE_BLOCK = Robotics.REGISTRATE
 			.block("bronze_block", Block::new)
 			.lang("Bronze block")
-			.properties(properties -> properties
-					.of(Material.METAL)
+			.properties(properties -> properties.of()
 					.sound(SoundType.METAL)
 					.strength(6.0F, 7.0F)
 					.requiresCorrectToolForDrops())
@@ -116,8 +107,7 @@ public class BlockRegistry {
 			.lang("Smasher")
 			.blockstate((dataGenContext, provider) -> provider.horizontalBlock(dataGenContext.get(),
 					provider.models().getExistingFile(provider.modLoc("block/smasher"))))
-			.properties(properties -> properties
-					.of(Material.METAL)
+			.properties(properties -> properties.of()
 					.sound(SoundType.METAL)
 					.strength(9f)
 					.requiresCorrectToolForDrops())
@@ -129,8 +119,7 @@ public class BlockRegistry {
 			.lang("Code Editor")
 			.blockstate((dataGenContext, provider) -> provider.horizontalBlock(dataGenContext.get(),
 					provider.models().getExistingFile(provider.modLoc("block/code_editor"))))
-			.properties(properties -> properties
-					.of(Material.WOOD)
+			.properties(properties -> properties.of()
 					.sound(SoundType.WOOD)
 					.noOcclusion())
 			.simpleItem()

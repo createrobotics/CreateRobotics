@@ -1,5 +1,5 @@
 package com.workert.robotics.content.computers.ioblocks;
-import com.simibubi.create.foundation.tileEntity.SyncedTileEntity;
+import com.simibubi.create.foundation.blockEntity.SyncedBlockEntity;
 import com.workert.robotics.base.roboscript.*;
 
 public class IORoboScriptBlockHelper {
@@ -8,12 +8,12 @@ public class IORoboScriptBlockHelper {
 		return new IORoboScriptBlockClassBuilder();
 	}
 
-	public static IORoboScriptBlockInstanceBuilder createObject(RoboScriptClass clazz, SyncedTileEntity be) {
+	public static IORoboScriptBlockInstanceBuilder createObject(RoboScriptClass clazz, SyncedBlockEntity be) {
 		return new IORoboScriptBlockInstanceBuilder(clazz, be);
 	}
 
-	public static SyncedTileEntity getBlockEntityFromMethod(RoboScriptNativeFunction f) {
-		return (SyncedTileEntity) ((RoboScriptNativeMethod<RoboScriptObject>) f).instance.fields.get("").value;
+	public static SyncedBlockEntity getBlockEntityFromMethod(RoboScriptNativeFunction f) {
+		return (SyncedBlockEntity) ((RoboScriptNativeMethod<RoboScriptObject>) f).instance.fields.get("").value;
 	}
 
 
@@ -34,9 +34,9 @@ public class IORoboScriptBlockHelper {
 
 	public static class IORoboScriptBlockInstanceBuilder {
 		private final RoboScriptObject object;
-		private final SyncedTileEntity be;
+		private final SyncedBlockEntity be;
 
-		IORoboScriptBlockInstanceBuilder(RoboScriptClass clazz, SyncedTileEntity be) {
+		IORoboScriptBlockInstanceBuilder(RoboScriptClass clazz, SyncedBlockEntity be) {
 			this.object = new RoboScriptObject(clazz);
 			this.be = be;
 		}

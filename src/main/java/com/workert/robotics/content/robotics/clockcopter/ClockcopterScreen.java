@@ -1,9 +1,9 @@
 package com.workert.robotics.content.robotics.clockcopter;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.foundation.gui.AbstractSimiScreen;
 import com.simibubi.create.foundation.gui.AllGuiTextures;
 import com.simibubi.create.foundation.gui.widget.IconButton;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 
 public class ClockcopterScreen extends AbstractSimiScreen {
@@ -21,7 +21,7 @@ public class ClockcopterScreen extends AbstractSimiScreen {
 	}
 
 	@Override
-	protected void renderWindow(PoseStack ms, int mouseX, int mouseY, float partialTicks) {
+	protected void renderWindow(GuiGraphics ms, int mouseX, int mouseY, float partialTicks) {
 
 	}
 }

@@ -9,12 +9,12 @@ public class FlyingToolboxHandler {
 			new WorldAttached<>(w -> new ArrayList<>());
 
 	public static void onLoad(FlyingToolbox flyingToolbox) {
-		flyingToolboxes.get(flyingToolbox.getLevel())
+		flyingToolboxes.get(flyingToolbox.level())
 				.add(flyingToolbox);
 	}
 
 	public static void onUnload(FlyingToolbox flyingToolbox) {
-		flyingToolboxes.get(flyingToolbox.getLevel())
+		flyingToolboxes.get(flyingToolbox.level())
 				.remove(flyingToolbox);
 	}
 }

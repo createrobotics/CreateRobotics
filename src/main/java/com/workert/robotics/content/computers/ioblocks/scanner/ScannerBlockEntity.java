@@ -1,9 +1,9 @@
 package com.workert.robotics.content.computers.ioblocks.scanner;
 
-import com.simibubi.create.content.contraptions.base.KineticTileEntity;
-import com.simibubi.create.content.contraptions.relays.belt.transport.TransportedItemStack;
-import com.simibubi.create.foundation.tileEntity.SyncedTileEntity;
-import com.simibubi.create.foundation.tileEntity.TileEntityBehaviour;
+import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
+import com.simibubi.create.content.kinetics.belt.transport.TransportedItemStack;
+import com.simibubi.create.foundation.blockEntity.SyncedBlockEntity;
+import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.workert.robotics.base.registries.BlockEntityRegistry;
 import com.workert.robotics.base.roboscript.RoboScriptClass;
 import com.workert.robotics.base.roboscript.RoboScriptHelper;
@@ -19,7 +19,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.List;
 
-public class ScannerBlockEntity extends KineticTileEntity implements ScannerBehaviour.ScanningBehaviorSpecifics, IOBlockEntity {
+public class ScannerBlockEntity extends KineticBlockEntity implements ScannerBehaviour.ScanningBehaviorSpecifics, IOBlockEntity {
 	public ScannerBehaviour processingBehaviour;
 	private BlockPos targetPos = this.getBlockPos();
 	private String signalName = "";
@@ -53,7 +53,7 @@ public class ScannerBlockEntity extends KineticTileEntity implements ScannerBeha
 	}
 
 	@Override
-	public void addBehaviours(List<TileEntityBehaviour> behaviours) {
+	public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
 		super.addBehaviours(behaviours);
 		this.processingBehaviour = new ScannerBehaviour(this);
 		behaviours.add(this.processingBehaviour);
@@ -98,7 +98,7 @@ public class ScannerBlockEntity extends KineticTileEntity implements ScannerBeha
 	}
 
 	@Override
-	public SyncedTileEntity getBlockEntity() {
+	public SyncedBlockEntity getBlockEntity() {
 		return this;
 	}
 
