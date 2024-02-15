@@ -1,0 +1,73 @@
+{
+
+  "_": "->------------------------]  Game Elements  [------------------------<-",
+
+  "block.robotics.bronze_block": "Bloc de Bronz",
+  "block.robotics.code_editor": "Editor de cod",
+  "block.robotics.computer": "Computer",
+  "block.robotics.deepslate_tin_ore": "Deepslate minereu de Staniu",
+  "block.robotics.redstone_detector": "Detector de Redstone",
+  "block.robotics.redstone_emitter": "Emițător de Redstone",
+  "block.robotics.redstone_pulser": "Pulsator de Redstone",
+  "block.robotics.scanner": "Scaner",
+  "block.robotics.smasher": "Strivitor",
+  "block.robotics.tin_block": "Bloc de Staniu",
+  "block.robotics.tin_ore": "Minereu de Staniu",
+
+  "_": "I had no idea how to translate some of these because those eather arent actual words or dont have a propper translation so I hope its fine",
+
+  "entity.robotics.clockcopter": "Ceascopter",
+  "entity.robotics.code_drone": "Juan",
+  "entity.robotics.extend_o_boots": "Extend-O-Cizme",
+  "entity.robotics.flying_toolbox": "Cutie de Scule Zburătoare",
+  "entity.robotics.miner": "Miner",
+
+  "item.robotics.bronze_ingot": "Lingou de Bronz",
+  "item.robotics.bronze_nugget": "Nugget de Bronz",
+  "item.robotics.clockcopter": "Ceascopter",
+  "item.robotics.code_drone": "Juan",
+  "item.robotics.extend_o_boots": "Extend-O-Cizme",
+  "item.robotics.incomplete_clockcopter": "Ceascopter Incomplet",
+  "item.robotics.incomplete_code_drone": "Dronă de Cod Incompletă",
+  "item.robotics.program": "Program",
+  "item.robotics.punch_card": "Cartelă Perforată",
+  "item.robotics.raw_tin": "Staniu crud",
+  "item.robotics.tin_ingot": "Lingou de Staniu",
+  "item.robotics.tin_nugget": "Nugget de Staniu",
+
+  "itemGroup.robotics": "Create Robotics",
+
+  "_": "->------------------------]  Interface  [------------------------<-",
+
+  "robotics.ioblock.set": "Computerul Vizat selectat",
+  "robotics.ioblock.invalid": "Targetul nu este un Computer",
+  "robotics.ioblock.missing": "Mai întâi selectați un computer",
+  "robotics.ioblock.too_far": "Computerul VIzat este prea departe de aici",
+
+  "_": "->------------------------]  Tooltips  [------------------------<-",
+
+  "item.robotics.extend_o_boots.tooltip": "EXTEND-O-CIZME",
+  "item.robotics.extend_o_boots.tooltip.summary": "_Scafoldingul tău echipabil_! te ajută să creezi un _scafolding extensibil temporar_ sub tine.",
+  "item.robotics.extend_o_boots.tooltip.control1": "Țineți apăsat CTRL întimp ce îi purtați",
+  "item.robotics.extend_o_boots.tooltip.action1": "Vă permite să _activați_ ExtendOCizmele prin _derularea în sus sau în jos_",
+
+  "item.robotics.program.tooltip": "PROGRAM",
+  "item.robotics.program.tooltip.summary": "Un _Program care Conține Cod_! Allows you to _program robots_.",
+  "item.robotics.program.tooltip.control1": "Faceți clic dreapta la Editorul de Cod",
+  "item.robotics.program.tooltip.action1": "Vă permite să _editați_ _conținutul_ programului",
+  "item.robotics.program.tooltip.control2": "Faceți clic dreapta la robotul programabil",
+  "item.robotics.program.tooltip.action2": "Vă permite să _aplicați_ _codul_ programului _robotului_",
+
+  "block.robotics.code_editor.tooltip": "EDITOR DE COD",
+  "block.robotics.code_editor.tooltip.summary": "Un bloc care vă permite să _editați_ _Conținutul_ unui program!",
+  "block.robotics.code_editor.tooltip.condition1": "When R-Clicked with Program",
+  "block.robotics.code_editor.tooltip.behaviour1": "Vă permite să _editați_ _programul_",
+
+  "robotics.ponder.programming.header": "Programare folosind un editor de cod.",
+  "robotics.ponder.programming.text_1": "Ca să editați conținutul unui program ai nevoie de un editor de cod.",
+  "robotics.ponder.programming.text_2": "Faceți clic dreapta la un editor de cod cu programul pentru a începe!",
+  "robotics.ponder.programming.text_3": "După ce ați finisat să codați, faceți clic dreapta cu programul la un robot programabil pentru a aplica codul dvs. la el.",
+
+  "_": "Thank you for translating Create Robotics!"
+
+}
