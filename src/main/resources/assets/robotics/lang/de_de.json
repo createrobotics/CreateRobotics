@@ -9,8 +9,8 @@
   "item.robotics.program": "Programm",
   "item.robotics.clockcopter": "Clockcopter",
   "item.robotics.miner": "Miner",
-  "item.robotics.code_drone": "Code Drone",
-  "item.robotics.extend_o_boots": "Extend-O-Boots",
+  "item.robotics.code_drone": "Juan",
+  "item.robotics.extend_o_boots": "Ausfahrbare Stiefel",
 
   "block.robotics.tin_ore": "Zinnerz",
   "block.robotics.deepslate_tin_ore": "Tiefenschiefer-Zinnerz",
@@ -22,9 +22,9 @@
   "entity.robotics.clockcopter": "Clockcopter",
   "entity.robotics.code_drone": "Juan",
   "entity.robotics.miner": "Miner",
-  "entity.robotics.extend_o_boots": "Extend-O-Boots",
+  "entity.robotics.extend_o_boots": "Ausfahrbare Stiefel",
 
-  "item.robotics.extend_o_boots.tooltip": "EXTEND-O-BOOTS",
+  "item.robotics.extend_o_boots.tooltip": "AUSFAHRBARE STIEFEL",
   "item.robotics.extend_o_boots.tooltip.summary": "Dein _Anziehbares Gerüst_! Erstellt ein _einstellbares temporäres Gerüst_ unter dir.",
   "item.robotics.extend_o_boots.tooltip.control1": "Halte STRG wärend du es trägst",
   "item.robotics.extend_o_boots.tooltip.action1": "_Steuere_ es durch _scrollen_",
@@ -38,11 +38,11 @@
 
   "block.robotics.code_editor.tooltip": "PROGRAMM-SCHREIBER",
   "block.robotics.code_editor.tooltip.summary": "Ein Block, mit dem du den _Inhalt_ eines Programms _bearbeiten_ kannst!",
-  "block.robotics.code_editor.tooltip.condition1": "Bei R-Klick mit einem Programm",
+  "block.robotics.code_editor.tooltip.condition1": "Ein R-Klick mit einem Programm",
   "block.robotics.code_editor.tooltip.behaviour1": "Lässt dich das _Programm verändern_",
 
   "robotics.ponder.programming.header": "Programiern mit einem Programm-Schreiber.",
-  "robotics.ponder.programming.text_1": "Um den Inhalt eines Programmes zu ändern brauchst du einen Programm-Schreiber.",
+  "robotics.ponder.programming.text_1": "Um den Inhalt eines Programmes zu ändern, brauchst du einen Programm-Schreiber.",
   "robotics.ponder.programming.text_2": "R-Klicke den Programm-Schreiber mit dem Programm, um zu starten!",
-  "robotics.ponder.programming.text_3": "Wenn du mit dem Programieren fertig bist, R-klicke einen programmierbaren Roboter mit dem Programm, um es zu starten."
+  "robotics.ponder.programming.text_3": "Wenn du mit dem Programmieren fertig bist, R-klicke einen programmierbaren Roboter mit dem Programm, um es zu starten."
 }
