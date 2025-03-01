@@ -6,6 +6,8 @@
   "block.robotics.computer": "Комп'ютер",
   "block.robotics.deepslate_tin_ore": "Глибосланська олов'яна руда",
   "block.robotics.redstone_detector": "Детектор редстоуну",
+  "block.robotics.redstone_emitter": "Випромінувач редстоуну",
+  "block.robotics.redstone_pulser": "Пульсатор редстоуну",
   "block.robotics.scanner": "Сканер",
   "block.robotics.smasher": "Розгромник",
   "block.robotics.tin_block": "Олов'яний блок",
@@ -20,14 +22,24 @@
   "item.robotics.bronze_ingot": "Бронзовий злиток",
   "item.robotics.bronze_nugget": "Бронзовий шматочок",
   "item.robotics.clockcopter": "Годиниковий гелікоптер",
-  "item.robotics.code_drone": "Juan",
+  "item.robotics.code_drone": "Джуан",
   "item.robotics.extend_o_boots": "Довгі чоботи",
+  "item.robotics.incomplete_clockcopter": "Частина годиникового голікоптера",
+  "item.robotics.incomplete_code_drone": "Частина Джуана",
   "item.robotics.program": "Програма",
+  "item.robotics.punch_card": "Перфокарта",
   "item.robotics.raw_tin": "Рудне олово",
   "item.robotics.tin_ingot": "Олов'яний злиток",
   "item.robotics.tin_nugget": "Олов'яний шматочок",
 
-  "itemGroup.robotics": "Створити механізм",
+  "itemGroup.robotics": "Create: Роботехніка",
+
+  "_": "->------------------------]  Interface  [------------------------<-",
+
+  "robotics.ioblock.set": "Цільовий комп'ютер вибрано",
+  "robotics.ioblock.invalid": "Ціль не є комп'ютером",
+  "robotics.ioblock.missing": "Виберіть комп'ютер як першу ціль",
+  "robotics.ioblock.too_far": "Цільовий комп'ютер надто далеко",
 
   "_": "->------------------------]  Tooltips  [------------------------<-",
 

@@ -1,0 +1,71 @@
+{
+
+  "_": "->------------------------]  Game Elements  [------------------------<-",
+
+  "block.robotics.bronze_block": "Blok bronce",
+  "block.robotics.code_editor": "Editor koda",
+  "block.robotics.computer": "Računalo",
+  "block.robotics.deepslate_tin_ore": "Škriljava kositrena ruda",
+  "block.robotics.redstone_detector": "Redstone Detektor",
+  "block.robotics.redstone_emitter": "Redstone Odašiljač",
+  "block.robotics.redstone_pulser": "Redstone Pulser",
+  "block.robotics.scanner": "Skener",
+  "block.robotics.smasher": "Razbijač",
+  "block.robotics.tin_block": "Kositreni blok",
+  "block.robotics.tin_ore": "Kositrena ruda",
+
+  "entity.robotics.clockcopter": "Clockcopter",
+  "entity.robotics.code_drone": "Juan",
+  "entity.robotics.extend_o_boots": "Produžne Čižme",
+  "entity.robotics.flying_toolbox": "Leteća kutija s alatima",
+  "entity.robotics.miner": "Kopač",
+
+  "item.robotics.bronze_ingot": "Brončana poluga",
+  "item.robotics.bronze_nugget": "Grumen bronce",
+  "item.robotics.clockcopter": "Clockcopter",
+  "item.robotics.code_drone": "Juan",
+  "item.robotics.extend_o_boots": "Produžne Čižme",
+  "item.robotics.incomplete_clockcopter": "Nedovršen Clockcopter",
+  "item.robotics.incomplete_code_drone": "Nedovršen kodirajući dron",
+  "item.robotics.program": "Program",
+  "item.robotics.punch_card": "Bušena Kartica",
+  "item.robotics.raw_tin": "Sirovi kositar",
+  "item.robotics.tin_ingot": "Kositrena poluga",
+  "item.robotics.tin_nugget": "Grumen kositra",
+
+  "itemGroup.robotics": "Create Robotics",
+
+  "_": "->------------------------]  Interface  [------------------------<-",
+
+  "robotics.ioblock.set": "Računalo izabrano.",
+  "robotics.ioblock.invalid": "Meta nije računalo.",
+  "robotics.ioblock.missing": "Prvo izaberi računalo kao metu.",
+  "robotics.ioblock.too_far": "Izabrano računalo je pre daleko",
+
+  "_": "->------------------------]  Tooltips  [------------------------<-",
+
+  "item.robotics.extend_o_boots.tooltip": "PRODUŽNE ČIŽME",
+  "item.robotics.extend_o_boots.tooltip.summary": "Tvoja _opremljiva Skela_! Omogučuje ti izradiš _privremenu produžnu skalu_ ispod sebe.",
+  "item.robotics.extend_o_boots.tooltip.control1": "Drži Ctrl tjekom nošenja",
+  "item.robotics.extend_o_boots.tooltip.action1": "Dopušta ti da _aktiviraš_ Produžne Čižme uz pomoć _Kodrljanja gore ili dole_",
+
+  "item.robotics.program.tooltip": "PROGRAM",
+  "item.robotics.program.tooltip.summary": "_Program koji sadrži kod_! Daje ti da _programiraš robote_.",
+  "item.robotics.program.tooltip.control1": "Desni klik kod uređivača koda",
+  "item.robotics.program.tooltip.action1": "Dopušta ti da _uređuješ sadržaj_ programa",
+  "item.robotics.program.tooltip.control2": "Desni klik kod programibilnog robota",
+  "item.robotics.program.tooltip.action2": "Dopušta ti da _primijeniš_ programov _kod_ na _robota_",
+
+  "block.robotics.code_editor.tooltip": "UREĐIVAČ KODA",
+  "block.robotics.code_editor.tooltip.summary": "Blok koji ti omogućuje _uređivanje_ programovog _koda_",
+  "block.robotics.code_editor.tooltip.condition1": "Kada desni klik pritisnut s programom",
+  "block.robotics.code_editor.tooltip.behaviour1": "Omogučuje ti da _uređuješ_ _program_",
+
+  "robotics.ponder.programming.header": "Programiranje koristeći uređivač koda",
+  "robotics.ponder.programming.text_1": "Da promjeniš sadržaj programa trebaš koristiti uređivač koda",
+  "robotics.ponder.programming.text_2": "Pritisni uređivač desnim klikom da započneš.",
+  "robotics.ponder.programming.text_3": "Kada si gotov sa kodiranjem pritisni na programibilnog robota desnim klikom kako bi primijenio svoj kod na njega.",
+
+  "_": "Thank you for translating Create Robotics!"
+
+}

@@ -1,0 +1,71 @@
+{
+
+  "_": "->------------------------]  Game Elements  [------------------------<-",
+
+  "block.robotics.bronze_block": "Brown Shiny Blok",
+  "block.robotics.code_editor": "Edit Kodzz",
+  "block.robotics.computer": "Beep Boop",
+  "block.robotics.deepslate_tin_ore": "Dark ston shiny or",
+  "block.robotics.redstone_detector": "Redston find tingyz",
+  "block.robotics.redstone_emitter": "Redston Emtor",
+  "block.robotics.redstone_pulser": "Redston Pew pew",
+  "block.robotics.scanner": "find tinginator",
+  "block.robotics.smasher": "Boom bamm",
+  "block.robotics.tin_block": "Shiny blok",
+  "block.robotics.tin_ore": "Shiny or",
+
+  "entity.robotics.clockcopter": "Clockcopter",
+  "entity.robotics.code_drone": "Juan",
+  "entity.robotics.extend_o_boots": "EXTANDA BOOOOOOOTZZZZ",
+  "entity.robotics.flying_toolbox": "Flyng ting wit toolz",
+  "entity.robotics.miner": "Minaaa",
+
+  "item.robotics.bronze_ingot": "Brown Shiny igot",
+  "item.robotics.bronze_nugget": "Brown shiny ting",
+  "item.robotics.clockcopter": "Clockcopter",
+  "item.robotics.code_drone": "Juan",
+  "item.robotics.extend_o_boots": "EXTANDA BOOOOOOOTZZZZ",
+  "item.robotics.incomplete_clockcopter": "Not daz finishd Clockcopter",
+  "item.robotics.incomplete_code_drone": "Not daz finishd Kod Dronz",
+  "item.robotics.program": "Pogram",
+  "item.robotics.punch_card": "Punc card",
+  "item.robotics.raw_tin": "Ra Shiny",
+  "item.robotics.tin_ingot": "Shiny ting",
+  "item.robotics.tin_nugget": "Shiny ting",
+
+  "itemGroup.robotics": "Create Robotics",
+
+  "_": "->------------------------]  Interface  [------------------------<-",
+
+  "robotics.ioblock.set": "Da tagret Beep Boop aint selecdedz",
+  "robotics.ioblock.invalid": "Tagret aint a beep boop",
+  "robotics.ioblock.missing": "Selekd a beep boop as tagret firstttt",
+  "robotics.ioblock.too_far": "Tagret Beep boop is too faaaaarrrrrr",
+
+  "_": "->------------------------]  Tooltips  [------------------------<-",
+
+  "item.robotics.extend_o_boots.tooltip": "EXTANDA BOOOOOOOTZZZZ",
+  "item.robotics.extend_o_boots.tooltip.summary": "Ur _eqipabla scafing_! Lets u to maake an _extandabla not long lasting scafolding_ under u.",
+  "item.robotics.extend_o_boots.tooltip.control1": "Smashzz Ctrl while waring",
+  "item.robotics.extend_o_boots.tooltip.action1": "Lets ya _turn on_ the BOOOOOOOTZZZZ through _scrolling wuupp or duupp (up or down)_",
+
+  "item.robotics.program.tooltip": "POAGRAM",
+  "item.robotics.program.tooltip.summary": "Da _pogram wit da kodz_! Letz u to _Pogram beep boop peopl_.",
+  "item.robotics.program.tooltip.control1": "Doo r-klik at kod edatar",
+  "item.robotics.program.tooltip.action1": "Letz u _edit_ the pogam's _tingz_",
+  "item.robotics.program.tooltip.control2": "R-klik at pogramable beep boop persn",
+  "item.robotics.program.tooltip.action2": "Letz u _apply_ the progmz's _kod_ to the _beep boop person_",
+
+  "block.robotics.code_editor.tooltip": "KOD EDITOR",
+  "block.robotics.code_editor.tooltip.summary": "A blok dat letz u _edit_ a pogramz's _tingz_!",
+  "block.robotics.code_editor.tooltip.condition1": "Uen R-Klikdz with Pogam",
+  "block.robotics.code_editor.tooltip.behaviour1": "Letz u _edit_ da _pogzamn_",
+
+  "robotics.ponder.programming.header": "Pogamning using a kodz Editor.",
+  "robotics.ponder.programming.text_1": "To change da tingz of a popgram ya need a kod editor.",
+  "robotics.ponder.programming.text_2": "R-klik da kod editor with the pogram to get sdardedz!",
+  "robotics.ponder.programming.text_3": "uwn ur finizgh kodin r-klik wit da pogram on a pogramable beep boop person to aply ur kodeee to it.",
+
+  "_": "Thank you for translating Create Robotics!"
+
+}
