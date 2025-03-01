@@ -3,9 +3,9 @@ package com.workert.robotics.content.computers.computer;
 import com.simibubi.create.AllItems;
 import com.simibubi.create.content.kinetics.simpleRelays.ICogWheel;
 import com.simibubi.create.foundation.block.IBE;
-import com.simibubi.create.foundation.gui.ScreenOpener;
 import com.workert.robotics.base.registries.BlockEntityRegistry;
 import com.workert.robotics.base.registries.ItemRegistry;
+import net.createmod.catnip.gui.ScreenOpener;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -26,7 +26,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.DistExecutor;
-import org.jetbrains.annotations.Nullable;
 
 public class ComputerBlock extends Block implements EntityBlock, ICogWheel, IBE<ComputerBlockEntity> {
 
@@ -73,7 +72,6 @@ public class ComputerBlock extends Block implements EntityBlock, ICogWheel, IBE<
 		return BlockEntityRegistry.COMPUTER.get();
 	}
 
-	@Nullable
 	@Override
 	public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
 		return BlockEntityRegistry.COMPUTER.get().create(blockPos, blockState);

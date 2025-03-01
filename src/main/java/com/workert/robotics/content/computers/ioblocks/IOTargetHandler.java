@@ -1,6 +1,6 @@
 package com.workert.robotics.content.computers.ioblocks;
 import com.simibubi.create.AllItems;
-import com.simibubi.create.CreateClient;
+import com.simibubi.create.content.logistics.depot.EjectorTargetHandler;
 import com.workert.robotics.content.computers.computer.ComputerBlockEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -9,11 +9,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -82,7 +79,7 @@ public class IOTargetHandler {
 				currentSelection = null;
 				currentItem = heldItem;
 			}
-			drawOutline(currentSelection);
+			EjectorTargetHandler.drawOutline(currentSelection);
 		}
 		checkForWrench(heldItem);
 	}
@@ -111,20 +108,6 @@ public class IOTargetHandler {
 		}
 
 		if (lastHoveredBlockPos != -1)
-			drawOutline(currentSelection);
-	}
-
-	public static void drawOutline(BlockPos selection) {
-		Level world = Minecraft.getInstance().level;
-		if (selection == null)
-			return;
-
-		BlockPos pos = selection;
-		BlockState state = world.getBlockState(pos);
-		VoxelShape shape = state.getShape(world, pos);
-		AABB boundingBox = shape.isEmpty() ? new AABB(BlockPos.ZERO) : shape.bounds();
-		CreateClient.OUTLINER.showAABB("target", boundingBox.move(pos))
-				.colored(0xffcb74)
-				.lineWidth(1 / 16f);
+			EjectorTargetHandler.drawOutline(currentSelection);
 	}
 }

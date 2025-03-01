@@ -5,13 +5,13 @@ import com.simibubi.create.content.equipment.armor.BacktankUtil;
 import com.simibubi.create.content.kinetics.deployer.DeployerFakePlayer;
 import com.simibubi.create.content.kinetics.deployer.DeployerHandler;
 import com.simibubi.create.content.redstone.link.RedstoneLinkNetworkHandler;
-import com.simibubi.create.foundation.utility.Couple;
 import com.workert.robotics.base.registries.ItemRegistry;
 import com.workert.robotics.base.roboscript.RoboScript;
 import com.workert.robotics.base.roboscript.RoboScriptHelper;
 import com.workert.robotics.base.roboscript.RuntimeError;
 import com.workert.robotics.base.roboscript.ingame.LineLimitedString;
 import com.workert.robotics.unused.CodeHelper;
+import net.createmod.catnip.data.Couple;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -36,7 +36,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -273,7 +272,7 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 		}
 	}
 
-	public static void click(AbstractRobotEntity robot, BlockPos posToClick, @Nullable Direction direction, boolean use, @Nullable Item itemToClickWith) throws ClassNotFoundException, NoSuchMethodException, InterruptedException, InvocationTargetException, IllegalAccessException {
+	public static void click(AbstractRobotEntity robot, BlockPos posToClick, Direction direction, boolean use, Item itemToClickWith) throws ClassNotFoundException, NoSuchMethodException, InterruptedException, InvocationTargetException, IllegalAccessException {
 		DeployerFakePlayer fakePlayer = new DeployerFakePlayer((ServerLevel) robot.level(), robot.uuid);
 
 		if (itemToClickWith != null) {
@@ -453,7 +452,6 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 		}
 	}
 
-	@Nullable
 	@Override
 	public ItemStack getPickResult() {
 		return this.getRobotItem().getDefaultInstance();

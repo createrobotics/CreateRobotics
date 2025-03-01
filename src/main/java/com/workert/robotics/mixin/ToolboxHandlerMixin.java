@@ -1,10 +1,10 @@
 package com.workert.robotics.mixin;
 import com.simibubi.create.content.equipment.toolbox.ToolboxBlockEntity;
 import com.simibubi.create.content.equipment.toolbox.ToolboxHandler;
-import com.simibubi.create.foundation.utility.WorldAttached;
 import com.workert.robotics.content.robotics.flyingtoolbox.FakeToolboxBlockEntity;
 import com.workert.robotics.content.robotics.flyingtoolbox.FlyingToolbox;
 import com.workert.robotics.content.robotics.flyingtoolbox.FlyingToolboxHandler;
+import net.createmod.catnip.data.WorldAttached;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;

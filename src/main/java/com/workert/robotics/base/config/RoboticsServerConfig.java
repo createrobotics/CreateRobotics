@@ -1,5 +1,6 @@
 package com.workert.robotics.base.config;
-import com.simibubi.create.foundation.config.ConfigBase;
+
+import net.createmod.catnip.config.ConfigBase;
 
 public class RoboticsServerConfig extends ConfigBase {
 	public final ConfigInt maxIOBlocksPlacementRange =

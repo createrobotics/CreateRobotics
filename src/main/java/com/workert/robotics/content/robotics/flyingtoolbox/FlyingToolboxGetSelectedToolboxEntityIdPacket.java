@@ -34,7 +34,7 @@ public class FlyingToolboxGetSelectedToolboxEntityIdPacket extends SimplePacketB
 		if (!(flyingToolboxEntity instanceof FlyingToolbox))
 			throw new IllegalStateException("Entity with ID is not a FlyingToolbox Entity");
 
-		PacketRegistry.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player),
+		PacketRegistry.getChannel().send(PacketDistributor.PLAYER.with(() -> player),
 				new FlyingToolboxReplySelectedToolboxEntityIdPacket(flyingToolboxEntity.getId(),
 						compound.getInt("Slot")));
 		return true;

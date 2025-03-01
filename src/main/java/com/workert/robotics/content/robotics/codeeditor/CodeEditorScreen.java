@@ -1,14 +1,15 @@
 package com.workert.robotics.content.robotics.codeeditor;
 
-import com.jozufozu.flywheel.util.transform.TransformStack;
 import com.simibubi.create.content.trains.station.NoShadowFontWrapper;
-import com.simibubi.create.foundation.gui.AbstractSimiScreen;
 import com.simibubi.create.foundation.gui.AllGuiTextures;
 import com.simibubi.create.foundation.gui.AllIcons;
 import com.simibubi.create.foundation.gui.widget.IconButton;
-import com.simibubi.create.foundation.utility.Color;
 import com.workert.robotics.base.registries.PacketRegistry;
 import com.workert.robotics.unused.CodeHelper;
+import dev.engine_room.flywheel.lib.transform.PoseTransformStack;
+import dev.engine_room.flywheel.lib.transform.TransformStack;
+import net.createmod.catnip.gui.AbstractSimiScreen;
+import net.createmod.catnip.theme.Color;
 import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -61,18 +62,18 @@ public class CodeEditorScreen extends AbstractSimiScreen {
 
 	@Override
 	protected void init() {
-		this.setWindowSize(this.background.width, this.background.height);
+		this.setWindowSize(this.background.getWidth(), this.background.getHeight());
 		super.init();
 		this.clearWidgets();
 
 		int x = this.guiLeft;
 		int y = this.guiTop;
 
-		this.editButton = new IconButton(x + this.background.width - 63, y + this.background.height - 24,
+		this.editButton = new IconButton(x + this.background.getWidth() - 63, y + this.background.getHeight() - 24,
 				AllIcons.I_CONFIG_OPEN).withCallback((mouseX, mouseY) -> Util.getPlatform().openFile(this.editFile));
 		this.addRenderableWidget(this.editButton);
 
-		this.confirmButton = new IconButton(x + this.background.width - 33, y + this.background.height - 24,
+		this.confirmButton = new IconButton(x + this.background.getWidth() - 33, y + this.background.getHeight() - 24,
 				AllIcons.I_CONFIRM).withCallback((mouseX, mouseY) -> this.onClose());
 		this.addRenderableWidget(this.confirmButton);
 
@@ -87,8 +88,8 @@ public class CodeEditorScreen extends AbstractSimiScreen {
 		this.background.render(graphics, x, y, Color.BLACK);
 
 		graphics.pose().pushPose();
-		TransformStack msr = TransformStack.cast(graphics.pose());
-		msr.pushPose().translate(x + this.background.width + 4, y + this.background.height + 4, 100).scale(40)
+		TransformStack<PoseTransformStack> msr = TransformStack.of(graphics.pose());
+		msr.pushPose().translate(x + this.background.getWidth() + 4, y + this.background.getHeight() + 4, 100).scale(40)
 				.rotateX(-22).rotateY(63);
 
 		graphics.pose().popPose();
@@ -119,7 +120,7 @@ public class CodeEditorScreen extends AbstractSimiScreen {
 			FileInputStream inputStream = new FileInputStream(this.editFile);
 			try {
 				String fileCode = IOUtils.toString(inputStream);
-				PacketRegistry.CHANNEL.sendToServer(new ReturnEditedCodePacket(fileCode));
+				PacketRegistry.getChannel().sendToServer(new ReturnEditedCodePacket(fileCode));
 			} finally {
 				inputStream.close();
 			}

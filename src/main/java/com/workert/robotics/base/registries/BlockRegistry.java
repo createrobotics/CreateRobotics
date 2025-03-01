@@ -1,13 +1,13 @@
 package com.workert.robotics.base.registries;
 
-import com.simibubi.create.content.kinetics.BlockStressDefaults;
-import com.simibubi.create.content.redstone.displayLink.AllDisplayBehaviours;
+import com.simibubi.create.api.behaviour.display.DisplaySource;
+import com.simibubi.create.content.redstone.displayLink.source.ComputerDisplaySource;
 import com.simibubi.create.foundation.data.TagGen;
+import com.simibubi.create.infrastructure.config.CStress;
 import com.tterrag.registrate.providers.loot.RegistrateBlockLootTables;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.workert.robotics.Robotics;
 import com.workert.robotics.content.computers.computer.ComputerBlock;
-import com.workert.robotics.content.computers.computer.ComputerDisplaySource;
 import com.workert.robotics.content.computers.computer.TerminalDisplaySource;
 import com.workert.robotics.content.computers.ioblocks.IOBlockItem;
 import com.workert.robotics.content.computers.ioblocks.redstonedetector.RedstoneDetectorBlock;
@@ -132,10 +132,9 @@ public class BlockRegistry {
 					provider.models().getExistingFile(provider.modLoc("block/computer"))))
 			.initialProperties(() -> Blocks.STONE)
 			.transform(TagGen.pickaxeOnly())
-			.transform(BlockStressDefaults.setImpact(12))
-			.onRegister(AllDisplayBehaviours.assignDataBehaviour(
-					new TerminalDisplaySource(), "terminal"))
-			.onRegister(AllDisplayBehaviours.assignDataBehaviour(new ComputerDisplaySource(), "computer"))
+			.transform(CStress.setImpact(12))
+			.onRegister((block) -> DisplaySource.BY_BLOCK.add(block, new TerminalDisplaySource()))
+			.onRegister((block) -> DisplaySource.BY_BLOCK.add(block, new ComputerDisplaySource()))
 			.simpleItem()
 			.properties(BlockBehaviour.Properties::noOcclusion).register();
 

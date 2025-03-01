@@ -1,6 +1,5 @@
 package com.workert.robotics.base.config;
-import com.simibubi.create.foundation.config.ConfigBase;
-import com.workert.robotics.mixin.ConfigBaseAccessor;
+import net.createmod.catnip.config.ConfigBase;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
@@ -17,7 +16,7 @@ public class RoboticsConfigs {
 	private static <T extends ConfigBase> T register(Supplier<T> factory, ModConfig.Type side) {
 		Pair<T, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(builder -> {
 			T config = factory.get();
-			((ConfigBaseAccessor) config).invokeRegisterAll(builder);
+			config.registerAll(builder);
 			return config;
 		});
 

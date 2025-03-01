@@ -1,27 +1,26 @@
 package com.workert.robotics.base.datagen.recipe;
 import com.simibubi.create.AllBlocks;
-import com.simibubi.create.content.contraptions.components.deployer.DeployerApplicationRecipe;
-import com.simibubi.create.content.contraptions.components.press.PressingRecipe;
-import com.simibubi.create.content.contraptions.components.saw.CuttingRecipe;
-import com.simibubi.create.content.contraptions.itemAssembly.SequencedAssemblyRecipeBuilder;
+import com.simibubi.create.content.kinetics.deployer.DeployerApplicationRecipe;
+import com.simibubi.create.content.kinetics.press.PressingRecipe;
+import com.simibubi.create.content.kinetics.saw.CuttingRecipe;
+import com.simibubi.create.content.processing.sequenced.SequencedAssemblyRecipeBuilder;
 import com.simibubi.create.foundation.data.recipe.CreateRecipeProvider;
 import com.workert.robotics.Robotics;
 import com.workert.robotics.base.registries.BlockRegistry;
 import com.workert.robotics.base.registries.ItemRegistry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.function.UnaryOperator;
 
 public class SequencedAssemblyRecipeGen extends CreateRecipeProvider {
 	public SequencedAssemblyRecipeGen(DataGenerator dataGenerator) {
-		super(dataGenerator);
+		super(dataGenerator.getPackOutput());
 	}
 
 	GeneratedRecipe CLOCKCOPTER = this.create("clockcopter",
 			builder -> builder.require(BlockRegistry.BRONZE_BLOCK.get())
-					.transitionTo(ItemRegistry.INCOMPLETE_CLOCKCOPTER.get())
+					.transitionTo(ItemRegistry.INCOMPLETE_CLOCKCOPTER.asItem())
 					.addOutput(ItemRegistry.CLOCKCOPTER.get(), 1)
 					.loops(1)
 					.addStep(CuttingRecipe::new, recipeBuilder -> recipeBuilder.duration(400))
@@ -38,7 +37,7 @@ public class SequencedAssemblyRecipeGen extends CreateRecipeProvider {
 
 	GeneratedRecipe CODE_DRONE = this.create("code_drone",
 			builder -> builder.require(BlockRegistry.BRONZE_BLOCK.get())
-					.transitionTo(ItemRegistry.INCOMPLETE_CODE_DRONE.get())
+					.transitionTo(ItemRegistry.INCOMPLETE_CODE_DRONE.asItem())
 					.addOutput(ItemRegistry.CODE_DRONE.get(), 1)
 					.loops(3)
 					.addStep(CuttingRecipe::new, recipeBuilder -> recipeBuilder.duration(400))
@@ -57,10 +56,5 @@ public class SequencedAssemblyRecipeGen extends CreateRecipeProvider {
 						.build(c);
 		this.all.add(generatedRecipe);
 		return generatedRecipe;
-	}
-
-	@Override
-	public @NotNull String getName() {
-		return "Create Robotics' Sequenced Assembly Recipes";
 	}
 }

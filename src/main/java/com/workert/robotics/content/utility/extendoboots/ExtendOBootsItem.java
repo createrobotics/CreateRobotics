@@ -1,12 +1,13 @@
 package com.workert.robotics.content.utility.extendoboots;
 
 import com.google.common.collect.Maps;
-import com.simibubi.create.foundation.utility.animation.LerpedFloat;
 import com.workert.robotics.base.client.KeybindList;
 import com.workert.robotics.base.registries.ArmorMaterialRegistry;
 import com.workert.robotics.base.registries.EntityRegistry;
 import com.workert.robotics.base.registries.PacketRegistry;
+import net.createmod.catnip.animation.LerpedFloat;
 import net.minecraft.core.Direction;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
@@ -34,16 +35,15 @@ public class ExtendOBootsItem extends ArmorItem {
 	}
 
 	@Override
-	public void onArmorTick(ItemStack stack, Level level, Player player) {
-		super.onArmorTick(stack, level, player);
+	public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
+		super.inventoryTick(stack, level, entity, slotId, isSelected);
 		if (level.isClientSide()) {
 			if (!this.clientSentOff && !KeybindList.changeExtendOBootsHeight.isDown()) {
-				PacketRegistry.CHANNEL.sendToServer(new ChangeExtendOBootsHeightPacket(-MAX_HEIGHT));
+				PacketRegistry.getChannel().sendToServer(new ChangeExtendOBootsHeightPacket(-MAX_HEIGHT));
 				this.clientSentOff = true;
 			}
 			return;
 		}
-		this.player = player;
 		if (stack.getOrCreateTag().getFloat("currentHeight") > 0) {
 			if (HEIGHT.get(stack) == null) HEIGHT.put(stack, LerpedFloat.linear());
 			if (stack.getOrCreateTag().getFloat("currentHeight") > HEIGHT.get(stack).getValue())
@@ -60,7 +60,8 @@ public class ExtendOBootsItem extends ArmorItem {
 				this.player.level().addFreshEntity(extendOBoots);
 				ENTITIES.put(stack, extendOBoots);
 			}
-			player.teleportTo(player.getX(), extendOBoots.getY() + HEIGHT.get(stack).getValue(), player.getZ());
+			this.player.teleportTo(this.player.getX(), extendOBoots.getY() + HEIGHT.get(stack).getValue(),
+					this.player.getZ());
 			this.player.setYRot(extendOBoots.getYRot());
 			if (this.player.position().distanceTo(extendOBoots.position()
 					.with(Direction.Axis.Y, extendOBoots.getY() + HEIGHT.get(stack).getValue())) > 0.1)
@@ -76,10 +77,10 @@ public class ExtendOBootsItem extends ArmorItem {
 	public void detectScroll(InputEvent.MouseScrollingEvent mouseEvent) {
 		if (mouseEvent.getScrollDelta() > 0 && KeybindList.changeExtendOBootsHeight.isDown()) {
 			this.clientSentOff = false;
-			PacketRegistry.CHANNEL.sendToServer(new ChangeExtendOBootsHeightPacket(0.5));
+			PacketRegistry.getChannel().sendToServer(new ChangeExtendOBootsHeightPacket(0.5));
 		} else if (mouseEvent.getScrollDelta() < 0 && KeybindList.changeExtendOBootsHeight.isDown()) {
 			this.clientSentOff = false;
-			PacketRegistry.CHANNEL.sendToServer(new ChangeExtendOBootsHeightPacket(-0.5));
+			PacketRegistry.getChannel().sendToServer(new ChangeExtendOBootsHeightPacket(-0.5));
 		}
 	}
 

@@ -1,8 +1,7 @@
 package com.workert.robotics.base.registries;
 
 import com.simibubi.create.AllTags;
-import com.simibubi.create.content.AllSections;
-import com.simibubi.create.content.contraptions.itemAssembly.SequencedAssemblyItem;
+import com.simibubi.create.content.processing.sequenced.SequencedAssemblyItem;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import com.workert.robotics.Robotics;
 import com.workert.robotics.content.computers.punchcard.PunchCardItem;
@@ -10,7 +9,6 @@ import com.workert.robotics.content.robotics.BaseRobotItem;
 import com.workert.robotics.content.utility.extendoboots.ExtendOBootsItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraftforge.common.Tags;
 
@@ -18,16 +16,8 @@ public class ItemRegistry {
 	public static void register() {
 	}
 
-	static {
-		Robotics.REGISTRATE.startSection(AllSections.MATERIALS);
-	}
-
-	public static final CreativeModeTab ROBOTICS_TAB = new CreativeModeTab(Robotics.MOD_ID) {
-		@Override
-		public ItemStack makeIcon() {
-			return ItemRegistry.BRONZE_INGOT.get().getDefaultInstance();
-		}
-	};
+	public static final CreativeModeTab ROBOTICS_TAB = CreativeModeTab.builder()
+			.icon(ItemRegistry.BRONZE_INGOT::asStack).build();
 
 	public static final ItemEntry<Item> TIN_INGOT = Robotics.REGISTRATE
 			.item("tin_ingot", Item::new)

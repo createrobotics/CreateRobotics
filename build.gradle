@@ -1,186 +1,235 @@
-buildscript {
-	repositories {
-		mavenCentral()
-		maven { url = 'https://maven.minecraftforge.net' }
-		maven { url = 'https://maven.parchmentmc.org' }
-		maven { url = 'https://files.minecraftforge.net/maven' }
-		maven { url = 'https://repo.spongepowered.org/maven' }
-	}
-	dependencies {
-		classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: forgegradle_version, changing: true
-		classpath "org.spongepowered:mixingradle:${mixingradle_version}"
-		classpath 'org.parchmentmc:librarian:1.+'
-	}
-}
-apply plugin: 'eclipse'
-apply plugin: 'maven-publish'
-apply plugin: 'net.minecraftforge.gradle'
-
-apply plugin: 'org.parchmentmc.librarian.forgegradle'
-apply plugin: 'org.spongepowered.mixin'
-
-def getGitHash = { ->
-	def stdout = new ByteArrayOutputStream()
-	exec {
-		commandLine 'git', 'rev-parse', '--short', 'HEAD'
-		standardOutput = stdout
-	}
-	return stdout.toString().trim()
+plugins {
+	id "idea"
+	id "eclipse"
+	id "net.neoforged.moddev.legacyforge" version "2.0.74"
+	id "me.modmuss50.mod-publish-plugin" version "0.8.3"
+	id "dev.ithundxr.silk" version "0.11.15"
+	id "net.kyori.blossom" version "2.1.0" // https://github.com/KyoriPowered/blossom
+	id "org.jetbrains.gradle.plugin.idea-ext" version "1.1.8" // https://github.com/JetBrains/gradle-idea-ext-plugin
 }
 
-version = "${mc_version}-${mod_version}"
-if (System.getenv("DEV") == "true") {
-	version = "${mc_version}-${mod_version}-dev-${getGitHash()}"
-}
-if (System.getenv("CI") == "true") {
-	version = "${mc_version}-nightly-${getGitHash()}"
-}
+apply from: "./gradle/java.gradle"
 
-group = 'com.workert.robotics'
-archivesBaseName = 'createrobotics'
+// apply from: "gradle/property_loader.gradle"
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+boolean dev = System.getenv('RELEASE') == null || System.getenv('RELEASE').equals('false')
+ext.buildNumber = System.getenv('BUILD_NUMBER')
+String gitHash = "\"${calculateGitHash() + (hasUnstaged() ? "-modified" : "")}\""
 
-println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
-minecraft {
-	mappings channel: 'parchment', version: "${parchment_version}-${mc_version}"
-
-	accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
-
-	runs {
-		client {
-			workingDirectory project.file('run')
-
-			property 'forge.logging.markers', 'REGISTRIES'
-			property 'forge.logging.console.level', 'debug'
-			property 'forge.enabledGameTestNamespaces', 'robotics'
-
-			mods {
-				robotics {
-					source sourceSets.main
-				}
-			}
-		}
-
-		server {
-			workingDirectory project.file('runServer')
-
-			property 'forge.logging.markers', 'REGISTRIES'
-			property 'forge.logging.console.level', 'debug'
-			property 'forge.enabledGameTestNamespaces', 'robotics'
-
-			mods {
-				robotics {
-					source sourceSets.main
-				}
-			}
-		}
-
-		gameTestServer {
-			workingDirectory project.file('run')
-
-			property 'forge.logging.markers', 'REGISTRIES'
-			property 'forge.logging.console.level', 'debug'
-			property 'forge.enabledGameTestNamespaces', 'robotics'
-
-			mods {
-				robotics {
-					source sourceSets.main
-				}
-			}
-		}
-
-		data {
-			workingDirectory project.file('run')
-
-			property 'forge.logging.markers', 'REGISTRIES'
-			property 'forge.logging.console.level', 'debug'
-
-			args '--mod', 'robotics', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
-
-			mods {
-				robotics {
-					source sourceSets.main
-				}
-			}
-		}
-	}
-}
-
-sourceSets.main.resources { srcDir 'src/generated/resources' }
-
-repositories {
-	maven {
-		url 'https://maven.tterrag.com'
-	}
-	maven {
-		url 'https://www.cursemaven.com'
-		content {
-			includeGroup "curse.maven"
-		}
-	}
-	maven {
-		url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
-	}
-}
-
-dependencies {
-	minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
-
-	implementation fg.deobf("com.simibubi.create:create-${mc_version}:${create_version}:slim") { transitive = false }
-	implementation fg.deobf("com.jozufozu.flywheel:flywheel-forge-${mc_version}:${flywheel_version}")
-	implementation fg.deobf("com.tterrag.registrate:Registrate:${registrate_version}")
-
-	implementation fg.deobf("software.bernie.geckolib:geckolib-forge-${mc_version}:${geckolib_version}")
-
-	if (System.getProperty('idea.sync.active') != 'true') {
-		annotationProcessor "org.spongepowered:mixin:${mixin_version}:processor"
-	}
+base {
+	archivesName = "robotics-${artifact_minecraft_version}"
+	group = 'com.workert.robotics'
+	version = mod_version + (dev && buildNumber != null ? "-${buildNumber}" : '')
 }
 
 mixin {
 	add sourceSets.main, 'robotics.refmap.json'
-	config 'mixins.robotics.json'
+	config 'robotics.mixins.json'
 }
 
-// Example for how to get properties into the manifest for reading at runtime.
-// TODO do we need a vendor?
+println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
+
+idea {
+	module {
+		downloadJavadoc = true
+		downloadSources = true
+	}
+}
+
+legacyForge {
+	version = "$minecraft_version-$forge_version"
+
+	// TODO - Try turning this on later
+	//validateAccessTransformers = false
+
+	if (file('src/main/resources/META-INF/accesstransformer.cfg').exists()) {
+		accessTransformers.from "src/main/resources/META-INF/accesstransformer.cfg"
+	}
+
+	parchment {
+		minecraftVersion = minecraft_version
+		mappingsVersion = parchment_version
+	}
+
+	mods {
+		robotics {
+			sourceSet sourceSets.main
+		}
+	}
+
+	runs {
+		// applies to all the run configs below
+		configureEach {
+			systemProperty 'forge.logging.markers', ''
+			systemProperty 'forge.logging.console.level', 'info'
+			jvmArguments = ["-XX:+IgnoreUnrecognizedVMOptions", "-XX:+AllowEnhancedClassRedefinition"]
+			//jvmArgs("-XX:-OmitStackTraceInFastThrow") // uncomment when you get exceptions with null messages etc
+			//jvmArgs '-XX:+UnlockCommercialFeatures' // uncomment for profiling
+
+			systemProperty 'mixin.debug.export', 'true'
+			systemProperty 'mixin.debug.verbose', 'true'
+
+			programArgument '-mixin.config=robotics.mixins.json'
+			programArgument '-mixin.config=ponder.mixins.json'
+		}
+
+		client {
+			client()
+
+			gameDirectory = project.file('run')
+		}
+
+		server {
+			server()
+
+			gameDirectory = project.file('run/server')
+		}
+
+		data {
+			data()
+
+			gameDirectory = project.file('run')
+			systemProperty 'forge.logging.markers', 'REGISTRIES,REGISTRYDUMP'
+			systemProperty 'forge.logging.console.level', 'debug'
+			programArguments.addAll("--mod", mod_id as String, "--all", "--output", file("src/generated/resources/").getAbsolutePath(), "--existing", file("src/main/resources").getAbsolutePath())
+		}
+
+		gameTestServer {
+			type = "gameTestServer"
+
+			gameDirectory = project.file('run/gametest')
+			// setForceExit false <- FIXME 1.20
+		}
+	}
+}
+
+repositories {
+	maven { url = "https://maven.createmod.net" } // Create, Ponder, Flywheel
+	maven { url = "https://maven.tterrag.com" } // Registrate
+	maven { url = "https://maven.blamejared.com" } // JEI, Vazkii's Mods
+	maven { url = "https://harleyoconnor.com/maven" } // Dynamic Trees
+	maven { url = "https://maven.theillusivec4.top/" } // Curios API
+	maven { url = "https://maven.squiddev.cc" } // CC: Tweaked
+	maven { url = "https://www.cursemaven.com" }
+	maven { url = "https://api.modrinth.com/maven" }
+	maven { url = "https://maven.saps.dev/releases" } // FTB Mods
+	maven { url = "https://maven.architectury.dev" } // Arch API
+	maven {
+		url = "https://jm.gserv.me/repository/maven-public" // JourneyMap
+		content {
+			includeGroup "info.journeymap"
+			includeGroup "mysticdrew"
+		}
+	}
+
+	mavenCentral()
+	mavenLocal()
+	flatDir {
+		dirs "libs"
+	}
+}
+
+dependencies {
+	modImplementation("com.simibubi.create:create-${minecraft_version}:${create_version}")
+
+	modImplementation("com.tterrag.registrate:Registrate:${registrate_version}")
+
+	modCompileOnly("dev.engine-room.flywheel:flywheel-forge-api-${flywheel_minecraft_version}:${flywheel_version}")
+	modRuntimeOnly("dev.engine-room.flywheel:flywheel-forge-${flywheel_minecraft_version}:${flywheel_version}")
+	modRuntimeOnly("dev.engine-room.vanillin:vanillin-forge-${flywheel_minecraft_version}:${flywheel_version}")
+
+	modImplementation("net.createmod.ponder:Ponder-Forge-${minecraft_version}:${ponder_version}")
+
+	compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:${mixin_extras_version}"))
+
+	// modCompileOnly("mezz.jei:jei-${jei_minecraft_version}-common-api:${jei_version}")
+	// modCompileOnly("mezz.jei:jei-${jei_minecraft_version}-forge-api:${jei_version}")
+	modImplementation("mezz.jei:jei-${jei_minecraft_version}-forge:${jei_version}")
+
+	modCompileOnly("top.theillusivec4.curios:curios-forge:${curios_version}+${curios_minecraft_version}:api")
+	modRuntimeOnly("top.theillusivec4.curios:curios-forge:${curios_version}+${curios_minecraft_version}")
+
+	// modImplementation("curse.maven:ic2-classic-242942:5555152")
+	// modImplementation("curse.maven:druidcraft-340991:3101903")
+	// modImplementation("com.railwayteam.railways:railways-1.19.2-1.6.4:all") { transitive = false }
+
+	modImplementation("curse.maven:journeymap-32274:5457831")
+
+
+	// TODO find out if Robotics needs this
+	// https://discord.com/channels/313125603924639766/725850371834118214/910619168821354497
+	// Prevent Mixin annotation processor from getting into IntelliJ's annotation processor settings
+	// This allows 'Settings > Build, Execution, and Deployment > Build Tools > Gradle > Build and run using' set to IntelliJ to work correctly
+	if (!Boolean.getBoolean('idea.sync.active')) {
+		annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
+	}
+}
+
+sourceSets.main {
+	resources {
+		srcDir 'src/generated/resources'
+		exclude '.cache/'
+	}
+
+	blossom.javaSources {
+		property("version", build_info_mod_version)
+		property("gitCommit", gitHash.toString())
+	}
+}
+
+processResources {
+	def buildProps = project.properties.clone()
+
+	// Replaces FML's magic file.jarVersion string with the correct version at build time.
+	buildProps.put('file', [jarVersion: project.version])
+
+	filesMatching(['META-INF/mods.toml', 'pack.mcmeta']) {
+		expand buildProps
+	}
+}
+
+compileJava {
+	options.compilerArgs = ['-Xdiags:verbose']
+}
+
 jar {
-	manifest {
-		attributes([
-				"Specification-Title"     : "robotics",
-				"Specification-Vendor"    : "CreateRoboticsModTeam",
-				"Specification-Version"   : "1", // We are version 1 of ourselves
-				"Implementation-Title"    : project.name,
-				"Implementation-Version"  : project.jar.archiveVersion,
-				"Implementation-Vendor"   : "CreateRoboticsModTeam",
-				"Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
-		])
+	from('LICENSE') {
+		rename { "${it}_${archivesBaseName}" }
+	}
+
+	manifest.attributes([
+			"MixinConfigs": "robotics.mixins.json",
+			"Git-Hash"    : gitHash
+	])
+}
+
+tasks.named("sourcesJar") {
+	manifest.attributes([
+			"Git-Hash": gitHash
+	])
+}
+
+String calculateGitHash() {
+	try {
+		def output = providers.exec {
+			commandLine("git", "rev-parse", "HEAD")
+		}
+		return output.standardOutput.asText.get().trim()
+	} catch (Throwable ignored) {
+		return "unknown"
 	}
 }
 
-// Example configuration to allow publishing using the maven-publish plugin
-// This is the preferred method to reobfuscate your jar file
-jar.finalizedBy('reobfJar')
-// However if you are in a multi-project build, dev time needs unobfed jar files, so you can delay the obfuscation until publishing by doing
-// publish.dependsOn('reobfJar')
-
-publishing {
-	publications {
-		mavenJava(MavenPublication) {
-			groupId = group
-			artifactId = archivesBaseName
-			version = version
-			artifact jar
+boolean hasUnstaged() {
+	try {
+		def output = providers.exec {
+			commandLine("git", "status", "--porcelain")
 		}
+		String result = output.standardOutput.asText.get().replace("/M gradlew(\\.bat)?/", "").trim()
+		if (!result.isEmpty())
+			println("Found stageable results:\n ${result}\n")
+		return !result.isEmpty()
+	} catch (Throwable ignored) {
+		return false
 	}
-	repositories {
-		maven {
-			url "file://${project.projectDir}/mcmodsrepo"
-		}
-	}
-}
-
-tasks.withType(JavaCompile).configureEach {
-	options.encoding = 'UTF-8'
 }

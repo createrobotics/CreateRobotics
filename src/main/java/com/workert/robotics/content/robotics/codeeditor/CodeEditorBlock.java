@@ -1,7 +1,7 @@
 package com.workert.robotics.content.robotics.codeeditor;
 
-import com.simibubi.create.foundation.gui.ScreenOpener;
 import com.workert.robotics.base.registries.ItemRegistry;
+import net.createmod.catnip.gui.ScreenOpener;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;

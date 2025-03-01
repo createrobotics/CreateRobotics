@@ -11,6 +11,7 @@ import com.workert.robotics.base.world.feature.RoboticsConfiguredFeatures;
 import com.workert.robotics.base.world.feature.RoboticsPlacedFeatures;
 import com.workert.robotics.unused.smasher.SmasherBlockScreen;
 import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -57,5 +58,9 @@ public class Robotics {
 		KeybindList.init();
 
 		MenuScreens.register(MenuRegistry.SMASHER_BLOCK_MENU.get(), SmasherBlockScreen::new);
+	}
+
+	public static ResourceLocation asResource(String path) {
+		return new ResourceLocation(MOD_ID, path);
 	}
 }

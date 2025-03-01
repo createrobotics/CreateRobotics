@@ -43,24 +43,33 @@ public enum PacketRegistry {
 			FlyingToolboxReplySelectedToolboxEntityIdPacket::new, PLAY_TO_CLIENT);
 
 
-	public static final String PROTOCOL_VERSION = "1";
-	public static SimpleChannel CHANNEL;
+	public static final ResourceLocation CHANNEL_NAME = Robotics.asResource("main");
+	public static final int NETWORK_VERSION = 3;
+	public static final String NETWORK_VERSION_STR = String.valueOf(NETWORK_VERSION);
+	private static SimpleChannel channel;
 
-	private final PacketRegistry.LoadedPacket<?> packet;
+	private final PacketRegistry.PacketType<?> packet;
 
 	<T extends SimplePacketBase> PacketRegistry(Class<T> type, Function<FriendlyByteBuf, T> factory, NetworkDirection direction) {
-		this.packet = new PacketRegistry.LoadedPacket<>(type, factory, direction);
+		this.packet = new PacketRegistry.PacketType<>(type, factory, direction);
 	}
 
 	public static void registerPackets() {
-		CHANNEL = NetworkRegistry.newSimpleChannel(new ResourceLocation(Robotics.MOD_ID, "main"),
-				() -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals, PROTOCOL_VERSION::equals);
+		channel = NetworkRegistry.ChannelBuilder.named(CHANNEL_NAME)
+				.serverAcceptedVersions(NETWORK_VERSION_STR::equals)
+				.clientAcceptedVersions(NETWORK_VERSION_STR::equals)
+				.networkProtocolVersion(() -> NETWORK_VERSION_STR)
+				.simpleChannel();
 		for (PacketRegistry packet : values()) {
 			packet.packet.register();
 		}
 	}
 
-	private static class LoadedPacket<T extends SimplePacketBase> {
+	public static SimpleChannel getChannel() {
+		return channel;
+	}
+
+	private static class PacketType<T extends SimplePacketBase> {
 		private static int index = 0;
 
 		private final BiConsumer<T, FriendlyByteBuf> encoder;
@@ -69,17 +78,25 @@ public enum PacketRegistry {
 		private final Class<T> type;
 		private final NetworkDirection direction;
 
-		private LoadedPacket(Class<T> type, Function<FriendlyByteBuf, T> factory, NetworkDirection direction) {
+		private PacketType(Class<T> type, Function<FriendlyByteBuf, T> factory, NetworkDirection direction) {
 			this.encoder = T::write;
 			this.decoder = factory;
-			this.handler = T::handle;
+			this.handler = (packet, contextSupplier) -> {
+				NetworkEvent.Context context = contextSupplier.get();
+				if (packet.handle(context)) {
+					context.setPacketHandled(true);
+				}
+			};
 			this.type = type;
 			this.direction = direction;
 		}
 
 		private void register() {
-			CHANNEL.messageBuilder(this.type, index++, this.direction).encoder(this.encoder).decoder(this.decoder)
-					.consumerNetworkThread(this.handler).add();
+			getChannel().messageBuilder(this.type, index++, this.direction)
+					.encoder(this.encoder)
+					.decoder(this.decoder)
+					.consumerNetworkThread(this.handler)
+					.add();
 		}
 	}
 }

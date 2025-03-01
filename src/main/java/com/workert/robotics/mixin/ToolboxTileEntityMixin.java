@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(value = ToolboxBlockEntity.class, remap = false)
 public abstract class ToolboxTileEntityMixin {
-	@Redirect(method = {"updateOpenCount", "tickAudio"}, at = @At(value = "FIELD", opcode = Opcodes.GETFIELD, target = "Lcom/simibubi/create/content/equipment/toolbox/ToolboxBlockEntity;worldPosition:Lnet/minecraft/core/BlockPos;", remap = true))
+	@Redirect(method = "tickAudio", at = @At(value = "FIELD", opcode = Opcodes.GETFIELD, target = "Lcom/simibubi/create/content/equipment/toolbox/ToolboxBlockEntity;worldPosition:Lnet/minecraft/core/BlockPos;", remap = true))
 	BlockPos worldPosition(ToolboxBlockEntity instance) {
 		return instance.getBlockPos();
 	}

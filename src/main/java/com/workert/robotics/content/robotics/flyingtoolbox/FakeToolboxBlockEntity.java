@@ -5,7 +5,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
@@ -29,7 +28,6 @@ public class FakeToolboxBlockEntity extends ToolboxBlockEntity {
 	}
 
 	@Override
-	@NotNull
 	public BlockPos getBlockPos() {
 		return this.flyingToolbox.blockPosition();
 	}

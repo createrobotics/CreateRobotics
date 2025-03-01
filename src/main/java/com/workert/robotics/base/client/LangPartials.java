@@ -1,14 +1,13 @@
 package com.workert.robotics.base.client;
 
 import com.google.gson.JsonElement;
-import com.simibubi.create.foundation.data.LangPartial;
 import com.simibubi.create.foundation.utility.FilesHelper;
 import com.simibubi.create.foundation.utility.Lang;
 import com.workert.robotics.Robotics;
 
 import java.util.function.Supplier;
 
-public enum LangPartials implements LangPartial {
+public enum LangPartials implements LangPartials {
 	INTERFACE("Interface"),
 	TOOLTIPS("Tooltips");
 

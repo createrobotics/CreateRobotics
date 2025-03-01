@@ -1,11 +1,10 @@
 package com.workert.robotics.content.computers.computer;
 
 
-import com.simibubi.create.foundation.gui.AbstractSimiScreen;
 import com.simibubi.create.foundation.gui.AllIcons;
 import com.simibubi.create.foundation.gui.widget.IconButton;
-import com.simibubi.create.foundation.utility.Components;
 import com.workert.robotics.base.registries.PacketRegistry;
+import net.createmod.catnip.gui.AbstractSimiScreen;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.MultiLineEditBox;
 import net.minecraft.core.BlockPos;
@@ -77,15 +76,15 @@ public class ComputerScreen extends AbstractSimiScreen {
 		this.save.setToolTip(Component.literal("Save Script"));
 		this.addRenderableWidget(this.save);
 
-		this.terminal = new MultiLineEditBox(this.font, x, y, width, 150, Components.immutableEmpty(),
-				Components.immutableEmpty());
+		this.terminal = new MultiLineEditBox(this.font, x, y, width, 150, Component.empty(),
+				Component.empty());
 		this.terminal.setValue(this.computer.getScript());
 		this.setInitialFocus(this.terminal);
 
 		this.addRenderableWidget(this.terminal);
 
-		this.output = new MultiLineEditBox(this.font, x, y + 153, width, 57, Components.immutableEmpty(),
-				Components.immutableEmpty()) {
+		this.output = new MultiLineEditBox(this.font, x, y + 153, width, 57, Component.empty(),
+				Component.empty()) {
 			@Override
 			public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers) {
 				return false;
@@ -155,18 +154,19 @@ public class ComputerScreen extends AbstractSimiScreen {
 	}
 
 	private void save() {
-		PacketRegistry.CHANNEL.sendToServer(new ConfigureComputerScriptPacket(this.blockPos, this.terminal.getValue()));
+		PacketRegistry.getChannel()
+				.sendToServer(new ConfigureComputerScriptPacket(this.blockPos, this.terminal.getValue()));
 	}
 
 	private void run() {
-		PacketRegistry.CHANNEL.sendToServer(new ComputerToggleRunningPacket(this.blockPos, true));
+		PacketRegistry.getChannel().sendToServer(new ComputerToggleRunningPacket(this.blockPos, true));
 	}
 
 	private void stop() {
-		PacketRegistry.CHANNEL.sendToServer(new ComputerToggleRunningPacket(this.blockPos, false));
+		PacketRegistry.getChannel().sendToServer(new ComputerToggleRunningPacket(this.blockPos, false));
 	}
 
 	private void clearTerminal() {
-		PacketRegistry.CHANNEL.sendToServer(new ComputerClearTerminalPacket(this.blockPos));
+		PacketRegistry.getChannel().sendToServer(new ComputerClearTerminalPacket(this.blockPos));
 	}
 }

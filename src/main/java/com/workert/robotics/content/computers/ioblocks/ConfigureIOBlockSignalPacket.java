@@ -1,12 +1,12 @@
 package com.workert.robotics.content.computers.ioblocks;
 
-import com.simibubi.create.foundation.networking.TileEntityConfigurationPacket;
-import com.simibubi.create.foundation.tileEntity.SyncedTileEntity;
+import com.simibubi.create.foundation.blockEntity.SyncedBlockEntity;
+import com.simibubi.create.foundation.networking.BlockEntityConfigurationPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 
-public class ConfigureIOBlockSignalPacket extends TileEntityConfigurationPacket<SyncedTileEntity> {
+public class ConfigureIOBlockSignalPacket extends BlockEntityConfigurationPacket<SyncedBlockEntity> {
 	private String signalName;
 
 	public ConfigureIOBlockSignalPacket(BlockPos pos, String signalName) {
@@ -32,7 +32,7 @@ public class ConfigureIOBlockSignalPacket extends TileEntityConfigurationPacket<
 	}
 
 	@Override
-	protected void applySettings(SyncedTileEntity be) {
+	protected void applySettings(SyncedBlockEntity be) {
 		if (!(be instanceof IOBlockEntity input)) return;
 		input.setSignalName(this.signalName);
 		input.getBlockEntity().sendData();

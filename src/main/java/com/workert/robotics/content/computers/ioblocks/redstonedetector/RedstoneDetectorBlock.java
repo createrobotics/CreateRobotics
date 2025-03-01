@@ -2,10 +2,10 @@ package com.workert.robotics.content.computers.ioblocks.redstonedetector;
 
 import com.simibubi.create.AllItems;
 import com.simibubi.create.foundation.block.IBE;
-import com.simibubi.create.foundation.gui.ScreenOpener;
-import com.simibubi.create.foundation.utility.Iterate;
 import com.workert.robotics.base.registries.BlockEntityRegistry;
 import com.workert.robotics.content.computers.ioblocks.IOSignalScreen;
+import net.createmod.catnip.data.Iterate;
+import net.createmod.catnip.gui.ScreenOpener;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -27,7 +27,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.DistExecutor;
-import org.jetbrains.annotations.Nullable;
 
 public class RedstoneDetectorBlock extends Block implements EntityBlock, IBE<RedstoneDetectorBlockEntity> {
 	public static final BooleanProperty LIT = BooleanProperty.create("lit");
@@ -47,7 +46,6 @@ public class RedstoneDetectorBlock extends Block implements EntityBlock, IBE<Red
 		return BlockEntityRegistry.REDSTONE_DETECTOR.get();
 	}
 
-	@Nullable
 	@Override
 	public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
 		return BlockEntityRegistry.REDSTONE_DETECTOR.get().create(blockPos, blockState);

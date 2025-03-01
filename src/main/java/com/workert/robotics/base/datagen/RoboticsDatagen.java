@@ -1,9 +1,8 @@
 package com.workert.robotics.base.datagen;
-import com.simibubi.create.foundation.data.LangMerger;
-import com.simibubi.create.foundation.ponder.PonderLocalization;
 import com.workert.robotics.Robotics;
 import com.workert.robotics.base.client.LangPartials;
 import com.workert.robotics.base.datagen.recipe.SequencedAssemblyRecipeGen;
+import net.createmod.ponder.foundation.registration.PonderLocalization;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.data.event.GatherDataEvent;
 

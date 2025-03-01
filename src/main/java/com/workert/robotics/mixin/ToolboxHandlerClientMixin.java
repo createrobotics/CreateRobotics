@@ -25,7 +25,7 @@ public abstract class ToolboxHandlerClientMixin {
 		if (ToolboxHandler.distance(player.position(), pos) < max * max) {
 			BlockEntity blockEntity = level.getBlockEntity(pos);
 			if (!(blockEntity instanceof ToolboxBlockEntity)) {
-				PacketRegistry.CHANNEL.sendToServer(new FlyingToolboxGetSelectedToolboxEntityIdPacket(slotKey));
+				PacketRegistry.getChannel().sendToServer(new FlyingToolboxGetSelectedToolboxEntityIdPacket(slotKey));
 				ci.cancel();
 			}
 		}

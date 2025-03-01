@@ -1,15 +1,15 @@
 package com.workert.robotics.base.registries;
 
+import com.simibubi.create.AllPartialModels;
+import com.simibubi.create.content.kinetics.base.SingleAxisRotatingVisual;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import com.workert.robotics.Robotics;
 import com.workert.robotics.content.computers.computer.ComputerBlockEntity;
-import com.workert.robotics.content.computers.computer.ComputerInstance;
 import com.workert.robotics.content.computers.computer.ComputerRenderer;
 import com.workert.robotics.content.computers.ioblocks.redstonedetector.RedstoneDetectorBlockEntity;
 import com.workert.robotics.content.computers.ioblocks.redstoneemitter.RedstoneEmitterBlockEntity;
 import com.workert.robotics.content.computers.ioblocks.redstonepulser.RedstonePulserBlockEntity;
 import com.workert.robotics.content.computers.ioblocks.scanner.ScannerBlockEntity;
-import com.workert.robotics.content.computers.ioblocks.scanner.ScannerInstance;
 import com.workert.robotics.content.computers.ioblocks.scanner.ScannerRenderer;
 import com.workert.robotics.unused.smasher.SmasherBlockEntity;
 
@@ -24,7 +24,7 @@ public class BlockEntityRegistry {
 
 	public static final BlockEntityEntry<ComputerBlockEntity> COMPUTER = Robotics.REGISTRATE
 			.blockEntity("computer", ComputerBlockEntity::new)
-			.instance(() -> ComputerInstance::new)
+			.visual(() -> SingleAxisRotatingVisual.of(AllPartialModels.COGWHEEL))
 			.validBlock(BlockRegistry.COMPUTER)
 			.renderer(() -> ComputerRenderer::new)
 			.register();
@@ -43,7 +43,7 @@ public class BlockEntityRegistry {
 			.register();
 	public static final BlockEntityEntry<ScannerBlockEntity> SCANNER = Robotics.REGISTRATE
 			.blockEntity("scanner", ScannerBlockEntity::new)
-			.instance(() -> ScannerInstance::new)
+			.visual(() -> SingleAxisRotatingVisual.of(AllPartialModels.SHAFT))
 			.validBlock(BlockRegistry.SCANNER.lazy())
 			.renderer(() -> ScannerRenderer::new)
 			.register();
