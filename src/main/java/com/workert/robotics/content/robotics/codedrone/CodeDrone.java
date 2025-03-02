@@ -16,15 +16,8 @@ import net.minecraft.world.entity.animal.FlyingAnimal;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.world.ForgeChunkManager;
-import software.bernie.geckolib.core.animatable.GeoAnimatable;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager;
-import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.animation.RawAnimation;
-import software.bernie.geckolib.core.object.PlayState;
-import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class CodeDrone extends AbstractRobotEntity implements FlyingAnimal, GeoAnimatable {
+public class CodeDrone extends AbstractRobotEntity implements FlyingAnimal {
 	private final SimpleContainer inventory = new SimpleContainer(9);
 
 	public int last_chunk_x;
@@ -114,23 +107,5 @@ public class CodeDrone extends AbstractRobotEntity implements FlyingAnimal, GeoA
 	@Override
 	public SimpleContainer getInventory() {
 		return this.inventory;
-	}
-
-	@Override
-	public void registerControllers(AnimatableManager.ControllerRegistrar registrar) {
-		registrar.add(new AnimationController<>(this, "controller", 0, event -> {
-			event.getController().setAnimation(RawAnimation.begin().thenLoop("animation.code_drone.idle"));
-			return PlayState.CONTINUE;
-		}));
-	}
-
-	@Override
-	public AnimatableInstanceCache getAnimatableInstanceCache() {
-		return GeckoLibUtil.createInstanceCache(this);
-	}
-
-	@Override
-	public double getTick(Object object) {
-		return 0;
 	}
 }

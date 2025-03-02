@@ -5,7 +5,6 @@ import com.simibubi.create.content.kinetics.base.SingleAxisRotatingVisual;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import com.workert.robotics.Robotics;
 import com.workert.robotics.content.computers.computer.ComputerBlockEntity;
-import com.workert.robotics.content.computers.computer.ComputerRenderer;
 import com.workert.robotics.content.computers.ioblocks.redstonedetector.RedstoneDetectorBlockEntity;
 import com.workert.robotics.content.computers.ioblocks.redstoneemitter.RedstoneEmitterBlockEntity;
 import com.workert.robotics.content.computers.ioblocks.redstonepulser.RedstonePulserBlockEntity;
@@ -24,9 +23,9 @@ public class BlockEntityRegistry {
 
 	public static final BlockEntityEntry<ComputerBlockEntity> COMPUTER = Robotics.REGISTRATE
 			.blockEntity("computer", ComputerBlockEntity::new)
-			.visual(() -> SingleAxisRotatingVisual.of(AllPartialModels.COGWHEEL))
+			.visual(() -> SingleAxisRotatingVisual.of(AllPartialModels.SHAFTLESS_COGWHEEL))
 			.validBlock(BlockRegistry.COMPUTER)
-			.renderer(() -> ComputerRenderer::new)
+			//.renderer(() -> ComputerRenderer::new)
 			.register();
 
 	public static final BlockEntityEntry<RedstoneDetectorBlockEntity> REDSTONE_DETECTOR = Robotics.REGISTRATE

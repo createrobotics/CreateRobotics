@@ -1,11 +1,13 @@
 package com.workert.robotics.base.registries;
 
+import com.simibubi.create.foundation.data.CreateEntityBuilder;
 import com.tterrag.registrate.util.entry.EntityEntry;
 import com.workert.robotics.Robotics;
 import com.workert.robotics.content.robotics.clockcopter.Clockcopter;
 import com.workert.robotics.content.robotics.clockcopter.ClockcopterRenderer;
 import com.workert.robotics.content.robotics.codedrone.CodeDrone;
 import com.workert.robotics.content.robotics.codedrone.CodeDroneRenderer;
+import com.workert.robotics.content.robotics.codedrone.CodeDroneVisual;
 import com.workert.robotics.content.robotics.flyingtoolbox.FlyingToolbox;
 import com.workert.robotics.content.robotics.flyingtoolbox.FlyingToolboxRenderer;
 import com.workert.robotics.content.utility.extendoboots.ExtendOBoots;
@@ -41,15 +43,16 @@ public class EntityRegistry {
 			.renderer(() -> MinerRenderer::new)
 			.register();
 
-	public static final EntityEntry<CodeDrone> CODE_DRONE = Robotics.REGISTRATE
-			.entity("code_drone", CodeDrone::new, MobCategory.MISC)
+	public static final EntityEntry<CodeDrone> CODE_DRONE = ((CreateEntityBuilder<CodeDrone, ?>) (Robotics.REGISTRATE
+			.entity("code_drone", CodeDrone::new, MobCategory.MISC))
 			.lang("Juan")
 			.properties(properties -> properties.sized(1f, 0.4f))
 			.attributes(() -> Mob.createMobAttributes()
 					.add(Attributes.MOVEMENT_SPEED, 0.2F)
 					.add(Attributes.MAX_HEALTH, 1.0D)
 					.add(Attributes.FLYING_SPEED, 0.8F))
-			.renderer(() -> CodeDroneRenderer::new)
+			.renderer(() -> CodeDroneRenderer::new))
+			.visual(() -> CodeDroneVisual::new, false)
 			.register();
 
 	public static final EntityEntry<ExtendOBoots> EXTEND_O_BOOTS = Robotics.REGISTRATE
