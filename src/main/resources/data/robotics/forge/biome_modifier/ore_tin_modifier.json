@@ -1,6 +1,6 @@
 {
   "type": "forge:add_features",
   "biomes": "#minecraft:is_overworld",
-  "features": "robotics:tin_ore_placed",
+  "features": "robotics:ore_tin_placed",
   "step": "underground_ores"
 }

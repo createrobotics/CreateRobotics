@@ -3,6 +3,7 @@ loaderVersion = "[42,)"
 
 license = "All rights reserved"
 
+
 [[mods]]
 modId = "robotics"
 version = "${file.jarVersion}"
@@ -20,13 +21,6 @@ Robots have many uses, some help you at specific tasks, some automate your facto
 Create Robotics has also a system planned for you to build and code your own robots.
 '''
 
-
-[[dependencies.robotics]]
-modId = "geckolib"
-mandatory = true
-versionRange = "[4.7.0,4.8.0)"
-ordering = "NONE"
-side = "BOTH"
 
 [[dependencies.robotics]]
 modId = "create"

@@ -33,7 +33,6 @@ public class ComputerBlock extends Block implements EntityBlock, ICogWheel, IBE<
 		super(properties);
 	}
 
-
 	@Override
 	public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand hand, BlockHitResult result) {
 		ItemStack held = player.getMainHandItem();

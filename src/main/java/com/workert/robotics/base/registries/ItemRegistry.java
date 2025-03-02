@@ -9,17 +9,18 @@ import com.workert.robotics.content.computers.punchcard.PunchCardItem;
 import com.workert.robotics.content.robotics.BaseRobotItem;
 import com.workert.robotics.content.utility.extendoboots.ExtendOBootsItem;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.minecraftforge.common.Tags;
 
 public class ItemRegistry {
+
 	public static void register() {
 	}
 
-	public static final CreativeModeTab ROBOTICS_TAB = CreativeModeTab.builder()
-			.icon(ItemRegistry.BRONZE_INGOT::asStack).build();
+	static {
+		Robotics.REGISTRATE.setCreativeTab(CreativeModeTabRegistry.BASE_CREATIVE_TAB);
+	}
 
 	public static final ItemEntry<Item> TIN_INGOT = Robotics.REGISTRATE
 			.item("tin_ingot", Item::new)

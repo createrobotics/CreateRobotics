@@ -4,7 +4,6 @@ import com.simibubi.create.api.behaviour.display.DisplaySource;
 import com.simibubi.create.content.redstone.displayLink.source.ComputerDisplaySource;
 import com.simibubi.create.foundation.data.TagGen;
 import com.simibubi.create.foundation.item.ItemDescription;
-import com.simibubi.create.infrastructure.config.CStress;
 import com.tterrag.registrate.providers.loot.RegistrateBlockLootTables;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.workert.robotics.Robotics;
@@ -136,7 +135,7 @@ public class BlockRegistry {
 					provider.models().getExistingFile(provider.modLoc("block/computer"))))
 			.initialProperties(() -> Blocks.STONE)
 			.transform(TagGen.pickaxeOnly())
-			.transform(CStress.setImpact(12))
+			//.transform(CStress.setImpact(12))
 			.onRegister((block) -> DisplaySource.BY_BLOCK.add(block, new TerminalDisplaySource()))
 			.onRegister((block) -> DisplaySource.BY_BLOCK.add(block, new ComputerDisplaySource()))
 			.simpleItem()
