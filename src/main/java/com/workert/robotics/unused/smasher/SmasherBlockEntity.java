@@ -22,8 +22,6 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 import java.util.Optional;
@@ -83,7 +81,6 @@ public class SmasherBlockEntity extends BlockEntity implements MenuProvider {
 		return Component.literal("Smasher");
 	}
 
-	@Nullable
 	@Override
 	public AbstractContainerMenu createMenu(int pContainerId, Inventory pInventory, Player pPlayer) {
 		return new SmasherBlockMenu(pContainerId, pInventory, this, this.data);
@@ -112,7 +109,7 @@ public class SmasherBlockEntity extends BlockEntity implements MenuProvider {
 	}
 
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag tag) {
+	protected void saveAdditional(CompoundTag tag) {
 		tag.put("inventory", this.itemHandler.serializeNBT());
 		tag.putInt("smasher.progress", this.progress);
 		super.saveAdditional(tag);

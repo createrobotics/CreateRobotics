@@ -22,16 +22,16 @@ Create Robotics has also a system planned for you to build and code your own rob
 
 
 [[dependencies.robotics]]
-modId = "geckolib3"
+modId = "geckolib"
 mandatory = true
-versionRange = "[3.1.39,4.0.0)"
+versionRange = "[4.7.0,4.8.0)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.robotics]]
 modId = "create"
 mandatory = true
-versionRange = "[0.5.0.i,0.5.0.k)"
+versionRange = "[6.0.0,6.1.0)"
 ordering = "NONE"
 side = "BOTH"
 
@@ -45,6 +45,6 @@ side = "BOTH"
 [[dependencies.robotics]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.19.2,1.20)"
+versionRange = "[1.20.1,1.21)"
 ordering = "NONE"
 side = "BOTH"

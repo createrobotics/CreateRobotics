@@ -1,24 +1,15 @@
 package com.workert.robotics.content.computers.ioblocks.scanner;
 
-import com.jozufozu.flywheel.api.MaterialManager;
-import com.jozufozu.flywheel.api.instance.DynamicInstance;
-import com.jozufozu.flywheel.core.Materials;
-import com.jozufozu.flywheel.core.materials.oriented.OrientedData;
-import com.mojang.math.Axis;
-import com.simibubi.create.AllPartialModels;
-import com.simibubi.create.content.kinetics.base.ShaftInstance;
-import com.simibubi.create.content.kinetics.press.MechanicalPressBlock;
-import com.simibubi.create.foundation.utility.AngleHelper;
-import com.simibubi.create.foundation.utility.AnimationTickHolder;
-import org.joml.Quaternionf;
+import com.simibubi.create.content.kinetics.base.ShaftVisual;
+import dev.engine_room.flywheel.api.visualization.VisualizationContext;
 
-public class ScannerInstance extends ShaftInstance<ScannerBlockEntity> implements DynamicInstance {
-	private final OrientedData pressHead;
+public class ScannerVisual extends ShaftVisual<ScannerBlockEntity> {
+	//private final OrientedData pressHead;
 
-	public ScannerInstance(MaterialManager materialManager, ScannerBlockEntity blockEntity) {
-		super(materialManager, blockEntity);
+	public ScannerVisual(VisualizationContext context, ScannerBlockEntity blockEntity, float partialTick) {
+		super(context, blockEntity, partialTick);
 
-		this.pressHead = materialManager.defaultSolid().material(Materials.ORIENTED)
+		/*this.pressHead = context.defaultSolid().material(Materials.ORIENTED)
 				.getModel(AllPartialModels.MECHANICAL_PRESS_HEAD, this.blockState).createInstance();
 
 		Quaternionf q = Axis.YP.rotationDegrees(
@@ -26,12 +17,13 @@ public class ScannerInstance extends ShaftInstance<ScannerBlockEntity> implement
 
 		this.pressHead.setRotation(q);
 
-		this.transformModels();
+		this.transformModels();*/
 	}
 
-	@Override
-	public void beginFrame() {
+	/*@Override
+	public Plan<Context> planFrame() {
 		this.transformModels();
+		return null;
 	}
 
 	private void transformModels() {
@@ -56,5 +48,6 @@ public class ScannerInstance extends ShaftInstance<ScannerBlockEntity> implement
 	public void remove() {
 		super.remove();
 		this.pressHead.delete();
-	}
+	}*/
+
 }

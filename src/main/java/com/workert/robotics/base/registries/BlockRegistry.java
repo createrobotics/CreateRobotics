@@ -3,6 +3,7 @@ package com.workert.robotics.base.registries;
 import com.simibubi.create.api.behaviour.display.DisplaySource;
 import com.simibubi.create.content.redstone.displayLink.source.ComputerDisplaySource;
 import com.simibubi.create.foundation.data.TagGen;
+import com.simibubi.create.foundation.item.ItemDescription;
 import com.simibubi.create.infrastructure.config.CStress;
 import com.tterrag.registrate.providers.loot.RegistrateBlockLootTables;
 import com.tterrag.registrate.util.entry.BlockEntry;
@@ -16,6 +17,7 @@ import com.workert.robotics.content.computers.ioblocks.redstonepulser.RedstonePu
 import com.workert.robotics.content.computers.ioblocks.scanner.ScannerBlock;
 import com.workert.robotics.content.robotics.codeeditor.CodeEditorBlock;
 import com.workert.robotics.unused.smasher.SmasherBlock;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
@@ -122,7 +124,9 @@ public class BlockRegistry {
 			.properties(properties -> properties.of()
 					.sound(SoundType.WOOD)
 					.noOcclusion())
-			.simpleItem()
+			.item()
+			.onRegisterAfter(Registries.ITEM, v -> ItemDescription.useKey(v, "block.robotics.code_editor"))
+			.build()
 			.register();
 
 	public static final BlockEntry<ComputerBlock> COMPUTER = Robotics.REGISTRATE

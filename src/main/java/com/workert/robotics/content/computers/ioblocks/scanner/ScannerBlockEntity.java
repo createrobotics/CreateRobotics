@@ -20,7 +20,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.List;
 
 public class ScannerBlockEntity extends KineticBlockEntity implements ScannerBehaviour.ScanningBehaviorSpecifics, IOBlockEntity {
-	public ScannerBehaviour processingBehaviour;
+	private ScannerBehaviour scannerBehaviour;
 	private BlockPos targetPos = this.getBlockPos();
 	private String signalName = "";
 
@@ -37,6 +37,9 @@ public class ScannerBlockEntity extends KineticBlockEntity implements ScannerBeh
 		super(BlockEntityRegistry.SCANNER.get(), pos, state);
 	}
 
+	public ScannerBehaviour getScannerBehaviour() {
+		return this.scannerBehaviour;
+	}
 
 	@Override
 	protected void read(CompoundTag compound, boolean clientPacket) {
@@ -55,8 +58,8 @@ public class ScannerBlockEntity extends KineticBlockEntity implements ScannerBeh
 	@Override
 	public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
 		super.addBehaviours(behaviours);
-		this.processingBehaviour = new ScannerBehaviour(this);
-		behaviours.add(this.processingBehaviour);
+		this.scannerBehaviour = new ScannerBehaviour(this);
+		behaviours.add(this.scannerBehaviour);
 	}
 
 

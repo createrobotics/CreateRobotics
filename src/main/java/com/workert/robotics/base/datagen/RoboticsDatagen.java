@@ -1,24 +1,58 @@
 package com.workert.robotics.base.datagen;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.simibubi.create.Create;
+import com.simibubi.create.foundation.data.recipe.ProcessingRecipeGen;
+import com.simibubi.create.foundation.utility.FilesHelper;
+import com.simibubi.create.infrastructure.data.CreateRegistrateTags;
+import com.tterrag.registrate.providers.ProviderType;
 import com.workert.robotics.Robotics;
-import com.workert.robotics.base.client.LangPartials;
 import com.workert.robotics.base.datagen.recipe.SequencedAssemblyRecipeGen;
-import net.createmod.ponder.foundation.registration.PonderLocalization;
+import net.createmod.ponder.foundation.PonderIndex;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraftforge.data.event.GatherDataEvent;
 
-public class RoboticsDatagen {
-	// TODO Update Translations to 1.20.1 registrate
-	public static void gatherData(GatherDataEvent event) {
-		DataGenerator dataGenerator = event.getGenerator();
+import java.util.Map;
+import java.util.function.BiConsumer;
 
-		if (event.includeClient()) {
-			PonderLocalization.provideRegistrateLang(Robotics.REGISTRATE);
-			dataGenerator.addProvider(true,
-					new LangMerger(dataGenerator, Robotics.MOD_ID, "Create Robotics", LangPartials.values()));
-		}
+public class RoboticsDatagen {
+	public static void gatherData(GatherDataEvent event) {
+		addExtraRegistrateData();
+
+		DataGenerator generator = event.getGenerator();
+		PackOutput output = generator.getPackOutput();
+
+		generator.addProvider(event.includeServer(), new SequencedAssemblyRecipeGen(output));
 
 		if (event.includeServer()) {
-			dataGenerator.addProvider(true, new SequencedAssemblyRecipeGen(dataGenerator));
+			ProcessingRecipeGen.registerAll(generator, output);
+		}
+	}
+
+	private static void addExtraRegistrateData() {
+		CreateRegistrateTags.addGenerators();
+
+		Create.REGISTRATE.addDataGenerator(ProviderType.LANG, provider -> {
+			BiConsumer<String, String> langConsumer = provider::add;
+
+			provideDefaultLang("interface", langConsumer);
+			provideDefaultLang("tooltips", langConsumer);
+			PonderIndex.getLangAccess().provideLang(Robotics.MOD_ID, langConsumer);
+		});
+	}
+
+	private static void provideDefaultLang(String fileName, BiConsumer<String, String> consumer) {
+		String path = "assets/robotics/lang/default/" + fileName + ".json";
+		JsonElement jsonElement = FilesHelper.loadJsonResource(path);
+		if (jsonElement == null) {
+			throw new IllegalStateException(String.format("Could not find default lang file: %s", path));
+		}
+		JsonObject jsonObject = jsonElement.getAsJsonObject();
+		for (Map.Entry<String, JsonElement> entry : jsonObject.entrySet()) {
+			String key = entry.getKey();
+			String value = entry.getValue().getAsString();
+			consumer.accept(key, value);
 		}
 	}
 }

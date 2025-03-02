@@ -114,7 +114,7 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 					this.defineNativeFunction("getItems", 4, (parameters) -> {
 						AbstractRobotEntity robot = AbstractRobotEntity.this;
 						BlockPos pos = RoboScriptHelper.asBlockPos(parameters[0], parameters[1], parameters[2]);
-						Item itemToGet = RoboScriptHelper.asItem(parameters[3]);
+						Item itemToGet = RoboScriptHelper.asItem(parameters[3], AbstractRobotEntity.this.level());
 
 						if (!pos.closerToCenterThan(robot.position(), 5))
 							this.handleErrorMessage("The container is too far away. Ignored the command.");
@@ -141,7 +141,7 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 						AbstractRobotEntity robot = AbstractRobotEntity.this;
 
 						BlockPos pos = RoboScriptHelper.asBlockPos(parameters[0], parameters[1], parameters[2]);
-						Item itemToPush = RoboScriptHelper.asItem(parameters[3]);
+						Item itemToPush = RoboScriptHelper.asItem(parameters[3], AbstractRobotEntity.this.level());
 
 						if (!pos.closerToCenterThan(robot.position(), 5))
 							this.handleErrorMessage("The container is too far away. Ignored the command.");
@@ -174,7 +174,7 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 
 						BlockPos clickPos = RoboScriptHelper.asBlockPos(parameters[0], parameters[1], parameters[2]);
 						Item item = RoboScriptHelper.optional(parameters[3],
-								RoboScriptHelper::asItem);
+								input -> RoboScriptHelper.asItem(input, AbstractRobotEntity.this.level()));
 						String directionString = RoboScriptHelper.optional(parameters[4],
 								RoboScriptHelper::asString);
 
@@ -202,7 +202,7 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 						AbstractRobotEntity robot = AbstractRobotEntity.this;
 						BlockPos clickPos = RoboScriptHelper.asBlockPos(parameters[0], parameters[1], parameters[2]);
 						Item item = RoboScriptHelper.optional(parameters[3],
-								RoboScriptHelper::asItem);
+								input -> RoboScriptHelper.asItem(input, AbstractRobotEntity.this.level()));
 						String directionString = RoboScriptHelper.optional(parameters[4],
 								RoboScriptHelper::asString);
 
@@ -228,9 +228,9 @@ public abstract class AbstractRobotEntity extends PathfinderMob implements Inven
 					});
 
 					this.defineNativeFunction("waitForRedstoneLink", 2, (parameters) -> {
-						Item item1 = RoboScriptHelper.asItem(parameters[0]);
+						Item item1 = RoboScriptHelper.asItem(parameters[0], AbstractRobotEntity.this.level());
 						Item item2 = RoboScriptHelper.optional(parameters[1],
-								RoboScriptHelper::asItem);
+								input -> RoboScriptHelper.asItem(input, AbstractRobotEntity.this.level()));
 
 						if (item1 == Items.AIR)
 							throw new RuntimeError("Invalid first itemId.");

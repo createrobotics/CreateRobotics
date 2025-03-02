@@ -106,6 +106,7 @@ legacyForge {
 repositories {
 	maven { url = "https://maven.createmod.net" } // Create, Ponder, Flywheel
 	maven { url = "https://maven.tterrag.com" } // Registrate
+
 	maven { url = "https://maven.blamejared.com" } // JEI, Vazkii's Mods
 	maven { url = "https://harleyoconnor.com/maven" } // Dynamic Trees
 	maven { url = "https://maven.theillusivec4.top/" } // Curios API
@@ -141,7 +142,7 @@ dependencies {
 	modImplementation("net.createmod.ponder:Ponder-Forge-${minecraft_version}:${ponder_version}")
 
 	compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:${mixin_extras_version}"))
-
+	
 	// modCompileOnly("mezz.jei:jei-${jei_minecraft_version}-common-api:${jei_version}")
 	// modCompileOnly("mezz.jei:jei-${jei_minecraft_version}-forge-api:${jei_version}")
 	modImplementation("mezz.jei:jei-${jei_minecraft_version}-forge:${jei_version}")

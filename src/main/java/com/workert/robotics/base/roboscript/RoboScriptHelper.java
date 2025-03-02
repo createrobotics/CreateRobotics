@@ -1,10 +1,11 @@
 package com.workert.robotics.base.roboscript;
 import com.workert.robotics.base.registries.ItemRegistry;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
@@ -144,13 +145,14 @@ public class RoboScriptHelper {
 		return asBlockPos(a, b, c, "Argument must be a whole number.");
 	}
 
-	public static Item asItem(Object object) {
+	public static Item asItem(Object object, Level level) {
 		String itemId = asNonEmptyString(object);
-		return getItemById(itemId);
+		return getItemById(itemId, level);
 	}
 
-	public static Item getItemById(@Nonnull String id) {
-		return Registry.ITEM.get(new ResourceLocation(id.trim().split(":")[0], id.trim().split(":")[1]));
+	public static Item getItemById(@Nonnull String id, @Nonnull Level level) {
+		return level.registryAccess().registry(Registries.ITEM).get()
+				.get(new ResourceLocation(id.trim().split(":")[0], id.trim().split(":")[1]));
 	}
 
 	public static <ReturnType> ReturnType optional(Object object, @Nonnull Function<Object, ReturnType> predicateFunction) {

@@ -2,11 +2,13 @@ package com.workert.robotics.base.registries;
 
 import com.simibubi.create.AllTags;
 import com.simibubi.create.content.processing.sequenced.SequencedAssemblyItem;
+import com.simibubi.create.foundation.item.ItemDescription;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import com.workert.robotics.Robotics;
 import com.workert.robotics.content.computers.punchcard.PunchCardItem;
 import com.workert.robotics.content.robotics.BaseRobotItem;
 import com.workert.robotics.content.utility.extendoboots.ExtendOBootsItem;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
@@ -56,6 +58,7 @@ public class ItemRegistry {
 			.properties(properties -> properties
 					.stacksTo(1)
 					.rarity(Rarity.UNCOMMON))
+			.onRegisterAfter(Registries.ITEM, v -> ItemDescription.useKey(v, "item.robotics.program"))
 			.register();
 
 	public static final ItemEntry<BaseRobotItem> CLOCKCOPTER = Robotics.REGISTRATE
@@ -80,6 +83,7 @@ public class ItemRegistry {
 			.item("extend_o_boots",
 					ExtendOBootsItem::new)
 			.lang("Extend-O-Boots")
+			.onRegisterAfter(Registries.ITEM, v -> ItemDescription.useKey(v, "item.robotics.extend_o_boots"))
 			.register();
 
 	public static final ItemEntry<SequencedAssemblyItem> INCOMPLETE_CLOCKCOPTER = Robotics.REGISTRATE.item(

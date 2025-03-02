@@ -1,6 +1,7 @@
 package com.workert.robotics;
 
 import com.mojang.logging.LogUtils;
+import com.simibubi.create.content.logistics.box.PackageEntity;
 import com.simibubi.create.foundation.data.CreateRegistrate;
 import com.workert.robotics.base.client.ClientHandler;
 import com.workert.robotics.base.client.KeybindList;
@@ -21,7 +22,7 @@ import org.slf4j.Logger;
 
 @Mod(Robotics.MOD_ID)
 public class Robotics {
-
+	PackageEntity
 	public static final String MOD_ID = "robotics";
 	public static final Logger LOGGER = LogUtils.getLogger();
 

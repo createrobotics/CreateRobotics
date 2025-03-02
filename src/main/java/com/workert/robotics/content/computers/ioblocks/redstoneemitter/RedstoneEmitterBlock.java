@@ -1,9 +1,9 @@
 package com.workert.robotics.content.computers.ioblocks.redstoneemitter;
 import com.simibubi.create.AllItems;
 import com.simibubi.create.foundation.block.IBE;
-import com.simibubi.create.foundation.gui.ScreenOpener;
 import com.workert.robotics.base.registries.BlockEntityRegistry;
 import com.workert.robotics.content.computers.ioblocks.IOSignalScreen;
+import net.createmod.catnip.gui.ScreenOpener;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -26,7 +26,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.DistExecutor;
-import org.jetbrains.annotations.Nullable;
 
 public class RedstoneEmitterBlock extends Block implements EntityBlock, IBE<RedstoneEmitterBlockEntity> {
 	public static final BooleanProperty LIT = BooleanProperty.create("lit");
@@ -45,7 +44,6 @@ public class RedstoneEmitterBlock extends Block implements EntityBlock, IBE<Reds
 		return BlockEntityRegistry.REDSTONE_EMITTER.get();
 	}
 
-	@Nullable
 	@Override
 	public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
 		return BlockEntityRegistry.REDSTONE_EMITTER.get().create(blockPos, blockState);

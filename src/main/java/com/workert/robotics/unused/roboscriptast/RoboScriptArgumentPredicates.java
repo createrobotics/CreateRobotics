@@ -1,9 +1,6 @@
 package com.workert.robotics.unused.roboscriptast;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
 
 import java.util.List;
 import java.util.function.Function;
@@ -150,21 +147,14 @@ public class RoboScriptArgumentPredicates {
 		throw new RoboScriptRuntimeError(this.errorToken, "Argument must not be empty.");
 	}
 
-	// TODO: outcraft figure out why this was static i changed it so it would compile
 	public BlockPos asBlockPos(List<Object> argumentList, int startingIndex) {
-		return new BlockPos(this.asNumber(argumentList.get(startingIndex)),
-				this.asNumber(argumentList.get(startingIndex + 1)),
-				this.asNumber(argumentList.get(startingIndex + 2)));
+		return new BlockPos(this.asNumber(argumentList.get(startingIndex)).intValue(),
+				this.asNumber(argumentList.get(startingIndex + 1)).intValue(),
+				this.asNumber(argumentList.get(startingIndex + 2)).intValue());
 	}
 
 	public BlockPos asBlockPos(Object object1, Object object2, Object object3) {
-		return new BlockPos(this.asNumber(object1), this.asNumber(object2),
-				this.asNumber(object3));
-	}
-
-	public Item asItem(Object object) {
-		String itemId = this.asNonEmptyString(object);
-		// May return Items.AIR
-		return Registry.ITEM.get(new ResourceLocation(itemId.split(":")[0], itemId.trim().split(":")[1]));
+		return new BlockPos(this.asNumber(object1).intValue(), this.asNumber(object2).intValue(),
+				this.asNumber(object3).intValue());
 	}
 }

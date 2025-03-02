@@ -46,6 +46,10 @@ public class SmasherBlockRecipe implements Recipe<SimpleContainer> {
 		return this.output.copy();
 	}
 
+	public ItemStack getResultItem() {
+		return this.output.copy();
+	}
+
 	@Override
 	public ResourceLocation getId() {
 		return this.id;

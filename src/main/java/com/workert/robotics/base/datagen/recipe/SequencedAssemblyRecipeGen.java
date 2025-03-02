@@ -8,14 +8,14 @@ import com.simibubi.create.foundation.data.recipe.CreateRecipeProvider;
 import com.workert.robotics.Robotics;
 import com.workert.robotics.base.registries.BlockRegistry;
 import com.workert.robotics.base.registries.ItemRegistry;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.function.UnaryOperator;
 
 public class SequencedAssemblyRecipeGen extends CreateRecipeProvider {
-	public SequencedAssemblyRecipeGen(DataGenerator dataGenerator) {
-		super(dataGenerator.getPackOutput());
+	public SequencedAssemblyRecipeGen(PackOutput packOutput) {
+		super(packOutput);
 	}
 
 	GeneratedRecipe CLOCKCOPTER = this.create("clockcopter",

@@ -1,9 +1,8 @@
 package com.workert.robotics.content.computers.ioblocks;
-import com.simibubi.create.CreateClient;
+import com.simibubi.create.content.logistics.depot.EjectorTargetHandler;
 import com.workert.robotics.base.config.RoboticsConfigs;
 import com.workert.robotics.content.computers.computer.ComputerBlockEntity;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
@@ -18,8 +17,6 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class IOBlockItem extends BlockItem {
 	public IOBlockItem(Block pBlock, Properties pProperties) {
@@ -86,22 +83,9 @@ public class IOBlockItem extends BlockItem {
 	@Override
 	public void inventoryTick(ItemStack pStack, Level pLevel, Entity pEntity, int pSlotId, boolean pIsSelected) {
 		if (pEntity instanceof Player && pLevel.isClientSide && pIsSelected)
-			drawOutline(NbtUtils.readBlockPos(
+			EjectorTargetHandler.drawOutline(NbtUtils.readBlockPos(
 					pEntity.getSlot(pSlotId).get().getOrCreateTag().getCompound("BlockEntityTag")
 							.getCompound("TargetPosition")));
 		super.inventoryTick(pStack, pLevel, pEntity, pSlotId, pIsSelected);
-	}
-
-	public static void drawOutline(BlockPos selection) {
-		Level world = Minecraft.getInstance().level;
-		if (selection == null)
-			return;
-
-		BlockState state = world.getBlockState(selection);
-		VoxelShape shape = state.getShape(world, selection);
-		AABB boundingBox = shape.isEmpty() ? new AABB(BlockPos.ZERO) : shape.bounds();
-		CreateClient.OUTLINER.showAABB("target", boundingBox.move(selection))
-				.colored(0xffcb74)
-				.lineWidth(1 / 16f);
 	}
 }
