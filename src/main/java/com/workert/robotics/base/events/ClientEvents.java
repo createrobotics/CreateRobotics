@@ -1,4 +1,4 @@
-package com.workert.robotics.base.client;
+package com.workert.robotics.base.events;
 import com.workert.robotics.content.computers.ioblocks.IOTargetHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;

@@ -10,6 +10,8 @@ import com.workert.robotics.content.computers.ioblocks.redstoneemitter.RedstoneE
 import com.workert.robotics.content.computers.ioblocks.redstonepulser.RedstonePulserBlockEntity;
 import com.workert.robotics.content.computers.ioblocks.scanner.ScannerBlockEntity;
 import com.workert.robotics.content.computers.ioblocks.scanner.ScannerRenderer;
+import com.workert.robotics.content.computers.ioblocks.scanner.ScannerVisual;
+import com.workert.robotics.content.robotics.drone_delivery.drone_port.DronePortBlockEntity;
 import com.workert.robotics.unused.smasher.SmasherBlockEntity;
 
 public class BlockEntityRegistry {
@@ -18,14 +20,18 @@ public class BlockEntityRegistry {
 
 	public static final BlockEntityEntry<SmasherBlockEntity> SMASHER_BLOCK_ENTITY = Robotics.REGISTRATE
 			.blockEntity("smasher", SmasherBlockEntity::new)
-			.validBlock(() -> BlockRegistry.SMASHER.get())
+			.validBlock(BlockRegistry.SMASHER)
 			.register();
 
 	public static final BlockEntityEntry<ComputerBlockEntity> COMPUTER = Robotics.REGISTRATE
 			.blockEntity("computer", ComputerBlockEntity::new)
 			.visual(() -> SingleAxisRotatingVisual.of(AllPartialModels.SHAFTLESS_COGWHEEL))
 			.validBlock(BlockRegistry.COMPUTER)
-			//.renderer(() -> ComputerRenderer::new)
+			.register();
+
+	public static final BlockEntityEntry<DronePortBlockEntity> DRONE_PORT = Robotics.REGISTRATE
+			.blockEntity("drone_port", DronePortBlockEntity::new)
+			.validBlock(BlockRegistry.DRONE_PORT)
 			.register();
 
 	public static final BlockEntityEntry<RedstoneDetectorBlockEntity> REDSTONE_DETECTOR = Robotics.REGISTRATE
@@ -40,9 +46,10 @@ public class BlockEntityRegistry {
 			.blockEntity("redstone_pulser", RedstonePulserBlockEntity::new)
 			.validBlock(BlockRegistry.REDSTONE_PULSER)
 			.register();
+
 	public static final BlockEntityEntry<ScannerBlockEntity> SCANNER = Robotics.REGISTRATE
 			.blockEntity("scanner", ScannerBlockEntity::new)
-			.visual(() -> SingleAxisRotatingVisual.of(AllPartialModels.SHAFT))
+			.visual(() -> ScannerVisual::new)
 			.validBlock(BlockRegistry.SCANNER.lazy())
 			.renderer(() -> ScannerRenderer::new)
 			.register();

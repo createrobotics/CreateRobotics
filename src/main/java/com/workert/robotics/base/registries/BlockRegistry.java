@@ -15,6 +15,7 @@ import com.workert.robotics.content.computers.ioblocks.redstoneemitter.RedstoneE
 import com.workert.robotics.content.computers.ioblocks.redstonepulser.RedstonePulserBlock;
 import com.workert.robotics.content.computers.ioblocks.scanner.ScannerBlock;
 import com.workert.robotics.content.robotics.codeeditor.CodeEditorBlock;
+import com.workert.robotics.content.robotics.drone_delivery.drone_port.DronePortBlock;
 import com.workert.robotics.unused.smasher.SmasherBlock;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.BlockTags;
@@ -138,6 +139,14 @@ public class BlockRegistry {
 			//.transform(CStress.setImpact(12))
 			.onRegister((block) -> DisplaySource.BY_BLOCK.add(block, new TerminalDisplaySource()))
 			.onRegister((block) -> DisplaySource.BY_BLOCK.add(block, new ComputerDisplaySource()))
+			.simpleItem()
+			.properties(BlockBehaviour.Properties::noOcclusion).register();
+
+	public static final BlockEntry<DronePortBlock> DRONE_PORT = Robotics.REGISTRATE
+			.block("drone_port", DronePortBlock::new)
+			.lang("Drone Port")
+			.initialProperties(() -> Blocks.STONE)
+			.transform(TagGen.pickaxeOnly())
 			.simpleItem()
 			.properties(BlockBehaviour.Properties::noOcclusion).register();
 

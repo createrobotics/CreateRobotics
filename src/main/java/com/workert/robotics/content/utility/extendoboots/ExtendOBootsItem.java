@@ -4,18 +4,18 @@ import com.google.common.collect.Maps;
 import com.workert.robotics.base.client.KeybindList;
 import com.workert.robotics.base.registries.ArmorMaterialRegistry;
 import com.workert.robotics.base.registries.EntityRegistry;
+import com.workert.robotics.base.registries.ItemRegistry;
 import com.workert.robotics.base.registries.PacketRegistry;
 import net.createmod.catnip.animation.LerpedFloat;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.Map;
@@ -25,9 +25,8 @@ public class ExtendOBootsItem extends ArmorItem {
 	private static final Map<ItemStack, ExtendOBoots> ENTITIES = Maps.newIdentityHashMap();
 
 	private static final Map<ItemStack, LerpedFloat> HEIGHT = Maps.newIdentityHashMap();
-	private Player player;
 
-	private boolean clientSentOff;
+	private boolean clientSentOff; // Will always be false on server
 
 	public ExtendOBootsItem(Properties pProperties) {
 		super(ArmorMaterialRegistry.EXTEND_O_BOOTS, Type.BOOTS, pProperties);
@@ -48,45 +47,43 @@ public class ExtendOBootsItem extends ArmorItem {
 			if (HEIGHT.get(stack) == null) HEIGHT.put(stack, LerpedFloat.linear());
 			if (stack.getOrCreateTag().getFloat("currentHeight") > HEIGHT.get(stack).getValue())
 				HEIGHT.get(stack)
-						.chase(stack.getOrCreateTag().getFloat("currentHeight"), 0.2, LerpedFloat.Chaser.LINEAR);
+						.chase(stack.getOrCreateTag().getFloat("currentHeight"), 0.3, LerpedFloat.Chaser.LINEAR);
 			else HEIGHT.get(stack)
 					.chase(stack.getOrCreateTag().getFloat("currentHeight"), 0.55, LerpedFloat.Chaser.EXP);
-			HEIGHT.get(stack).tickChaser();
 
 			ExtendOBoots extendOBoots = ENTITIES.get(stack);
 			if (extendOBoots == null || extendOBoots.isRemoved()) {
-				extendOBoots = new ExtendOBoots(EntityRegistry.EXTEND_O_BOOTS.get(), this.player.level());
-				extendOBoots.setPos(this.player.position());
-				this.player.level().addFreshEntity(extendOBoots);
+				extendOBoots = new ExtendOBoots(EntityRegistry.EXTEND_O_BOOTS.get(), entity.level());
+				extendOBoots.setPos(entity.position());
+				extendOBoots.setYRot(0);
+				extendOBoots.setXRot(0);
+				entity.level().addFreshEntity(extendOBoots);
 				ENTITIES.put(stack, extendOBoots);
 			}
-			this.player.teleportTo(this.player.getX(), extendOBoots.getY() + HEIGHT.get(stack).getValue(),
-					this.player.getZ());
-			this.player.setYRot(extendOBoots.getYRot());
-			if (this.player.position().distanceTo(extendOBoots.position()
+			entity.teleportTo(extendOBoots.getX(), extendOBoots.getY() + HEIGHT.get(stack).getValue(), extendOBoots.getZ());
+			entity.setYRot(extendOBoots.getYRot());
+			if (entity.position().distanceTo(extendOBoots.position()
 					.with(Direction.Axis.Y, extendOBoots.getY() + HEIGHT.get(stack).getValue())) > 0.1)
 				stack.getOrCreateTag().putFloat("currentHeight", 0);
 			extendOBoots.setHeight(stack.getOrCreateTag().getFloat("currentHeight"));
+
+			HEIGHT.get(stack).tickChaser();
 		} else if (ENTITIES.get(stack) != null) {
 			ENTITIES.get(stack).discard();
 			ENTITIES.put(stack, null);
+			HEIGHT.put(stack, null);
 		}
 	}
 
 	@SubscribeEvent
 	public void detectScroll(InputEvent.MouseScrollingEvent mouseEvent) {
-		if (mouseEvent.getScrollDelta() > 0 && KeybindList.changeExtendOBootsHeight.isDown()) {
+		if (KeybindList.changeExtendOBootsHeight.isDown()
+				&& Minecraft.getInstance().player != null
+				&& Minecraft.getInstance().player.getItemBySlot(EquipmentSlot.FEET).getItem().equals(ItemRegistry.EXTEND_O_BOOTS.get())
+		) {
 			this.clientSentOff = false;
-			PacketRegistry.getChannel().sendToServer(new ChangeExtendOBootsHeightPacket(0.5));
-		} else if (mouseEvent.getScrollDelta() < 0 && KeybindList.changeExtendOBootsHeight.isDown()) {
-			this.clientSentOff = false;
-			PacketRegistry.getChannel().sendToServer(new ChangeExtendOBootsHeightPacket(-0.5));
+			PacketRegistry.getChannel().sendToServer(new ChangeExtendOBootsHeightPacket(mouseEvent.getScrollDelta() > 0 ? 0.5 : -0.5));
+			mouseEvent.setCanceled(true);
 		}
-	}
-
-	@SubscribeEvent
-	public void detectPlayerDamage(LivingDamageEvent event) {
-		if (event.getEntity().equals(this.player))
-			this.player.getItemBySlot(EquipmentSlot.FEET).getOrCreateTag().putDouble("currentHeight", 0);
 	}
 }

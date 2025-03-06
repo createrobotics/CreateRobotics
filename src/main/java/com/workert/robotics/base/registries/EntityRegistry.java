@@ -8,6 +8,9 @@ import com.workert.robotics.content.robotics.clockcopter.ClockcopterRenderer;
 import com.workert.robotics.content.robotics.codedrone.CodeDrone;
 import com.workert.robotics.content.robotics.codedrone.CodeDroneRenderer;
 import com.workert.robotics.content.robotics.codedrone.CodeDroneVisual;
+import com.workert.robotics.content.robotics.drone_delivery.delivery_drone.DeliveryDroneEntity;
+import com.workert.robotics.content.robotics.drone_delivery.delivery_drone.DeliveryDroneRenderer;
+import com.workert.robotics.content.robotics.drone_delivery.delivery_drone.DeliveryDroneVisual;
 import com.workert.robotics.content.robotics.flyingtoolbox.FlyingToolbox;
 import com.workert.robotics.content.robotics.flyingtoolbox.FlyingToolboxRenderer;
 import com.workert.robotics.content.utility.extendoboots.ExtendOBoots;
@@ -53,6 +56,18 @@ public class EntityRegistry {
 					.add(Attributes.FLYING_SPEED, 0.8F))
 			.renderer(() -> CodeDroneRenderer::new))
 			.visual(() -> CodeDroneVisual::new, false)
+			.register();
+
+	public static final EntityEntry<DeliveryDroneEntity> DELIVERY_DRONE = ((CreateEntityBuilder<DeliveryDroneEntity, ?>) (Robotics.REGISTRATE
+			.entity("delivery_drone", DeliveryDroneEntity::new, MobCategory.MISC))
+			.lang("Delivery Drone")
+			.properties(properties -> properties.sized(0.4f, 0.4f))
+			.attributes(() -> Mob.createMobAttributes()
+					.add(Attributes.MOVEMENT_SPEED, 0.2F)
+					.add(Attributes.MAX_HEALTH, 1.0D)
+					.add(Attributes.FLYING_SPEED, 0.8F))
+			.renderer(() -> DeliveryDroneRenderer::new))
+			.visual(() -> DeliveryDroneVisual::new, false)
 			.register();
 
 	public static final EntityEntry<ExtendOBoots> EXTEND_O_BOOTS = Robotics.REGISTRATE

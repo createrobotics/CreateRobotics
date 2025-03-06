@@ -33,7 +33,7 @@ public class CodeDroneVisual extends AbstractEntityVisual<CodeDrone> implements 
 	private void animate(float partialTick) {
 		float yaw = Mth.lerp(partialTick, this.entity.yRotO, this.entity.getYRot());
 
-		Vec3 pos = CodeDroneVisual.this.entity.position();
+		Vec3 pos = this.entity.position();
 		var renderOrigin = this.renderOrigin();
 		var x = (float) (Mth.lerp(partialTick, this.entity.xo, pos.x) - renderOrigin.getX());
 		var y = (float) (Mth.lerp(partialTick, this.entity.yo, pos.y) - renderOrigin.getY());

@@ -1,10 +1,8 @@
 package com.workert.robotics.base.datagen;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.simibubi.create.Create;
 import com.simibubi.create.foundation.data.recipe.ProcessingRecipeGen;
 import com.simibubi.create.foundation.utility.FilesHelper;
-import com.simibubi.create.infrastructure.data.CreateRegistrateTags;
 import com.tterrag.registrate.providers.ProviderType;
 import com.workert.robotics.Robotics;
 import com.workert.robotics.base.datagen.recipe.SequencedAssemblyRecipeGen;
@@ -31,9 +29,7 @@ public class RoboticsDatagen {
 	}
 
 	private static void addExtraRegistrateData() {
-		CreateRegistrateTags.addGenerators();
-
-		Create.REGISTRATE.addDataGenerator(ProviderType.LANG, provider -> {
+		Robotics.REGISTRATE.addDataGenerator(ProviderType.LANG, provider -> {
 			BiConsumer<String, String> langConsumer = provider::add;
 
 			provideDefaultLang("interface", langConsumer);

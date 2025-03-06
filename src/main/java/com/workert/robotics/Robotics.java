@@ -7,6 +7,7 @@ import com.workert.robotics.base.client.KeybindList;
 import com.workert.robotics.base.config.RoboticsConfigs;
 import com.workert.robotics.base.datagen.RoboticsDatagen;
 import com.workert.robotics.base.registries.*;
+import com.workert.robotics.content.robotics.drone_delivery.GlobalDroneNetworkManager;
 import com.workert.robotics.unused.smasher.SmasherBlockScreen;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.resources.ResourceLocation;
@@ -23,6 +24,8 @@ public class Robotics {
 	public static final Logger LOGGER = LogUtils.getLogger();
 
 	public static final CreateRegistrate REGISTRATE = CreateRegistrate.create(MOD_ID);
+
+	public static final GlobalDroneNetworkManager DRONE_NETWORK = new GlobalDroneNetworkManager();
 
 	final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
@@ -51,6 +54,7 @@ public class Robotics {
 	private static void clientSetup(final FMLClientSetupEvent event) {
 		ClientHandler.init();
 		KeybindList.init();
+		PartialModelRegistry.init();
 
 		MenuScreens.register(MenuRegistry.SMASHER_BLOCK_MENU.get(), SmasherBlockScreen::new);
 	}
