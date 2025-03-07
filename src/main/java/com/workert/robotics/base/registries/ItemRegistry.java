@@ -24,31 +24,31 @@ public class ItemRegistry {
 
 	public static final ItemEntry<Item> TIN_INGOT = Robotics.REGISTRATE
 			.item("tin_ingot", Item::new)
-			.lang("Tin ingot")
+			.lang("Tin Ingot")
 			.tag(Tags.Items.INGOTS)
 			.tag(AllTags.forgeItemTag("ingots/tin"))
 			.register();
 	public static final ItemEntry<Item> TIN_NUGGET = Robotics.REGISTRATE
 			.item("tin_nugget", Item::new)
-			.lang("Tin nugget")
+			.lang("Tin Nugget")
 			.tag(Tags.Items.NUGGETS)
 			.tag(AllTags.forgeItemTag("nuggets/tin"))
 			.register();
 	public static final ItemEntry<Item> RAW_TIN = Robotics.REGISTRATE
 			.item("raw_tin", Item::new)
-			.lang("Raw tin")
+			.lang("Raw Tin")
 			.tag(Tags.Items.RAW_MATERIALS)
 			.register();
 
 	public static final ItemEntry<Item> BRONZE_INGOT = Robotics.REGISTRATE
 			.item("bronze_ingot", Item::new)
-			.lang("Bronze ingot")
+			.lang("Bronze Ingot")
 			.tag(Tags.Items.INGOTS)
 			.tag(AllTags.forgeItemTag("ingots/bronze"))
 			.register();
 	public static final ItemEntry<Item> BRONZE_NUGGET = Robotics.REGISTRATE
 			.item("bronze_nugget", Item::new)
-			.lang("Bronze nugget")
+			.lang("Bronze Nugget")
 			.tag(Tags.Items.NUGGETS)
 			.tag(AllTags.forgeItemTag("nuggets/bronze"))
 			.register();
