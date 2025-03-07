@@ -4,7 +4,7 @@ plugins {
 	id "net.neoforged.moddev.legacyforge" version "2.0.74"
 	id "me.modmuss50.mod-publish-plugin" version "0.8.3"
 	id "dev.ithundxr.silk" version "0.11.15"
-	id "net.kyori.blossom" version "2.1.0" // https://github.com/KyoriPowered/blossom
+	// id "net.kyori.blossom" version "2.1.0" // https://github.com/KyoriPowered/blossom <- Robotics doesn't need this for now
 	id "org.jetbrains.gradle.plugin.idea-ext" version "1.1.8" // https://github.com/JetBrains/gradle-idea-ext-plugin
 }
 
@@ -174,10 +174,10 @@ sourceSets.main {
 		exclude '.cache/'
 	}
 
-	blossom.javaSources {
+	/*blossom.javaSources {
 		property("version", build_info_mod_version)
 		property("gitCommit", gitHash.toString())
-	}
+	}*/
 }
 
 processResources {
