@@ -33,7 +33,12 @@ import net.minecraftforge.common.Tags;
 import static com.simibubi.create.foundation.data.TagGen.tagBlockAndItem;
 
 public class BlockRegistry {
+
 	public static void register() {
+	}
+
+	static {
+		Robotics.REGISTRATE.setCreativeTab(CreativeModeTabRegistry.BASE_CREATIVE_TAB);
 	}
 
 	public static final BlockEntry<DropExperienceBlock> TIN_ORE = Robotics.REGISTRATE
