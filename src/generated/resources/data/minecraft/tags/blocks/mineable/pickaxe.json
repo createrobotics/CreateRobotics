@@ -5,6 +5,7 @@
 	"robotics:tin_block",
 	"robotics:bronze_block",
 	"robotics:computer",
+	"robotics:drone_port",
 	"robotics:redstone_detector",
 	"robotics:redstone_emitter",
 	"robotics:redstone_pulser",

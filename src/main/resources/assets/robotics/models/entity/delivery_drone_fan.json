@@ -4,7 +4,7 @@
 	"0": "robotics:block/delivery_drone/delivery_drone_fan",
 	"particle": "robotics:block/delivery_drone/delivery_drone_fan"
   },
-  "render_type": "minecraft:translucent",
+  "render_type": "minecraft:cutout",
   "elements": [
 	{
 	  "name": "Fan",

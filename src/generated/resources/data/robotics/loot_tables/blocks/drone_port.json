@@ -11,11 +11,11 @@
 	  "entries": [
 		{
 		  "type": "minecraft:item",
-		  "name": "robotics:smasher"
+		  "name": "robotics:drone_port"
 		}
 	  ],
 	  "rolls": 1.0
 	}
   ],
-  "random_sequence": "robotics:blocks/smasher"
+  "random_sequence": "robotics:blocks/drone_port"
 }
