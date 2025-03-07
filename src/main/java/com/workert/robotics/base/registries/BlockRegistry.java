@@ -38,7 +38,7 @@ public class BlockRegistry {
 
 	public static final BlockEntry<DropExperienceBlock> TIN_ORE = Robotics.REGISTRATE
 			.block("tin_ore", DropExperienceBlock::new)
-			.lang("Tin ore")
+			.lang("Tin Ore")
 			.properties(properties -> properties.of()
 					.sound(SoundType.STONE)
 					.strength(3.0F, 3.0F)
@@ -56,7 +56,7 @@ public class BlockRegistry {
 
 	public static final BlockEntry<DropExperienceBlock> DEEPSLATE_TIN_ORE = Robotics.REGISTRATE
 			.block("deepslate_tin_ore", DropExperienceBlock::new)
-			.lang("Deepslate tin ore")
+			.lang("Deepslate Tin Ore")
 			.initialProperties(BlockRegistry.TIN_ORE)
 			.properties(properties -> properties
 					.sound(SoundType.DEEPSLATE)
@@ -74,7 +74,7 @@ public class BlockRegistry {
 
 	public static final BlockEntry<Block> TIN_BLOCK = Robotics.REGISTRATE
 			.block("tin_block", Block::new)
-			.lang("Tin block")
+			.lang("Block of Tin")
 			.properties(properties -> properties.of()
 					.sound(SoundType.METAL)
 					.strength(5.0F, 6.0F)
@@ -90,7 +90,7 @@ public class BlockRegistry {
 
 	public static final BlockEntry<Block> BRONZE_BLOCK = Robotics.REGISTRATE
 			.block("bronze_block", Block::new)
-			.lang("Bronze block")
+			.lang("Block of Bronze")
 			.properties(properties -> properties.of()
 					.sound(SoundType.METAL)
 					.strength(6.0F, 7.0F)
