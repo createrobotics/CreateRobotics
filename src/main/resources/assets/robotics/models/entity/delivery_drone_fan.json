@@ -1,0 +1,54 @@
+{
+  "credit": "Made with Blockbench",
+  "textures": {
+	"0": "robotics:block/delivery_drone/delivery_drone_fan",
+	"particle": "robotics:block/delivery_drone/delivery_drone_fan"
+  },
+  "render_type": "minecraft:translucent",
+  "elements": [
+	{
+	  "name": "Fan",
+	  "from": [
+		5,
+		0,
+		5
+	  ],
+	  "to": [
+		11,
+		0,
+		11
+	  ],
+	  "rotation": {
+		"angle": 0,
+		"axis": "y",
+		"origin": [
+		  8,
+		  0,
+		  8
+		]
+	  },
+	  "faces": {
+		"up": {
+		  "uv": [
+			0,
+			7,
+			6,
+			1
+		  ],
+		  "rotation": 270,
+		  "texture": "#0"
+		},
+		"down": {
+		  "uv": [
+			0,
+			0,
+			6,
+			8
+		  ],
+		  "rotation": 90,
+		  "texture": "#0"
+		}
+	  }
+	}
+  ]
+}

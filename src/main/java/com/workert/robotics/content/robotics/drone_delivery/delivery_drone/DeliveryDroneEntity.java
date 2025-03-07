@@ -9,7 +9,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -74,7 +73,7 @@ public class DeliveryDroneEntity extends LivingEntity {
 					}
 				}
 				if (nearestBlockPos != null)
-					this.moveTo(nearestBlockPos.getCenter().add(0, 0.2, 0));
+					this.moveTo(nearestBlockPos.getCenter().subtract(0, 0.2, 0));
 			}
 		}
 
@@ -90,12 +89,23 @@ public class DeliveryDroneEntity extends LivingEntity {
 				return;
 			}
 
-			double droneSpeed = 0.12;
+			double droneSpeed = 0.14;
 
 			if (this.position().distanceTo(this.path.get(this.pathProgress).getCenter()) < droneSpeed * 2.5) {
-				this.moveTo(this.path.get(this.pathProgress).getCenter().add(0, 0.2, 0));
-				if (this.pathProgress != (this.path.size() - 1))
+				this.moveTo(this.path.get(this.pathProgress).getCenter().subtract(0, 0.2, 0));
+				if (this.pathProgress != (this.path.size() - 1)) {
 					this.pathProgress++;
+				} else {
+					if (!this.box.isEmpty() && this.destinationBlockPos != null
+							&& this.level().getBlockEntity(this.destinationBlockPos) != null
+							&& this.level().getBlockEntity(this.destinationBlockPos) instanceof DronePortBlockEntity dronePortBlockEntity) {
+						if (ItemHandlerHelper.insertItem(dronePortBlockEntity.inventory, this.box, false).isEmpty())
+							this.discard();
+					} else {
+						this.dropAllDeathLoot(this.level().damageSources().generic());
+						this.discard();
+					}
+				}
 			}
 
 
@@ -103,38 +113,11 @@ public class DeliveryDroneEntity extends LivingEntity {
 				this.setDeltaMovement(
 						this.path.get(this.pathProgress).getCenter()
 								.subtract(this.position())
-								.add(0, 0.2, 0)
+								.subtract(0, 0.2, 0)
 								.normalize()
 								.multiply(new Vec3(droneSpeed, droneSpeed, droneSpeed))
 				);
 			}
-		}
-
-		// Why do I have to check destinationBlockPos != null here?! It should never be null if Minecraft doesn't mess up readAdditionalSaveData.
-		if (this.path != null && this.pathProgress == (this.path.size() - 1)) {
-			if (!this.box.isEmpty() && this.destinationBlockPos != null
-					&& this.level().getBlockEntity(this.destinationBlockPos) != null
-					&& this.level().getBlockEntity(this.destinationBlockPos) instanceof DronePortBlockEntity dronePortBlockEntity) {
-				if (ItemHandlerHelper.insertItem(dronePortBlockEntity.inventory, this.box, false).isEmpty())
-					this.discard();
-			} else {
-				this.dropAllDeathLoot(this.level().damageSources().generic());
-				this.discard();
-			}
-		}
-	}
-
-	// Copy-pasted from Entity#getInputVector
-	private Vec3 getInputVector(Vec3 relative, float motionScaler) {
-		float facing = this.getYRot();
-		double d0 = relative.lengthSqr();
-		if (d0 < 1.0E-7) {
-			return Vec3.ZERO;
-		} else {
-			Vec3 vec3 = (d0 > (double) 1.0F ? relative.normalize() : relative).scale((double) motionScaler);
-			float f = Mth.sin(facing * ((float) Math.PI / 180F));
-			float f1 = Mth.cos(facing * ((float) Math.PI / 180F));
-			return new Vec3(vec3.x * (double) f1 - vec3.z * (double) f, vec3.y, vec3.z * (double) f1 + vec3.x * (double) f);
 		}
 	}
 
