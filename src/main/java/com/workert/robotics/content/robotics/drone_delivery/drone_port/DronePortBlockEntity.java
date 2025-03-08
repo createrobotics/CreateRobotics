@@ -87,11 +87,12 @@ public class DronePortBlockEntity extends PackagePortBlockEntity {
 				return true;
 
 			List<BlockPos> validDestinations = new ArrayList<>();
+
 			Robotics.DRONE_NETWORK.dronePorts.computeIfAbsent(((Level) levelAccessor).dimension().toString(), key -> new HashMap<>())
 					.forEach((otherPortPos, filter) -> {
-						if (PackageItem.matchAddress(box, filter) && Robotics.DRONE_NETWORK.savedPaths.computeIfAbsent(
+						if (!filter.isEmpty() && PackageItem.matchAddress(box, filter) && Robotics.DRONE_NETWORK.savedPaths.computeIfAbsent(
 										((Level) levelAccessor).dimension().toString(), key -> new HashMap<>())
-								.containsKey(Couple.create(portPos, otherPortPos))) {
+								.get(Couple.create(portPos, otherPortPos)) != null) {
 							validDestinations.add(otherPortPos);
 						}
 					});
@@ -102,7 +103,8 @@ public class DronePortBlockEntity extends PackagePortBlockEntity {
 
 
 			return levelAccessor.addFreshEntity(DeliveryDroneEntity.fromItemStack(
-					(Level) levelAccessor, portPos.getCenter().add(0, 1, 0), box, portPos, getNearestBlockPos(portPos, validDestinations)));
+					(Level) levelAccessor, portPos.getCenter().add(0, 0.8, 0), box, portPos,
+					getNearestBlockPos(portPos, validDestinations)));
 		}
 
 		private static BlockPos getNearestBlockPos(BlockPos target, List<BlockPos> destinations) {
@@ -127,7 +129,7 @@ public class DronePortBlockEntity extends PackagePortBlockEntity {
 		@Override
 		public void register(PackagePortBlockEntity ppbe, LevelAccessor level, BlockPos portPos) {
 			Robotics.DRONE_NETWORK.portAdded(level, GlobalPos.of(Objects.requireNonNull(ppbe.getLevel()).dimension(), portPos),
-					ppbe.addressFilter);
+					ppbe.acceptsPackages ? ppbe.addressFilter : "");
 		}
 
 		@Override

@@ -26,20 +26,19 @@ public class DeliveryDroneVisual extends AbstractEntityVisual<DeliveryDroneEntit
 
 	public DeliveryDroneVisual(VisualizationContext ctx, DeliveryDroneEntity entity, float partialTick) {
 		super(ctx, entity, partialTick);
-		this.initializePackagePartialModels();
+		if (!entity.getBox().isEmpty())
+			this.initializePackagePartialModels();
 	}
 
 
 	private void initializePackagePartialModels() {
-		if (!this.entity.getBox().isEmpty()) {
-			ResourceLocation key = ForgeRegistries.ITEMS.getKey(this.entity.getBox().getItem());
-			this.packageRiggingInstance = this.instancerProvider()
-					.instancer(InstanceTypes.TRANSFORMED, Models.partial(AllPartialModels.PACKAGE_RIGGING.get(key)))
-					.createInstance();
-			this.packageInstance = this.instancerProvider()
-					.instancer(InstanceTypes.TRANSFORMED, Models.partial(AllPartialModels.PACKAGES.get(key)))
-					.createInstance();
-		}
+		ResourceLocation key = ForgeRegistries.ITEMS.getKey(this.entity.getBox().getItem());
+		this.packageRiggingInstance = this.instancerProvider()
+				.instancer(InstanceTypes.TRANSFORMED, Models.partial(AllPartialModels.PACKAGE_RIGGING.get(key)))
+				.createInstance();
+		this.packageInstance = this.instancerProvider()
+				.instancer(InstanceTypes.TRANSFORMED, Models.partial(AllPartialModels.PACKAGES.get(key)))
+				.createInstance();
 	}
 
 	@Override
@@ -62,8 +61,19 @@ public class DeliveryDroneVisual extends AbstractEntityVisual<DeliveryDroneEntit
 			}
 		}
 
-		if (this.packageRiggingInstance == null || this.packageInstance == null)
+		if ((this.packageRiggingInstance == null || this.packageInstance == null) && !this.entity.getBox().isEmpty())
 			this.initializePackagePartialModels();
+
+		if (this.entity.getBox().isEmpty()) {
+			if (this.packageRiggingInstance != null) {
+				this.packageRiggingInstance.delete();
+				this.packageRiggingInstance = null;
+			}
+			if (this.packageInstance != null) {
+				this.packageInstance.delete();
+				this.packageInstance = null;
+			}
+		}
 
 		int light = this.computePackedLight(partialTick);
 
@@ -109,27 +119,35 @@ public class DeliveryDroneVisual extends AbstractEntityVisual<DeliveryDroneEntit
 		float fanYTranslation = 9.5f / 16f;
 
 		this.droneFans.get(0).setIdentityTransform()
-				.translate(x - 0.5 + fanXZTranslation, y - droneYTransform + fanYTranslation, z - 0.5 + fanXZTranslation)
-				.rotateYCenteredDegrees(-yaw - 90 + fanRotation)
+				.translate(x - 0.5, y - droneYTransform, z - 0.5)
+				.rotateYCenteredDegrees(-yaw - 90)
+				.translate(fanXZTranslation, fanYTranslation, fanXZTranslation)
+				.rotateYCenteredDegrees(fanRotation)
 				.light(light)
 				.setChanged();
 		this.droneFans.get(1).setIdentityTransform()
-				.translate(x - 0.5 + fanXZTranslation, y - droneYTransform + fanYTranslation, z - 0.5 - fanXZTranslation)
-				.rotateYCenteredDegrees(-yaw - 90 + fanRotation)
+				.translate(x - 0.5, y - droneYTransform, z - 0.5)
+				.rotateYCenteredDegrees(-yaw - 90)
+				.translate(fanXZTranslation, fanYTranslation, -fanXZTranslation)
+				.rotateYCenteredDegrees(fanRotation)
 				.light(light)
 				.setChanged();
 		this.droneFans.get(2).setIdentityTransform()
-				.translate(x - 0.5 - fanXZTranslation, y - droneYTransform + fanYTranslation, z - 0.5 + fanXZTranslation)
-				.rotateYCenteredDegrees(-yaw - 90 + fanRotation)
+				.translate(x - 0.5, y - droneYTransform, z - 0.5)
+				.rotateYCenteredDegrees(-yaw - 90)
+				.translate(-fanXZTranslation, fanYTranslation, fanXZTranslation)
+				.rotateYCenteredDegrees(fanRotation)
 				.light(light)
 				.setChanged();
 		this.droneFans.get(3).setIdentityTransform()
-				.translate(x - 0.5 - fanXZTranslation, y - droneYTransform + fanYTranslation, z - 0.5 - fanXZTranslation)
-				.rotateYCenteredDegrees(-yaw - 90 + fanRotation)
+				.translate(x - 0.5, y - droneYTransform, z - 0.5)
+				.rotateYCenteredDegrees(-yaw - 90)
+				.translate(-fanXZTranslation, fanYTranslation, -fanXZTranslation)
+				.rotateYCenteredDegrees(fanRotation)
 				.light(light)
 				.setChanged();
 
-		double packageYTransform = 23d / 16d;
+		double packageYTransform = (23d - 6d) / 16d;
 
 		if (this.packageRiggingInstance != null && this.packageInstance != null) {
 			this.packageRiggingInstance.setIdentityTransform()

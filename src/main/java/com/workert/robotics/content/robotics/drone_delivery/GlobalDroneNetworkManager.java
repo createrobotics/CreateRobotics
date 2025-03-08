@@ -1,5 +1,6 @@
 package com.workert.robotics.content.robotics.drone_delivery;
 
+import com.workert.robotics.content.robotics.drone_delivery.drone_port.DronePortBlockEntity;
 import com.workert.robotics.content.robotics.drone_delivery.pathing.Cell;
 import com.workert.robotics.content.robotics.drone_delivery.pathing.Pathfinder;
 import com.workert.robotics.content.robotics.drone_delivery.pathing.SimpleWorldProvider;
@@ -34,45 +35,50 @@ public class GlobalDroneNetworkManager {
 	}
 
 	public void portAdded(LevelAccessor levelAccessor, GlobalPos pos, String filter) {
-		if (this.dronePorts.computeIfAbsent(pos.dimension().toString(), key -> new HashMap<>()).containsKey(pos.pos()))
-			return;
-
 		BlockPos blockPos = pos.pos();
 
 		Map<BlockPos, String> portsInThisDimension = this.dronePorts.computeIfAbsent(pos.dimension().toString(), key -> new HashMap<>());
 
-		List<BlockPos> trackedPorts = new ArrayList<>();
+		if (((DronePortBlockEntity) Objects.requireNonNull(levelAccessor.getBlockEntity(blockPos))).acceptsPackages) {
+			List<BlockPos> trackedPorts = new ArrayList<>();
 
-		portsInThisDimension.forEach((portBlockPos, portFilter) -> {
-			if (!portBlockPos.equals(blockPos)) {
-				double distance = blockPos.distToCenterSqr(portBlockPos.getX(), portBlockPos.getY(), portBlockPos.getZ());
-				if (distance < 256) { // TODO Make configurable
-					trackedPorts.add(portBlockPos);
+			portsInThisDimension.forEach((portBlockPos, portFilter) -> {
+				if (!portBlockPos.equals(blockPos)) {
+					double distance = blockPos.distToCenterSqr(portBlockPos.getX(), portBlockPos.getY(), portBlockPos.getZ());
+					if (distance < 16384) { // TODO Make configurable
+						trackedPorts.add(portBlockPos);
+					}
 				}
-			}
-		});
+			});
 
-		Map<Couple<BlockPos>, List<BlockPos>> pathsInThisDimension = this.savedPaths.computeIfAbsent(
-				((Level) levelAccessor).dimension().toString(),
-				key -> new HashMap<>());
+			Map<Couple<BlockPos>, List<BlockPos>> pathsInThisDimension = this.savedPaths.computeIfAbsent(
+					((Level) levelAccessor).dimension().toString(),
+					key -> new HashMap<>());
 
-		trackedPorts.forEach(trackedPortPos -> {
-			if (!pathsInThisDimension.containsKey(Couple.create(blockPos, trackedPortPos)))
-				this.recalculatePath((Level) levelAccessor, blockPos, trackedPortPos);
+			trackedPorts.forEach(trackedPortPos -> {
+				if (!pathsInThisDimension.containsKey(Couple.create(trackedPortPos, blockPos))) {
+					this.recalculatePath((Level) levelAccessor, blockPos, trackedPortPos);
+					pathsInThisDimension.put(Couple.create(trackedPortPos, blockPos), null);
+				}
 
-		});
+			});
+		}
 
 		portsInThisDimension.put(blockPos, filter);
 		this.markDirty();
 	}
 
 	public void recalculatePath(Level level, BlockPos blockPos, BlockPos trackedPortPos) {
+		if (level.isClientSide())
+			return;
+
+		System.out.println("Calculating path from " + blockPos + " to " + trackedPortPos);
 		this.savedPaths.computeIfAbsent(level.dimension().toString(),
 				key -> new HashMap<>()).remove(Couple.create(blockPos, trackedPortPos));
 		new Thread(() -> {
 			final SimpleWorldProvider worldProvider = new SimpleWorldProvider();
 
-			addCellsFromWorld(worldProvider, trackedPortPos, blockPos, 10, level); // TODO Make configurable
+			addCellsFromWorld(worldProvider, trackedPortPos, blockPos, 16, level); // TODO Make configurable
 
 			Pathfinder pathfinder = new Pathfinder(
 					new Cell(blockPos.getX(), blockPos.getY() + 1, blockPos.getZ()),
@@ -92,15 +98,14 @@ public class GlobalDroneNetworkManager {
 
 			ArrayList<BlockPos> pathList = path.stream().map(cell -> new BlockPos(cell.x, cell.y, cell.z))
 					.collect(Collectors.toCollection(ArrayList::new));
-			this.savedPaths.computeIfAbsent(level.dimension().toString(), key -> new HashMap<>())
-					.put(Couple.create(blockPos, trackedPortPos), pathList);
 
 			ArrayList<BlockPos> reversePathList = new ArrayList<>(pathList);
-			Collections.reverse(reversePathList);
+			Collections.reverse(pathList);
 
 			this.savedPaths.computeIfAbsent(level.dimension().toString(), key -> new HashMap<>())
 					.put(Couple.create(trackedPortPos, blockPos), reversePathList);
 			this.markDirty();
+			System.out.println("Finished path from " + blockPos + " to " + trackedPortPos);
 		}).start();
 	}
 
@@ -111,7 +116,12 @@ public class GlobalDroneNetworkManager {
 					trackedPortPos.getX()) + margin; x++) {
 				for (int z = Math.min(blockPos.getZ(), trackedPortPos.getZ()) - margin; z <= Math.max(blockPos.getZ(),
 						trackedPortPos.getZ()) + margin; z++) {
-					if (!level.isEmptyBlock(new BlockPos(x, y, z)))
+					if (!level.isEmptyBlock(new BlockPos(x, y, z)) ||
+							(
+									!(level.getBlockEntity(new BlockPos(x, y - 1, z)) instanceof DronePortBlockEntity) &&
+											!level.isEmptyBlock(new BlockPos(x, y - 1, z))
+							)
+					)
 						blockManager.addWall(new Cell(x, y, z));
 				}
 			}
@@ -121,13 +131,11 @@ public class GlobalDroneNetworkManager {
 	public void portRemoved(GlobalPos pos) {
 		this.dronePorts.computeIfAbsent(pos.dimension().toString(), key -> new HashMap<>()).remove(pos.pos());
 		List<Couple<BlockPos>> toRemove = new ArrayList<>();
-		/* Also remove corresponding savedPaths
 		this.savedPaths.computeIfAbsent(pos.dimension().toString(), key -> new HashMap<>()).forEach((couple, path) -> {
 			if (couple.either(blockPos -> blockPos.equals(pos.pos())))
 				toRemove.add(couple);
 		});
 		toRemove.forEach(couple -> this.savedPaths.get(pos.dimension().toString()).remove(couple));
-		*/
 		this.markDirty();
 	}
 

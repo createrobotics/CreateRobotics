@@ -25,8 +25,8 @@ public class DroneNetworkSavedData extends SavedData {
 	@Override
 	public CompoundTag save(CompoundTag nbt) {
 		GlobalDroneNetworkManager drones = Robotics.DRONE_NETWORK;
-		CompoundTag levelCompound = new CompoundTag();
 
+		CompoundTag dronePortLevelCompound = new CompoundTag();
 		drones.dronePorts.forEach((level, network) -> {
 			ListTag dronePorts = new ListTag();
 			network.forEach((blockPos, filter) -> {
@@ -35,30 +35,33 @@ public class DroneNetworkSavedData extends SavedData {
 				dronePort.putString("Filter", filter);
 				dronePorts.add(dronePort);
 			});
-			levelCompound.put(level, dronePorts);
+			dronePortLevelCompound.put(level, dronePorts);
 		});
-		nbt.put("DronePorts", levelCompound);
+		nbt.put("DronePorts", dronePortLevelCompound);
 
+		CompoundTag savedPathLevelCompound = new CompoundTag();
 		drones.savedPaths.forEach((level, paths) -> {
 			ListTag savedPaths = new ListTag();
 			paths.forEach((fromToBlockPos, waypointList) -> {
-				CompoundTag savedPath = new CompoundTag();
+				if (waypointList != null && !waypointList.isEmpty()) {
+					CompoundTag savedPath = new CompoundTag();
 
-				savedPath.put("From", NbtUtils.writeBlockPos(fromToBlockPos.getFirst()));
-				savedPath.put("To", NbtUtils.writeBlockPos(fromToBlockPos.getSecond()));
+					savedPath.put("From", NbtUtils.writeBlockPos(fromToBlockPos.getFirst()));
+					savedPath.put("To", NbtUtils.writeBlockPos(fromToBlockPos.getSecond()));
 
-				CompoundTag waypoints = new CompoundTag();
-				waypoints.putInt("Length", waypointList.size());
-				for (int i = 0; i < waypointList.size(); i++) {
-					waypoints.put(String.valueOf(i), NbtUtils.writeBlockPos(waypointList.get(i)));
+					CompoundTag waypoints = new CompoundTag();
+					waypoints.putInt("Length", waypointList.size());
+					for (int i = 0; i < waypointList.size(); i++) {
+						waypoints.put(String.valueOf(i), NbtUtils.writeBlockPos(waypointList.get(i)));
+					}
+					savedPath.put("Waypoints", waypoints);
+
+					savedPaths.add(savedPath);
 				}
-				savedPath.put("Waypoints", waypoints);
-
-				savedPaths.add(savedPath);
 			});
-			levelCompound.put(level, savedPaths);
+			savedPathLevelCompound.put(level, savedPaths);
 		});
-		nbt.put("SavedPaths", levelCompound);
+		nbt.put("SavedPaths", savedPathLevelCompound);
 
 		return nbt;
 	}
