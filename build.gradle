@@ -107,12 +107,13 @@ repositories {
 	maven { url = "https://maven.createmod.net" } // Create, Ponder, Flywheel
 	maven { url = "https://maven.tterrag.com" } // Registrate
 
+	maven { url = "https://www.cursemaven.com" }
+	maven { url = "https://api.modrinth.com/maven" }
+
 	maven { url = "https://maven.blamejared.com" } // JEI, Vazkii's Mods
 	maven { url = "https://harleyoconnor.com/maven" } // Dynamic Trees
 	maven { url = "https://maven.theillusivec4.top/" } // Curios API
 	maven { url = "https://maven.squiddev.cc" } // CC: Tweaked
-	maven { url = "https://www.cursemaven.com" }
-	maven { url = "https://api.modrinth.com/maven" }
 	maven { url = "https://maven.saps.dev/releases" } // FTB Mods
 	maven { url = "https://maven.architectury.dev" } // Arch API
 	maven {

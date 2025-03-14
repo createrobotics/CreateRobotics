@@ -16,23 +16,6 @@ public record Pathfinder(Cell start, Cell end, Cell[] neighbours, IWorldProvider
 			new Cell(0, 0, 1),
 			new Cell(0, 0, -1)
 	};
-	public static final Cell[] DIAGONAL_NEIGHBORS = new Cell[] {
-			new Cell(1, 1, 0),
-			new Cell(-1, -1, 0),
-			new Cell(1, -1, 0),
-			new Cell(-1, 1, 0),
-			new Cell(0, 1, 1),
-			new Cell(0, -1, -1),
-			new Cell(0, 1, -1),
-			new Cell(0, -1, 1),
-			// also include the non-diagonal neighbors
-			new Cell(1, 0, 0),
-			new Cell(-1, 0, 0),
-			new Cell(0, 1, 0),
-			new Cell(0, -1, 0),
-			new Cell(0, 0, 1),
-			new Cell(0, 0, -1)
-	};
 
 
 	public ArrayList<Cell> findPath() {
@@ -76,7 +59,7 @@ public record Pathfinder(Cell start, Cell end, Cell[] neighbours, IWorldProvider
 			// Generate children
 			final ArrayList<Cell> children = new ArrayList<>();
 			for (final Cell neighbor : this.neighbours) {
-				final Cell child = new Cell(current.x + neighbor.x, current.y + neighbor.y, current.z + neighbor.z);
+				final Cell child = new Cell(current.x + neighbor.x, current.y + neighbor.y, current.z + neighbor.z, neighbor);
 				child.parent = current;
 
 				if (this.world.isBlocked(child)) {
@@ -93,8 +76,11 @@ public record Pathfinder(Cell start, Cell end, Cell[] neighbours, IWorldProvider
 					continue;
 				}
 
+				// Add penalty for changing of direction
+				int penalty = (current.direction != child.direction) ? 2 : 0;
+
 				// Create the f, g, and h values
-				child.g = current.g + 1;
+				child.g = current.g + 1 + penalty;
 				child.h = (int) (Math.pow(child.x - this.end.x, 2) + Math.pow(child.y - this.end.y, 2) + Math.pow(child.z - this.end.z, 2));
 				child.f = child.g + child.h;
 

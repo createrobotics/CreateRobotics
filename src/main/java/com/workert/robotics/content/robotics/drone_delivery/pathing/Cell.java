@@ -6,9 +6,14 @@ public class Cell {
 	public final int y;
 	public final int z;
 
+	/** Cost so far */
 	public int g = 0;
+	/** Heuristic cost */
 	public int h = 0;
+	/** Total estimated cost */
 	public int f = 0;
+
+	public Cell direction;
 
 	public Cell parent;
 
@@ -16,6 +21,13 @@ public class Cell {
 		this.x = x;
 		this.y = y;
 		this.z = z;
+	}
+
+	public Cell(int x, int y, int z, Cell direction) {
+		this.x = x;
+		this.y = y;
+		this.z = z;
+		this.direction = direction;
 	}
 
 	@Override
