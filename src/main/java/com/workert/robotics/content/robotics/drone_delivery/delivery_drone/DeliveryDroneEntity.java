@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class DeliveryDroneEntity extends LivingEntity {
-	private ItemStack box;
+	private ItemStack box = ItemStack.EMPTY;
 
 	private boolean isReturning = false;
 	private BlockPos startBlockPos;
@@ -38,7 +38,6 @@ public class DeliveryDroneEntity extends LivingEntity {
 
 	public DeliveryDroneEntity(EntityType<? extends LivingEntity> entityType, Level level) {
 		super(entityType, level);
-		this.box = ItemStack.EMPTY;
 		this.setNoGravity(true);
 	}
 
@@ -72,6 +71,9 @@ public class DeliveryDroneEntity extends LivingEntity {
 			}
 		}
 
+		System.out.println(this.path);
+		System.out.println(this.pathProgress);
+
 		if (this.path == null || this.path.isEmpty()) {
 			this.path = Robotics.DRONE_NETWORK.savedPaths.computeIfAbsent(this.level().dimension().toString(), key -> new HashMap<>())
 					.get(this.isReturning
@@ -94,7 +96,6 @@ public class DeliveryDroneEntity extends LivingEntity {
 			}
 		}
 
-
 		if (this.path != null && !this.path.isEmpty()) {
 			if (!this.level()
 					.isEmptyBlock(this.path.get(this.pathProgress)) || (this.pathProgress != (this.path.size() - 1) && !this.level()
@@ -114,6 +115,7 @@ public class DeliveryDroneEntity extends LivingEntity {
 					this.pathProgress++;
 				} else {
 					if (!this.box.isEmpty() && this.destinationBlockPos != null
+							&& this.position().distanceTo(this.destinationBlockPos.getCenter()) < 5
 							&& this.level().getBlockEntity(this.destinationBlockPos) != null
 							&& this.level().getBlockEntity(this.destinationBlockPos) instanceof DronePortBlockEntity dronePortBlockEntity) {
 						if (this.isReturning) {
@@ -204,6 +206,24 @@ public class DeliveryDroneEntity extends LivingEntity {
 	protected void dropAllDeathLoot(DamageSource pDamageSource) {
 		super.dropAllDeathLoot(pDamageSource);
 		this.dropBox();
+	}
+
+	@Override
+	public void kill() {
+		super.kill();
+		for (int x = -3; x <= 3; x++) {
+			for (int z = -3; z <= 3; z++) {
+				ForgeChunkManager.forceChunk(
+						(ServerLevel) this.level(),
+						Robotics.MOD_ID,
+						this,
+						this.chunkPosition().x + x,
+						this.chunkPosition().z + z,
+						false,
+						false
+				);
+			}
+		}
 	}
 
 	@Override

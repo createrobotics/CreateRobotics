@@ -59,6 +59,7 @@ public class GlobalDroneNetworkManager {
 				if (!pathsInThisDimension.containsKey(Couple.create(trackedPortPos, blockPos))) {
 					this.recalculatePath((Level) levelAccessor, blockPos, trackedPortPos);
 					pathsInThisDimension.put(Couple.create(trackedPortPos, blockPos), null);
+					pathsInThisDimension.put(Couple.create(blockPos, trackedPortPos), null);
 				}
 
 			});
@@ -75,7 +76,7 @@ public class GlobalDroneNetworkManager {
 		System.out.println("Calculating path from " + blockPos + " to " + trackedPortPos);
 		this.savedPaths.computeIfAbsent(level.dimension().toString(),
 				key -> new HashMap<>()).remove(Couple.create(blockPos, trackedPortPos));
-		new Thread(() -> {
+		Thread thread = new Thread(() -> {
 			final SimpleWorldProvider worldProvider = new SimpleWorldProvider();
 
 			addCellsFromWorld(worldProvider, trackedPortPos, blockPos, 16, level); // TODO Make configurable
@@ -100,13 +101,18 @@ public class GlobalDroneNetworkManager {
 					.collect(Collectors.toCollection(ArrayList::new));
 
 			ArrayList<BlockPos> reversePathList = new ArrayList<>(pathList);
-			Collections.reverse(pathList);
+			Collections.reverse(reversePathList);
 
+			this.savedPaths.computeIfAbsent(level.dimension().toString(), key -> new HashMap<>())
+					.put(Couple.create(blockPos, trackedPortPos), pathList);
 			this.savedPaths.computeIfAbsent(level.dimension().toString(), key -> new HashMap<>())
 					.put(Couple.create(trackedPortPos, blockPos), reversePathList);
 			this.markDirty();
 			System.out.println("Finished path from " + blockPos + " to " + trackedPortPos);
-		}).start();
+		});
+		thread.setDaemon(true);
+		thread.setPriority(2);
+		thread.start();
 	}
 
 	private static void addCellsFromWorld(SimpleWorldProvider blockManager, BlockPos trackedPortPos, BlockPos blockPos, int margin, Level level) {

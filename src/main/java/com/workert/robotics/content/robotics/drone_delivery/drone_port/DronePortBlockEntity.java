@@ -47,9 +47,9 @@ public class DronePortBlockEntity extends PackagePortBlockEntity {
 	public void lazyTick() {
 		if (this.level != null && !this.inventory.isEmpty()) {
 			ItemStack box = ItemHelper.extract(this.inventory,
-					itemStack -> !itemStack.isEmpty() && PackageItem.isPackage(itemStack) && !PackageItem.matchAddress(itemStack,
-							this.addressFilter),
-					1, true);
+					itemStack -> !itemStack.isEmpty() && PackageItem.isPackage(itemStack) && !PackageItem.getAddress(itemStack)
+							.isEmpty() && !PackageItem.matchAddress(itemStack,
+							this.addressFilter), 1, true);
 			if (!box.isEmpty() && this.target != null && this.level.getEntitiesOfClass(DeliveryDroneEntity.class,
 					new AABB(this.getBlockPos()).inflate(0, 1, 0)).isEmpty())
 				if (this.target.export(this.level, this.worldPosition, box, false))
@@ -122,7 +122,6 @@ public class DronePortBlockEntity extends PackagePortBlockEntity {
 					nearest = pos;
 				}
 			}
-
 			return nearest;
 		}
 
