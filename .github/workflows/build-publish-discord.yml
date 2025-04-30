@@ -35,7 +35,7 @@ jobs:
           message-title: Building mod from branch ${{ steps.get_branch.outputs.branch }}
 
       - name: Get MC version
-        uses: christian-draeger/read-properties@908f99d3334be3802ec7cb528395a69d19914e7b
+        uses: christian-draeger/read-properties@1.1.1
         id: get_mc_version
         with:
           path: gradle.properties
@@ -48,7 +48,7 @@ jobs:
           distribution: temurin
 
       - name: Setup Gradle
-        run: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v4
 
       - name: Build with Gradle
         run: ./gradlew build
