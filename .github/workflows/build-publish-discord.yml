@@ -47,16 +47,11 @@ jobs:
           java-version: 17
           distribution: temurin
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
+      - name: Setup Gradle
+        run: gradle/actions/setup-gradle@v4
 
-      - name: Validate Gradle wrapper
-        uses: gradle/wrapper-validation-action@9aa31f26bc8e536d1faf4b332bb8365350743a18
-
-      - name: Build jar
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: build
+      - name: Build with Gradle
+        run: ./gradlew build
 
       # - name: Publish to GitHub Packages
       #   if: github.event_name == 'push' && github.repository_id == '521749383'
