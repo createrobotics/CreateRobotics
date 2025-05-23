@@ -53,6 +53,13 @@ public class ItemRegistry {
 			.tag(AllTags.forgeItemTag("nuggets/bronze"))
 			.register();
 
+	public static final ItemEntry<Item> CHIP_ELECTRONIC = Robotics.REGISTRATE
+			.item("chip_electronic", Item::new)
+			.lang("Chip Electronic")
+			.tag(Tags.Items.INGOTS)
+			.tag(AllTags.forgeItemTag("ingots/chip_electronic"))
+			.register();
+
 	public static final ItemEntry<Item> PROGRAM = Robotics.REGISTRATE
 			.item("program", Item::new)
 			.lang("Program")
