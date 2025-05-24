@@ -60,6 +60,20 @@ public class ItemRegistry {
 			.tag(AllTags.forgeItemTag("ingots/chip_electronic"))
 			.register();
 
+	public static final ItemEntry<Item> INCOMPLETE_CHIP = Robotics.REGISTRATE
+			.item("incomplete_chip", Item::new)
+			.lang("Incomplete Chip")
+			.tag(Tags.Items.INGOTS)
+			.tag(AllTags.forgeItemTag("ingots/incomplete_chip"))
+			.register();
+
+	public static final ItemEntry<Item> SILICONE_SHEET = Robotics.REGISTRATE
+			.item("silicone_sheet", Item::new)
+			.lang("Silicone Sheet")
+			.tag(Tags.Items.INGOTS)
+			.tag(AllTags.forgeItemTag("ingots/silicone_sheet"))
+			.register();
+
 	public static final ItemEntry<Item> PROGRAM = Robotics.REGISTRATE
 			.item("program", Item::new)
 			.lang("Program")

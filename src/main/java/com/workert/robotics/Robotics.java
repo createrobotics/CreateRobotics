@@ -33,6 +33,7 @@ public class Robotics {
 		this.modEventBus.addListener(Robotics::clientSetup);
 		this.modEventBus.addListener(ClientHandler::registerLayerDefinition);
 
+		ModRecipeTypes.register(modEventBus);
 		REGISTRATE.registerEventListeners(this.modEventBus);
 		this.modEventBus.addListener(RoboticsDatagen::gatherData);
 
@@ -44,7 +45,6 @@ public class Robotics {
 		BlockEntityRegistry.register();
 
 		MenuRegistry.register(this.modEventBus);
-		RecipeRegistry.register(this.modEventBus);
 
 		PacketRegistry.registerPackets();
 
