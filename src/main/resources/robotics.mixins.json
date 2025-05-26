@@ -8,8 +8,14 @@
 	"ToolboxBlockEntityAccessor",
 	"ToolboxContainerMixin",
 	"ToolboxHandlerMixin",
-	"ToolboxInventoryAccessor",
-	"ToolboxTileEntityMixin"
+    "ArmBlockEntityMixin",
+    "ToolboxInventoryAccessor",
+    "ArmBlockEntityMixin",
+    "ArmInteractionPointModeAccessor",
+    "CustomArmInteractionPointMixin",
+    "ArmInteractionPointInvoker",
+    "ArmBlockEntityAccessor",
+    "ToolboxTileEntityMixin"
   ],
   "client": [
 	"RadialToolboxMenuMixin",

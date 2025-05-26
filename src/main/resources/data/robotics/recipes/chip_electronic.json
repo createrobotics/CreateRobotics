@@ -1,43 +1,15 @@
 {
-  "type": "create:sequenced_assembly",
-  "ingredient": {
-    "item": "robotics:silicone_sheet"
-  },
-  "loops": 1,
+  "type": "robotics:custom_processing",
+  "ingredients": [
+    {
+      "item": "robotics:silicone_sheet"
+    }
+  ],
   "results": [
     {
-      "item": "robotics:chip_electronic"
+      "item": "robotics:chip_electronic",
+      "count": 1
     }
   ],
-  "sequence": [
-    {
-      "type": "create:pressing",
-      "ingredients": [
-        {
-          "item": "robotics:incomplete_chip"
-        }
-      ],
-      "results": [
-        {
-          "item": "robotics:incomplete_chip"
-        }
-      ]
-    },
-    {
-      "type": "create:pressing",
-      "ingredients": [
-        {
-          "item": "robotics:incomplete_chip"
-        }
-      ],
-      "results": [
-        {
-          "item": "robotics:incomplete_chip"
-        }
-      ]
-    }
-  ],
-  "transitionalItem": {
-    "item": "robotics:incomplete_chip"
-  }
+  "processingTime": 40
 }

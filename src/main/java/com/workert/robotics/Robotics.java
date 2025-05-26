@@ -8,7 +8,7 @@ import com.workert.robotics.base.config.RoboticsConfigs;
 import com.workert.robotics.base.datagen.RoboticsDatagen;
 import com.workert.robotics.base.registries.*;
 import com.workert.robotics.content.robotics.drone_delivery.GlobalDroneNetworkManager;
-import com.workert.robotics.unused.smasher.SmasherBlockScreen;
+
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -44,6 +44,7 @@ public class Robotics {
 		ItemRegistry.register();
 		BlockEntityRegistry.register();
 
+
 		MenuRegistry.register(this.modEventBus);
 
 		PacketRegistry.registerPackets();
@@ -56,7 +57,6 @@ public class Robotics {
 		KeybindList.init();
 		PartialModelRegistry.init();
 
-		MenuScreens.register(MenuRegistry.SMASHER_BLOCK_MENU.get(), SmasherBlockScreen::new);
 	}
 
 	public static ResourceLocation asResource(String path) {

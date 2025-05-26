@@ -12,16 +12,13 @@ import com.workert.robotics.content.computers.ioblocks.scanner.ScannerBlockEntit
 import com.workert.robotics.content.computers.ioblocks.scanner.ScannerRenderer;
 import com.workert.robotics.content.computers.ioblocks.scanner.ScannerVisual;
 import com.workert.robotics.content.robotics.drone_delivery.drone_port.DronePortBlockEntity;
-import com.workert.robotics.unused.smasher.SmasherBlockEntity;
+
 
 public class BlockEntityRegistry {
 	public static void register() {
 	}
 
-	public static final BlockEntityEntry<SmasherBlockEntity> SMASHER_BLOCK_ENTITY = Robotics.REGISTRATE
-			.blockEntity("smasher", SmasherBlockEntity::new)
-			.validBlock(BlockRegistry.SMASHER)
-			.register();
+
 
 	public static final BlockEntityEntry<ComputerBlockEntity> COMPUTER = Robotics.REGISTRATE
 			.blockEntity("computer", ComputerBlockEntity::new)

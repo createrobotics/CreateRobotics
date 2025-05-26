@@ -1,7 +1,7 @@
 package com.workert.robotics.base.registries;
 
 import com.workert.robotics.Robotics;
-import com.workert.robotics.unused.smasher.SmasherBlockMenu;
+
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.common.extensions.IForgeMenuType;
@@ -15,8 +15,6 @@ public class MenuRegistry {
 	public static final DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(ForgeRegistries.MENU_TYPES,
 			Robotics.MOD_ID);
 
-	public static final RegistryObject<MenuType<SmasherBlockMenu>> SMASHER_BLOCK_MENU = registerMenuType(
-			SmasherBlockMenu::new, "smasher_block_menu");
 
 	private static <T extends AbstractContainerMenu> RegistryObject<MenuType<T>> registerMenuType(IContainerFactory<T> factory, String name) {
 		return MENUS.register(name, () -> IForgeMenuType.create(factory));

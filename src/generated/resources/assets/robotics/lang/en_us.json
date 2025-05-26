@@ -66,6 +66,7 @@
   "robotics.ponder.programming.text_2": "Right click the code editor with the program to get started!",
   "robotics.ponder.programming.text_3": "When you're finished coding right click with the program on a programmable robot to apply your code to it.",
 
-  "_": "Thank you for translating Create Robotics!"
+  "_": "Thank you for translating Create Robotics!",
 
+  "mechanical_arm.custom_mode": "Custom Mode"
 }

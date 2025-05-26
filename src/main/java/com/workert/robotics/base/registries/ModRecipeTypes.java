@@ -3,27 +3,29 @@ package com.workert.robotics.base.registries;
 import com.simibubi.create.foundation.recipe.IRecipeTypeInfo;
 import com.simibubi.create.content.processing.recipe.ProcessingRecipeBuilder.ProcessingRecipeFactory;
 import com.simibubi.create.content.processing.recipe.ProcessingRecipeSerializer;
+import com.workert.robotics.base.expandedarm.CustomProcessingRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.items.wrapper.RecipeWrapper;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
-public enum ModRecipeTypes implements IRecipeTypeInfo {
+import java.util.Optional;
 
-    // Define tus tipos de recetas aquí
+public enum ModRecipeTypes implements IRecipeTypeInfo {
     CUSTOM_PROCESSING(CustomProcessingRecipe::new);
-    // Puedes añadir más tipos según necesites
 
     private final ResourceLocation id;
     private final RegistryObject<RecipeSerializer<?>> serializerObject;
     private final RegistryObject<RecipeType<?>> typeObject;
 
     ModRecipeTypes(ProcessingRecipeFactory<?> factory) {
-        String name = name().toLowerCase(); // Convierte el nombre del enum a minúsculas
-        id = new ResourceLocation("robotics", name); // Usa el ID de tu mod
+        String name = "custom_processing";
+        id = new ResourceLocation("robotics", name); // Usar constructor con namespace explícito
         serializerObject = Registers.SERIALIZER_REGISTER.register(name,
                 () -> new ProcessingRecipeSerializer<>(factory));
         typeObject = Registers.TYPE_REGISTER.register(name,
@@ -47,14 +49,20 @@ public enum ModRecipeTypes implements IRecipeTypeInfo {
         return (T) typeObject.get();
     }
 
-    // Registra tus recetas
     public static void register(IEventBus modEventBus) {
         Registers.SERIALIZER_REGISTER.register(modEventBus);
         Registers.TYPE_REGISTER.register(modEventBus);
     }
 
+    public Optional<CustomProcessingRecipe> find(RecipeWrapper customRecipeInv, Level level) {
+        return level.getRecipeManager()
+                .getRecipeFor((RecipeType<CustomProcessingRecipe>) typeObject.get(), 
+                             customRecipeInv, 
+                             level);
+    }
+
     private static class Registers {
-        // Reemplaza "robotics" con el ID de tu mod
+
         private static final DeferredRegister<RecipeSerializer<?>> SERIALIZER_REGISTER =
                 DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, "robotics");
         private static final DeferredRegister<RecipeType<?>> TYPE_REGISTER =
