@@ -1,0 +1,191 @@
+Initialized native services in: /home/snayderpalaciosvera/.gradle/native
+Initialized jansi services in: /home/snayderpalaciosvera/.gradle/native
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.12/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Starting process 'Gradle build daemon'. Working directory: /home/snayderpalaciosvera/.gradle/daemon/8.12 Command: /app/extra/idea-IC/jbr/bin/java --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.prefs/java.util.prefs=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED --add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.prefs/java.util.prefs=ALL-UNNAMED --add-opens=java.base/java.nio.charset=ALL-UNNAMED --add-opens=java.base/java.net=ALL-UNNAMED --add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED --add-opens=java.xml/javax.xml.namespace=ALL-UNNAMED -Xmx3G -Dfile.encoding=UTF-8 -Duser.country=ES -Duser.language=es -Duser.variant -cp /home/snayderpalaciosvera/.gradle/wrapper/dists/gradle-8.12-bin/cetblhg4pflnnks72fxwobvgv/gradle-8.12/lib/gradle-daemon-main-8.12.jar -javaagent:/home/snayderpalaciosvera/.gradle/wrapper/dists/gradle-8.12-bin/cetblhg4pflnnks72fxwobvgv/gradle-8.12/lib/agents/gradle-instrumentation-agent-8.12.jar org.gradle.launcher.daemon.bootstrap.GradleDaemon 8.12
+Successfully started process 'Gradle build daemon'
+An attempt to start the daemon took 1.379 secs.
+The client will now receive all logging from the daemon (pid: 4392). The daemon log file: /home/snayderpalaciosvera/.gradle/daemon/8.12/daemon-4392.out.log
+Daemon will be stopped at the end of the build 
+Using 4 worker leases.
+Received JVM installation metadata from '/app/extra/idea-IC/jbr': {JAVA_HOME=/app/extra/idea-IC/jbr, JAVA_VERSION=21.0.6, JAVA_VENDOR=JetBrains s.r.o., RUNTIME_NAME=OpenJDK Runtime Environment, RUNTIME_VERSION=21.0.6+9-b895.109, VM_NAME=OpenJDK 64-Bit Server VM, VM_VERSION=21.0.6+9-b895.109, VM_VENDOR=JetBrains s.r.o., OS_ARCH=amd64}
+Watching the file system is configured to be enabled if available
+Not watching /home/snayderpalaciosvera/Documentos/CreateRobotics-1.20.1 since the file system is not supported
+File system watching is active
+Starting Build
+Resolved plugin [id: 'org.gradle.toolchains.foojay-resolver-convention', version: '0.8.0']
+Settings evaluated using settings file '/home/snayderpalaciosvera/Documentos/CreateRobotics-1.20.1/settings.gradle'.
+Using local directory build cache for the root build (location = /home/snayderpalaciosvera/.gradle/caches/build-cache-1, remove unused entries = after 7 days).
+Projects loaded. Root project using build file '/home/snayderpalaciosvera/Documentos/CreateRobotics-1.20.1/build.gradle'.
+Included projects: [root project 'Create Robotics']
+
+> Configure project :
+Evaluating root project 'Create Robotics' using build file '/home/snayderpalaciosvera/Documentos/CreateRobotics-1.20.1/build.gradle'.
+Resolved plugin [id: 'idea']
+Resolved plugin [id: 'eclipse']
+Resolved plugin [id: 'net.neoforged.moddev.legacyforge', version: '2.0.74']
+Resolved plugin [id: 'me.modmuss50.mod-publish-plugin', version: '0.8.3']
+Resolved plugin [id: 'dev.ithundxr.silk', version: '0.11.15']
+Resolved plugin [id: 'org.jetbrains.gradle.plugin.idea-ext', version: '1.1.8']
+Starting process 'command 'git''. Working directory: /home/snayderpalaciosvera/Documentos/CreateRobotics-1.20.1 Command: git rev-parse HEAD
+Successfully started process 'command 'git''
+Starting process 'command 'git''. Working directory: /home/snayderpalaciosvera/Documentos/CreateRobotics-1.20.1 Command: git status --porcelain
+Successfully started process 'command 'git''
+Found stageable results:
+ M src/main/java/com/workert/robotics/Robotics.java
+RM src/main/java/com/workert/robotics/base/registries/CustomProcessingRecipe.java -> src/main/java/com/workert/robotics/base/expandedarm/CustomProcessingRecipe.java
+ M src/main/java/com/workert/robotics/base/registries/ModRecipeTypes.java
+AM src/main/java/com/workert/robotics/mixin/ArmBlockEntityMixin.java
+ M src/main/resources/robotics.mixins.json
+?? build-log.txt
+?? src/main/java/com/workert/robotics/base/expandedarm/ArmInteractionPointAccess.java
+?? src/main/java/com/workert/robotics/base/expandedarm/CraftModePoint.java
+?? src/main/java/com/workert/robotics/base/expandedarm/CustomArmBehavior.java
+?? src/main/java/com/workert/robotics/mixin/ArmBlockEntityAccessor.java
+?? src/main/java/com/workert/robotics/mixin/ArmInteractionPointInvoker.java
+?? src/main/java/com/workert/robotics/mixin/ArmInteractionPointModeMixin.java
+?? src/main/java/com/workert/robotics/mixin/CustomArmInteractionPointMixin.java
+
+Java: 21.0.6, JVM: 21.0.6+9-b895.109 (JetBrains s.r.o.), Arch: amd64
+All projects evaluated.
+Task name matched 'build'
+Selected primary task 'build' from project :
+Starting process 'command '/home/snayderpalaciosvera/.jdks/openjdk-24.0.1/bin/java''. Working directory: /home/snayderpalaciosvera/.gradle/.tmp/tmp-jvm18297406944368519025probe Command: /home/snayderpalaciosvera/.jdks/openjdk-24.0.1/bin/java -Xmx32m -Xms32m -cp . JavaProbe
+Successfully started process 'command '/home/snayderpalaciosvera/.jdks/openjdk-24.0.1/bin/java''
+Received JVM installation metadata from '/home/snayderpalaciosvera/.jdks/openjdk-24.0.1': {JAVA_HOME=/home/snayderpalaciosvera/.jdks/openjdk-24.0.1, JAVA_VERSION=24.0.1, JAVA_VENDOR=Oracle Corporation, RUNTIME_NAME=OpenJDK Runtime Environment, RUNTIME_VERSION=24.0.1+9-30, VM_NAME=OpenJDK 64-Bit Server VM, VM_VERSION=24.0.1+9-30, VM_VENDOR=Oracle Corporation, OS_ARCH=amd64}
+Starting process 'command '/home/snayderpalaciosvera/.jdks/corretto-23.0.2/bin/java''. Working directory: /home/snayderpalaciosvera/.gradle/.tmp/tmp-jvm4704286685537222159probe Command: /home/snayderpalaciosvera/.jdks/corretto-23.0.2/bin/java -Xmx32m -Xms32m -cp . JavaProbe
+Successfully started process 'command '/home/snayderpalaciosvera/.jdks/corretto-23.0.2/bin/java''
+Received JVM installation metadata from '/home/snayderpalaciosvera/.jdks/corretto-23.0.2': {JAVA_HOME=/home/snayderpalaciosvera/.jdks/corretto-23.0.2, JAVA_VERSION=23.0.2, JAVA_VENDOR=Amazon.com Inc., RUNTIME_NAME=OpenJDK Runtime Environment, RUNTIME_VERSION=23.0.2+7-FR, VM_NAME=OpenJDK 64-Bit Server VM, VM_VERSION=23.0.2+7-FR, VM_VENDOR=Amazon.com Inc., OS_ARCH=amd64}
+Starting process 'command '/home/snayderpalaciosvera/.jdks/temurin-21.0.7/bin/java''. Working directory: /home/snayderpalaciosvera/.gradle/.tmp/tmp-jvm15436032131081498202probe Command: /home/snayderpalaciosvera/.jdks/temurin-21.0.7/bin/java -Xmx32m -Xms32m -cp . JavaProbe
+Successfully started process 'command '/home/snayderpalaciosvera/.jdks/temurin-21.0.7/bin/java''
+Received JVM installation metadata from '/home/snayderpalaciosvera/.jdks/temurin-21.0.7': {JAVA_HOME=/home/snayderpalaciosvera/.jdks/temurin-21.0.7, JAVA_VERSION=21.0.7, JAVA_VENDOR=Eclipse Adoptium, RUNTIME_NAME=OpenJDK Runtime Environment, RUNTIME_VERSION=21.0.7+6-LTS, VM_NAME=OpenJDK 64-Bit Server VM, VM_VERSION=21.0.7+6-LTS, VM_VENDOR=Eclipse Adoptium, OS_ARCH=amd64}
+Starting process 'command '/home/snayderpalaciosvera/.gradle/jdks/eclipse_adoptium-17-amd64-linux.2/bin/java''. Working directory: /home/snayderpalaciosvera/.gradle/.tmp/tmp-jvm7974209107119304366probe Command: /home/snayderpalaciosvera/.gradle/jdks/eclipse_adoptium-17-amd64-linux.2/bin/java -Xmx32m -Xms32m -cp . JavaProbe
+Successfully started process 'command '/home/snayderpalaciosvera/.gradle/jdks/eclipse_adoptium-17-amd64-linux.2/bin/java''
+Received JVM installation metadata from '/home/snayderpalaciosvera/.gradle/jdks/eclipse_adoptium-17-amd64-linux.2': {JAVA_HOME=/home/snayderpalaciosvera/.gradle/jdks/eclipse_adoptium-17-amd64-linux.2, JAVA_VERSION=17.0.15, JAVA_VENDOR=Eclipse Adoptium, RUNTIME_NAME=OpenJDK Runtime Environment, RUNTIME_VERSION=17.0.15+6, VM_NAME=OpenJDK 64-Bit Server VM, VM_VERSION=17.0.15+6, VM_VENDOR=Eclipse Adoptium, OS_ARCH=amd64}
+Tasks to be executed: [task ':createMinecraftArtifacts', task ':compileJava', task ':processResources', task ':classes', task ':jarJar', task ':jar', task ':javadoc', task ':javadocJar', task ':reobfJar', task ':sourcesJar', task ':assemble', task ':compileTestJava', task ':processTestResources', task ':testClasses', task ':test', task ':check', task ':build']
+Tasks that were excluded: []
+Resolve mutations for :createMinecraftArtifacts (Thread[#83,Execution worker,5,main]) started.
+:createMinecraftArtifacts (Thread[#83,Execution worker,5,main]) started.
+
+> Task :createMinecraftArtifacts UP-TO-DATE
+Cached resource https://maven.minecraftforge.net/net/minecraftforge/forge/1.20.1-47.2.6/forge-1.20.1-47.2.6-userdev.jar is up-to-date (lastModified: Sun May 25 11:44:53 PET 2025).
+Cached resource https://maven.neoforged.net/releases/de/oceanlabs/mcp/mcp_config/1.20.1/mcp_config-1.20.1.zip is up-to-date (lastModified: Mon Jun 12 13:44:17 PET 2023).
+Caching disabled for task ':createMinecraftArtifacts' because:
+  Implements its own caching
+Skipping task ':createMinecraftArtifacts' as it is up-to-date.
+Resolve mutations for :compileJava (Thread[#83,Execution worker,5,main]) started.
+:compileJava (Thread[#83,Execution worker,5,main]) started.
+
+> Task :compileJava UP-TO-DATE
+Build cache key for task ':compileJava' is e7ee1d9195ffb9fdb3dd2eba4229aaf6
+Skipping task ':compileJava' as it is up-to-date.
+Resolve mutations for :processResources (Thread[#83,Execution worker,5,main]) started.
+:processResources (Thread[#83,Execution worker,5,main]) started.
+
+> Task :processResources UP-TO-DATE
+Caching disabled for task ':processResources' because:
+  Not worth caching
+Skipping task ':processResources' as it is up-to-date.
+Resolve mutations for :classes (Thread[#83,Execution worker,5,main]) started.
+:classes (Thread[#83,Execution worker,5,main]) started.
+
+> Task :classes UP-TO-DATE
+Skipping task ':classes' as it has no actions.
+Resolve mutations for :jarJar (Thread[#83,Execution worker,5,main]) started.
+:jarJar (Thread[#83,Execution worker,5,main]) started.
+
+> Task :jarJar NO-SOURCE
+Skipping task ':jarJar' as it has no source files and no previous output files.
+Resolve mutations for :jar (Thread[#83,Execution worker,5,main]) started.
+:jar (Thread[#85,Execution worker Thread 3,5,main]) started.
+
+> Task :jar
+Caching disabled for task ':jar' because:
+  Not worth caching
+Task ':jar' is not up-to-date because:
+  Input property 'rootSpec$1' file /home/snayderpalaciosvera/Documentos/CreateRobotics-1.20.1/build/classes/java/main/com/workert/robotics/base/expandedarm/CustomProcessingRecipe.class has changed.
+  Input property 'rootSpec$2$1' file /home/snayderpalaciosvera/Documentos/CreateRobotics-1.20.1/build/tmp/jar/MANIFEST.MF has changed.
+file or directory '/home/snayderpalaciosvera/Documentos/CreateRobotics-1.20.1/build/generated/jarJar', not found
+file or directory '/home/snayderpalaciosvera/Documentos/CreateRobotics-1.20.1/LICENSE', not found
+Resolve mutations for :javadoc (Thread[#83,Execution worker,5,main]) started.
+:javadoc (Thread[#83,Execution worker,5,main]) started.
+
+> Task :javadoc
+Build cache key for task ':javadoc' is 9ffe2a3d7b6ab74881cd06d1e7cb5136
+Task ':javadoc' is not up-to-date because:
+  Input property 'classpath' file /home/snayderpalaciosvera/Documentos/CreateRobotics-1.20.1/build/classes/java/main/com/workert/robotics/base/expandedarm/CustomProcessingRecipe.class has changed.
+  Input property 'source' file /home/snayderpalaciosvera/Documentos/CreateRobotics-1.20.1/src/main/java/com/workert/robotics/base/expandedarm/CustomProcessingRecipe.java has changed.
+Starting process 'command '/home/snayderpalaciosvera/.gradle/jdks/eclipse_adoptium-17-amd64-linux.2/bin/javadoc''. Working directory: /home/snayderpalaciosvera/Documentos/CreateRobotics-1.20.1 Command: /home/snayderpalaciosvera/.gradle/jdks/eclipse_adoptium-17-amd64-linux.2/bin/javadoc @/home/snayderpalaciosvera/Documentos/CreateRobotics-1.20.1/build/tmp/javadoc/javadoc.options
+Successfully started process 'command '/home/snayderpalaciosvera/.gradle/jdks/eclipse_adoptium-17-amd64-linux.2/bin/javadoc''
+/home/snayderpalaciosvera/Documentos/CreateRobotics-1.20.1/src/main/java/com/workert/robotics/mixin/ToolboxHandlerMixin.java:43: warning: Tag @author cannot be used in method documentation.  It can only be used in the following types of documentation: overview, module, package, class/interface.
+	 * @author OutCraft
+	   ^
+1 warning
+Stored cache entry for task ':javadoc' with cache key 9ffe2a3d7b6ab74881cd06d1e7cb5136
+Resolve mutations for :javadocJar (Thread[#83,Execution worker,5,main]) started.
+:javadocJar (Thread[#83,Execution worker,5,main]) started.
+
+> Task :javadocJar
+Caching disabled for task ':javadocJar' because:
+  Not worth caching
+Task ':javadocJar' is not up-to-date because:
+  Input property 'rootSpec$1' file /home/snayderpalaciosvera/Documentos/CreateRobotics-1.20.1/build/docs/javadoc/com/workert/robotics/base/expandedarm/CustomProcessingRecipe.html has changed.
+  Input property 'rootSpec$1' file /home/snayderpalaciosvera/Documentos/CreateRobotics-1.20.1/build/docs/javadoc/com/workert/robotics/base/expandedarm/package-tree.html has changed.
+  Input property 'rootSpec$1' file /home/snayderpalaciosvera/Documentos/CreateRobotics-1.20.1/build/docs/javadoc/index-all.html has changed.
+  and more...
+Resolve mutations for :reobfJar (Thread[#83,Execution worker,5,main]) started.
+:reobfJar (Thread[#83,Execution worker,5,main]) started.
+
+> Task :reobfJar
+Caching disabled for task ':reobfJar' because:
+  Caching has not been enabled for the task
+Task ':reobfJar' is not up-to-date because:
+  Input property 'input' file /home/snayderpalaciosvera/Documentos/CreateRobotics-1.20.1/build/devlibs/robotics-1.20.1-0.2.0.jar has changed.
+Starting process 'command '/app/extra/idea-IC/jbr/bin/java''. Working directory: /home/snayderpalaciosvera/Documentos/CreateRobotics-1.20.1 Command: /app/extra/idea-IC/jbr/bin/java -Dstderr.encoding=UTF-8 -Dstdout.encoding=UTF-8 -Dfile.encoding=UTF-8 -Duser.country=ES -Duser.language=es -Duser.variant -jar /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/net.neoforged/AutoRenamingTool/2.0.4/12da27cc4caf32e429af9a91f79e1f66a965e667/AutoRenamingTool-2.0.4-all.jar --input /home/snayderpalaciosvera/Documentos/CreateRobotics-1.20.1/build/devlibs/robotics-1.20.1-0.2.0.jar --output /home/snayderpalaciosvera/Documentos/CreateRobotics-1.20.1/build/libs/robotics-1.20.1-0.2.0.jar --names /home/snayderpalaciosvera/Documentos/CreateRobotics-1.20.1/build/moddev/artifacts/namedToIntermediate.tsrg --names /home/snayderpalaciosvera/Documentos/CreateRobotics-1.20.1/build/mixin/robotics.refmap.json.mappings.tsrg --lib /home/snayderpalaciosvera/Documentos/CreateRobotics-1.20.1/build/moddev/artifacts/forge-1.20.1-47.2.6.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/io.github.llamalad7/mixinextras-common/0.4.1/a7f425cc49de7f10d008a9a676f5f023ebac13bb/mixinextras-common-0.4.1.jar --lib /home/snayderpalaciosvera/.gradle/caches/8.12/transforms/8447adf97cc30dee935173963e2744d8/transformed/flywheel-forge-api-1.20.1-1.0.1.jar --lib /home/snayderpalaciosvera/.gradle/caches/8.12/transforms/843546bef3030015f1bfd322dc2342a4/transformed/curios-forge-5.3.1+1.20.1-api.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/io.github.llamalad7/mixinextras-forge/0.4.1/5c35573a7b76103724799ca1174a69699b8a9aec/mixinextras-forge-0.4.1.jar --lib /home/snayderpalaciosvera/.gradle/caches/8.12/transforms/f9ebf69b978e482d969930531fd41b32/transformed/create-1.20.1-6.0.3-71-all.jar --lib /home/snayderpalaciosvera/.gradle/caches/8.12/transforms/2737c1a9c68bb5df16876408d171b009/transformed/Registrate-MC1.20-1.3.3.jar --lib /home/snayderpalaciosvera/.gradle/caches/8.12/transforms/054bae16e0f9e419efa10edfe9b57e65/transformed/Ponder-Forge-1.20.1-1.0.39.jar --lib /home/snayderpalaciosvera/.gradle/caches/8.12/transforms/535f3add160fa6092ee4f5cc30b45838/transformed/jei-1.20.1-forge-15.19.0.85.jar --lib /home/snayderpalaciosvera/.gradle/caches/8.12/transforms/fbac63a2646ecc650282c4d9d7497adc/transformed/journeymap-32274-5457831.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/cpw.mods/securejarhandler/2.1.10/51e6a22c6c716beb11e244bf5b8be480f51dd6b5/securejarhandler-2.1.10.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/net.minecraftforge/fmlloader/1.20.1-47.2.6/7e862c69c8fd10696819690249f2afa0d1da3c3b/fmlloader-1.20.1-47.2.6.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/cpw.mods/modlauncher/10.0.9/6d9443f56f50bb85cea383686ff9c867391458b/modlauncher-10.0.9.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/org.openjdk.nashorn/nashorn-core/15.3/43977e804697048fc8d81d333a36c17d07a5b3dd/nashorn-core-15.3.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm-commons/9.5/19ab5b5800a3910d30d3a3e64fdb00fd0cb42de0/asm-commons-9.5.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm-util/9.5/64b5a1fc8c1b15ed2efd6a063e976bc8d3dc5ffe/asm-util-9.5.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm-analysis/9.5/490bacc77de7cbc0be1a30bb3471072d705be4a4/asm-analysis-9.5.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm-tree/9.5/fd33c8b6373abaa675be407082fdfda35021254a/asm-tree-9.5.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm/9.5/dc6ea1875f4d64fbc85e1691c95b96a3d8569c90/asm-9.5.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/net.minecraftforge/accesstransformers/8.0.4/272d240aa73f42195b2a68e2ebd8b701ecf41f63/accesstransformers-8.0.4.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/org.antlr/antlr4/4.9.1/e92af8ab33e428461927b484e90bb155a4f3a052/antlr4-4.9.1.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/org.antlr/antlr4-runtime/4.9.1/428664f05d2b7f7b7610204b5aa7c1763f62011a/antlr4-runtime-4.9.1.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/net.minecraftforge/fmlcore/1.20.1-47.2.6/2d5f5aff839b7d2825c6968049399633d1c4d0b8/fmlcore-1.20.1-47.2.6.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/net.minecraftforge/eventbus/6.0.5/699143dd438431d06b57416944f7cedbe52e1475/eventbus-6.0.5.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/net.minecraftforge/forgespi/7.0.1/3b4972a0cdb135853dba219be61a79b22cff1309/forgespi-7.0.1.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/net.minecraftforge/coremods/5.0.1/386b00279628b105b2d507539c46e134e96f6237/coremods-5.0.1.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/net.minecraftforge/unsafe/0.2.0/54d7a0a5e8fdb71b973025caa46f341ae5904f39/unsafe-0.2.0.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/net.minecraftforge/mergetool/1.1.5/e31dad26696043b540681aabc93e2001a1a2cd44/mergetool-1.1.5.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/net.minecraftforge/mergetool/1.1.5/f3da18e12c696d35a47c82cbb2cc8b5aa15e1154/mergetool-1.1.5-api.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/com.electronwill.night-config/toml/3.6.4/51d6cefb2b55ee55ee26b16391212fb2c7dfb4f4/toml-3.6.4.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/com.electronwill.night-config/core/3.6.4/510f174abbf1c947494db50ef2445683bd52c230/core-3.6.4.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/net.minecraftforge/JarJarSelector/0.3.19/376cc9c8ea60720cf027c01fc033de915699801c/JarJarSelector-0.3.19.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/net.minecraftforge/JarJarMetadata/0.3.19/83feaa9b770e6ac0e96ee4fc23fa89325c5fe2/JarJarMetadata-0.3.19.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/org.apache.maven/maven-artifact/3.8.5/4433f50c07debefaed0553bd0068f4f48d449313/maven-artifact-3.8.5.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/net.jodah/typetools/0.6.3/a01aaa6ddaea9ec07ec4f209487b7a46a526283a/typetools-0.6.3.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/net.minecrell/terminalconsoleappender/1.2.0/96d02cd3b384ff015a8fef4223bcb4ccf1717c95/terminalconsoleappender-1.2.0.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/org.jline/jline-reader/3.12.1/4382ab1382c7b6f379377ed5f665dc2f6e1218bc/jline-reader-3.12.1.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/org.jline/jline-terminal/3.12.1/c777448314e050d980a6b697c140f3bfe9eb7416/jline-terminal-3.12.1.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/org.spongepowered/mixin/0.8.5/9d1c0c3a304ae6697ecd477218fa61b850bf57fc/mixin-0.8.5.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/cpw.mods/bootstraplauncher/1.1.2/c546e00443d8432cda6baa1c860346980742628/bootstraplauncher-1.1.2.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/net.minecraftforge/JarJarFileSystems/0.3.19/2464eb7d6b9ddb9db36a82cf8a95193e5c6fe020/JarJarFileSystems-0.3.19.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/net.minecraftforge/fmlearlydisplay/1.20.1-47.2.6/855538dcc7ae05a1de27881ebd5725cd7177201/fmlearlydisplay-1.20.1-47.2.6.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/net.minecraftforge/javafmllanguage/1.20.1-47.2.6/56551ed4a181a00930b0365996e1d9f3ca851459/javafmllanguage-1.20.1-47.2.6.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/net.minecraftforge/lowcodelanguage/1.20.1-47.2.6/f27bd133cd78227e8d6def633b83c881a30cc243/lowcodelanguage-1.20.1-47.2.6.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/net.minecraftforge/mclanguage/1.20.1-47.2.6/6e1641ac5a046737d7c3209901ca0a829d636873/mclanguage-1.20.1-47.2.6.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/resources-2.1/38/c7d29380ddb38becad7c0819b5b325e43bca23f0/mcp_config-1.20.1.zip --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/org.codehaus.plexus/plexus-utils/3.3.0/cf43b5391de623b36fe066a21127baef82c64022/plexus-utils-3.3.0.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/org.apache.commons/commons-lang3/3.12.0/c6842c86792ff03b9f1d1fe2aab8dc23aa6c6f0e/commons-lang3-3.12.0.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/org.apache.logging.log4j/log4j-core/2.8.1/4ac28ff2f1ddf05dae3043a190451e8c46b73c31/log4j-core-2.8.1.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/2.10/dd9b193aef96e973d5a11ab13cd17430c2e4306b/gson-2.10.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/com.google.guava/guava/31.1-jre/60458f877d055d0c9114d9e1a2efb737b4bc282c/guava-31.1-jre.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/com.machinezoo.noexception/noexception/1.7.1/b65330c98e38a1f915fa54a6e5eca496505e3f0a/noexception-1.7.1.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-api/1.8.0-beta4/83b0359d847ee053d745be7ec0d8e9e8a44304b4/slf4j-api-1.8.0-beta4.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/org.apache.logging.log4j/log4j-api/2.19.0/ea1b37f38c327596b216542bc636cfdc0b8036fa/log4j-api-2.19.0.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/com.mojang/logging/1.1.1/832b8e6674a9b325a5175a3a6267dfaf34c85139/logging-1.1.1.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/com.github.oshi/oshi-core/6.2.2/54f5efc19bca95d709d9a37d19ffcbba3d21c1a6/oshi-core-6.2.2.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/com.google.guava/failureaccess/1.0.1/1dcf1de382a0bf95a3d8b0849546c88bac1292c9/failureaccess-1.0.1.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/com.ibm.icu/icu4j/61.1/28d33b5e44e72edcc66a5da7a34a42147f38d987/icu4j-61.1.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/com.mojang/authlib/4.0.43/2ff9d747a77570a07a60d32ac77eb6162ad2a2d9/authlib-4.0.43.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/com.mojang/blocklist/1.0.10/5c685c5ffa94c4cd39496c7184c1d122e515ecef/blocklist-1.0.10.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/com.mojang/brigadier/1.1.8/5244ce82c3337bba4a196a3ce858bfaecc74404a/brigadier-1.1.8.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/com.mojang/datafixerupper/6.0.8/3ba4a30557a9b057760af4011f909ba619fc5125/datafixerupper-6.0.8.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/com.mojang/patchy/2.2.10/da05971b07cbb379d002cf7eaec6a2048211fefc/patchy-2.2.10.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/com.mojang/text2speech/1.17.9/3cad216e3a7f0c19b4b394388bc9ffc446f13b14/text2speech-1.17.9.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/commons-codec/commons-codec/1.15/49d94806b6e3dc933dacbd8acb0fdbab8ebd1e5d/commons-codec-1.15.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/commons-io/commons-io/2.11.0/a2503f302b11ebde7ebc3df41daebe0e4eea3689/commons-io-2.11.0.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/commons-logging/commons-logging/1.2/4bfc12adfe4842bf07b657f0369c4cb522955686/commons-logging-1.2.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/io.netty/netty-buffer/4.1.82.Final/a544270cf1ae8b8077082f5036436a9a9971ea71/netty-buffer-4.1.82.Final.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/io.netty/netty-codec/4.1.82.Final/b77200379acb345a9ffdece1c605e591ac3e4e0a/netty-codec-4.1.82.Final.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/io.netty/netty-common/4.1.82.Final/22d148e85c3f5ebdacc0ce1f5aabb1d420f73f3/netty-common-4.1.82.Final.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/io.netty/netty-handler/4.1.82.Final/644041d1fa96a5d3130a29e8978630d716d76e38/netty-handler-4.1.82.Final.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/io.netty/netty-resolver/4.1.82.Final/38f665ae8dcd29032eea31245ba7806bed2e0fa8/netty-resolver-4.1.82.Final.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/io.netty/netty-transport-classes-epoll/4.1.82.Final/e7c7dd18deac93105797f30057c912651ea76521/netty-transport-classes-epoll-4.1.82.Final.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/io.netty/netty-transport-native-unix-common/4.1.82.Final/3e895b35ca1b8a0eca56cacff4c2dde5d2c6abce/netty-transport-native-unix-common-4.1.82.Final.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/io.netty/netty-transport/4.1.82.Final/e431a218d91acb6476ccad5f5aafde50aa3945ca/netty-transport-4.1.82.Final.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/it.unimi.dsi/fastutil/8.5.9/bb7ea75ecdb216654237830b3a96d87ad91f8cc5/fastutil-8.5.9.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/net.java.dev.jna/jna-platform/5.12.1/97406a297c852f4a41e688a176ec675f72e8329/jna-platform-5.12.1.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/net.java.dev.jna/jna/5.12.1/b1e93a735caea94f503e95e6fe79bf9cdc1e985d/jna-5.12.1.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/net.sf.jopt-simple/jopt-simple/5.0.4/4fdac2fbe92dfad86aa6e9301736f6b4342a3f5c/jopt-simple-5.0.4.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/org.apache.commons/commons-compress/1.21/4ec95b60d4e86b5c95a0e919cb172a0af98011ef/commons-compress-1.21.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/org.apache.httpcomponents/httpclient/4.5.13/e5f6cae5ca7ecaac1ec2827a9e2d65ae2869cada/httpclient-4.5.13.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/org.apache.httpcomponents/httpcore/4.4.15/7f2e0c573eaa7a74bac2e89b359e1f73d92a0a1d/httpcore-4.4.15.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/org.apache.logging.log4j/log4j-slf4j2-impl/2.19.0/5c04bfdd63ce9dceb2e284b81e96b6a70010ee10/log4j-slf4j2-impl-2.19.0.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/org.joml/joml/1.10.5/22566d58af70ad3d72308bab63b8339906deb649/joml-1.10.5.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-glfw/3.3.1/cbac1b8d30cb4795149c1ef540f912671a8616d0/lwjgl-glfw-3.3.1.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-jemalloc/3.3.1/a817bcf213db49f710603677457567c37d53e103/lwjgl-jemalloc-3.3.1.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-openal/3.3.1/2623a6b8ae1dfcd880738656a9f0243d2e6840bd/lwjgl-openal-3.3.1.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-opengl/3.3.1/831a5533a21a5f4f81bbc51bb13e9899319b5411/lwjgl-opengl-3.3.1.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-stb/3.3.1/b119297cf8ed01f247abe8685857f8e7fcf5980f/lwjgl-stb-3.3.1.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-tinyfd/3.3.1/ff1914111ef2e3e0110ef2dabc8d8cdaad82347/lwjgl-tinyfd-3.3.1.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl/3.3.1/ae58664f88e18a9bb2c77b063833ca7aaec484cb/lwjgl-3.3.1.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/ca.weblite/java-objc-bridge/1.1/1227f9e0666314f9de41477e3ec277e542ed7f7b/java-objc-bridge-1.1.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/org.antlr/ST4/4.3/92f2c1ad8d84abcbeead6cf7f2c53a04166293c2/ST4-4.3.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/org.antlr/antlr-runtime/3.5.2/cd9cd41361c155f3af0f653009dcecb08d8b4afd/antlr-runtime-3.5.2.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/org.abego.treelayout/org.abego.treelayout.core/1.0.3/457216e8e6578099ae63667bb1e4439235892028/org.abego.treelayout.core-1.0.3.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/org.glassfish/javax.json/1.0.4/3178f73569fd7a1e5ffc464e680f7a8cc784b85a/javax.json-1.0.4.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/com.google.guava/listenablefuture/9999.0-empty-to-avoid-conflict-with-guava/b421526c5f297295adef1c886e5246c39d4ac629/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/com.google.code.findbugs/jsr305/3.0.2/25ea2e8b0c338a877313bd4672d3fe056ea78f0d/jsr305-3.0.2.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/org.checkerframework/checker-qual/3.12.0/d5692f0526415fcc6de94bb5bfbd3afd9dd3b3e5/checker-qual-3.12.0.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/com.google.errorprone/error_prone_annotations/2.11.0/c5a0ace696d3f8b1c1d8cc036d8c03cc0cbe6b69/error_prone_annotations-2.11.0.jar --lib /home/snayderpalaciosvera/.gradle/caches/modules-2/files-2.1/com.google.j2objc/j2objc-annotations/1.3/ba035118bc8bac37d7eff77700720999acd9986d/j2objc-annotations-1.3.jar --disable-abstract-param --strip-sigs
+Successfully started process 'command '/app/extra/idea-IC/jbr/bin/java''
+Resolve mutations for :sourcesJar (Thread[#83,Execution worker,5,main]) started.
+:sourcesJar (Thread[#83,Execution worker,5,main]) started.
+
+> Task :sourcesJar
+Caching disabled for task ':sourcesJar' because:
+  Not worth caching
+Task ':sourcesJar' is not up-to-date because:
+  Input property 'rootSpec$1' file /home/snayderpalaciosvera/Documentos/CreateRobotics-1.20.1/src/main/java/com/workert/robotics/base/expandedarm/CustomProcessingRecipe.java has changed.
+Resolve mutations for :assemble (Thread[#83,Execution worker,5,main]) started.
+:assemble (Thread[#83,Execution worker,5,main]) started.
+
+> Task :assemble
+Skipping task ':assemble' as it has no actions.
+Resolve mutations for :compileTestJava (Thread[#83,Execution worker,5,main]) started.
+:compileTestJava (Thread[#83,Execution worker,5,main]) started.
+
+> Task :compileTestJava NO-SOURCE
+Skipping task ':compileTestJava' as it has no source files and no previous output files.
+Resolve mutations for :processTestResources (Thread[#83,Execution worker,5,main]) started.
+:processTestResources (Thread[#83,Execution worker,5,main]) started.
+
+> Task :processTestResources NO-SOURCE
+Skipping task ':processTestResources' as it has no source files and no previous output files.
+Resolve mutations for :testClasses (Thread[#85,Execution worker Thread 3,5,main]) started.
+:testClasses (Thread[#85,Execution worker Thread 3,5,main]) started.
+
+> Task :testClasses UP-TO-DATE
+Skipping task ':testClasses' as it has no actions.
+Resolve mutations for :test (Thread[#83,Execution worker,5,main]) started.
+:test (Thread[#83,Execution worker,5,main]) started.
+
+> Task :test NO-SOURCE
+Skipping task ':test' as it has no source files and no previous output files.
+Resolve mutations for :check (Thread[#83,Execution worker,5,main]) started.
+:check (Thread[#83,Execution worker,5,main]) started.
+
+> Task :check UP-TO-DATE
+Skipping task ':check' as it has no actions.
+Resolve mutations for :build (Thread[#83,Execution worker,5,main]) started.
+:build (Thread[#83,Execution worker,5,main]) started.
+
+> Task :build
+Skipping task ':build' as it has no actions.
+
+BUILD SUCCESSFUL in 25s
+8 actionable tasks: 5 executed, 3 up-to-date
+Some of the file system contents retained in the virtual file system are on file systems that Gradle doesn't support watching. The relevant state was discarded to ensure changes to these locations are properly detected. You can override this by explicitly enabling file system watching.
