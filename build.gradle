@@ -4,13 +4,10 @@ plugins {
 	id "net.neoforged.moddev.legacyforge" version "2.0.74"
 	id "me.modmuss50.mod-publish-plugin" version "0.8.3"
 	id "dev.ithundxr.silk" version "0.11.15"
-	// id "net.kyori.blossom" version "2.1.0" // https://github.com/KyoriPowered/blossom <- Robotics doesn't need this for now
-	id "org.jetbrains.gradle.plugin.idea-ext" version "1.1.8" // https://github.com/JetBrains/gradle-idea-ext-plugin
+	id "org.jetbrains.gradle.plugin.idea-ext" version "1.1.8"
 }
 
 apply from: "./gradle/java.gradle"
-
-// apply from: "gradle/property_loader.gradle"
 
 boolean dev = System.getenv('RELEASE') == null || System.getenv('RELEASE').equals('false')
 ext.buildNumber = System.getenv('BUILD_NUMBER')
@@ -39,9 +36,6 @@ idea {
 legacyForge {
 	version = "$minecraft_version-$forge_version"
 
-	// TODO - Try turning this on later
-	//validateAccessTransformers = false
-
 	if (file('src/main/resources/META-INF/accesstransformer.cfg').exists()) {
 		accessTransformers.from "src/main/resources/META-INF/accesstransformer.cfg"
 	}
@@ -58,13 +52,10 @@ legacyForge {
 	}
 
 	runs {
-		// applies to all the run configs below
 		configureEach {
 			systemProperty 'forge.logging.markers', ''
 			systemProperty 'forge.logging.console.level', 'info'
 			jvmArguments = ["-XX:+IgnoreUnrecognizedVMOptions", "-XX:+AllowEnhancedClassRedefinition"]
-			//jvmArgs("-XX:-OmitStackTraceInFastThrow") // uncomment when you get exceptions with null messages etc
-			//jvmArgs '-XX:+UnlockCommercialFeatures' // uncomment for profiling
 
 			systemProperty 'mixin.debug.export', 'true'
 			systemProperty 'mixin.debug.verbose', 'true'
@@ -75,19 +66,16 @@ legacyForge {
 
 		client {
 			client()
-
 			gameDirectory = project.file('run')
 		}
 
 		server {
 			server()
-
 			gameDirectory = project.file('run/server')
 		}
 
 		data {
 			data()
-
 			gameDirectory = project.file('run')
 			systemProperty 'forge.logging.markers', 'REGISTRIES,REGISTRYDUMP'
 			systemProperty 'forge.logging.console.level', 'debug'
@@ -96,34 +84,29 @@ legacyForge {
 
 		gameTestServer {
 			type = "gameTestServer"
-
 			gameDirectory = project.file('run/gametest')
-			// setForceExit false <- FIXME 1.20
 		}
 	}
 }
 
 repositories {
-	maven { url = "https://maven.createmod.net" } // Create, Ponder, Flywheel
-	maven { url = "https://maven.tterrag.com" } // Registrate
-
+	maven { url = "https://maven.createmod.net" }
+	maven { url = "https://maven.tterrag.com" }
 	maven { url = "https://www.cursemaven.com" }
 	maven { url = "https://api.modrinth.com/maven" }
-
-	maven { url = "https://maven.blamejared.com" } // JEI, Vazkii's Mods
-	maven { url = "https://harleyoconnor.com/maven" } // Dynamic Trees
-	maven { url = "https://maven.theillusivec4.top/" } // Curios API
-	maven { url = "https://maven.squiddev.cc" } // CC: Tweaked
-	maven { url = "https://maven.saps.dev/releases" } // FTB Mods
-	maven { url = "https://maven.architectury.dev" } // Arch API
+	maven { url = "https://maven.blamejared.com" }
+	maven { url = "https://harleyoconnor.com/maven" }
+	maven { url = "https://maven.theillusivec4.top/" }
+	maven { url = "https://maven.squiddev.cc" }
+	maven { url = "https://maven.saps.dev/releases" }
+	maven { url = "https://maven.architectury.dev" }
 	maven {
-		url = "https://jm.gserv.me/repository/maven-public" // JourneyMap
+		url = "https://jm.gserv.me/repository/maven-public"
 		content {
 			includeGroup "info.journeymap"
 			includeGroup "mysticdrew"
 		}
 	}
-
 	mavenCentral()
 	mavenLocal()
 	flatDir {
@@ -133,37 +116,17 @@ repositories {
 
 dependencies {
 	modImplementation("com.simibubi.create:create-${minecraft_version}:${create_version}:all")
-
 	modImplementation("com.tterrag.registrate:Registrate:${registrate_version}")
-
 	implementation("io.github.llamalad7:mixinextras-forge:${mixin_extras_version}")
-
 	modCompileOnly("dev.engine-room.flywheel:flywheel-forge-api-${minecraft_version}:${flywheel_version}")
 	modRuntimeOnly("dev.engine-room.flywheel:flywheel-forge-${minecraft_version}:${flywheel_version}")
-	//modRuntimeOnly("dev.engine-room.vanillin:vanillin-forge-${minecraft_version}:${vanillin_version}")
-
 	modImplementation("net.createmod.ponder:Ponder-Forge-${minecraft_version}:${ponder_version}")
-
 	compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:${mixin_extras_version}"))
-
-	// modCompileOnly("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
-	// modCompileOnly("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}")
 	modImplementation("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
-
 	modCompileOnly("top.theillusivec4.curios:curios-forge:${curios_version}+${minecraft_version}:api")
 	modRuntimeOnly("top.theillusivec4.curios:curios-forge:${curios_version}+${minecraft_version}")
-
-	// modImplementation("curse.maven:ic2-classic-242942:5555152")
-	// modImplementation("curse.maven:druidcraft-340991:3101903")
-	// modImplementation("com.railwayteam.railways:railways-1.19.2-1.6.4:all") { transitive = false }
-
 	modImplementation("curse.maven:journeymap-32274:5457831")
 
-
-	// TODO find out if Robotics needs this
-	// https://discord.com/channels/313125603924639766/725850371834118214/910619168821354497
-	// Prevent Mixin annotation processor from getting into IntelliJ's annotation processor settings
-	// This allows 'Settings > Build, Execution, and Deployment > Build Tools > Gradle > Build and run using' set to IntelliJ to work correctly
 	if (!Boolean.getBoolean('idea.sync.active')) {
 		annotationProcessor "org.spongepowered:mixin:0.8.5:processor"
 	}
@@ -174,19 +137,11 @@ sourceSets.main {
 		srcDir 'src/generated/resources'
 		exclude '.cache/'
 	}
-
-	/*blossom.javaSources {
-		property("version", build_info_mod_version)
-		property("gitCommit", gitHash.toString())
-	}*/
 }
 
 processResources {
 	def buildProps = project.properties.clone()
-
-	// Replaces FML's magic file.jarVersion string with the correct version at build time.
 	buildProps.put('file', [jarVersion: project.version])
-
 	filesMatching(['META-INF/mods.toml', 'pack.mcmeta']) {
 		expand buildProps
 	}
@@ -200,7 +155,6 @@ jar {
 	from('LICENSE') {
 		rename { "${it}_${archivesBaseName}" }
 	}
-
 	manifest.attributes([
 			"MixinConfigs": "robotics.mixins.json",
 			"Git-Hash"    : gitHash
@@ -235,5 +189,18 @@ boolean hasUnstaged() {
 		return !result.isEmpty()
 	} catch (Throwable ignored) {
 		return false
+	}
+}
+
+///////////////////////////////////////
+// 👇 FIX para evitar fallo con 1.0.13
+///////////////////////////////////////
+configurations.all {
+	resolutionStrategy.eachDependency { details ->
+		if (details.requested.group == "net.neoforged" &&
+				details.requested.name == "neoform-runtime") {
+			details.useVersion("1.0.12")
+			details.because("La 1.0.13 está rota en el repositorio Maven")
+		}
 	}
 }
