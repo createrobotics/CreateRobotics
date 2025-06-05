@@ -8,13 +8,7 @@
 	"ToolboxBlockEntityAccessor",
 	"ToolboxContainerMixin",
 	"ToolboxHandlerMixin",
-    "ArmBlockEntityMixin",
     "ToolboxInventoryAccessor",
-    "ArmBlockEntityMixin",
-    "ArmInteractionPointModeAccessor",
-    "CustomArmInteractionPointMixin",
-    "ArmInteractionPointInvoker",
-    "ArmBlockEntityAccessor",
     "ToolboxTileEntityMixin"
   ],
   "client": [
